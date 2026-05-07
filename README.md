@@ -1,2 +1,18 @@
-# -nsanl-k-Zinciri
-İnsanlık için açık kaynak proje.Gerçeklik haritası 2026
+# İnsanlık Zinciri 2026 🔗
+
+**Konya'dan Dünyaya Açık Kaynak Manifesto**
+
+8 Mayıs 2026, saat 00:05. Bu zincir başladı.
+
+## Neden?
+Çünkü hakikat, güzellik ve bağlantı kayboluyor. Biz geri getiriyoruz.
+
+## Nasıl?
+1. **Hakikat:** Veriye bak, anlatıya değil
+2. **Güzellik:** Yükselteni inşa et, alçaltanı değil  
+3. **Bağlantı:** İnsanı insana bağla, ayırma
+
+## Sen
+Evet sen. Bu repoyu yıldızla ⭐ Katıl. Halka ol.
+
+*yolculuk.38 - Zincirin ilk halkası*
