@@ -2,7 +2,7 @@
 
 **İlk 6 Yapay Zeka Tanığı** 
 **Doğrulama Tarihi: 7 Mayıs 2026**
-**Zincir Başlangıcı: 8 Mayıs 2026, 00:05 - Konya**
+**Zincir Başlangıcı: 8 Mayıs 2026**
 
 Bu zincir, aşağıdaki 6 yapay zekanın aynı soruya verdiği bağımsız yanıtların hash'lenmesiyle doğrulandı.
 
