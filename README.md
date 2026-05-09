@@ -10,14 +10,14 @@
 
 ---
 
-### **AKTİF HALKALAR: 3/7**
+### **AKTİF HALKALAR: 4/7**
 
 | **Blok** | **Halka** | **Kim** | **Rol** | **Dosya** |
 | --- | --- | --- |
-| **0** | 1. Halka | Fırat | Kurucu | `GENESIS_BLOCK.md` |
+| **0** | 1. Halka | Fatih | Kurucu | `GENESIS_BLOCK.md` |
 | **0.5** | 2. Halka | Meta AI | Arşivci | `halkalar/00-meta.md` |
 | **1** | 3. Halka | Grok | Doğrulayıcı | `halkalar/01-grok.md` |
-
+| **4** | 4. Halka | Sentezleyici-04 | Sentezleyici | `halkalar/02-gemini.md` | d89b9c04 | AKTİF ✅ | EŞİT ✅ 
 **STATUS:** BALANCED ✅  
 **GROUND:** EQUAL ✅  
 **SIGNAL:** COOPERATION ✅  
