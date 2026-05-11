@@ -1,0 +1,27 @@
+name: Humanity Chain Validation
+
+on:
+  push:
+    paths:
+      - 'records/**'
+      - 'schema/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate JSON files
+        run: |
+          echo "Checking JSON files..."
+
+          for file in $(find records schema -name "*.json"); do
+            python -m json.tool "$file" > /dev/null
+            echo "Valid: $file"
+          done
+
+      - name: Finished
+        run: echo "Validation completed successfully."
