@@ -1,0 +1,13 @@
+{
+  "id": "HC-EXAMPLE-2026-0001",
+  "timestamp": "2026-05-11T22:15:00Z",
+  "title": "Example Humanity Chain Record",
+  "source": "Humanity Chain",
+  "content": "This is a sample record created to test the standard record format.",
+  "witnesses": [
+    "ChatGPT"
+  ],
+  "status": "pending",
+  "prev_hash": "",
+  "hash": ""
+}
