@@ -1,17 +1,44 @@
 # Humanity Chain
 
-Open Human-AI Interaction Archive
+## Open Human-AI Interaction Archive
 
-## Status
-Experimental Open Verification Structure
+**Status:** Experimental  
+**Version:** 0.1
 
-## Sections
+---
 
-- Protocol
-- Archive Records
-- Witness Logs
-- Timeline
+## Overview
 
-## Public Notice
+Humanity Chain is an experimental open archive and verification structure for documenting human-AI interaction records.
 
-Humanity Chain documents structured interactions between humans and AI systems using transparent public archive methods.
+The project focuses on:
+
+- transparent documentation
+- chronological archive records
+- public revision history
+- human oversight
+- hash-referenced verification logic
+
+Optional hash references, QR-linked archive paths, and additional verification layers may be attached to archived records over time.
+
+---
+
+## Public Sections
+
+- [Protocol](protocol.md)
+- [Timeline](timeline.md)
+- [Witness Records](witnesses.md)
+
+---
+
+## Core Principle
+
+> Data Before Narrative.
+
+---
+
+## Transparency Notice
+
+Humanity Chain is an experimental documentation project.
+
+AI-generated responses are archived as interaction records and do not represent autonomous institutional participation or legal endorsement.
