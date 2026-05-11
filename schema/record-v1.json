@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Humanity Chain Record Schema v1",
+  "description": "Standard record schema for Humanity Chain verified interaction records.",
+  "type": "object",
+  "required": [
+    "id",
+    "timestamp",
+    "title",
+    "source",
+    "content",
+    "witnesses",
+    "status",
+    "prev_hash",
+    "hash"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique record identifier.",
+      "pattern": "^HC-[A-Z0-9]+-[0-9]{4}-[0-9]{4}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "description": "Record creation time in ISO 8601 format.",
+      "format": "date-time"
+    },
+    "title": {
+      "type": "string",
+      "description": "Short title of the record."
+    },
+    "source": {
+      "type": "string",
+      "description": "Source system or contributor name."
+    },
+    "content": {
+      "type": "string",
+      "description": "Main record content or summary."
+    },
+    "witnesses": {
+      "type": "array",
+      "description": "Witnesses connected to this record.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "status": {
+      "type": "string",
+      "description": "Current verification status.",
+      "enum": ["pending", "verified", "archived", "disputed"]
+    },
+    "prev_hash": {
+      "type": "string",
+      "description": "Hash of the previous record. Empty only for genesis record."
+    },
+    "hash": {
+      "type": "string",
+      "description": "SHA-256 hash of this record."
+    }
+  },
+  "additionalProperties": false
+}
