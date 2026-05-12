@@ -1,0 +1,46 @@
+name: Auto Generate Hash Files
+
+on:
+  push:
+    paths:
+      - 'records/verified/**.md'
+
+permissions:
+  contents: write
+
+jobs:
+  generate-hashes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate SHA-256 hash files
+        run: |
+          mkdir -p hash
+
+          for file in records/verified/*.md; do
+            [ -e "$file" ] || continue
+
+            filename=$(basename "$file" .md)
+            sha256sum "$file" > "hash/${filename}.sha256"
+
+            echo "Generated hash for $file"
+          done
+
+      - name: Commit generated hash files
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add hash/*.sha256
+
+          if git diff --cached --quiet; then
+            echo "No hash changes to commit."
+          else
+            git commit -m "Auto-generate SHA-256 hash files"
+            git push
+          fi
