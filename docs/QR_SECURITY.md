@@ -1,0 +1,42 @@
+# QR Security and Anti-Spoofing
+
+## Purpose
+
+QR codes are used as quick access references inside the Humanity Chain protocol.
+
+A QR code alone should not be treated as proof of authenticity.
+
+## Verification Rules
+
+Users should verify:
+
+- repository source
+- owner identity
+- record ID
+- SHA-256 hash consistency
+
+## Official Source
+
+Official records should point to:
+
+github.com/yolculuk38-debug/Insanlik-Zinciri
+
+## Anti-Spoofing Logic
+
+Fake QR codes may redirect users to modified or unofficial records.
+
+Humanity Chain verification depends on:
+
+- trusted source
+- traceable record structure
+- public hash comparison
+- transparent verification flow
+
+## Future Security Layers
+
+Potential future layers may include:
+
+- signed verification
+- optional 2FA protected actions
+- public verification API
+- cryptographic witness validation
