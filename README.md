@@ -2,7 +2,7 @@
 # 🔗 HUMANITY CHAIN
 ## Open Verification Protocol
 
-> “Data Before Narrative.”
+> "Data Before Narrative."
 
 ---
 
@@ -178,3 +178,50 @@ Constructive feedback, documentation improvements, protocol discussions, and sec
 # 📄 License
 
 Apache License 2.0
+
+---
+
+---
+
+# 🔧 Technical v1 Core
+
+Humanity Chain now includes a working verification protocol core with the following components:
+
+## What's Available
+
+| Component | Type | Purpose |
+|-----------|------|---------|
+| `schema/record-v1.schema.json` | JSON Schema | Record format validation |
+| `src/hash.py` | Tool | SHA256 fingerprint generator |
+| `src/validator.py` | Tool | Record validation |
+| `src/qr.py` | Tool | QR code generation |
+| `docs/verification-workflow.md` | Documentation | Complete workflow guide |
+| `examples/` | Records | 3 example records (AI, Human, Multi) |
+| `requirements.txt` | Dependencies | Python package requirements |
+
+## Quick Start
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Validate example records
+python src/validator.py examples/ai_witness_example.json
+python src/validator.py examples/human_witness_example.json
+python src/validator.py examples/multi_model_example.json
+
+# Calculate hash
+python src/hash.py examples/ai_witness_example.json
+
+# Generate QR code
+python src/qr.py HC-CHATGPT-2026-0001 <hash> records/verified/HC-CHATGPT-2026-0001.md
+```
+
+## Record States
+
+- **draft** → Initial, editable, no validation
+- **reviewed** → Reviewed by witness, issues noted
+- **verified** → Approved, hash locked
+- **archived** → Permanent, immutable
+
+See `docs/verification-workflow.md` for complete workflow details.
