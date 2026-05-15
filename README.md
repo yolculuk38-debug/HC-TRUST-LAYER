@@ -1,14 +1,15 @@
+# HC://
+## Humanity Chain
 
-# 🔗 HUMANITY CHAIN
-## Open Verification Protocol
+> Open Verification & Provenance Protocol
 
-> "Data Before Narrative."
+> “Trust the record, not the narrative.”
 
 ---
 
 # 🌍 What is Humanity Chain?
 
-Humanity Chain is an experimental open verification protocol designed for the AI era.
+Humanity Chain is an experimental open verification and provenance protocol designed for the AI era.
 
 The project focuses on:
 
@@ -18,8 +19,11 @@ The project focuses on:
 - provenance records
 - digital fingerprint systems
 - multi-source witness workflows
+- verifiable document systems
+- verifiable media systems
+- AI-assisted authenticity analysis
 
-Humanity Chain explores how digital content may become more verifiable in increasingly synthetic online environments.
+HC:// explores how digital content may become more verifiable in increasingly synthetic online environments.
 
 ---
 
@@ -35,87 +39,41 @@ Challenges include:
 - anonymous redistribution
 - unverifiable archives
 - AI-generated misinformation
+- fake screenshots
+- context manipulation
+- edited videos presented as authentic
 
-Humanity Chain attempts to build transparent verification infrastructure for digital records.
+HC:// attempts to build transparent verification infrastructure for digital records and media provenance.
 
 ---
 
 # 🧩 What is HC://?
 
-HC:// is a conceptual digital fingerprint protocol.
+HC:// is a conceptual digital provenance and verification protocol.
 
 The protocol may provide:
 
-- SHA-256 fingerprints
-- timestamps
-- verification metadata
-- optional QR verification
-- optional witness references
+- hash-linked verification records
+- QR-linked provenance tracking
+- timestamped witness systems
+- immutable-style archive history
+- transparent change tracking
+- AI + human review layers
+- digital authenticity workflows
+- verifiable document pipelines
+- media verification assistance
 
-If content changes, its fingerprint changes.
+The goal is not to control information.
 
----
-
-# ⚙️ Verification Layers
-
-## Layer 1 — HC:// Core
-
-Basic integrity and fingerprint layer.
-
-Possible components:
-
-- SHA-256 hash
-- timestamp
-- record ID
-- traceability metadata
-
----
-
-## Layer 2 — Integrity Verification
-
-Verifies whether content still matches its original fingerprint.
-
----
-
-## Layer 3 — Witness Layer
-
-Optional human or AI-assisted review layer.
-
-Possible witness systems:
-
-- human reviewers
-- AI analysis systems
-- multi-model comparisons
-- independent validators
-
----
-
-## Layer 4 — Multi-Witness Verification
-
-Multiple independent witnesses may review records or verification claims.
-
----
-
-# ⚠️ What HC:// Does NOT Do
-
-Humanity Chain does not claim:
-
-- absolute truth verification
-- legal authority
-- government certification
-- automatic factual correctness
-- perfect authenticity detection
-- ideological judgment
-
-HC:// focuses on integrity, traceability, and transparent verification workflows.
+The goal is to improve transparency, traceability, and verification workflows for digital content.
 
 ---
 
 # 🌐 Open Protocol Vision
 
-Humanity Chain is designed as an open protocol concept.
+HC:// is designed as an open protocol concept.
 
-The long-term goal is to explore interoperable verification systems for digital content.
+The long-term goal is to explore interoperable verification systems for digital content and provenance records.
 
 Potential future integrations may include:
 
@@ -125,6 +83,9 @@ Potential future integrations may include:
 - AI systems
 - educational systems
 - public verification services
+- journalism workflows
+- document authentication systems
+- video provenance systems
 
 ---
 
@@ -139,8 +100,12 @@ Possible functions may include:
 - deepfake risk analysis
 - verification assistance
 - multi-model review
+- provenance comparison
+- contextual anomaly detection
 
 AI witness systems are experimental and may produce uncertainty or errors.
+
+Human review remains important.
 
 ---
 
@@ -153,76 +118,101 @@ Responsibility for uploaded or published content remains with:
 - uploaders
 - original content owners
 
-Humanity Chain provides verification infrastructure, not content ownership.
+HC:// provides verification infrastructure, not content ownership or legal authority.
 
 ---
 
-# 🚧 Project Status
+# ⚠️ HC:// does not claim:
 
-Current status:
+- absolute truth verification
+- legal authority
+- government certification
+- automatic factual correctness
+- perfect authenticity detection
+- ideological judgment
+- political authority
 
-- experimental protocol draft
-- early-stage architecture development
-- open repository structure
-- verification workflow research
-- digital fingerprint experiments
-
----
-
-# 🤝 Contributing
-
-Constructive feedback, documentation improvements, protocol discussions, and security-focused contributions are welcome.
+HC:// focuses on integrity, traceability, provenance, and transparent verification workflows.
 
 ---
 
-# 📄 License
+# 🛠 Technical v1 Core
 
-Apache License 2.0
+HC:// currently includes an early verification protocol core with the following components:
+
+| Component | Type |
+|---|---|
+| schema/record-v1.schema.json | JSON Schema |
+| src/hash.py | Tool |
+| src/validator.py | Tool |
+| src/qr.py | Tool |
+| docs/verification-workflow.md | Documentation |
+| examples/ | Records |
+| requirements.txt | Dependencies |
 
 ---
 
----
-
-# 🔧 Technical v1 Core
-
-Humanity Chain now includes a working verification protocol core with the following components:
-
-## What's Available
-
-| Component | Type | Purpose |
-|-----------|------|---------|
-| `schema/record-v1.schema.json` | JSON Schema | Record format validation |
-| `src/hash.py` | Tool | SHA256 fingerprint generator |
-| `src/validator.py` | Tool | Record validation |
-| `src/qr.py` | Tool | QR code generation |
-| `docs/verification-workflow.md` | Documentation | Complete workflow guide |
-| `examples/` | Records | 3 example records (AI, Human, Multi) |
-| `requirements.txt` | Dependencies | Python package requirements |
-
-## Quick Start
+# 🚀 Quick Start
 
 ```bash
 # Install dependencies
 pip install -r requirements.txt
 
 # Validate example records
-python src/validator.py examples/ai_witness_example.json
-python src/validator.py examples/human_witness_example.json
-python src/validator.py examples/multi_model_example.json
+python src/validator.py examples
 
 # Calculate hash
 python src/hash.py examples/ai_witness_example.json
 
 # Generate QR code
-python src/qr.py HC-CHATGPT-2026-0001 <hash> records/verified/HC-CHATGPT-2026-0001.md
-```
+python src/qr.py HC-CHATGPT-2026
 
-## Record States
 
-- **draft** → Initial, editable, no validation
-- **reviewed** → Reviewed by witness, issues noted
-- **verified** → Approved, hash locked
-- **archived** → Permanent, immutable
+---
 
-See `docs/verification-workflow.md` for complete workflow details.
-<!-- editor test -->
+📂 Record States
+
+draft → Initial, editable, no validation
+
+reviewed → Reviewed by witness, issues noted
+
+verified → Approved, hash locked
+
+archived → Permanent, immutable-style archive
+
+
+See docs/verification-workflow.md for workflow details.
+
+
+---
+
+📌 Project Status
+
+Current status:
+
+experimental protocol draft
+
+early-stage architecture development
+
+open repository structure
+
+verification workflow research
+
+digital fingerprint experiments
+
+provenance infrastructure exploration
+
+
+
+---
+
+🤝 Contributing
+
+Constructive feedback, documentation improvements, protocol discussions, security-focused contributions, and verification research are welcome.
+
+
+---
+
+📄 License
+
+Apache License 2.0
