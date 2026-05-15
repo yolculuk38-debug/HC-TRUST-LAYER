@@ -1,0 +1,30 @@
+name: Humanity Chain Archive Automation
+
+on:
+  push:
+    paths:
+      - 'records/**'
+      - 'src/**'
+      - 'docs/**'
+
+jobs:
+  archive-system:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Normalize Records
+        run: python src/normalize_records.py
+
+      - name: Verify Hashes
+        run: python src/verify_hashes.py
+
+      - name: Generate Archive Index
+        run: python src/generate_index.py
