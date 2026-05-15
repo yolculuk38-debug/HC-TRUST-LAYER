@@ -3,7 +3,7 @@
   "id": "HC-EXAMPLE-2026-0001",
   "created_at": "2026-05-14T10:35:00Z",
   "record_type": "ai_witness",
-  "witness_type": "example",
+  "witness_type": "ai",
   "author": "Fatih",
   "content_hash": "52ad261bfce585c40295c8f27d119a86af29191af583674e036a3ac006e87052",
   "archive_ref": "pending_archive",
