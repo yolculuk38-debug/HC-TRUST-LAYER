@@ -73,3 +73,5 @@ jobs:
 
           print("All record JSON files passed schema validation.")
           PY
+          - name: Verify content hashes
+            run: python src/verify_hashes.py records
