@@ -1,9 +1,8 @@
 # HC://
-## Humanity Chain
 
-> Open Verification & Provenance Protocol
+# Humanity Chain
 
-> “Trust the record, not the narrative.”
+> The Visible Architecture of Digital Trust
 
 ---
 
