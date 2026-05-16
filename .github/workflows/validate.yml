@@ -14,6 +14,9 @@ on:
       - 'src/**'
       - '.github/workflows/validate.yml'
 
+permissions:
+  contents: read
+
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -25,54 +28,36 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.x"
+          python-version: '3.x'
 
       - name: Install dependencies
-        run: pip install jsonschema
+        run: |
+          python -m pip install --upgrade pip
+          pip install jsonschema
 
       - name: Validate records against schema
         run: |
           python - <<'PY'
           import json
-          import pathlib
-          import sys
-          from jsonschema import validate, ValidationError, SchemaError
+          import os
+          from jsonschema import validate
 
-          schema_path = pathlib.Path("schema/record-v1.schema.json")
-          records_dir = pathlib.Path("records")
+          schema_path = "schema/record-v1.schema.json"
+          records_dir = "records"
 
-          if not schema_path.exists():
-              print(f"FAIL: Schema not found: {schema_path}")
-              sys.exit(1)
+          with open(schema_path, "r", encoding="utf-8") as f:
+              schema = json.load(f)
 
-          schema = json.loads(schema_path.read_text(encoding="utf-8"))
-          json_files = sorted(records_dir.rglob("*.json"))
+          for root, _, files in os.walk(records_dir):
+              for file in files:
+                  if file.endswith(".json"):
+                      path = os.path.join(root, file)
+                      with open(path, "r", encoding="utf-8") as f:
+                          record = json.load(f)
+                      validate(instance=record, schema=schema)
+                      print(f"PASS: {path}")
 
-          if not json_files:
-              print("No JSON record files found.")
-              sys.exit(0)
-
-          failed = False
-
-          for file_path in json_files:
-              try:
-                  data = json.loads(file_path.read_text(encoding="utf-8"))
-                  validate(instance=data, schema=schema)
-                  print(f"PASS: {file_path}")
-              except json.JSONDecodeError as e:
-                  failed = True
-                  print(f"FAIL JSON: {file_path} -> {e}")
-              except ValidationError as e:
-                  failed = True
-                  print(f"FAIL SCHEMA: {file_path} -> {e.message}")
-              except SchemaError as e:
-                  failed = True
-                  print(f"FAIL SCHEMA FILE: {schema_path} -> {e.message}")
-
-          if failed:
-              sys.exit(1)
-
-          print("All record JSON files passed schema validation.")
+          print("All records validated successfully.")
           PY
 
       - name: Verify content hashes
