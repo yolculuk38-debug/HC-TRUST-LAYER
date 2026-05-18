@@ -1,0 +1,94 @@
+import argparse
+import sys
+from pathlib import Path
+
+from .hashing import calculate_sha256
+from .qr_tools import generate_qr, find_verified_records
+from .verification import verify_record_hash, find_record_files
+
+
+def cmd_verify(args):
+    record_files = find_record_files(args.path or "records")
+    if not record_files:
+        print(f"No JSON record files found in: {args.path or 'records'}")
+        return 0
+    failed = 0
+    passed = 0
+    print(f"Verifying SHA-256 hashes for {len(record_files)} record(s)...\n")
+    for record_path in record_files:
+        ok, message = verify_record_hash(record_path)
+        if ok:
+            passed += 1
+            print(f"✅ {message}")
+        else:
+            failed += 1
+            print(f"❌ {message}")
+    print(f"\nResults: {passed} passed, {failed} failed")
+    return 1 if failed else 0
+
+
+def cmd_hash(args):
+    file_path = args.file_path
+    if not Path(file_path).exists():
+        print(f"Hata: Dosya bulunamadı: {file_path}")
+        return 1
+    print(f"SHA256: {calculate_sha256(file_path)}")
+    return 0
+
+
+def cmd_qr(args):
+    if args.batch:
+        verified_records = find_verified_records("records")
+        if verified_records is None:
+            return 1
+        if not verified_records:
+            print("ℹ️ Verified kayıt bulunamadı, QR üretimi atlandı.")
+            return 0
+        print(f"{len(verified_records)} verified kayıt için QR üretiliyor...")
+        for record_id, content_hash, archive_ref, source_path in verified_records:
+            print(f"- Kaynak: {source_path}")
+            out, url = generate_qr(record_id, content_hash, archive_ref)
+            print(f"✅ Secure QR oluşturuldu: {out}")
+            print(f"🔗 URL: {url}")
+        print("✅ Batch QR üretimi tamamlandı.")
+        return 0
+
+    out, url = generate_qr(args.record_id, args.content_hash, args.archive_ref)
+    print(f"✅ Secure QR oluşturuldu: {out}")
+    print(f"🔗 URL: {url}")
+    return 0
+
+
+def build_parser():
+    parser = argparse.ArgumentParser(prog="hc-trust", description="HC Trust Layer CLI")
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    p_verify = sub.add_parser("verify", help="Verify record content hashes")
+    p_verify.add_argument("path", nargs="?", default="records")
+    p_verify.set_defaults(func=cmd_verify)
+
+    p_hash = sub.add_parser("hash", help="Calculate file SHA256")
+    p_hash.add_argument("file_path")
+    p_hash.set_defaults(func=cmd_hash)
+
+    p_qr = sub.add_parser("qr", help="Generate verification QR")
+    p_qr.add_argument("record_id", nargs="?")
+    p_qr.add_argument("content_hash", nargs="?")
+    p_qr.add_argument("archive_ref", nargs="?")
+    p_qr.add_argument("--batch", action="store_true")
+    p_qr.set_defaults(func=cmd_qr)
+    return parser
+
+
+def main(argv=None):
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    if args.command == "qr" and not args.batch and not (args.record_id and args.content_hash and args.archive_ref):
+        parser.error("qr için <record_id> <content_hash> <archive_ref> veya --batch gerekli")
+    if args.command == "qr" and args.batch and (args.record_id or args.content_hash or args.archive_ref):
+        parser.error("--batch positional parametrelerle birlikte kullanılamaz.")
+    return args.func(args)
+
+
+if __name__ == "__main__":
+    sys.exit(main())
