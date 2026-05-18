@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "insanlik-zinciri"
+version = "0.1.0"
+description = "Verification and archive tooling for Insanlik Zinciri records"
+requires-python = ">=3.10"
+dependencies = [
+  "jsonschema==4.17.3",
+  "qrcode[pil]==7.4.2",
+]
+
+[tool.setuptools]
+packages = ["hc_trust"]
+py-modules = []
