@@ -6,13 +6,17 @@ on:
       - 'records/**'
       - 'schema/**'
       - 'src/**'
+      - 'hc_trust/**'
       - '.github/workflows/validate.yml'
+      - 'requirements.txt'
   pull_request:
     paths:
       - 'records/**'
       - 'schema/**'
       - 'src/**'
+      - 'hc_trust/**'
       - '.github/workflows/validate.yml'
+      - 'requirements.txt'
 
 permissions:
   contents: read
@@ -33,7 +37,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install jsonschema
+          pip install -r requirements.txt
 
       - name: Validate records against schema
         run: |

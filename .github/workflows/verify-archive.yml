@@ -30,6 +30,7 @@ jobs:
             "records"
             "schema"
             "src"
+            "hc_trust"
           )
 
           for path in "${required_paths[@]}"

@@ -5,8 +5,11 @@ on:
     paths:
       - 'records/**'
       - 'src/**'
+      - 'hc_trust/**'
       - 'docs/**'
       - 'qr/**'
+      - '.github/workflows/archive.yml'
+      - 'requirements.txt'
 
 permissions:
   contents: read
@@ -24,10 +27,10 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install QR Dependencies
+      - name: Install dependencies
         run: |
-          pip install qrcode[pil]
-          pip install pillow
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
       - name: Normalize Records
         run: python src/normalize_records.py
