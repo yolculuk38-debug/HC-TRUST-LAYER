@@ -67,3 +67,32 @@ Respectful, evidence-based, and transparent collaboration is required.
 Humanity Chain is an experimental research protocol.
 
 Structures, workflows, and standards may evolve over time.
+
+---
+
+## Pull Request Merge Policy (Security-First)
+
+Humanity Chain uses a **security-first default** for pull requests:
+
+- PRs are treated as **manual-review required** unless they are clearly documentation-only.
+- PRs that touch code, schemas, automation/workflows, source, or tooling paths are labeled `manual-review` and must be reviewed by a maintainer before merge.
+
+### Docs-Only Auto-Merge
+
+Documentation-only pull requests are eligible for automatic merge:
+
+- Eligible PRs are labeled `docs-auto`.
+- Auto-merge is enabled only after GitHub required checks pass.
+- Merge method is squash merge.
+
+### Manual Review Triggers
+
+Any PR that changes sensitive or executable surfaces is labeled `manual-review`, including but not limited to:
+
+- `src/`
+- `schema/`
+- `.github/workflows/`
+- `tools/`
+- dependency/runtime files (`pyproject.toml`, `requirements.txt`, `VERSION`)
+
+If there is uncertainty, the policy defaults to `manual-review`.

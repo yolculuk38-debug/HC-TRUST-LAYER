@@ -1,0 +1,136 @@
+name: Docs Auto Merge Policy
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  classify-and-label:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure required labels exist
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const labels = [
+              {
+                name: 'docs-auto',
+                color: '0E8A16',
+                description: 'Documentation-only changes; safe for auto-merge after checks pass.'
+              },
+              {
+                name: 'manual-review',
+                color: 'B60205',
+                description: 'Touches code/schema/workflows/src or other sensitive areas; manual review required.'
+              }
+            ];
+
+            for (const label of labels) {
+              try {
+                await github.rest.issues.getLabel({ owner, repo, name: label.name });
+              } catch (error) {
+                if (error.status === 404) {
+                  await github.rest.issues.createLabel({ owner, repo, ...label });
+                } else {
+                  throw error;
+                }
+              }
+            }
+
+      - name: Classify PR, apply labels, and set auto-merge policy
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const prNumber = context.payload.pull_request.number;
+            const prNodeId = context.payload.pull_request.node_id;
+
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              owner,
+              repo,
+              pull_number: prNumber,
+              per_page: 100
+            });
+
+            const docsOnlyPatterns = [
+              /^docs\//,
+              /^README\.md$/,
+              /^CONTRIBUTING\.md$/,
+              /^CHANGELOG\.md$/,
+              /^LICENSE$/,
+              /^records\/.*\.md$/,
+              /^examples\/.*\.md$/,
+              /^timeline\/.*\.md$/,
+              /^halkalar\/.*\.md$/,
+              /^SECURITY\.md$/,
+              /^ROADMAP\.md$/,
+              /^GENESIS_BLOCK\.md$/
+            ];
+
+            const alwaysManualPatterns = [
+              /^src\//,
+              /^schema\//,
+              /^\.github\/workflows\//,
+              /^tools\//,
+              /^pyproject\.toml$/,
+              /^requirements\.txt$/,
+              /^test_.*\.py$/,
+              /^VERSION$/
+            ];
+
+            const changedFiles = files.map(file => file.filename);
+            const touchesManualArea = changedFiles.some(path => alwaysManualPatterns.some(pattern => pattern.test(path)));
+            const allInDocsScope = changedFiles.length > 0 && changedFiles.every(path => docsOnlyPatterns.some(pattern => pattern.test(path)));
+            const docsOnly = allInDocsScope && !touchesManualArea;
+
+            const toAdd = docsOnly ? ['docs-auto'] : ['manual-review'];
+            const toRemove = docsOnly ? ['manual-review'] : ['docs-auto'];
+
+            await github.rest.issues.addLabels({
+              owner,
+              repo,
+              issue_number: prNumber,
+              labels: toAdd
+            });
+
+            for (const label of toRemove) {
+              try {
+                await github.rest.issues.removeLabel({ owner, repo, issue_number: prNumber, name: label });
+              } catch (error) {
+                if (error.status !== 404) {
+                  throw error;
+                }
+              }
+            }
+
+            if (!docsOnly) {
+              core.info('Manual review required: auto-merge not enabled.');
+              return;
+            }
+
+            try {
+              await github.graphql(
+                `mutation($pullRequestId: ID!) {
+                  enablePullRequestAutoMerge(input: {pullRequestId: $pullRequestId, mergeMethod: SQUASH}) {
+                    pullRequest {
+                      number
+                      autoMergeRequest {
+                        enabledAt
+                      }
+                    }
+                  }
+                }`,
+                { pullRequestId: prNodeId }
+              );
+              core.info('Docs-only PR detected: auto-merge enabled (will merge after required checks pass).');
+            } catch (error) {
+              core.warning(`Could not enable auto-merge automatically: ${error.message}`);
+            }
