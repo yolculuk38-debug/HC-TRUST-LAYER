@@ -30,8 +30,19 @@ Create a JSON file in `records/pending/` with minimal information:
 Automatically fill missing required fields:
 
 ```bash
-python src/normalize_records.py
+python src/normalize_records.py --dry-run
 ```
+
+Apply the proposed changes explicitly:
+
+```bash
+python src/normalize_records.py --write
+```
+
+Safety behavior:
+- `--dry-run` prints unified diffs and never writes files
+- without `--write`, changes are only reported and skipped
+- records in `records/archive/` and `records/verified/` are never silently overwritten
 
 This will:
 - Derive `record_id` from filename if available
@@ -150,7 +161,7 @@ This creates `qr/HC-CHATGPT-2026-0001.png`
 echo '{ "title": "My Record", "content": "..." }' > records/pending/HC-2026-0001.json
 
 # 2. Normalize
-python src/normalize_records.py
+python src/normalize_records.py --dry-run
 
 # 3. Validate
 python src/validator.py
@@ -266,7 +277,7 @@ Must be valid SHA256 (64 hex characters)
     └─ 'author' is a required property
 ```
 
-**Solution:** Run `python src/normalize_records.py` to auto-fill
+**Solution:** Run `python src/normalize_records.py --dry-run` to auto-fill
 
 **Problem:** Invalid enum value
 ```
@@ -324,7 +335,7 @@ Must be valid SHA256 (64 hex characters)
 
 ```bash
 # Normalize all pending records
-python src/normalize_records.py
+python src/normalize_records.py --dry-run
 
 # Validate all records
 python src/validator.py
@@ -342,7 +353,9 @@ python src/qr.py --record-id <id> --url <url> [--output <path>]
 pytest tests/ -v
 
 # Run validation workflow (CI)
-python src/normalize_records.py && python src/validator.py
+python src/normalize_records.py --dry-run --dry-run
+python src/normalize_records.py --dry-run --write
+python src/validator.py
 ```
 
 ## Troubleshooting
@@ -353,7 +366,7 @@ python src/normalize_records.py && python src/validator.py
 
 **Solution:**
 ```bash
-python src/normalize_records.py
+python src/normalize_records.py --dry-run
 git add records/pending/
 git commit -m 'chore: normalize pending records'
 git push
@@ -398,7 +411,7 @@ done
 ```bash
 # .git/hooks/pre-commit
 #!/bin/bash
-python src/normalize_records.py
+python src/normalize_records.py --dry-run
 if [ $? -ne 0 ]; then
   exit 1
 fi
