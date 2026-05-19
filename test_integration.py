@@ -8,6 +8,7 @@ import json
 import sys
 import hashlib
 from pathlib import Path
+from jsonschema import validate, ValidationError
 
 # Test Results
 test_results = []
@@ -21,6 +22,16 @@ def test_result(name, status, message=""):
     }
     test_results.append(result)
     print(f"{result['status']} | {name}" + (f" - {message}" if message else ""))
+
+
+def collect_record_paths(base_dirs):
+    """Collect files under record directories for validation."""
+    paths = []
+    for base_dir in base_dirs:
+        for path in sorted(Path(base_dir).rglob("*")):
+            if path.is_file():
+                paths.append(path)
+    return paths
 
 # ==============================================================================
 # TEST 1: Schema Validation
@@ -57,55 +68,44 @@ except Exception as e:
     test_result("Schema Load", False, str(e))
 
 # ==============================================================================
-# TEST 2: Example Records Exist
+# TEST 2: Repository Record Discovery
 # ==============================================================================
 
 print("\n" + "="*60)
-print("TEST 2: Example Records Exist")
+print("TEST 2: Repository Record Discovery")
 print("="*60 + "\n")
 
-examples = [
-    "examples/ai_witness_example.json",
-    "examples/human_witness_example.json",
-    "examples/multi_model_example.json"
-]
+record_directories = ["examples", "records", "witness", "halkalar"]
+record_paths = collect_record_paths(record_directories)
+json_record_paths = [path for path in record_paths if path.suffix.lower() == ".json"]
 
-for example in examples:
-    try:
-        with open(example, 'r') as f:
-            record = json.load(f)
-        test_result(f"Load {Path(example).name}", True)
-    except Exception as e:
-        test_result(f"Load {Path(example).name}", False, str(e))
+for path in record_paths:
+    if path.suffix.lower() == ".json":
+        test_result(f"DISCOVER {path}", True, "JSON candidate")
+    else:
+        test_result(f"SKIP {path}", True, "Non-JSON file")
 
 # ==============================================================================
-# TEST 3: Example Records JSON Validity
+# TEST 3: Repository Records JSON Schema Validation
 # ==============================================================================
 
 print("\n" + "="*60)
-print("TEST 3: Example Records JSON Validity")
+print("TEST 3: Repository Records JSON Schema Validation")
 print("="*60 + "\n")
 
-expected_fields = ["record_id", "created_at", "title", "record_type", 
-                   "witness_type", "author", "content_hash", "archive_ref", 
-                   "verification_status"]
-
-for example in examples:
+for path in record_paths:
+    if path.suffix.lower() != ".json":
+        continue
     try:
-        with open(example, 'r') as f:
+        with open(path, 'r') as f:
             record = json.load(f)
-        
-        # Check required fields in record
-        has_all_fields = all(field in record for field in expected_fields)
-        if has_all_fields:
-            test_result(f"Record Fields {Path(example).name}", True, 
-                       f"record_id={record['record_id']}")
-        else:
-            missing = [f for f in expected_fields if f not in record]
-            test_result(f"Record Fields {Path(example).name}", False, 
-                       f"Missing: {missing}")
+
+        validate(instance=record, schema=schema)
+        test_result(f"SCHEMA {path}", True, f"record_id={record.get('record_id', 'n/a')}")
+    except ValidationError as e:
+        test_result(f"SCHEMA {path}", False, e.message)
     except Exception as e:
-        test_result(f"Record Fields {Path(example).name}", False, str(e))
+        test_result(f"SCHEMA {path}", False, str(e))
 
 # ==============================================================================
 # TEST 4: Hash Tool Simulation
@@ -116,8 +116,8 @@ print("TEST 4: Hash Tool Simulation")
 print("="*60 + "\n")
 
 try:
-    # Test SHA256 calculation on example file
-    test_file = examples[0]
+# Test SHA256 calculation on the first discovered JSON file
+    test_file = str(json_record_paths[0])
     with open(test_file, 'rb') as f:
         file_hash = hashlib.sha256(f.read()).hexdigest()
     
@@ -136,9 +136,9 @@ print("\n" + "="*60)
 print("TEST 5: Content Hash Format Validation")
 print("="*60 + "\n")
 
-for example in examples:
+for path in json_record_paths:
     try:
-        with open(example, 'r') as f:
+        with open(path, 'r') as f:
             record = json.load(f)
         
         content_hash = record.get('content_hash', '')
@@ -164,9 +164,9 @@ print("="*60 + "\n")
 
 valid_statuses = {"draft", "reviewed", "verified", "archived"}
 
-for example in examples:
+for path in json_record_paths:
     try:
-        with open(example, 'r') as f:
+        with open(path, 'r') as f:
             record = json.load(f)
         
         status = record.get('verification_status', '')
@@ -190,9 +190,9 @@ print("="*60 + "\n")
 valid_record_types = {"ai_witness", "human_witness", "multi_model_record", "protocol_note"}
 valid_witness_types = {"ai", "human", "multi"}
 
-for example in examples:
+for path in json_record_paths:
     try:
-        with open(example, 'r') as f:
+        with open(path, 'r') as f:
             record = json.load(f)
         
         record_type = record.get('record_type', '')
