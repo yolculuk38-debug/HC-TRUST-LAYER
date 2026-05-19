@@ -32,6 +32,8 @@ Results: 2 passed, 0 failed
 
 Detailed walkthrough: [`docs/demo-flow.md`](docs/demo-flow.md).
 
+Verify a Record: [`docs/qr-verification.md`](docs/qr-verification.md).
+
 HC:// verifies integrity and provenance signals, not objective truth.
 
 ## What Is HC:// TRUST LAYER
