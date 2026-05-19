@@ -1,0 +1,7 @@
+{
+  "record_id": "HC-DEMO-2026-0001",
+  "source": "demo",
+  "title": "Visible verification demo record",
+  "content": "This is a text-only record used for hash, QR, and verification flow documentation.",
+  "created_at": "2026-01-01T00:00:00Z"
+}

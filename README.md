@@ -4,6 +4,32 @@
 
 > The visible architecture of digital trust.
 
+## Visible Verification Flow (v0.1)
+
+For first-time visitors, the shortest path is:
+
+`record → hash → QR → verify → trust explanation`
+
+Run this text-only demo flow:
+
+```bash
+PYTHONPATH=src python src/hash.py examples/demo_record.json
+PYTHONPATH=src python src/qr.py HC-DEMO-2026-0001 9c169042065246d3b963163cfe8ffe876ffce57fa8759e402281d036f0f9cffc https://github.com/owner/repo/blob/main/examples/demo_record.json
+PYTHONPATH=src python -m hc_trust.cli verify records
+```
+
+Example output snippets:
+
+```text
+SHA256: 9c169042065246d3b963163cfe8ffe876ffce57fa8759e402281d036f0f9cffc
+✅ Secure QR oluşturuldu: qr/HC-DEMO-2026-0001.png
+Results: 2 passed, 0 failed
+```
+
+Detailed walkthrough: [`docs/demo-flow.md`](docs/demo-flow.md).
+
+HC:// verifies integrity and provenance signals, not objective truth.
+
 ## What Is HC:// TRUST LAYER
 
 HC:// TRUST LAYER is an experimental verification and provenance infrastructure for digital content in the AI era.
@@ -41,16 +67,15 @@ Sample verification values:
 
 ```bash
 pip install -r requirements.txt
-python src/validator.py examples
-python src/hash.py examples/ai_witness_example.json
-# Demo: text-only QR verification path example (do not commit generated image files)
-python src/qr.py HC-CHATGPT-2026-0001 --output qr/HC-CHATGPT-2026-0001-demo.png
-# Example output path only: qr/HC-CHATGPT-2026-0001-demo.png
+PYTHONPATH=src python src/hash.py examples/demo_record.json
+PYTHONPATH=src python src/qr.py HC-DEMO-2026-0001 9c169042065246d3b963163cfe8ffe876ffce57fa8759e402281d036f0f9cffc https://github.com/owner/repo/blob/main/examples/demo_record.json
+PYTHONPATH=src python -m hc_trust.cli verify records
 ```
 
 ## Documentation And Examples
 
 - docs: [`docs/`](docs/)
+- Demo flow: [`docs/demo-flow.md`](docs/demo-flow.md)
 - QR verification: [`docs/qr-verification.md`](docs/qr-verification.md)
 - Witness layer: [`docs/witness-layer.md`](docs/witness-layer.md)
 - Glossary and naming hierarchy: [`docs/glossary.md`](docs/glossary.md)
