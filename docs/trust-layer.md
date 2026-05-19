@@ -14,3 +14,7 @@ This roadmap outlines upcoming Trust Layer components for Humanity Chain.
 - `multi_witness_consistency`
 - `archive_integrity`
 - `trust_score`
+
+## Related Documentation
+
+- [Record format (`record-v1`)](record-format.md)
