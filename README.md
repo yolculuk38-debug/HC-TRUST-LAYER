@@ -1,5 +1,7 @@
 # HC:// TRUST LAYER
 
+[![Humanity Chain Validation](../../actions/workflows/validate.yml/badge.svg)](../../actions/workflows/validate.yml) [![CodeQL](../../actions/workflows/codeql.yml/badge.svg)](../../actions/workflows/codeql.yml)
+
 > The Visible Architecture of Digital Trust  
 > Trust the record, not the narrative.
 
