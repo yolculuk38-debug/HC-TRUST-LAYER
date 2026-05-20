@@ -1,0 +1,47 @@
+{
+  "registry_version": "2026-05-20",
+  "pool": "ai_reviewers",
+  "reviewers": [
+    {
+      "reviewer_id": "ai-chatgpt-001",
+      "display_name": "ChatGPT",
+      "reviewer_type": "ai_reviewer",
+      "specialization": ["cross-record consistency", "provenance reasoning", "structured verification support"],
+      "status": "experimental",
+      "independence_level": "medium",
+      "public_key_optional": null,
+      "notes": "Experimental reviewer profile for multi-perspective trust analysis."
+    },
+    {
+      "reviewer_id": "ai-gemini-001",
+      "display_name": "Gemini",
+      "reviewer_type": "ai_reviewer",
+      "specialization": ["multi-source comparison", "timeline anomaly detection"],
+      "status": "experimental",
+      "independence_level": "medium",
+      "public_key_optional": null,
+      "notes": "Included to support model-diverse review perspectives."
+    },
+    {
+      "reviewer_id": "ai-claude-001",
+      "display_name": "Claude",
+      "reviewer_type": "ai_reviewer",
+      "specialization": ["policy-sensitive review", "long-context evidence synthesis"],
+      "status": "experimental",
+      "independence_level": "medium",
+      "public_key_optional": null,
+      "notes": "Included for independent reasoning diversity in review outcomes."
+    },
+    {
+      "reviewer_id": "ai-grok-001",
+      "display_name": "Grok",
+      "reviewer_type": "ai_reviewer",
+      "specialization": ["real-time context interpretation", "narrative discrepancy surfacing"],
+      "status": "experimental",
+      "independence_level": "medium",
+      "public_key_optional": null,
+      "notes": "Included as an additional AI perspective in controlled reviewer pools."
+    }
+  ],
+  "registry_note": "Reviewer registry entries are experimental and do not imply endorsement or autonomous governance."
+}

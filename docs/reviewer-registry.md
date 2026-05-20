@@ -141,3 +141,9 @@ This document is a documentation and governance-layer definition only.
 - No workflow behavior is changed here.
 - No validation logic is changed here.
 - No schema structure is changed here.
+
+
+## Related Documentation
+
+- Reviewer selection principles: [Reviewer Selection Principles](./reviewer-selection.md)
+- Trust score foundation: [HC:// Experimental Trust Score Foundation](./trust-score.md)
