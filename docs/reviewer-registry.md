@@ -147,3 +147,5 @@ This document is a documentation and governance-layer definition only.
 
 - Reviewer selection principles: [Reviewer Selection Principles](./reviewer-selection.md)
 - Trust score foundation: [HC:// Experimental Trust Score Foundation](./trust-score.md)
+- Append-only review chain model: [Append-Only Review Chain Model](./append-only-review-chain.md)
+

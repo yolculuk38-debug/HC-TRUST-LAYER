@@ -63,4 +63,5 @@ They are explicitly not implemented production behavior in the current HC:// TRU
 - Experimental trust score foundation: [HC:// Experimental Trust Score Foundation](./trust-score.md)
 - Related governance process: [AI-Assisted Review and Controlled Automation](./ai-assisted-review.md)
 - Reviewer registry and independent review pool: [Reviewer Registry and Independent Review Pool](./reviewer-registry.md)
+- Append-only review chain model: [Append-Only Review Chain Model](./append-only-review-chain.md)
 

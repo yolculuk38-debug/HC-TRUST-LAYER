@@ -42,3 +42,8 @@ GitHub currently acts as the public archive mirror layer for HC:// records.
 `records/verified/HC-TEST-2026-0001.md`
 
 Verification badges: [`docs/verification-badges.md`](verification-badges.md).
+
+## Related Documentation
+
+- Append-only review chain model: [Append-Only Review Chain Model](./append-only-review-chain.md)
+

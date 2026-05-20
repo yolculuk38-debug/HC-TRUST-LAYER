@@ -113,3 +113,5 @@ This document defines conceptual foundations only.
 - AI-assisted review and controlled automation: [AI-Assisted Review and Controlled Automation](./ai-assisted-review.md)
 - Reviewer registry and independent review pool: [Reviewer Registry and Independent Review Pool](./reviewer-registry.md)
 - Reviewer selection principles: [Reviewer Selection Principles](./reviewer-selection.md)
+- Append-only review chain model: [Append-Only Review Chain Model](./append-only-review-chain.md)
+
