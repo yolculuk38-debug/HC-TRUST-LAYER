@@ -32,7 +32,7 @@ Results: 2 passed, 0 failed
 
 Detailed walkthrough: [`docs/demo-flow.md`](docs/demo-flow.md).
 
-Verify a Record: [`docs/qr-verification.md`](docs/qr-verification.md).
+Verify a Record: [`docs/verify.md`](docs/verify.md).
 
 HC:// verifies integrity and provenance signals, not objective truth.
 
@@ -82,7 +82,7 @@ PYTHONPATH=src python -m hc_trust.cli verify records
 
 - docs: [`docs/`](docs/)
 - Demo flow: [`docs/demo-flow.md`](docs/demo-flow.md)
-- QR verification: [`docs/qr-verification.md`](docs/qr-verification.md)
+- Verify a Record: [`docs/verify.md`](docs/verify.md)
 - Witness layer: [`docs/witness-layer.md`](docs/witness-layer.md)
 - Glossary and naming hierarchy: [`docs/glossary.md`](docs/glossary.md)
 - Trust scoring: [`docs/trust-scoring.md`](docs/trust-scoring.md)
