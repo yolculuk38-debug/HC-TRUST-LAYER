@@ -1,0 +1,11 @@
+{
+  "api_version": "hc-verify-api-v1-experimental",
+  "format_version": "hc-trust-result-v1-experimental",
+  "verification_id": "VR-HC-TEST-2026-0100",
+  "record_id": "HC-TEST-2026-0100",
+  "trust_score": 100,
+  "trust_level": "STRONG_VERIFIED",
+  "indicators": [],
+  "verified_at": "2026-05-20T00:00:00+00:00",
+  "experimental": true
+}
