@@ -1,0 +1,17 @@
+{
+  "registry_version": "2026-05-20",
+  "pool": "institutional_reviewers",
+  "reviewers": [
+    {
+      "reviewer_id": "inst-lab-001",
+      "display_name": "Independent Verification Lab (Example)",
+      "reviewer_type": "institutional_reviewer",
+      "specialization": ["methodology audit", "evidence process assurance"],
+      "status": "experimental",
+      "independence_level": "high",
+      "public_key_optional": null,
+      "notes": "Placeholder institutional profile demonstrating structured registry composition."
+    }
+  ],
+  "registry_note": "Reviewer registry entries are experimental and do not imply endorsement or autonomous governance."
+}

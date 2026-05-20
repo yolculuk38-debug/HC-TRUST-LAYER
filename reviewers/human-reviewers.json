@@ -1,0 +1,17 @@
+{
+  "registry_version": "2026-05-20",
+  "pool": "human_reviewers",
+  "reviewers": [
+    {
+      "reviewer_id": "hr-forensic-001",
+      "display_name": "Human forensic reviewer",
+      "reviewer_type": "human_expert",
+      "specialization": ["digital forensics", "chain-of-custody assessment", "evidence integrity review"],
+      "status": "experimental",
+      "independence_level": "high",
+      "public_key_optional": null,
+      "notes": "Human-led review profile for contextual judgment and dispute-sensitive interpretation."
+    }
+  ],
+  "registry_note": "Reviewer registry entries are experimental and do not imply endorsement or autonomous governance."
+}
