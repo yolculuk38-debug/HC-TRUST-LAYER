@@ -1,0 +1,46 @@
+name: PR Risk Labeler
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Classify PR risk and labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          gh label create auto-merge --color 0E8A16 --description "Safe automatic merge candidate" --force || true
+          gh label create manual-review --color B60205 --description "Requires human review" --force || true
+
+          git diff --name-only "$BASE_SHA" "$HEAD_SHA" > changed_files.txt
+          cat changed_files.txt
+
+          if grep -Eq '^(\.github/workflows/|deploy/|keys/|secrets/)' changed_files.txt; then
+            gh pr edit "$PR_URL" --add-label manual-review --remove-label auto-merge || true
+            echo "High risk path detected. manual-review applied."
+            exit 0
+          fi
+
+          if grep -Eqi '(token|secret|password|private_key|permission|workflow)' changed_files.txt; then
+            gh pr edit "$PR_URL" --add-label manual-review --remove-label auto-merge || true
+            echo "High risk keyword detected. manual-review applied."
+            exit 0
+          fi
+
+          gh pr edit "$PR_URL" --add-label auto-merge --remove-label manual-review || true
+          echo "Low risk PR. auto-merge applied."
