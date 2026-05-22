@@ -1,0 +1,35 @@
+name: Automation Gate
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require PR title and body
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          test -n "$PR_TITLE"
+          test -n "$PR_BODY"
+
+      - name: Block generated binary files
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+          git diff --name-only origin/${{ github.base_ref }}...HEAD > changed_files.txt
+          if grep -E '\.(png|jpg|jpeg|gif|webp|zip|exe|dll|so|dylib)$' changed_files.txt; then
+            echo "Generated binary files are not allowed in automation PRs."
+            exit 1
+          fi
+
+      - name: Python syntax check
+        run: python -m compileall src
