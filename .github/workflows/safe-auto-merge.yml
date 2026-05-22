@@ -1,0 +1,39 @@
+name: Safe Auto Merge
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled, ready_for_review]
+  workflow_run:
+    workflows: ["Automation Gate"]
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  enable:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Enable low-risk auto merge
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+          IS_DRAFT: ${{ github.event.pull_request.draft }}
+        run: |
+          echo "Labels: $LABELS"
+          if [ "$IS_DRAFT" = "true" ]; then
+            echo "Draft PR: auto merge disabled."
+            exit 0
+          fi
+          if echo "$LABELS" | grep -q "manual-review"; then
+            echo "manual-review label present: auto merge disabled."
+            exit 0
+          fi
+          if echo "$LABELS" | grep -q "auto-merge"; then
+            gh pr merge "$PR_URL" --auto --squash
+          else
+            echo "auto-merge label missing: no action."
+          fi
