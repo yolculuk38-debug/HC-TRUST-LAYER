@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Require PR title and body
         env:
@@ -24,12 +26,13 @@ jobs:
 
       - name: Block generated binary files
         run: |
-          git fetch origin ${{ github.base_ref }} --depth=1
-          git diff --name-only origin/${{ github.base_ref }}...HEAD > changed_files.txt
-          if grep -E '\.(png|jpg|jpeg|gif|webp|zip|exe|dll|so|dylib)$' changed_files.txt; then
+          git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" > changed_files.txt
+          cat changed_files.txt
+          if grep -Eq '\.(png|jpg|jpeg|gif|webp|zip|exe|dll|so|dylib)$' changed_files.txt; then
             echo "Generated binary files are not allowed in automation PRs."
             exit 1
           fi
+          echo "No blocked file types detected."
 
       - name: Python syntax check
         run: python -m compileall src
