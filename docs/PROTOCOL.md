@@ -149,3 +149,6 @@ Experimental protocol draft.
 
 - Public badge/status model: [`docs/BADGE_STATUS_MODEL.md`](BADGE_STATUS_MODEL.md)
 
+
+
+Status: active

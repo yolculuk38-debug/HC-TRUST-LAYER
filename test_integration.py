@@ -24,6 +24,21 @@ def test_result(name, status, message=""):
     print(f"{result['status']} | {name}" + (f" - {message}" if message else ""))
 
 
+
+
+def should_skip_path(path: Path) -> bool:
+    """Skip generated indexes, explorer artifacts, manifests, and cache/export files."""
+    p = str(path).lower()
+    name = path.name.lower()
+    if "explorer" in p or name.endswith("index.json"):
+        return True
+    if "manifest" in name:
+        return True
+    if "cache" in p or "export" in p:
+        return True
+    return False
+
+
 def collect_record_paths(base_dirs):
     """Collect files under record directories for validation."""
     paths = []
@@ -75,11 +90,14 @@ print("\n" + "="*60)
 print("TEST 2: Repository Record Discovery")
 print("="*60 + "\n")
 
-record_directories = ["examples", "records", "witness", "halkalar"]
+record_directories = ["examples", "records", "records/verified", "records/archive", "witness", "halkalar"]
 record_paths = collect_record_paths(record_directories)
 json_record_paths = [path for path in record_paths if path.suffix.lower() == ".json"]
 
 for path in record_paths:
+    if should_skip_path(path):
+        test_result(f"SKIP {path}", True, "Skipped generated/artifact file")
+        continue
     if path.suffix.lower() == ".json":
         test_result(f"DISCOVER {path}", True, "JSON candidate")
     else:
@@ -94,7 +112,7 @@ print("TEST 3: Repository Records JSON Schema Validation")
 print("="*60 + "\n")
 
 for path in record_paths:
-    if path.suffix.lower() != ".json":
+    if should_skip_path(path) or path.suffix.lower() != ".json":
         continue
     try:
         with open(path, 'r') as f:

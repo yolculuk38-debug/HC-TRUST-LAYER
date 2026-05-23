@@ -28,3 +28,15 @@ This glossary defines the core naming structure and terms used in this repositor
 ## Evolution Note
 
 Terminology may evolve as HC:// and the TRUST LAYER protocol mature.
+
+## Stabilized Protocol Terms
+
+- **witness**: attestation actor that records a verification claim with context.
+- **validator**: policy actor that performs protocol checks and emits verification decisions.
+- **federation**: cooperating nodes that exchange verification events under compatible policy.
+- **provenance**: origin and transformation trail preserved for auditability.
+- **verification**: process of evaluating integrity, schema compliance, and policy constraints.
+- **audit**: append-only review trail used to inspect verification history.
+- **trust score**: derived signal that summarizes trust-related inputs; not objective truth.
+- **archive**: retained records and evidence kept addressable over time.
+- **dispute**: formal challenge against a record, witness output, or validator decision.

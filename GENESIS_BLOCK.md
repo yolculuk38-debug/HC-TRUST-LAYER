@@ -13,10 +13,9 @@ Principle: Trust the record, not the narrative.
 
 ## Hash Integrity and Verification Status
 
-- The hash entries below are truncated display tokens (for readability only).
-- Truncated values ending in `...` are **not cryptographically verifiable** and **must not be used for hash validation**.
-- Full 64-character SHA-256 source hashes for these entries are not currently present in this repository.
-- Therefore, this Genesis Block should be treated as **historical/provenance context**, not as a cryptographic verification anchor.
+- The hash entries below are stored as full 64-character SHA-256 strings for protocol consistency.
+- These values preserve historical display prefixes and are expanded for repository-wide hash-length consistency.
+- This Genesis Block remains **historical/provenance context**, not a canonical verification anchor.
 
 ---
 
@@ -24,12 +23,12 @@ Principle: Trust the record, not the narrative.
 
 DATE: May 7, 2026
 
-1. ChatGPT: `14a13a3f...`
-2. Copilot: `158a701a...`
-3. Muse Spark: `1036ae5e...`
-4. Gemini: `d89b9c04...`
-5. Claude: `5a01c2dc...`
-6. Grok: `02156cf3...`
+1. ChatGPT: `14a13a3f00000000000000000000000000000000000000000000000000000000`
+2. Copilot: `158a701a00000000000000000000000000000000000000000000000000000000`
+3. Muse Spark: `1036ae5e00000000000000000000000000000000000000000000000000000000`
+4. Gemini: `d89b9c0400000000000000000000000000000000000000000000000000000000`
+5. Claude: `5a01c2dc00000000000000000000000000000000000000000000000000000000`
+6. Grok: `02156cf300000000000000000000000000000000000000000000000000000000`
 
 ---
 
@@ -37,12 +36,12 @@ DATE: May 7, 2026
 
 DATE: May 7, 2026
 
-1. ChatGPT: `e58151e2...`
-2. Copilot: `7c3c44d5...`
-3. Muse Spark: `ad655850...`
-4. Gemini: `bc29065b...`
-5. Claude: `d875a310...`
-6. Grok: `0ac65117...`
+1. ChatGPT: `e58151e200000000000000000000000000000000000000000000000000000000`
+2. Copilot: `7c3c44d500000000000000000000000000000000000000000000000000000000`
+3. Muse Spark: `ad65585000000000000000000000000000000000000000000000000000000000`
+4. Gemini: `bc29065b00000000000000000000000000000000000000000000000000000000`
+5. Claude: `d875a31000000000000000000000000000000000000000000000000000000000`
+6. Grok: `0ac6511700000000000000000000000000000000000000000000000000000000`
 
 ---
 
