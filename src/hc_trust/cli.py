@@ -8,7 +8,9 @@ from .verification import verify_record_hash, find_record_files
 
 
 def cmd_verify(args):
-    record_files = find_record_files(args.path or "records")
+    record_files, skipped_files = find_record_files(args.path or "records")
+    for skipped in skipped_files:
+        print(f"⏭️ SKIP: {skipped}")
     if not record_files:
         print(f"No JSON record files found in: {args.path or 'records'}")
         return 0
