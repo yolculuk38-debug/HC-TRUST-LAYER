@@ -1,54 +1,37 @@
 # Humanity Chain Roadmap
 
-## Phase 1 — Foundation
+## Strategic Sequence
 
-- Establish archive structure
-- Create verification workflow
-- Implement schema validation
-- Build timeline layer
-- Add hash and QR reference systems
-- Publish governance and contribution rules
+1. **Stabilize Core**
+   - Harden core trust and verification primitives
+   - Lock deterministic behavior for record hashing and validation
+   - Reduce operational variance across environments
 
-Status: Active
+2. **Standardize Protocol**
+   - Finalize protocol-level schemas and interoperability contracts
+   - Align versioning and compatibility guarantees
+   - Publish clear conformance targets for implementers
 
----
+3. **Public Verification**
+   - Expand transparent, public-facing verification workflows
+   - Improve validator UX and audit trace readability
+   - Strengthen reproducible verification outputs
 
-## Phase 2 — Archive Expansion
+4. **Federation**
+   - Establish node-to-node trust exchange and sync pathways
+   - Formalize federation governance and resilience requirements
+   - Validate distributed consensus behavior in production-like scenarios
 
-- Add structured witness records
-- Improve metadata consistency
-- Expand timeline documentation
-- Standardize archive formatting
-- Create cross-reference system
+5. **Integrations**
+   - Provide SDK/API integration pathways for external platforms
+   - Support bridge adapters for media, identity, and automation pipelines
+   - Improve developer onboarding for third-party adopters
 
-Status: Planned
+6. **Ecosystem**
+   - Grow community participation, tooling, and institutional adoption
+   - Encourage interoperable extensions and reference implementations
+   - Sustain long-term governance, transparency, and shared stewardship
 
----
+## Direction
 
-## Phase 3 — Public Collaboration
-
-- Open community discussions
-- Introduce contribution reviews
-- Expand multilingual documentation
-- Improve transparency workflows
-- Build public archive navigation
-
-Status: Planned
-
----
-
-## Phase 4 — Experimental Systems
-
-- AI-assisted archive tools
-- Automated verification systems
-- Multi-source witness analysis
-- Structured evidence mapping
-- Advanced integrity validation
-
-Status: Research
-
----
-
-## Long-Term Direction
-
-Humanity Chain aims to explore transparent coordination between humans, archives, and AI-assisted systems through open documentation and verification structures.
+Humanity Chain advances in a deliberate order: stabilize the core, standardize protocol behavior, open public verification, scale federation, enable integrations, and then expand a durable ecosystem.
