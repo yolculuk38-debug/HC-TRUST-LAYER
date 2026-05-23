@@ -6,12 +6,17 @@ verification metadata without automatic trust.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Iterable
 from urllib.parse import urlparse
 
 
 TRUSTED_PROTOCOLS = {"https"}
 SUPPORTED_FEDERATION_VERSION = "HC-FEDERATION-V1"
+
+HEALTHY = "healthy"
+STALE = "stale"
+FAILED = "failed"
+RECOVERED = "recovered"
 
 
 class FederationStatus:
@@ -91,8 +96,90 @@ def validate_federation_packet(packet: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def sync_health(*, failed_attempts: int = 0, last_error: str = "") -> str:
+    """Return deterministic federation sync health."""
+
+    failures = max(0, int(failed_attempts))
+
+    if failures >= 3:
+        return FAILED
+
+    if failures > 0 or last_error.strip():
+        return STALE
+
+    return HEALTHY
+
+
+
+def build_sync_state(
+    *,
+    node_id: str,
+    manifest_hash: str,
+    verified_at: str,
+    trust_score: int = 0,
+    failed_attempts: int = 0,
+    last_error: str = "",
+) -> dict:
+    """Create normalized deterministic federation sync state."""
+
+    failures = max(0, int(failed_attempts))
+
+    return {
+        "node_id": node_id.strip(),
+        "manifest_hash": manifest_hash.strip(),
+        "verified_at": verified_at.strip(),
+        "trust_score": max(0, min(int(trust_score), 100)),
+        "failed_attempts": failures,
+        "last_error": last_error.strip(),
+        "sync_health": sync_health(
+            failed_attempts=failures,
+            last_error=last_error,
+        ),
+    }
+
+
+
+def recovered_sync_state(state: dict[str, Any]) -> dict[str, Any]:
+    """Normalize recovered federation state after successful sync."""
+
+    normalized = dict(state)
+    normalized["failed_attempts"] = 0
+    normalized["last_error"] = ""
+    normalized["sync_health"] = RECOVERED
+    return normalized
+
+
+
+def deterministic_sync_snapshot(states: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Return replay-safe deterministic federation snapshot ordering."""
+
+    normalized = [
+        build_sync_state(
+            node_id=str(state.get("node_id", "")),
+            manifest_hash=str(state.get("manifest_hash", "")),
+            verified_at=str(state.get("verified_at", "")),
+            trust_score=int(state.get("trust_score", 0)),
+            failed_attempts=int(state.get("failed_attempts", 0)),
+            last_error=str(state.get("last_error", "")),
+        )
+        for state in states
+    ]
+
+    return sorted(
+        normalized,
+        key=lambda item: (
+            item["node_id"],
+            item["manifest_hash"],
+        ),
+    )
+
+
 __all__ = [
     "SUPPORTED_FEDERATION_VERSION",
     "FederationStatus",
     "validate_federation_packet",
+    "sync_health",
+    "build_sync_state",
+    "recovered_sync_state",
+    "deterministic_sync_snapshot",
 ]
