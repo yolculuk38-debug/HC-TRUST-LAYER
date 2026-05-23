@@ -111,3 +111,9 @@ PYTHONPATH=src python -m hc_trust.cli verify records
 HC:// TRUST LAYER is the primary name for this repository.
 
 Humanity Chain may appear as historical/origin project context only.
+
+
+## Repository Roles
+
+- **HC-TRUST-LAYER** is the canonical repository for active protocol and implementation.
+- **Insanlik-Zinciri** is the historical/origin mirror for provenance continuity.

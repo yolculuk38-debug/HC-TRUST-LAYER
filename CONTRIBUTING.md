@@ -99,3 +99,34 @@ Any PR that changes sensitive or executable surfaces is labeled `manual-review`,
 If a PR includes both documentation changes and protected-path changes, `manual-review` takes precedence and the PR must not be auto-merged.
 
 If there is uncertainty, the policy defaults to `manual-review`.
+
+
+## Setup
+
+- Python 3.11+ recommended.
+- Install dependencies: `pip install -r requirements.txt`
+
+## Validation
+
+- Run schema and protocol validations before opening PRs.
+- Keep backward compatibility for existing record paths and links.
+
+## Testing
+
+- Run unit tests: `pytest -q`
+- Run integration checks touching `records/`, `witness/`, `verified/`, and `archived/` paths when protocol changes are made.
+
+## PR Workflow
+
+1. Create a feature branch.
+2. Commit focused changes with clear messages.
+3. Open a PR and request review.
+4. Ensure required checks pass before merge.
+
+## Branch Naming
+
+Use one of:
+- `chore/<topic>`
+- `docs/<topic>`
+- `feat/<topic>`
+- `fix/<topic>`

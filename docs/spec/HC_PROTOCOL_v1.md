@@ -10,7 +10,11 @@ HC Protocol v1 defines a protocol-first verification infrastructure for HC:// re
 4. **verified**: Verification threshold met per policy.
 5. **quarantined**: Temporarily isolated due to risk conditions.
 6. **superseded**: Replaced by a newer revision while retained for history.
-7. **archived**: Frozen for long-term retention.
+7. **challenged**: Marked for targeted re-check after a formal challenge.
+8. **disputed**: Conflicting evidence under adjudication.
+9. **revoked**: Explicitly invalidated with signed cause.
+10. **superseded**: Replaced by newer revision while retained for history.
+11. **archived**: Frozen for long-term retention.
 
 Lifecycle rules:
 - States are append-only in history; current state is a projection.

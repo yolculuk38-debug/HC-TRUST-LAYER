@@ -19,3 +19,6 @@ This document defines safe analysis and compatibility review principles.
 
 ## Core Principle
 All analysis activity must prioritize safety, legality, transparency, and defensive verification.
+
+
+Status: research
