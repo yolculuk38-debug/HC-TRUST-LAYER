@@ -2,7 +2,7 @@
 
 ## Purpose
 
-QR codes are used as quick access references inside the Humanity Chain protocol.
+QR codes are used as quick access references inside the HC-TRUST-LAYER protocol.
 
 A QR code alone should not be treated as proof of authenticity.
 
@@ -25,7 +25,7 @@ github.com/yolculuk38-debug/Insanlik-Zinciri
 
 Fake QR codes may redirect users to modified or unofficial records.
 
-Humanity Chain verification depends on:
+HC-TRUST-LAYER verification depends on:
 
 - trusted source
 - traceable record structure

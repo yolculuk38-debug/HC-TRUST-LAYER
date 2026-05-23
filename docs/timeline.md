@@ -1,4 +1,4 @@
-# Humanity Chain Timeline
+# HC-TRUST-LAYER Timeline
 
 ---
 

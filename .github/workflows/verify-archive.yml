@@ -1,4 +1,4 @@
-name: Verify Humanity Chain Archive
+name: Verify HC-TRUST-LAYER Archive
 
 on:
   push:
@@ -80,4 +80,4 @@ jobs:
 
       - name: Archive verification complete
         run: |
-          echo "Humanity Chain archive verification completed successfully."
+          echo "HC-TRUST-LAYER archive verification completed successfully."

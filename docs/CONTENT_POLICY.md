@@ -1,8 +1,8 @@
-# Humanity Chain — Content & Abuse Policy
+# HC-TRUST-LAYER — Content & Abuse Policy
 
 ## Purpose
 
-Humanity Chain is designed as an open verification and integrity protocol.
+HC-TRUST-LAYER is designed as an open verification and integrity protocol.
 
 The system focuses on transparency, traceability, and record integrity.
 
@@ -18,7 +18,7 @@ Responsibility for published content remains with the original publishers, platf
 
 ## Restricted Usage
 
-Humanity Chain may not be used for:
+HC-TRUST-LAYER may not be used for:
 
 - Child exploitation material
 - Human trafficking content
@@ -48,7 +48,7 @@ HC:// records only indicate that content integrity records exist within the prot
 
 ## Regional & Platform Policies
 
-Humanity Chain acknowledges that content regulations differ across countries, cultures, and platforms.
+HC-TRUST-LAYER acknowledges that content regulations differ across countries, cultures, and platforms.
 
 Additional policy layers may be implemented by platforms, communities, institutions, or regional deployments.
 

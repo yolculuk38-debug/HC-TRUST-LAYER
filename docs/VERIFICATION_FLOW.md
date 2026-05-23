@@ -2,7 +2,7 @@
 
 ## Overview
 
-Humanity Chain uses a layered verification workflow designed to improve transparency, traceability, and archival consistency.
+HC-TRUST-LAYER uses a layered verification workflow designed to improve transparency, traceability, and archival consistency.
 
 This process helps preserve interaction records in a structured and verifiable format.
 
@@ -107,6 +107,6 @@ Examples:
 
 ## Experimental Structure
 
-Humanity Chain is an experimental protocol system.
+HC-TRUST-LAYER is an experimental protocol system.
 
 Verification standards and workflows may evolve over time.

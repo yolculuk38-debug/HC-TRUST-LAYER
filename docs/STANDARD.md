@@ -2,7 +2,7 @@
 
 ## Purpose
 
-HC Standard defines the minimum structure required for a Humanity Chain record to be considered verifiable, traceable, and archive-compatible.
+HC Standard defines the minimum structure required for a HC-TRUST-LAYER record to be considered verifiable, traceable, and archive-compatible.
 
 ---
 
@@ -72,7 +72,7 @@ If the content changes:
 
 ## HC Verification Principles
 
-Humanity Chain verification is based on:
+HC-TRUST-LAYER verification is based on:
 
 1. Public archive history
 2. Hash integrity
