@@ -144,3 +144,8 @@ The long-term vision is to create a globally understandable verification languag
 ## Status
 
 Experimental protocol draft.
+
+## Related Documents
+
+- Public badge/status model: [`docs/BADGE_STATUS_MODEL.md`](BADGE_STATUS_MODEL.md)
+
