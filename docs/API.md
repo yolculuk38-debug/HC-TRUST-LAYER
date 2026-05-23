@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document describes how the Humanity Chain protocol may connect to external platforms and systems.
+This document describes how the HC-TRUST-LAYER protocol may connect to external platforms and systems.
 
 The goal is to make HC:// usable as a verification layer across the internet.
 

@@ -22,7 +22,7 @@ Modern digital systems face increasing problems related to:
 - anonymous redistribution
 - AI-generated content confusion
 
-Humanity Chain attempts to create a transparent verification layer for digital content.
+HC-TRUST-LAYER attempts to create a transparent verification layer for digital content.
 
 ---
 
@@ -70,7 +70,7 @@ HC:// helps verify digital content integrity.
 
 ## Verification Layers
 
-Humanity Chain may support multiple layers:
+HC-TRUST-LAYER may support multiple layers:
 
 ### Base Layer
 Basic fingerprint registration.
@@ -135,7 +135,7 @@ The protocol only provides verification infrastructure.
 
 ## Open Standard Vision
 
-Humanity Chain aims to support an open and transparent verification ecosystem.
+HC-TRUST-LAYER aims to support an open and transparent verification ecosystem.
 
 The long-term vision is to create a globally understandable verification language for digital content.
 

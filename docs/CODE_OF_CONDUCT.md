@@ -1,6 +1,6 @@
 # Code of Conduct
 
-Humanity Chain supports respectful, transparent, and constructive collaboration.
+HC-TRUST-LAYER supports respectful, transparent, and constructive collaboration.
 
 ## Expected Behavior
 
@@ -24,4 +24,4 @@ Project maintainers may remove harmful content or restrict participation when ne
 
 ## Mission
 
-Humanity Chain exists to explore transparent human-AI coordination through open documentation and verification systems.
+HC-TRUST-LAYER exists to explore transparent human-AI coordination through open documentation and verification systems, while Humanity Chain remains the origin ecosystem context.

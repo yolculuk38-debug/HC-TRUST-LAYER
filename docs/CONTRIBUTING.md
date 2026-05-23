@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for contributing to Humanity Chain.
+Thank you for contributing to HC-TRUST-LAYER (Humanity Chain origin ecosystem).
 
 This project is an experimental open archive and verification protocol focused on transparent human-AI interaction records.
 

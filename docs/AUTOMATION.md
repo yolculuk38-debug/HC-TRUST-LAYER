@@ -1,4 +1,4 @@
-# Humanity Chain - Record Automation
+# HC-TRUST-LAYER - Record Automation
 
 This document explains how to use the automated record creation, normalization, validation, hash generation, and QR code generation tools.
 
@@ -55,7 +55,7 @@ This will:
 **Output:**
 ```
 ============================================================
-Humanity Chain Record Normalizer
+HC-TRUST-LAYER Record Normalizer
 ============================================================
 
 Found 3 pending record(s)
@@ -91,7 +91,7 @@ This will check:
 **Output:**
 ```
 ============================================================
-Humanity Chain Record Validator
+HC-TRUST-LAYER Record Validator
 ============================================================
 
 ✓ Schema loaded: schema/record-v1.schema.json

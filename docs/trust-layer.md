@@ -4,7 +4,7 @@
 >
 > The Trust Layer is not active production logic yet.
 
-This roadmap outlines upcoming Trust Layer components for Humanity Chain.
+This roadmap outlines upcoming Trust Layer components for HC-TRUST-LAYER.
 
 ## Planned Components
 

@@ -1,4 +1,4 @@
-# Humanity Chain
+# HC-TRUST-LAYER
 
 ## Open Human-AI Interaction Archive
 
@@ -9,7 +9,7 @@
 
 ## Overview
 
-Humanity Chain is an experimental open archive and verification structure for documenting human-AI interaction records.
+HC-TRUST-LAYER is an experimental open archive and verification structure for documenting human-AI interaction records.
 
 The project focuses on:
 
@@ -39,6 +39,6 @@ Optional hash references, QR-linked archive paths, and additional verification l
 
 ## Transparency Notice
 
-Humanity Chain is an experimental documentation project.
+HC-TRUST-LAYER is an experimental documentation project.
 
 AI-generated responses are archived as interaction records and do not represent autonomous institutional participation or legal endorsement.

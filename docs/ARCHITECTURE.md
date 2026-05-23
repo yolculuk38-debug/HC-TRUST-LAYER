@@ -1,8 +1,8 @@
-# Humanity Chain Architecture
+# HC-TRUST-LAYER Architecture
 
 ## Overview
 
-Humanity Chain is structured as a layered archival and verification protocol.
+HC-TRUST-LAYER is structured as a layered archival and verification protocol.
 
 The system is designed to support transparent records, traceable verification workflows, and long-term archive integrity.
 
@@ -107,6 +107,6 @@ Basic workflow example:
 
 ## Experimental Status
 
-Humanity Chain is an experimental protocol design.
+HC-TRUST-LAYER is an experimental protocol design.
 
 Architecture, workflows, and verification standards may evolve over time.

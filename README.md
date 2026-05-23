@@ -1,6 +1,6 @@
 # HC:// TRUST LAYER
 
-[![Humanity Chain Validation](../../actions/workflows/validate.yml/badge.svg)](../../actions/workflows/validate.yml) [![CodeQL](../../actions/workflows/codeql.yml/badge.svg)](../../actions/workflows/codeql.yml)
+[![HC-TRUST-LAYER Validation](../../actions/workflows/validate.yml/badge.svg)](../../actions/workflows/validate.yml) [![CodeQL](../../actions/workflows/codeql.yml/badge.svg)](../../actions/workflows/codeql.yml)
 
 > The visible architecture of digital trust.
 
@@ -110,4 +110,4 @@ PYTHONPATH=src python -m hc_trust.cli verify records
 
 HC:// TRUST LAYER is the primary name for this repository.
 
-Humanity Chain may appear as historical project context only.
+Humanity Chain may appear as historical/origin project context only.

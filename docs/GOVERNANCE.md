@@ -1,6 +1,6 @@
 # Governance
 
-Humanity Chain is managed through open records, transparent discussion, and documented decisions.
+HC-TRUST-LAYER is managed through open records, transparent discussion, and documented decisions.
 
 ## Decision Model
 

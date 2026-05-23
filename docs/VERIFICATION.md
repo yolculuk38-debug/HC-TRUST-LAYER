@@ -1,8 +1,8 @@
-# Humanity Chain — Verification Standard
+# HC-TRUST-LAYER — Verification Standard
 
 ## Purpose
 
-This document defines the basic verification standard for the Humanity Chain protocol.
+This document defines the basic verification standard for the HC-TRUST-LAYER protocol.
 
 The goal is to describe how HC:// records are created, stored, and verified.
 
