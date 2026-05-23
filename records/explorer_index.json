@@ -1,0 +1,45 @@
+{
+  "searchable_index": [
+    {
+      "record_id": "HC-2026-0000-0002",
+      "title": "Multi AI Witness Record",
+      "tags": [],
+      "status": "draft",
+      "created_at": "2026-05-14T10:30:00Z",
+      "source": "records/pending/HC-2026-0002.json"
+    },
+    {
+      "record_id": "HC-EXAMPLE-2026-0001",
+      "title": "Example AI Witness Record",
+      "tags": [],
+      "status": "draft",
+      "created_at": "2026-05-14T10:35:00Z",
+      "source": "records/pending/HC-EXAMPLE-2026-0001.json"
+    }
+  ],
+  "provenance_graph": [],
+  "witness_relations": [
+    {
+      "record_id": "HC-2026-0000-0002",
+      "witness_type": "multi",
+      "author": "Fatih"
+    },
+    {
+      "record_id": "HC-EXAMPLE-2026-0001",
+      "witness_type": "ai",
+      "author": "Fatih"
+    }
+  ],
+  "federation_map": [],
+  "trust_score_lookup": [
+    {
+      "record_id": "HC-2026-0000-0002",
+      "status": "draft"
+    },
+    {
+      "record_id": "HC-EXAMPLE-2026-0001",
+      "status": "draft"
+    }
+  ],
+  "audit_chain_lookup": []
+}
