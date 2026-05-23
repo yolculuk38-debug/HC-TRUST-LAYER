@@ -44,6 +44,9 @@ jobs:
 
           schema_path = "schema/record-v1.schema.json"
           records_dir = "records"
+          skip_files = {
+              os.path.normpath("records/explorer_index.json"),
+          }
 
           with open(schema_path, "r", encoding="utf-8") as f:
               schema = json.load(f)
@@ -51,7 +54,10 @@ jobs:
           for root, _, files in os.walk(records_dir):
               for file in files:
                   if file.endswith(".json"):
-                      path = os.path.join(root, file)
+                      path = os.path.normpath(os.path.join(root, file))
+                      if path in skip_files:
+                          print(f"SKIP generated index: {path}")
+                          continue
                       with open(path, "r", encoding="utf-8") as f:
                           record = json.load(f)
                       validate(instance=record, schema=schema)
