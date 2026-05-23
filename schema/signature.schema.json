@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HC Witness Signature",
+  "type": "object",
+  "required": [
+    "record_id",
+    "signer_id",
+    "algorithm",
+    "signed_hash",
+    "signature",
+    "timestamp",
+    "witness_role"
+  ],
+  "properties": {
+    "record_id": {
+      "type": "string",
+      "description": "Record identifier this signature applies to"
+    },
+    "signer_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable identifier for signing entity"
+    },
+    "algorithm": {
+      "type": "string",
+      "description": "Signature algorithm identifier"
+    },
+    "signed_hash": {
+      "type": "string",
+      "description": "Canonical hash over the signed payload"
+    },
+    "signature": {
+      "type": "string",
+      "description": "Encoded cryptographic signature"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Signature creation time"
+    },
+    "witness_role": {
+      "type": "string",
+      "enum": ["validator", "human_witness", "ai_witness", "federation_observer"],
+      "description": "Role asserted by signer at signing time"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Extensible metadata for future federation integrations"
+    }
+  },
+  "additionalProperties": false
+}
