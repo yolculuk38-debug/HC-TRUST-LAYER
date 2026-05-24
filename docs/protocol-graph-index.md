@@ -61,6 +61,8 @@ Any future expansion remains subject to documentation-first review and explicit 
 - `protocol-graph.json`
 - `docs/protocol-graph-agent-context.md`
 - `docs/verification-map.md`
+- `verification-map.json`
+- `docs/verification-map-index.md`
 - `AGENTS.md`
 - `agents/README.md`
 - `agents/chatgpt.md`

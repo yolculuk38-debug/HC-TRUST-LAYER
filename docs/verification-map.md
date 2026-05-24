@@ -10,6 +10,8 @@ The goal is to reduce repeated rediscovery by AI agents and human contributors w
 
 The verification map is a structured orientation layer that connects trust-kernel domains, canonical records, validators, policy evaluation, and review routing.
 
+The machine-readable companion index is available at `verification-map.json` with guidance at `docs/verification-map-index.md`.
+
 It is a documentation artifact only in this phase.
 
 ## Trust Kernel Map
