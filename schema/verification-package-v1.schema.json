@@ -1,0 +1,116 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://hc-trust-layer.org/schemas/verification-package-v1.schema.json",
+    "title": "HC-TRUST-LAYER Verification Package v1 Schema Draft",
+    "description": "Schema draft for HC-TRUST-LAYER verification package derived artifact structure.",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "package_version",
+        "package_id",
+        "record_id",
+        "record_hash",
+        "content_hash",
+        "verification_state",
+        "canonical_record_path",
+        "source_repository",
+        "source_commit",
+        "generated_at",
+        "provenance",
+        "audit",
+        "witnesses",
+        "signatures",
+        "verification_policy",
+        "warnings"
+    ],
+    "properties": {
+        "package_version": {
+            "type": "string",
+            "const": "1.0"
+        },
+        "package_id": {
+            "type": "string",
+            "pattern": "^HC-PKG-"
+        },
+        "record_id": {
+            "type": "string",
+            "minLength": 1
+        },
+        "record_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+        },
+        "content_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+        },
+        "verification_state": {
+            "type": "string",
+            "enum": [
+                "pending",
+                "verified",
+                "rejected",
+                "archived",
+                "disputed",
+                "revoked"
+            ]
+        },
+        "canonical_record_path": {
+            "type": "string",
+            "pattern": "^records\\/(pending|verified|archived)\\/[^\\s]+$"
+        },
+        "source_repository": {
+            "type": "string",
+            "minLength": 1
+        },
+        "source_commit": {
+            "type": "string",
+            "minLength": 1
+        },
+        "generated_at": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "provenance": {
+            "type": "object"
+        },
+        "audit": {
+            "type": "object"
+        },
+        "witnesses": {
+            "type": "array"
+        },
+        "signatures": {
+            "type": "array"
+        },
+        "verification_policy": {
+            "type": "object"
+        },
+        "warnings": {
+            "type": "array"
+        },
+        "qr_reference": {
+            "type": "string"
+        },
+        "explorer_url": {
+            "type": "string",
+            "format": "uri"
+        },
+        "public_verify_url": {
+            "type": "string",
+            "format": "uri"
+        },
+        "federation_source": {
+            "type": "string"
+        },
+        "export_context": {
+            "type": "object"
+        },
+        "dispute_status": {
+            "type": "string"
+        },
+        "revocation_status": {
+            "type": "string"
+        }
+    }
+}

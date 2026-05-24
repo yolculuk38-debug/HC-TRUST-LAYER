@@ -141,6 +141,20 @@ The example below is illustrative only.
 }
 ```
 
+## Schema Draft
+
+Machine-readable schema draft:
+
+- `schema/verification-package-v1.schema.json`
+
+## Scope Note
+
+This schema validates verification package structure only.
+
+- It does not make verification packages canonical records.
+- It does not verify truth.
+- It does not replace canonical record validation.
+
 ## Verification Rules
 
 A verifier should:
