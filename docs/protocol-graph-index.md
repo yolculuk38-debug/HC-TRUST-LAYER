@@ -62,3 +62,9 @@ Any future expansion remains subject to documentation-first review and explicit 
 - `docs/protocol-graph-agent-context.md`
 - `docs/verification-map.md`
 - `AGENTS.md`
+
+## Additional Protocol Graph Integrity References
+
+- `docs/protocol-graph-integrity.md`
+- `docs/anti-spoofing-foundations.md`
+- `docs/trusted-relationship-model.md`

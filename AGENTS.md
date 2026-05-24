@@ -113,3 +113,9 @@ Changes that affect policy interpretation or routing must:
 - `docs/protocol-graph-index.md`
 
 Use these as advisory navigation aids alongside the verification map and protocol graph documentation.
+
+## Protocol Graph Integrity and Anti-Spoofing References
+
+- `docs/protocol-graph-integrity.md`
+- `docs/anti-spoofing-foundations.md`
+- `docs/trusted-relationship-model.md`
