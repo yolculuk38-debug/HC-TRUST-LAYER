@@ -110,6 +110,7 @@ Status scale:
 - `docs/external-verification-packages.md`
 - `docs/export-import-verification.md`
 - `docs/verification-package-spec.md`
+- `docs/verification-package-format.md`
 
 **Coverage notes**
 - Multiple integration surfaces are prototyped.

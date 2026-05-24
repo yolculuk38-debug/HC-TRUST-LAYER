@@ -55,4 +55,5 @@ Capability interpretation is aligned with human-supervised validation and public
 - Scope: `README.md`, `docs/**/*.md`, `.github/**/*.md`
 - Canonical artifact boundary workflow: `.github/workflows/canonical-artifacts.yml`
 - Canonical artifact boundary checker: `scripts/check_canonical_artifacts.py`
+- Verification package format draft: `docs/verification-package-format.md`
 

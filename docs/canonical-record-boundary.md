@@ -135,6 +135,7 @@ Key aligned references:
 - `docs/explorer-index-spec.md` defines explorer indexes as generated lookup artifacts and requires canonical validation to skip generated index/cache/export paths.
 - `docs/record-format.md` defines canonical record required fields including `content_hash` and `verification_status`.
 - `src/validator.py` implements skip behavior for artifact-like filenames and validates record-shaped canonical files against `record-v1` schema.
+- `docs/verification-package-format.md` defines verification package outputs as derived artifacts and non-canonical transport context.
 
 No new verification logic is introduced by this document.
 
