@@ -187,3 +187,8 @@ Status scale:
 - Repository security audit checklist: `docs/repo-security-audit.md`
 
 - Dispute resolution and challenge architecture foundation (documentation baseline): `docs/dispute-challenge-architecture.md`
+- Validator identity architecture foundation (documentation baseline): `docs/validator-identity-architecture.md`
+- Replay and duplicate detection foundation (documentation baseline): `docs/replay-duplicate-detection.md`
+- Verification package v2 architecture foundation (documentation baseline): `docs/verification-package-v2.md`
+- Privacy and redaction model foundation (documentation baseline): `docs/privacy-redaction-model.md`
+- C2PA bridge considerations foundation (documentation baseline): `docs/c2pa-bridge-considerations.md`
