@@ -106,3 +106,10 @@ These concepts are planning guidance and do not imply live federation guarantees
 Related trust workflow architecture model: `docs/trust-workflow-model.md`.
 Related MVP-1 viewer foundations: `docs/mvp-1-verification-package-viewer.md`, `docs/mvp-1-user-flow.md`, `docs/mvp-1-ui-principles.md`, `docs/mvp-1-boundaries.md`.
 Related trust PR and review model references: `docs/trust-pr-engine.md`, `docs/trust-impact-analysis.md`, `docs/verification-proposal-model.md`, `docs/trust-review-workflow.md`.
+
+
+## Related References
+
+- `docs/trust-result-standard.md`
+- `docs/verification-status-ux.md`
+- `docs/replay-warning-standard.md`
