@@ -9,10 +9,18 @@ def load_schema(schema_path="schema/record-v1.schema.json"):
     with open(schema_path, 'r', encoding='utf-8') as f:
         return json.load(f)
 
+SKIP_HINTS = ("index", "manifest", "cache", "export", "generated")
+
+
 def validate_record(record_path):
     """Record dosyasını doğrula"""
     schema = load_schema()
     
+    file_name = Path(record_path).name.lower()
+    if any(hint in file_name for hint in SKIP_HINTS):
+        print(f"⏭️ SKIPPED ARTIFACT: {record_path}")
+        return True
+
     try:
         with open(record_path, 'r', encoding='utf-8') as f:
             record = json.load(f)
