@@ -198,3 +198,11 @@ If any answer is yes, require explicit human-supervised validation before merge.
 - no schema changes
 - no validator changes
 - no production claims
+
+## Protocol Graph Integrity and Anti-Spoofing
+
+Reference:
+
+- `docs/protocol-graph-integrity.md`
+- `docs/anti-spoofing-foundations.md`
+- `docs/trusted-relationship-model.md`

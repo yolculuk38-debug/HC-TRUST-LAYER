@@ -161,3 +161,9 @@ This foundation aligns with:
 - federation
 - canonical record
 - human-supervised validation
+
+## Related Security and Relationship Foundations
+
+- `docs/protocol-graph-integrity.md`
+- `docs/anti-spoofing-foundations.md`
+- `docs/trusted-relationship-model.md`

@@ -105,3 +105,9 @@ This document aligns with:
 - trust graph
 - canonical record
 - human-supervised validation
+
+## Related Protocol Graph Integrity and Anti-Spoofing References
+
+- `docs/protocol-graph-integrity.md`
+- `docs/anti-spoofing-foundations.md`
+- `docs/trusted-relationship-model.md`

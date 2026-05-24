@@ -131,7 +131,10 @@
     "docs": [
       "docs/trust-graph.md",
       "docs/trust-graph-data-model.md",
-      "docs/trust-query-routing.md"
+      "docs/trust-query-routing.md",
+      "docs/protocol-graph-integrity.md",
+      "docs/anti-spoofing-foundations.md",
+      "docs/trusted-relationship-model.md"
     ],
     "risk_level": "medium",
     "human_review_required": true,
