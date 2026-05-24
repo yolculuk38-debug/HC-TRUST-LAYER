@@ -172,3 +172,9 @@ For the verification package draft format and non-canonical transport boundary, 
 For AI-assisted governance contribution flow and authority boundaries, see [`ai-collaboration-workflow.md`](ai-collaboration-workflow.md).
 
 For public verification API architecture planning and endpoint-safety semantics, see [`public-verification-api.md`](public-verification-api.md).
+
+For trust graph relationship and topology foundation, see [`trust-graph.md`](trust-graph.md).
+
+For signing model and key lifecycle concepts, see [`signing-architecture.md`](signing-architecture.md).
+
+For verification confidence progression model, see [`verification-levels.md`](verification-levels.md).
