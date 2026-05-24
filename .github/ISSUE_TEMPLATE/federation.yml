@@ -1,0 +1,61 @@
+name: Federation
+description: Propose or track work in the HC-TRUST-LAYER Record Core boundaries.
+title: "[Federation]: "
+labels: ["area:federation", "type:workflow"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use HC-TRUST-LAYER and HC:// terminology. Keep scope in verification infrastructure, provenance, audit trail, public verification, and human-supervised validation.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Describe the request in workflow-focused terms for HC-TRUST-LAYER verification infrastructure.
+    validations:
+      required: true
+  - type: dropdown
+    id: architectural_layer
+    attributes:
+      label: Architectural layer
+      options: [Record Core, Trust Protocol, Public Verification, External Trust Ecosystem, Tooling / Automation]
+    validations:
+      required: true
+  - type: dropdown
+    id: implementation_status
+    attributes:
+      label: Implementation status
+      options: [Existing implementation, Partial implementation, Planned, Research only, Not implemented]
+    validations:
+      required: true
+  - type: textarea
+    id: expected_impact
+    attributes: {label: Expected impact}
+    validations: {required: true}
+  - type: textarea
+    id: risks
+    attributes: {label: Risks}
+  - type: textarea
+    id: canonical_record_impact
+    attributes: {label: Canonical record impact}
+    validations: {required: true}
+  - type: textarea
+    id: terminology_impact
+    attributes: {label: Terminology impact}
+    validations: {required: true}
+  - type: textarea
+    id: validation_testing_notes
+    attributes: {label: Validation/testing notes}
+    validations: {required: true}
+  - type: checkboxes
+    id: contributor_checklist
+    attributes:
+      label: Contributor checklist
+      options:
+        - label: I checked the implementation map.
+        - label: I checked the capability status matrix.
+        - label: This issue does not duplicate existing architecture.
+        - label: This issue does not introduce hype language.
+        - label: This issue does not claim “truth verification”.
+        - label: This issue preserves HC-TRUST-LAYER terminology.
+        - label: This issue respects canonical record boundaries.
