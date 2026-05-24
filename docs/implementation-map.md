@@ -174,5 +174,8 @@ Status scale:
 
 - Trusted auto-merge governance model: `docs/trusted-auto-merge.md`
 - Policy engine architecture: `docs/policy-engine-architecture.md`
+- Agent governance foundation: `docs/agent-governance.md`
+- Execution audit trail foundation: `docs/execution-audit-trail.md`
+- Approval checkpoints baseline: `docs/approval-checkpoints.md`
 - Policy rules baseline: `docs/policy-rules.md`
 - Repository security audit checklist: `docs/repo-security-audit.md`
