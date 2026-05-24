@@ -59,11 +59,11 @@ jobs:
           if [ "$EVAL_EXIT" -ne 0 ]; then
             echo "::warning::Advisory policy evaluation parsing failure detected; defaulting recommendation to human_review_required."
             cat <<'EOF' > policy_summary.txt
-risk_level=high
-affected_categories=unknown
-recommended_merge_outcome=human_review_required
-notes=Evaluator parsing failure fallback activated.
-EOF
+            risk_level=high
+            affected_categories=unknown
+            recommended_merge_outcome=human_review_required
+            notes=Evaluator parsing failure fallback activated.
+            EOF
             exit 0
           fi
 
@@ -72,43 +72,43 @@ EOF
           fi
 
           python3 - <<'PY'
-from pathlib import Path
-import re
+          from pathlib import Path
+          import re
 
-text = Path('policy_output.txt').read_text(encoding='utf-8')
-recommended = re.search(r"- (auto_merge_allowed|conditional_merge|human_review_required|blocked)", text)
-outcome = recommended.group(1) if recommended else "human_review_required"
+          text = Path('policy_output.txt').read_text(encoding='utf-8')
+          recommended = re.search(r"- (auto_merge_allowed|conditional_merge|human_review_required|blocked)", text)
+          outcome = recommended.group(1) if recommended else "human_review_required"
 
-count_map = {}
-for category in ("blocked", "high", "medium", "low", "unknown"):
-    m = re.search(rf"- {category}: (\d+)", text)
-    count_map[category] = int(m.group(1)) if m else 0
+          count_map = {}
+          for category in ("blocked", "high", "medium", "low", "unknown"):
+              m = re.search(rf"- {category}: (\d+)", text)
+              count_map[category] = int(m.group(1)) if m else 0
 
-affected = [k for k, v in count_map.items() if v > 0]
-if count_map.get("unknown", 0) > 0:
-    outcome = "human_review_required"
+          affected = [k for k, v in count_map.items() if v > 0]
+          if count_map.get("unknown", 0) > 0:
+              outcome = "human_review_required"
 
-if count_map["blocked"] > 0:
-    risk_level = "blocked"
-elif count_map["high"] > 0 or count_map["unknown"] > 0:
-    risk_level = "high"
-elif count_map["medium"] > 0:
-    risk_level = "medium"
-else:
-    risk_level = "low"
+          if count_map["blocked"] > 0:
+              risk_level = "blocked"
+          elif count_map["high"] > 0 or count_map["unknown"] > 0:
+              risk_level = "high"
+          elif count_map["medium"] > 0:
+              risk_level = "medium"
+          else:
+              risk_level = "low"
 
-Path('policy_summary.txt').write_text(
-    "\n".join(
-        [
-            f"risk_level={risk_level}",
-            f"affected_categories={','.join(affected) if affected else 'none'}",
-            f"recommended_merge_outcome={outcome}",
-            "notes=Advisory policy evaluation only; no merge enforcement applied.",
-        ]
-    ) + "\n",
-    encoding='utf-8',
-)
-PY
+          Path('policy_summary.txt').write_text(
+              "\n".join(
+                  [
+                      f"risk_level={risk_level}",
+                      f"affected_categories={','.join(affected) if affected else 'none'}",
+                      f"recommended_merge_outcome={outcome}",
+                      "notes=Advisory policy evaluation only; no merge enforcement applied.",
+                  ]
+              ) + "\n",
+              encoding='utf-8',
+          )
+          PY
 
       - name: Print advisory merge-risk summary
         shell: bash
