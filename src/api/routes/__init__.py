@@ -1,17 +1,15 @@
-"""Verification API route package."""
+"""Verification runtime API routes package."""
 
-from .verification_routes import (
-    get_federation,
-    get_history,
-    get_trust,
-    get_verify,
-    get_witness,
-)
+from .federation import router as federation_router
+from .history import router as history_router
+from .trust import router as trust_router
+from .verify import router as verify_router
+from .witness import router as witness_router
 
 __all__ = [
-    "get_federation",
-    "get_history",
-    "get_trust",
-    "get_verify",
-    "get_witness",
+    "federation_router",
+    "history_router",
+    "trust_router",
+    "verify_router",
+    "witness_router",
 ]

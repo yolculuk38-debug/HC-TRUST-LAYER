@@ -1,23 +1,17 @@
-"""Verification API models package."""
+"""Verification runtime API models package."""
 
-from .verification_models import (
-    FederationSourceSummary,
-    ProvenanceSummary,
-    RevisionHistoryEntry,
-    RevisionHistoryResult,
-    TrustResult,
-    VerificationResult,
-    VerificationState,
-    WitnessSummary,
-)
+from .federation import FederationResponse
+from .history import HistoryResponse, HistoryRevision
+from .trust import TrustResponse
+from .verification import VerificationProvenance, VerificationState
+from .witness import WitnessResponse
 
 __all__ = [
-    "FederationSourceSummary",
-    "ProvenanceSummary",
-    "RevisionHistoryEntry",
-    "RevisionHistoryResult",
-    "TrustResult",
-    "VerificationResult",
+    "FederationResponse",
+    "HistoryResponse",
+    "HistoryRevision",
+    "TrustResponse",
+    "VerificationProvenance",
     "VerificationState",
-    "WitnessSummary",
+    "WitnessResponse",
 ]

@@ -1,3 +1,7 @@
 # Pinned for CI stability and reproducible installs.
 jsonschema==4.17.3
 qrcode[pil]==7.4.2
+
+fastapi==0.115.12
+uvicorn==0.34.3
+pydantic==2.11.5

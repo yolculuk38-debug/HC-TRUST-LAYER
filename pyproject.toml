@@ -11,6 +11,9 @@ requires-python = ">=3.9"
 dependencies = [
   "jsonschema",
   "qrcode",
+  "fastapi",
+  "uvicorn",
+  "pydantic",
 ]
 
 [project.scripts]
