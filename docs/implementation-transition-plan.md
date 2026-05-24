@@ -10,6 +10,7 @@ This transition plan is documentation-only and prepares HC:// architecture align
 - Validator capability model foundation: `docs/validator-capability-model.md`
 - Evidence continuity foundation: `docs/evidence-continuity.md`
 - Verification routing model foundation: `docs/verification-routing-model.md`
+- Protocol graph and agent context map foundation: `docs/protocol-graph-agent-context.md`
 
 ## Constraints
 

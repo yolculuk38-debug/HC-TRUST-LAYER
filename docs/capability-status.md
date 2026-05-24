@@ -60,6 +60,7 @@ Capability interpretation is aligned with human-supervised validation and public
 - Verification package generation architecture: `docs/verification-package-generation.md`
 - Public verification API architecture draft: `docs/public-verification-api.md`
 - Trust kernel stabilization checkpoint (PR #300): `docs/trust-kernel-checkpoint-300.md`
+- Protocol graph and agent context map foundation: `docs/protocol-graph-agent-context.md`
 - Agent governance foundation: `docs/agent-governance.md`
 - Execution audit trail foundation: `docs/execution-audit-trail.md`
 - Approval checkpoints baseline: `docs/approval-checkpoints.md`

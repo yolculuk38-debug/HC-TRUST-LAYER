@@ -92,6 +92,7 @@ This checkpoint is documentation-only.
 - [Trust Query Routing Foundation](trust-query-routing.md)
 - [Sustainability Model Foundation](sustainability-model.md)
 - [Long-Term Archival Integrity Foundation](long-term-archival-integrity.md)
+- [Protocol Graph and Agent Context Map Foundation](protocol-graph-agent-context.md)
 
 - [Dispute Resolution and Challenge Architecture Foundation](dispute-challenge-architecture.md)
 - [Validator Identity Architecture Foundation](validator-identity-architecture.md)
