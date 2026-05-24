@@ -165,3 +165,5 @@ This foundation explicitly does **not** introduce:
 - Public verification API architecture draft: `docs/public-verification-api.md`
 - Federation roadmap and architecture: `docs/federation-architecture.md`
 - Message/content provenance foundation: `docs/message-content-provenance.md`
+
+- Dispute resolution and challenge architecture foundation: `docs/dispute-challenge-architecture.md`

@@ -219,3 +219,5 @@ This document aligns with HC:// architecture terminology and explicitly uses:
 ## Related Document
 
 - Trust decay and risk history foundation: `docs/trust-decay-risk-history.md`
+
+- Dispute resolution and challenge architecture foundation: `docs/dispute-challenge-architecture.md`

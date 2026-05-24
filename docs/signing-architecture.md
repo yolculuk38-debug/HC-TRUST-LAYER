@@ -195,3 +195,5 @@ This document aligns with HC:// architecture terminology and explicitly uses:
 - validator
 - canonical record
 - human-supervised validation
+
+- Dispute resolution and challenge architecture foundation: `docs/dispute-challenge-architecture.md`
