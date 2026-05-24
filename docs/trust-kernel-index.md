@@ -76,3 +76,7 @@ Any expanded automation remains subject to repository-defined checks and reviewe
 - `docs/implementation-transition-plan.md`
 - `AGENTS.md`
 - `agents/README.md`
+- `docs/trust-pr-engine.md`
+- `docs/trust-impact-analysis.md`
+- `docs/verification-proposal-model.md`
+- `docs/trust-review-workflow.md`

@@ -104,3 +104,4 @@ Future federation verification flow concepts:
 These concepts are planning guidance and do not imply live federation guarantees.
 
 Related trust workflow architecture model: `docs/trust-workflow-model.md`.
+Related trust PR and review model references: `docs/trust-pr-engine.md`, `docs/trust-impact-analysis.md`, `docs/verification-proposal-model.md`, `docs/trust-review-workflow.md`.
