@@ -19,6 +19,10 @@ This transition plan is documentation-only and prepares HC:// architecture align
 - Verification explorer architecture foundation: `docs/verification-explorer-architecture.md`
 - Provenance viewer foundation: `docs/provenance-viewer.md`
 - Public verification flow foundation: `docs/public-verification-flow.md`
+- MVP-1 verification package viewer specification: `docs/mvp-1-verification-package-viewer.md`
+- MVP-1 user flow foundation: `docs/mvp-1-user-flow.md`
+- MVP-1 UI principles foundation: `docs/mvp-1-ui-principles.md`
+- MVP-1 boundaries foundation: `docs/mvp-1-boundaries.md`
 - Trust workflow model foundation: `docs/trust-workflow-model.md`
 - Idea-to-PR pipeline model foundation: `docs/idea-to-pr-pipeline.md`
 - Trust graph viewer foundation: `docs/trust-graph-viewer.md`
