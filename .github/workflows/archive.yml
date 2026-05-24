@@ -22,15 +22,12 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.11'
 
       - name: Install Python Dependencies
-        run: pip install -r requirements.txt
-
-      - name: Install QR Dependencies
         run: |
-          pip install qrcode[pil]
-          pip install pillow
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
       - name: Normalize Records
         run: python src/normalize_records.py
@@ -43,4 +40,3 @@ jobs:
 
       - name: Generate QR Codes
         run: python src/qr.py --batch
-      
