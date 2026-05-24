@@ -104,3 +104,7 @@ Expected advisory output:
 - recommended merge outcome: `blocked`
 
 This route still remains advisory at this phase and supports human-supervised validation.
+
+## Related Security Reference
+
+- Repository security audit checklist: `docs/repo-security-audit.md`

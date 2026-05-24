@@ -151,4 +151,4 @@ Policy enforcement must remain transparent, auditable, and bounded by canonical 
 - Policy rules baseline: `docs/policy-rules.md`
 - Policy evaluator skeleton: `docs/policy-evaluator.md`
 - Advisory policy workflow integration: `docs/policy-workflow-integration.md`
-
+- Repository security audit checklist: `docs/repo-security-audit.md`
