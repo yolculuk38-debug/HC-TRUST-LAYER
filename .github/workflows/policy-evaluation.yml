@@ -71,44 +71,55 @@ jobs:
             echo "::warning::Unknown path classifications detected; defaulting recommendation to human_review_required."
           fi
 
-          python3 - <<'PY'
-from pathlib import Path
-import re
+          blocked_count=$(sed -n 's/^- blocked: \([0-9][0-9]*\)$/\1/p' policy_output.txt | head -n1)
+          high_count=$(sed -n 's/^- high: \([0-9][0-9]*\)$/\1/p' policy_output.txt | head -n1)
+          medium_count=$(sed -n 's/^- medium: \([0-9][0-9]*\)$/\1/p' policy_output.txt | head -n1)
+          low_count=$(sed -n 's/^- low: \([0-9][0-9]*\)$/\1/p' policy_output.txt | head -n1)
+          unknown_count=$(sed -n 's/^- unknown: \([0-9][0-9]*\)$/\1/p' policy_output.txt | head -n1)
 
-text = Path('policy_output.txt').read_text(encoding='utf-8')
-recommended = re.search(r"- (auto_merge_allowed|conditional_merge|human_review_required|blocked)", text)
-outcome = recommended.group(1) if recommended else "human_review_required"
+          blocked_count=${blocked_count:-0}
+          high_count=${high_count:-0}
+          medium_count=${medium_count:-0}
+          low_count=${low_count:-0}
+          unknown_count=${unknown_count:-0}
 
-count_map = {}
-for category in ("blocked", "high", "medium", "low", "unknown"):
-    m = re.search(rf"- {category}: (\d+)", text)
-    count_map[category] = int(m.group(1)) if m else 0
+          outcome=$(sed -n 's/^- \(auto_merge_allowed\|conditional_merge\|human_review_required\|blocked\)$/\1/p' policy_output.txt | head -n1)
+          outcome=${outcome:-human_review_required}
 
-affected = [k for k, v in count_map.items() if v > 0]
-if count_map.get("unknown", 0) > 0:
-    outcome = "human_review_required"
+          if [ "$unknown_count" -gt 0 ]; then
+            outcome="human_review_required"
+          fi
 
-if count_map["blocked"] > 0:
-    risk_level = "blocked"
-elif count_map["high"] > 0 or count_map["unknown"] > 0:
-    risk_level = "high"
-elif count_map["medium"] > 0:
-    risk_level = "medium"
-else:
-    risk_level = "low"
+          if [ "$blocked_count" -gt 0 ]; then
+            risk_level="blocked"
+          elif [ "$high_count" -gt 0 ] || [ "$unknown_count" -gt 0 ]; then
+            risk_level="high"
+          elif [ "$medium_count" -gt 0 ]; then
+            risk_level="medium"
+          else
+            risk_level="low"
+          fi
 
-Path('policy_summary.txt').write_text(
-    "\n".join(
-        [
-            f"risk_level={risk_level}",
-            f"affected_categories={','.join(affected) if affected else 'none'}",
-            f"recommended_merge_outcome={outcome}",
-            "notes=Advisory policy evaluation only; no merge enforcement applied.",
-        ]
-    ) + "\n",
-    encoding='utf-8',
-)
-PY
+          affected_categories=""
+          for category in blocked high medium low unknown; do
+            count_var="${category}_count"
+            count_value=${!count_var}
+            if [ "$count_value" -gt 0 ]; then
+              if [ -n "$affected_categories" ]; then
+                affected_categories="$affected_categories,$category"
+              else
+                affected_categories="$category"
+              fi
+            fi
+          done
+          affected_categories=${affected_categories:-none}
+
+          printf '%s\n' \
+            "risk_level=$risk_level" \
+            "affected_categories=$affected_categories" \
+            "recommended_merge_outcome=$outcome" \
+            "notes=Advisory policy evaluation only; no merge enforcement applied." \
+            > policy_summary.txt
 
       - name: Print advisory merge-risk summary
         shell: bash
