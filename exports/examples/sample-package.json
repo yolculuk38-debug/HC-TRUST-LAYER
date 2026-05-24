@@ -1,0 +1,14 @@
+{
+  "package_version": "0.1.0-experimental",
+  "record_id": "HC-TEST-2026-0001",
+  "created_at": "2026-05-24T00:00:00Z",
+  "provenance": {
+    "source_system": "hc-trust-layer",
+    "exported_by": "verification-gateway",
+    "export_reason": "external-audit-preview"
+  },
+  "revision_references": ["rev:HC-TEST-2026-0001:1"],
+  "witness_references": ["witness:human:alice-example"],
+  "integrity_hash_references": ["sha256:placeholderhash123"],
+  "federation_source_references": ["node:hc-node-us-east-1"]
+}

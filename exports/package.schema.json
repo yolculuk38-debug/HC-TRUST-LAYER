@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hc-trust-layer.org/schemas/exports/package.schema.json",
+  "title": "External Verification Package",
+  "description": "Portable experimental verification bundle for external review.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["package_version", "record_id", "provenance", "revision_references", "witness_references", "integrity_hash_references", "federation_source_references"],
+  "properties": {
+    "package_version": {"type": "string"},
+    "record_id": {"type": "string"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_system", "exported_by", "export_reason"],
+      "properties": {
+        "source_system": {"type": "string"},
+        "exported_by": {"type": "string"},
+        "export_reason": {"type": "string"}
+      }
+    },
+    "revision_references": {"type": "array", "items": {"type": "string"}},
+    "witness_references": {"type": "array", "items": {"type": "string"}},
+    "integrity_hash_references": {"type": "array", "items": {"type": "string"}},
+    "federation_source_references": {"type": "array", "items": {"type": "string"}}
+  }
+}

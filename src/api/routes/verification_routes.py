@@ -7,6 +7,8 @@ compatibility while the transport layer is still under active development.
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from dataclasses import asdict
+from typing import Any
 
 from src.api.models.verification_models import (
     FederationSourceSummary,
@@ -17,6 +19,10 @@ from src.api.models.verification_models import (
     VerificationState,
     WitnessSummary,
 )
+from src.api.services.federation_registry import list_default_nodes
+
+
+EXPERIMENTAL_PROTOCOL_VERSION = "0.1.0-experimental"
 
 
 def get_verify(record_id: str) -> VerificationResult:
@@ -71,3 +77,70 @@ def get_federation(record_id: str) -> list[FederationSourceSummary]:
     """Scaffold for `GET /federation/{record_id}`."""
     _ = record_id
     return []
+
+
+def get_federation_nodes() -> dict[str, Any]:
+    """Experimental scaffold for `GET /federation/nodes`."""
+
+    nodes = [asdict(node) for node in list_default_nodes()]
+    return {
+        "status": "experimental",
+        "protocol_version": EXPERIMENTAL_PROTOCOL_VERSION,
+        "nodes": nodes,
+    }
+
+
+def get_federation_status() -> dict[str, Any]:
+    """Experimental scaffold for `GET /federation/status`."""
+
+    return {
+        "status": "experimental",
+        "sync_state": "not-configured",
+        "message": "Federation status endpoint is scaffolded for distributed trust sync.",
+    }
+
+
+def get_federation_capabilities() -> dict[str, Any]:
+    """Experimental scaffold for `GET /federation/capabilities`."""
+
+    return {
+        "status": "experimental",
+        "capabilities": [
+            "integrity-hash-check",
+            "revision-chain-validation",
+            "witness-reference-normalization",
+        ],
+    }
+
+
+def get_federation_sync_preview() -> dict[str, Any]:
+    """Experimental scaffold for `GET /federation/sync-preview`."""
+
+    return {
+        "status": "experimental",
+        "preview": {
+            "eligible_nodes": [node.node_id for node in list_default_nodes()],
+            "planned_actions": ["capability-negotiation", "manifest-version-check"],
+            "non_production_warning": True,
+        },
+    }
+
+
+def export_verification_package(record_id: str) -> dict[str, Any]:
+    """Experimental scaffold for `GET /verify/export/{record_id}`."""
+
+    return {
+        "status": "experimental",
+        "package": {
+            "package_version": EXPERIMENTAL_PROTOCOL_VERSION,
+            "record_id": record_id,
+            "provenance": {
+                "source_system": "hc-trust-layer",
+                "export_reason": "verification-preview",
+            },
+            "revision_references": [],
+            "witness_references": [],
+            "integrity_hash_references": [],
+            "federation_source_references": [],
+        },
+    }
