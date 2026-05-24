@@ -108,6 +108,8 @@ PYTHONPATH=src python -m hc_trust.cli verify records
 - Replay and duplicate detection foundation: [`docs/replay-duplicate-detection.md`](docs/replay-duplicate-detection.md)
 - Verification package v2 architecture foundation: [`docs/verification-package-v2.md`](docs/verification-package-v2.md)
 - Verification explorer architecture foundation: [`docs/verification-explorer-architecture.md`](docs/verification-explorer-architecture.md)
+- Verification scenario library foundation: [`docs/verification-scenarios.md`](docs/verification-scenarios.md)
+- Demo verification flow foundation: [`docs/demo-verification-flow.md`](docs/demo-verification-flow.md)
 - Provenance viewer foundation: [`docs/provenance-viewer.md`](docs/provenance-viewer.md)
 - Public verification flow foundation: [`docs/public-verification-flow.md`](docs/public-verification-flow.md)
 - Trust graph viewer foundation: [`docs/trust-graph-viewer.md`](docs/trust-graph-viewer.md)

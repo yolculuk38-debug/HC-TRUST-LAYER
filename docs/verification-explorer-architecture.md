@@ -140,6 +140,11 @@ Explorer privacy considerations should include:
 
 Privacy handling must preserve audit trail continuity and provenance interpretability while respecting human-supervised validation boundaries.
 
+## Related Foundations
+
+- `docs/verification-scenarios.md`
+- `docs/demo-verification-flow.md`
+
 ## Terminology Alignment
 
 This foundation aligns with HC-TRUST-LAYER and HC:// terminology and preserves these core terms:

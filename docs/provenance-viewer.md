@@ -96,6 +96,11 @@ Provenance continuity concepts include:
 - contradiction visibility for competing lineage claims
 - explicit unknown/insufficient-evidence states
 
+## Related Foundations
+
+- `docs/verification-scenarios.md`
+- `docs/demo-verification-flow.md`
+
 ## Terminology Alignment
 
 This foundation preserves HC-TRUST-LAYER and HC:// terminology, including provenance, audit trail, verification package, canonical record, trust graph, and human-supervised validation.

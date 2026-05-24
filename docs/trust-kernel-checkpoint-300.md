@@ -100,6 +100,8 @@ This checkpoint is documentation-only.
 - [Provenance Viewer Foundation](provenance-viewer.md)
 - [Public Verification Flow Foundation](public-verification-flow.md)
 - [Trust Graph Viewer Foundation](trust-graph-viewer.md)
+- [Verification Scenario Library Foundation](verification-scenarios.md)
+- [Demo Verification Flow Foundation](demo-verification-flow.md)
 
 - [Dispute Resolution and Challenge Architecture Foundation](dispute-challenge-architecture.md)
 - [Validator Identity Architecture Foundation](validator-identity-architecture.md)
