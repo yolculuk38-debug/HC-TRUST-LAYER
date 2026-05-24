@@ -9,7 +9,7 @@ HC-TRUST-LAYER is the primary project name. Humanity Chain is referenced only as
 ## Scope and Limitations
 
 - This architecture describes verification of provenance and integrity signals.
-- Verification output does not establish objective truth.
+- Verification output supports integrity verification and provenance verification; it does not establish objective truth.
 - Some layers are currently implemented, while others remain experimental, planned, or research.
 - This document is a technical foundation, not a commitment of commercial rollout.
 
@@ -105,7 +105,7 @@ Badge states:
 
 Interpretation principles:
 - Badges express verification status under HC-TRUST-LAYER protocol rules.
-- Badges verify provenance and integrity signals, not absolute truth.
+- Badges verify provenance and integrity signals, not final truth claims.
 - Badge results are time-bound and may change with new evidence, policy updates, or superseding records.
 
 ## External Ecosystem Roadmap
@@ -137,7 +137,7 @@ Resilience goal:
 ## Business and Model Boundaries
 
 Current model boundaries:
-- protocol-first and experimental baseline comes before commercialization.
+- protocol-first verification infrastructure comes before commercialization.
 - future optional paid verification receipts/packages may be evaluated.
 - no financial promise is made in this architecture.
 - no guarantee of institutional adoption is made in this architecture.

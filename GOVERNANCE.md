@@ -1,4 +1,4 @@
-# HC:// Governance Framework
+# HC-TRUST-LAYER Governance Framework
 
 ## Merge Authority
 - Maintainers designated in repository governance are responsible for final merge approval.
@@ -34,5 +34,5 @@
 
 ## Trust and Reputation Principles
 - Reputation is earned through consistent, auditable, and policy-compliant behavior.
-- Trust scoring is transparent at the signal category level.
+- Trust scoring is transparent at the signal category level and supports public audit trail review.
 - Revocation and recovery pathways must be explicitly defined and logged.
