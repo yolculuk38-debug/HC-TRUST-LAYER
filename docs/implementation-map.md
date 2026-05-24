@@ -112,6 +112,7 @@ Status scale:
 - `docs/verification-package-spec.md`
 - `docs/verification-package-format.md`
 - `docs/verification-package-validation.md`
+- `docs/verification-package-generation.md`
 
 **Coverage notes**
 - Multiple integration surfaces are prototyped.

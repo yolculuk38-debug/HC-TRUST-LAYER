@@ -141,3 +141,5 @@ This validation semantics baseline is designed to remain compatible with planned
 - external mirrors planned
 
 These future capabilities should extend package transport confidence without changing canonical authority boundaries.
+
+See generation architecture: `docs/verification-package-generation.md`.
