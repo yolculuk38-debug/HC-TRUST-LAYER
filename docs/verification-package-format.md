@@ -157,6 +157,7 @@ Machine-readable schema draft:
 - `schema/verification-package-v1.schema.json`
 
 - Validation semantics: `docs/verification-package-validation.md`
+- Generation architecture: `docs/verification-package-generation.md`
 
 ## Scope Note
 

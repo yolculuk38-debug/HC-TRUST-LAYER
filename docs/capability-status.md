@@ -57,4 +57,5 @@ Capability interpretation is aligned with human-supervised validation and public
 - Canonical artifact boundary checker: `scripts/check_canonical_artifacts.py`
 - Verification package format draft: `docs/verification-package-format.md`
 - Verification package validation semantics: `docs/verification-package-validation.md`
+- Verification package generation architecture: `docs/verification-package-generation.md`
 
