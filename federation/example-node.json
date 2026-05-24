@@ -1,0 +1,15 @@
+{
+  "manifest_version": "0.1.0-experimental",
+  "generated_at": "2026-05-24T00:00:00Z",
+  "nodes": [
+    {
+      "node_id": "hc-node-us-east-1",
+      "endpoint_url": "https://node-us-east.hc-trust-layer.example/federation",
+      "public_key": "TODO_PUBLIC_KEY",
+      "trust_scope": ["record-verification", "witness-attestation"],
+      "protocol_version": "hc-protocol-v1",
+      "verification_capabilities": ["integrity-hash-check", "revision-chain-validation"],
+      "status": "active"
+    }
+  ]
+}
