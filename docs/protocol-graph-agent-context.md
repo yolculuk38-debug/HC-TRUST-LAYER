@@ -134,6 +134,7 @@ The protocol graph foundation currently references these component areas:
 - `docs/implementation-map.md`
 - `docs/capability-status.md`
 - `docs/trust-kernel-checkpoint-300.md`
+- `docs/verification-map.md`
 
 ## Agent Task Routing Rules
 
@@ -159,11 +160,13 @@ Use these routing rules before merge for any non-trivial HC:// change:
 Before approving a change, confirm:
 
 - Does this affect **canonical records**?
-- Does this affect **validation**?
+- Does this affect **hash validation**?
 - Does this affect **policy evaluation**?
 - Does this affect **public verification**?
 - Does this affect **signing or trust anchors**?
-- Does this affect **federation behavior**?
+- Does this affect **federation routing**?
+- Does this affect **privacy/redaction**?
+- Does this affect **dispute or replay handling**?
 - Does this affect **audit trail continuity**?
 
 If any answer is yes, escalate to explicit human-supervised validation across the impacted trust kernel domains.

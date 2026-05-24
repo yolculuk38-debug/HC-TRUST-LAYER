@@ -164,6 +164,7 @@ Status scale:
 - Capability status matrix: `docs/capability-status.md`
 - Trust kernel stabilization checkpoint (PR #300): `docs/trust-kernel-checkpoint-300.md`
 - Protocol graph and agent context map foundation: `docs/protocol-graph-agent-context.md`
+- Verification map foundation: `docs/verification-map.md`
 - Public verification API architecture draft: `docs/public-verification-api.md`
 - Protocol and verification docs: `docs/PROTOCOL.md`, `docs/verify.md`, `docs/VERIFICATION.md`
 - AI collaboration workflow: `docs/ai-collaboration-workflow.md`
