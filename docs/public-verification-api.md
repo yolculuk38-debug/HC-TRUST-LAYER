@@ -138,6 +138,7 @@ Planned compatibility directions:
 - browser extension
 - archive verification
 - Message Trust Layer
+- message/content provenance architecture linkage
 
 These are forward-compatibility targets and do not imply production completion timelines.
 
@@ -152,6 +153,12 @@ No production backend is added here.
 No authentication subsystem is added here.
 
 No validator or schema semantics are modified here.
+
+## Related Documentation
+
+- Message and content provenance foundation: `docs/message-content-provenance.md`
+- Trust graph foundation: `docs/trust-graph.md`
+- Verification package generation architecture: `docs/verification-package-generation.md`
 
 ## Related Governance Reference
 

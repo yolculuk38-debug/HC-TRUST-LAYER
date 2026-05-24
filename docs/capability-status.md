@@ -64,6 +64,7 @@ Capability interpretation is aligned with human-supervised validation and public
 - Execution audit trail foundation: `docs/execution-audit-trail.md`
 - Approval checkpoints baseline: `docs/approval-checkpoints.md`
 - Trust graph foundation (documentation baseline): `docs/trust-graph.md`
+- Message/content provenance foundation (documentation baseline): `docs/message-content-provenance.md`
 - Signing architecture foundation (documentation baseline): `docs/signing-architecture.md`
 - Verification levels model (documentation baseline): `docs/verification-levels.md`
 
