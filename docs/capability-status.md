@@ -43,3 +43,10 @@ Verification results in this repository indicate integrity and provenance status
 - "Implemented" means directly supported by current code/docs/tests in this repository.
 - "Partial" means foundational components exist but complete operational coverage is not finished.
 - "Planned" and "Research" indicate roadmap direction rather than currently deployed capability.
+
+## Documentation Terminology Guard
+
+- Automated terminology check: `.github/workflows/terminology.yml`
+- Local checker: `scripts/check_terminology.py`
+- Scope: `README.md`, `docs/**/*.md`, `.github/**/*.md`
+
