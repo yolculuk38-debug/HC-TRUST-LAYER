@@ -189,3 +189,4 @@ This is an architectural model surface and does not assert production signing co
 - `docs/approval-checkpoints.md`
 - `docs/dispute-challenge-architecture.md`
 - `docs/execution-audit-trail.md`
+- `docs/idea-to-pr-pipeline.md`
