@@ -151,13 +151,13 @@ PYTHONPATH=src python -m hc_trust.cli verify records
 
 HC-TRUST-LAYER is the primary technical brand and repository name.
 
-Humanity Chain may appear as historical/origin project context only.
+The origin archive may appear as historical/origin context only.
 
 
 ## Repository Roles
 
 - **HC-TRUST-LAYER** is the canonical repository for active protocol and implementation.
-- **Insanlik-Zinciri** is the historical/origin mirror for provenance continuity.
+- **Historical mirror / provenance origin archive** references are retained only for provenance continuity.
 - Trust graph data model foundation: [`docs/trust-graph-data-model.md`](docs/trust-graph-data-model.md)
 - Validator capability model foundation: [`docs/validator-capability-model.md`](docs/validator-capability-model.md)
 - Evidence continuity foundation: [`docs/evidence-continuity.md`](docs/evidence-continuity.md)

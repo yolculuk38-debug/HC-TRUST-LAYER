@@ -4,7 +4,7 @@
 
 This document defines a protocol-first architecture baseline for HC-TRUST-LAYER based on the current strategy analysis.
 
-HC-TRUST-LAYER is the primary project name. Humanity Chain is referenced only as historical origin context.
+HC-TRUST-LAYER is the primary project name. The provenance origin archive is referenced only as historical/origin context.
 
 ## Scope and Limitations
 

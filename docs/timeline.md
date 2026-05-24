@@ -11,7 +11,7 @@
 
 ## 2026-05-08
 
-- Humanity Chain structure expanded
+- origin archive structure expanded
 - Public archive organization initiated
 
 ---
