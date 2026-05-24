@@ -134,7 +134,7 @@ Planned compatibility directions:
 - Ed25519 signing
 - federation verification
 - external mirrors
-- explorer integration
+- verification explorer integration
 - browser extension
 - archive verification
 - Message Trust Layer
@@ -156,6 +156,10 @@ No validator or schema semantics are modified here.
 
 ## Related Documentation
 
+- Verification explorer architecture foundation: `docs/verification-explorer-architecture.md`
+- Provenance viewer foundation: `docs/provenance-viewer.md`
+- Public verification flow foundation: `docs/public-verification-flow.md`
+- Trust graph viewer foundation: `docs/trust-graph-viewer.md`
 - Message and content provenance foundation: `docs/message-content-provenance.md`
 - Trust graph foundation: `docs/trust-graph.md`
 - Verification package generation architecture: `docs/verification-package-generation.md`

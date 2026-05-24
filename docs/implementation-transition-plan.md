@@ -16,6 +16,10 @@ This transition plan is documentation-only and prepares HC:// architecture align
 - Machine-readable verification map index (advisory): `verification-map.json` and `docs/verification-map-index.md`
 - Machine-readable trust kernel index (advisory): `trust-kernel-index.json` and `docs/trust-kernel-index.md`
 - Agent workspace foundation: `agents/README.md`, `agents/chatgpt.md`, `agents/codex.md`, `agents/workflow.md`, and `agents/task-template.md`
+- Verification explorer architecture foundation: `docs/verification-explorer-architecture.md`
+- Provenance viewer foundation: `docs/provenance-viewer.md`
+- Public verification flow foundation: `docs/public-verification-flow.md`
+- Trust graph viewer foundation: `docs/trust-graph-viewer.md`
 
 ## Constraints
 
