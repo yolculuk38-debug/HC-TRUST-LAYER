@@ -163,4 +163,6 @@ Status scale reference:
 
 For a file-level layer mapping and gap-oriented priority plan, see [`implementation-map.md`](implementation-map.md).
 
+For cross-capability status across implemented, partial, planned, research, and not implemented items, see [`capability-status.md`](capability-status.md).
+
 For AI-assisted governance contribution flow and authority boundaries, see [`ai-collaboration-workflow.md`](ai-collaboration-workflow.md).
