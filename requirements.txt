@@ -1,3 +1,8 @@
 # Pinned for CI stability and reproducible installs.
 jsonschema==4.17.3
 qrcode[pil]==7.4.2
+
+# API scaffold dependencies pinned to a Pydantic v1 stack to avoid
+# transitive pydantic-core build issues on GitHub Actions Ubuntu runners.
+fastapi==0.95.2
+pydantic==1.10.15
