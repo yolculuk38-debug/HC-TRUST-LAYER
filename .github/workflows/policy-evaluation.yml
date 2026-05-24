@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 jobs:
   advisory-policy-evaluation:
@@ -23,11 +24,21 @@ jobs:
 
       - name: Collect changed paths
         id: changes
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        shell: bash
         run: |
-          git diff --name-only "$BASE_SHA" "$HEAD_SHA" > changed_paths.txt
+          set -euo pipefail
+
+          # On pull_request events, github.sha is typically a synthetic merge commit
+          # with parent1=base and parent2=head. Diffing parents is deterministic and
+          # avoids missing-object failures for fork SHAs on hosted runners.
+          if git rev-parse --verify HEAD^1 >/dev/null 2>&1 && git rev-parse --verify HEAD^2 >/dev/null 2>&1; then
+            git diff --name-only HEAD^1 HEAD^2 > changed_paths.txt
+          else
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+            git diff --name-only "$BASE_SHA" "$HEAD_SHA" > changed_paths.txt
+          fi
+
           if [ ! -s changed_paths.txt ]; then
             echo "README.md" > changed_paths.txt
           fi
@@ -36,7 +47,9 @@ jobs:
 
       - name: Run advisory policy evaluator
         id: evaluator
+        shell: bash
         run: |
+          set -euo pipefail
           mapfile -t CHANGED_PATHS < changed_paths.txt
           set +e
           python3 scripts/evaluate_policy.py "${CHANGED_PATHS[@]}" | tee policy_output.txt
@@ -98,7 +111,9 @@ Path('policy_summary.txt').write_text(
 PY
 
       - name: Print advisory merge-risk summary
+        shell: bash
         run: |
+          set -euo pipefail
           echo "HC-TRUST-LAYER advisory policy workflow summary"
           cat policy_summary.txt
           echo "\nRecommended merge outcomes reference:"
