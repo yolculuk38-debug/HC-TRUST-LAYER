@@ -156,6 +156,8 @@ Machine-readable schema draft:
 
 - `schema/verification-package-v1.schema.json`
 
+- Validation semantics: `docs/verification-package-validation.md`
+
 ## Scope Note
 
 This schema validates verification package structure only.
