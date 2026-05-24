@@ -217,6 +217,12 @@ This document aligns with HC:// architecture terminology and explicitly uses:
 - human-supervised validation
 
 ## Related Document
+## Related Documents
+
+- Trust query routing foundation: `docs/trust-query-routing.md`
+- Evidence retention lifecycle foundation: `docs/evidence-retention-lifecycle.md`
+- Long-term archival integrity foundation: `docs/long-term-archival-integrity.md`
+- Institutional governance foundation: `docs/institutional-governance.md`
 
 - Trust decay and risk history foundation: `docs/trust-decay-risk-history.md`
 

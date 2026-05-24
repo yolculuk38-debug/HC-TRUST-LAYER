@@ -187,6 +187,11 @@ Status scale:
 - Repository security audit checklist: `docs/repo-security-audit.md`
 
 - Dispute resolution and challenge architecture foundation (documentation baseline): `docs/dispute-challenge-architecture.md`
+- Institutional governance foundation (documentation baseline): `docs/institutional-governance.md`
+- Evidence retention lifecycle foundation (documentation baseline): `docs/evidence-retention-lifecycle.md`
+- Trust query routing foundation (documentation baseline): `docs/trust-query-routing.md`
+- Sustainability model foundation (documentation baseline): `docs/sustainability-model.md`
+- Long-term archival integrity foundation (documentation baseline): `docs/long-term-archival-integrity.md`
 - Validator identity architecture foundation (documentation baseline): `docs/validator-identity-architecture.md`
 - Replay and duplicate detection foundation (documentation baseline): `docs/replay-duplicate-detection.md`
 - Verification package v2 architecture foundation (documentation baseline): `docs/verification-package-v2.md`

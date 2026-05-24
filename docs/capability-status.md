@@ -81,3 +81,9 @@ Capability interpretation is aligned with human-supervised validation and public
 - Verification package v2 architecture foundation: `docs/verification-package-v2.md`
 - Privacy and redaction model foundation: `docs/privacy-redaction-model.md`
 - C2PA bridge considerations foundation: `docs/c2pa-bridge-considerations.md`
+
+- institutional governance foundation documented
+- evidence lifecycle foundation documented
+- trust query routing foundation documented
+- sustainability model foundation documented
+- long-term archival integrity foundation documented
