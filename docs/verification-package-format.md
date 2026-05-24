@@ -26,6 +26,15 @@ Canonical records remain under:
 
 A verification package may reference canonical records, but it must never replace canonical record authority.
 
+## Example Artifact Placement Note
+
+The file `examples/verification-package-example.json` is an **illustrative** verification package.
+
+- It is a **derived artifact** for documentation and integrity verification testing.
+- It is **non-canonical** and must not be treated as a canonical record.
+- It must **not** be placed under `records/`.
+- Canonical record authority remains exclusively within canonical record paths.
+
 ## Definition
 
 A **verification package** is a portable, derived artifact containing enough data to verify:

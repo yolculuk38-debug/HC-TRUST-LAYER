@@ -1,0 +1,48 @@
+{
+  "package_version": "1.0",
+  "package_id": "HC-PKG-2026-05-24-0001",
+  "record_id": "HC-EXAMPLE-2026-0001",
+  "record_hash": "4f7d8f4a1c2b3d9e0f1234567890abcdeffedcba09876543211234567890abcd",
+  "content_hash": "9a8b7c6d5e4f32100123456789abcdefabcdef0123456789fedcba9876543210",
+  "verification_state": "verified",
+  "canonical_record_path": "records/verified/HC-EXAMPLE-2026-0001.json",
+  "source_repository": "https://github.com/example/HC-TRUST-LAYER",
+  "source_commit": "2f4c1e9a8b7d6c5f4e3a2b1c0d9e8f7a6b5c4d3e",
+  "generated_at": "2026-05-24T00:00:00Z",
+  "provenance": {
+    "origin": "HC://records/verified/HC-EXAMPLE-2026-0001.json",
+    "derived_artifact": true,
+    "generated_by": "verification-package-example",
+    "notes": "Illustrative integrity verification package for documentation and testing."
+  },
+  "audit": {
+    "audit_trail_refs": [
+      "HC://audit/entries/AUD-2026-0001"
+    ],
+    "audit_trail_summary": "Example-only audit trail reference for non-canonical package context."
+  },
+  "witnesses": [
+    {
+      "witness_id": "WIT-HUMAN-001",
+      "witness_context": "human-review",
+      "attested_at": "2026-05-24T00:05:00Z"
+    },
+    {
+      "witness_id": "WIT-AI-001",
+      "witness_context": "ai-assist-review",
+      "attested_at": "2026-05-24T00:06:00Z"
+    }
+  ],
+  "signatures": [],
+  "verification_policy": {
+    "policy_id": "baseline-integrity-v1",
+    "rules": [
+      "content_hash_match",
+      "record_hash_match",
+      "canonical_record_path_declared"
+    ]
+  },
+  "warnings": [
+    "Illustrative non-canonical verification package; do not treat as canonical record."
+  ]
+}
