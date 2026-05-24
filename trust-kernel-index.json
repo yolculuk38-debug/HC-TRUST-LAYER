@@ -1,0 +1,160 @@
+{
+  "project": {
+    "id": "project",
+    "title": "HC-TRUST-LAYER / HC:// Trust Kernel Index",
+    "purpose": "Provide one machine-readable trust-kernel navigation layer that links protocol graph and verification map foundations.",
+    "related_docs": [
+      "README.md",
+      "AGENTS.md",
+      "docs/trust-kernel-index.md"
+    ],
+    "related_indexes": [
+      "protocol-graph.json",
+      "verification-map.json"
+    ],
+    "risk_level": "medium",
+    "human_review_required": true,
+    "validation_required": true
+  },
+  "source_of_truth": {
+    "id": "source_of_truth",
+    "title": "Repository Source of Truth Boundary",
+    "purpose": "Preserve repository evidence as the canonical source of truth for architecture, policy baselines, implementation status, and verification documentation.",
+    "related_docs": [
+      "AGENTS.md",
+      "docs/verification-map.md",
+      "docs/protocol-graph-agent-context.md"
+    ],
+    "related_indexes": [
+      "protocol-graph.json",
+      "verification-map.json"
+    ],
+    "risk_level": "high",
+    "human_review_required": true,
+    "validation_required": true
+  },
+  "machine_readable_indexes": {
+    "id": "machine_readable_indexes",
+    "title": "Machine-readable Index Surfaces",
+    "purpose": "Link machine-readable trust-kernel navigation artifacts used by agents, contributors, and future verification tooling.",
+    "related_docs": [
+      "docs/protocol-graph-index.md",
+      "docs/verification-map-index.md",
+      "docs/trust-kernel-index.md"
+    ],
+    "related_indexes": [
+      "protocol-graph.json",
+      "verification-map.json",
+      "trust-kernel-index.json"
+    ],
+    "risk_level": "medium",
+    "human_review_required": true,
+    "validation_required": true
+  },
+  "core_layers": {
+    "id": "core_layers",
+    "title": "Trust Kernel Core Layers",
+    "purpose": "Expose core trust-kernel layers for documentation-first routing across canonical record, validator, policy, signing, federation, provenance, and governance boundaries.",
+    "related_docs": [
+      "docs/protocol-graph-agent-context.md",
+      "docs/verification-map.md",
+      "docs/master-architecture.md"
+    ],
+    "related_indexes": [
+      "protocol-graph.json",
+      "verification-map.json"
+    ],
+    "risk_level": "high",
+    "human_review_required": true,
+    "validation_required": true
+  },
+  "high_risk_components": {
+    "id": "high_risk_components",
+    "title": "High-risk Trust Kernel Components",
+    "purpose": "Identify high-risk trust-kernel components where any semantic drift requires elevated reviewer attention and explicit human-supervised validation.",
+    "related_docs": [
+      "docs/canonical-record-boundary.md",
+      "docs/policy-evaluator.md",
+      "docs/signing-architecture.md",
+      "docs/federation-architecture.md"
+    ],
+    "related_indexes": [
+      "protocol-graph.json",
+      "verification-map.json"
+    ],
+    "risk_level": "high",
+    "human_review_required": true,
+    "validation_required": true
+  },
+  "human_review_gates": {
+    "id": "human_review_gates",
+    "title": "Human-supervised Review Gates",
+    "purpose": "Document explicit human-supervised validation gates for trust-kernel-impacting changes and cross-domain routing.",
+    "related_docs": [
+      "AGENTS.md",
+      "docs/agent-governance.md",
+      "docs/reviewer-selection.md"
+    ],
+    "related_indexes": [
+      "protocol-graph.json",
+      "verification-map.json",
+      "trust-kernel-index.json"
+    ],
+    "risk_level": "high",
+    "human_review_required": true,
+    "validation_required": true
+  },
+  "validation_commands": {
+    "id": "validation_commands",
+    "title": "Validation Command Index",
+    "purpose": "Index repository-defined validation commands used to preserve terminology, docs continuity, and canonical artifact integrity.",
+    "related_docs": [
+      "AGENTS.md",
+      "docs/implementation-transition-plan.md",
+      "docs/trust-kernel-index.md"
+    ],
+    "related_indexes": [
+      "trust-kernel-index.json"
+    ],
+    "risk_level": "medium",
+    "human_review_required": true,
+    "validation_required": true
+  },
+  "agent_routing": {
+    "id": "agent_routing",
+    "title": "Agent Routing and Context Boundaries",
+    "purpose": "Provide documentation-first routing context for agents so proposed edits preserve provenance, audit trail continuity, and trust-kernel boundaries.",
+    "related_docs": [
+      "agents/README.md",
+      "docs/protocol-graph-agent-context.md",
+      "docs/verification-map-index.md"
+    ],
+    "related_indexes": [
+      "protocol-graph.json",
+      "verification-map.json",
+      "trust-kernel-index.json"
+    ],
+    "risk_level": "medium",
+    "human_review_required": true,
+    "validation_required": true
+  },
+  "future_tooling": {
+    "id": "future_tooling",
+    "title": "Future Verification Tooling Alignment",
+    "purpose": "Describe advisory-only pathways for explorer preflight context, CI consistency checks, review routing, and future verification tooling integration.",
+    "related_docs": [
+      "docs/protocol-graph-index.md",
+      "docs/verification-map-index.md",
+      "docs/implementation-transition-plan.md",
+      "docs/trust-kernel-index.md"
+    ],
+    "related_indexes": [
+      "protocol-graph.json",
+      "verification-map.json",
+      "trust-kernel-index.json"
+    ],
+    "risk_level": "medium",
+    "human_review_required": true,
+    "validation_required": false
+  }
+}

@@ -19,6 +19,8 @@ This workspace is designed for:
 ## Core Rules
 
 - The repository is the source of truth for architecture, implementation status, the **verification map**, the machine-readable verification map index (`verification-map.json`, `docs/verification-map-index.md`), and the **protocol graph**.
+
+- The machine-readable trust kernel index (`trust-kernel-index.json`, `docs/trust-kernel-index.md`) links protocol graph and verification map indexes into one advisory navigation layer.
 - All non-trivial trust-kernel-impacting work requires explicit **human-supervised validation**.
 - Agent output is advisory and must not be treated as autonomous approval.
 

@@ -121,6 +121,13 @@ Use these as advisory navigation aids alongside the verification map and protoco
 
 Use these as advisory navigation aids alongside `docs/verification-map.md` and protocol graph documentation.
 
+## Machine-readable Trust Kernel Index
+
+- `trust-kernel-index.json`
+- `docs/trust-kernel-index.md`
+
+Use these as advisory navigation aids that connect protocol graph and verification map machine-readable indexes for trust-kernel review routing.
+
 ## Protocol Graph Integrity and Anti-Spoofing References
 
 - `docs/protocol-graph-integrity.md`

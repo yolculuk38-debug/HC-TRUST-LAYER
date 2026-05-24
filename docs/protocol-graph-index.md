@@ -75,3 +75,6 @@ Any future expansion remains subject to documentation-first review and explicit 
 - `docs/protocol-graph-integrity.md`
 - `docs/anti-spoofing-foundations.md`
 - `docs/trusted-relationship-model.md`
+
+- `trust-kernel-index.json`
+- `docs/trust-kernel-index.md`
