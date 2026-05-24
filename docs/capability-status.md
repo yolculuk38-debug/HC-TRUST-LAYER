@@ -53,4 +53,6 @@ Capability interpretation is aligned with human-supervised validation and public
 - Docs drift workflow: `.github/workflows/docs-drift.yml`
 - Docs drift checker: `scripts/check_docs_drift.py`
 - Scope: `README.md`, `docs/**/*.md`, `.github/**/*.md`
+- Canonical artifact boundary workflow: `.github/workflows/canonical-artifacts.yml`
+- Canonical artifact boundary checker: `scripts/check_canonical_artifacts.py`
 

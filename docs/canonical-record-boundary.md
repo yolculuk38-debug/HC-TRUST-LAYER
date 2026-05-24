@@ -137,3 +137,8 @@ Key aligned references:
 - `src/validator.py` implements skip behavior for artifact-like filenames and validates record-shaped canonical files against `record-v1` schema.
 
 No new verification logic is introduced by this document.
+
+Boundary automation:
+
+- Workflow: `.github/workflows/canonical-artifacts.yml`
+- Local/CI guard: `scripts/check_canonical_artifacts.py`
