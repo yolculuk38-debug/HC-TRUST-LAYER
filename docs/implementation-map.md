@@ -6,7 +6,7 @@ This map connects the six master architecture layers to concrete repository arti
 
 Status scale:
 - implemented
-- experimental
+- partial
 - planned
 - research
 
@@ -32,7 +32,7 @@ Status scale:
 
 ## 2) Witness & Signature Layer
 
-**Status:** experimental
+**Status:** partial
 
 **Primary files and docs**
 - `src/signed_witness.py`
@@ -149,9 +149,9 @@ Status scale:
 
 | Priority | Area | Why now | Concrete next step | Target status shift |
 |---|---|---|---|---|
-| P0 | Federation & Sync | Needed for multi-node consistency and audit continuity. | Define and document convergence + conflict-resolution invariants; add scenario tests for partition/rejoin behavior. | planned → experimental |
-| P0 | Governance & Dispute | Required for contested-record handling and policy transparency. | Implement a minimal dispute lifecycle spec (intake, adjudication, supersession, revocation linkage) with deterministic state transitions. | planned → experimental |
-| P1 | Witness & Signature | Core attribution exists but needs stricter interoperability. | Freeze witness/signature envelope fields and publish compatibility matrix + migration notes. | experimental → implemented (baseline) |
+| P0 | Federation & Sync | Needed for multi-node consistency and audit continuity. | Define and document convergence + conflict-resolution invariants; add scenario tests for partition/rejoin behavior. | planned → partial |
+| P0 | Governance & Dispute | Required for contested-record handling and policy transparency. | Implement a minimal dispute lifecycle spec (intake, adjudication, supersession, revocation linkage) with deterministic state transitions. | planned → partial |
+| P1 | Witness & Signature | Core attribution exists but needs stricter interoperability. | Freeze witness/signature envelope fields and publish compatibility matrix + migration notes. | partial → implemented (baseline) |
 | P1 | External Integration | Integrations exist but contracts are still fluid. | Version external package/API contracts and publish compatibility policy (supported/unsupported fields). | research → planned |
 | P2 | Cross-layer observability | Needed to evaluate trust-layer behavior over time. | Add architecture-level metrics map tying verification outcomes to layer-level signals and failures. | planned internal hardening |
 

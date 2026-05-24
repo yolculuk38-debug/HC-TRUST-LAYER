@@ -117,7 +117,7 @@ The following items are planned workflow controls and should be treated as roadm
 - issue templates
 - terminology check workflow (`.github/workflows/terminology.yml` + `scripts/check_terminology.py`)
 - canonical record boundary check
-- docs drift check
+- docs drift check (`.github/workflows/docs-drift.yml` + `scripts/check_docs_drift.py`)
 - implementation map consistency check
 - generated artifact exclusion check
 - security policy check
