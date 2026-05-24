@@ -114,3 +114,5 @@ Planned next steps (not implemented in this skeleton):
 - keep enforcement disabled until explicit governance activation
 
 The current implementation remains advisory-only and does not alter branch protection, validators, or schemas.
+- Policy workflow integration: `docs/policy-workflow-integration.md`
+
