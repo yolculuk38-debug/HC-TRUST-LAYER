@@ -165,4 +165,6 @@ For a file-level layer mapping and gap-oriented priority plan, see [`implementat
 
 For cross-capability status across implemented, partial, planned, research, and not implemented items, see [`capability-status.md`](capability-status.md).
 
+For the verification package draft format and non-canonical transport boundary, see [`verification-package-format.md`](verification-package-format.md).
+
 For AI-assisted governance contribution flow and authority boundaries, see [`ai-collaboration-workflow.md`](ai-collaboration-workflow.md).
