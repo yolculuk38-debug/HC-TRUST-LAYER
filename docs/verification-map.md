@@ -164,6 +164,8 @@ Reference:
 - `docs/public-verification-flow.md`
 - `docs/verification-explorer-architecture.md`
 - `docs/provenance-viewer.md`
+- `docs/verification-scenarios.md`
+- `docs/demo-verification-flow.md`
 - `docs/api/verification-api-v1.md`
 
 ## Agent Task Routing

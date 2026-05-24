@@ -96,6 +96,11 @@ Graph isolation concepts include:
 
 Isolation should preserve references back to full graph context.
 
+## Related Foundations
+
+- `docs/verification-scenarios.md`
+- `docs/demo-verification-flow.md`
+
 ## Public Visualization Considerations
 
 Public visualization considerations:
