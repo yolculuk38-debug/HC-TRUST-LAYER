@@ -165,3 +165,8 @@ Status scale:
 - Public verification API architecture draft: `docs/public-verification-api.md`
 - Protocol and verification docs: `docs/PROTOCOL.md`, `docs/verify.md`, `docs/VERIFICATION.md`
 - AI collaboration workflow: `docs/ai-collaboration-workflow.md`
+
+## Related Governance Reference
+
+- Trusted auto-merge governance model: `docs/trusted-auto-merge.md`
+

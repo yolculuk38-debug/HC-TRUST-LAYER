@@ -172,3 +172,8 @@ Avoid language that implies final truth authority, including:
 This workflow is documentation-focused governance guidance.
 
 It does not introduce new product features, validator behavior changes, or record schema changes.
+
+## Related Governance Reference
+
+- Trusted auto-merge governance model: `docs/trusted-auto-merge.md`
+
