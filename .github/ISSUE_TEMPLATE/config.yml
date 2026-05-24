@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: HC-TRUST-LAYER Implementation Map
+    url: https://github.com/HC-TRUST-LAYER/HC-TRUST-LAYER/blob/main/docs/implementation-map.md
+    about: Review implemented and planned architecture before opening an issue.
+  - name: HC-TRUST-LAYER Capability Status Matrix
+    url: https://github.com/HC-TRUST-LAYER/HC-TRUST-LAYER/blob/main/docs/capability-status.md
+    about: Confirm whether a capability is existing, partial, planned, research only, or not implemented.
+  - name: HC-TRUST-LAYER AI Collaboration Workflow
+    url: https://github.com/HC-TRUST-LAYER/HC-TRUST-LAYER/blob/main/docs/ai-collaboration-workflow.md
+    about: Follow the human-supervised validation workflow for AI collaboration.
