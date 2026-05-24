@@ -62,6 +62,11 @@ Any future expansion remains subject to documentation-first review and explicit 
 - `docs/protocol-graph-agent-context.md`
 - `docs/verification-map.md`
 - `AGENTS.md`
+- `agents/README.md`
+- `agents/chatgpt.md`
+- `agents/codex.md`
+- `agents/workflow.md`
+- `agents/task-template.md`
 
 ## Additional Protocol Graph Integrity References
 

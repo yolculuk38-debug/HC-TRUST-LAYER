@@ -206,3 +206,13 @@ Reference:
 - `docs/protocol-graph-integrity.md`
 - `docs/anti-spoofing-foundations.md`
 - `docs/trusted-relationship-model.md`
+
+## Agent Workspace References
+
+Reference:
+
+- `agents/README.md`
+- `agents/chatgpt.md`
+- `agents/codex.md`
+- `agents/workflow.md`
+- `agents/task-template.md`

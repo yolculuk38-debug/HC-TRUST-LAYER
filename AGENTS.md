@@ -119,3 +119,12 @@ Use these as advisory navigation aids alongside the verification map and protoco
 - `docs/protocol-graph-integrity.md`
 - `docs/anti-spoofing-foundations.md`
 - `docs/trusted-relationship-model.md`
+
+
+## Agent Workspace References
+
+- `agents/README.md`
+- `agents/chatgpt.md`
+- `agents/codex.md`
+- `agents/workflow.md`
+- `agents/task-template.md`
