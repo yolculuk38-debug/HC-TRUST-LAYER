@@ -156,4 +156,5 @@ No validator or schema semantics are modified here.
 ## Related Governance Reference
 
 - Trusted auto-merge governance model: `docs/trusted-auto-merge.md`
+- Policy engine architecture: `docs/policy-engine-architecture.md`
 

@@ -144,3 +144,7 @@ Trusted auto-merge is a governance control within HC-TRUST-LAYER verification in
 It does not assert truth guarantees, does not grant autonomous AI decision authority, and does not replace human-supervised validation.
 
 Policy enforcement must remain transparent, auditable, and bounded by canonical record discipline.
+
+## Related Architecture Reference
+
+- Policy engine architecture: `docs/policy-engine-architecture.md`
