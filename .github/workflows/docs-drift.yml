@@ -2,9 +2,32 @@ name: Docs Drift Check
 
 on:
   pull_request:
+    paths:
+      - 'docs/**'
+      - 'records/**'
+      - 'src/**'
+      - 'scripts/check_docs_drift.py'
+      - 'policy/**'
+      - '.github/workflows/**'
+      - '.github/workflows/docs-drift.yml'
   push:
     branches:
       - main
+    paths:
+      - 'docs/**'
+      - 'records/**'
+      - 'src/**'
+      - 'scripts/check_docs_drift.py'
+      - 'policy/**'
+      - '.github/workflows/**'
+      - '.github/workflows/docs-drift.yml'
+
+concurrency:
+  group: docs-drift-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   docs-drift:
@@ -17,6 +40,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
       - name: Run documentation drift check
         run: python scripts/check_docs_drift.py

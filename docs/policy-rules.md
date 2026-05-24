@@ -115,3 +115,7 @@ This PR does **not**:
 These policy rules are currently **advisory** until runtime policy enforcement is implemented.
 
 The immediate goal is to establish stable machine-readable governance inputs now, so future enforcement can evaluate HC-TRUST-LAYER changes consistently and transparently.
+
+## Related CI Reference
+
+- CI speed/safety model: `docs/ci-optimization.md`

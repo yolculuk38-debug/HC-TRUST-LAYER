@@ -6,13 +6,23 @@ on:
       - 'records/**'
       - 'schema/**'
       - 'src/**'
+      - 'requirements.txt'
+      - 'policy/**'
+      - '.github/workflows/**'
       - '.github/workflows/validate.yml'
   pull_request:
     paths:
       - 'records/**'
       - 'schema/**'
       - 'src/**'
+      - 'requirements.txt'
+      - 'policy/**'
+      - '.github/workflows/**'
       - '.github/workflows/validate.yml'
+
+concurrency:
+  group: validate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -29,6 +39,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: requirements.txt
 
       - name: Install dependencies
         run: |

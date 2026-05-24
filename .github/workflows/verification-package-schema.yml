@@ -2,9 +2,23 @@ name: verification-package-schema
 
 on:
   pull_request:
+    paths:
+      - 'schema/**'
+      - 'records/**'
+      - 'scripts/check_verification_package_schema.py'
+      - 'policy/**'
+      - '.github/workflows/**'
+      - '.github/workflows/verification-package-schema.yml'
   push:
     branches:
       - main
+    paths:
+      - 'schema/**'
+      - 'records/**'
+      - 'scripts/check_verification_package_schema.py'
+      - 'policy/**'
+      - '.github/workflows/**'
+      - '.github/workflows/verification-package-schema.yml'
 
 permissions:
   contents: read
@@ -20,6 +34,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: 'pip'
 
       - name: Install validation dependency
         run: python -m pip install jsonschema

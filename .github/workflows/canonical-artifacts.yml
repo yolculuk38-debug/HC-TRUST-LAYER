@@ -2,9 +2,25 @@ name: Canonical Artifact Boundary Guard
 
 on:
   pull_request:
+    paths:
+      - 'records/**'
+      - 'schema/**'
+      - 'src/**'
+      - 'scripts/check_canonical_artifacts.py'
+      - 'policy/**'
+      - '.github/workflows/**'
+      - '.github/workflows/canonical-artifacts.yml'
   push:
     branches:
       - main
+    paths:
+      - 'records/**'
+      - 'schema/**'
+      - 'src/**'
+      - 'scripts/check_canonical_artifacts.py'
+      - 'policy/**'
+      - '.github/workflows/**'
+      - '.github/workflows/canonical-artifacts.yml'
 
 permissions:
   contents: read
@@ -20,6 +36,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
       - name: Canonical artifact guard
         run: python scripts/check_canonical_artifacts.py

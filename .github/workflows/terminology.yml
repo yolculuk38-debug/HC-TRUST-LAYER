@@ -2,9 +2,30 @@ name: Terminology Guard
 
 on:
   pull_request:
+    paths:
+      - 'docs/**'
+      - 'records/**'
+      - 'scripts/check_terminology.py'
+      - 'policy/**'
+      - '.github/workflows/**'
+      - '.github/workflows/terminology.yml'
   push:
     branches:
       - main
+    paths:
+      - 'docs/**'
+      - 'records/**'
+      - 'scripts/check_terminology.py'
+      - 'policy/**'
+      - '.github/workflows/**'
+      - '.github/workflows/terminology.yml'
+
+concurrency:
+  group: terminology-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   terminology:
@@ -17,6 +38,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
       - name: Run terminology guard
         run: python scripts/check_terminology.py
