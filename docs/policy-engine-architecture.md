@@ -168,4 +168,5 @@ This phase does not:
 - `docs/implementation-map.md`
 - `docs/capability-status.md`
 - Policy rules baseline: `docs/policy-rules.md`
+- Policy evaluator skeleton: `docs/policy-evaluator.md`
 

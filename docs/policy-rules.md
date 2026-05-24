@@ -112,6 +112,9 @@ This PR does **not**:
 
 ## Advisory Status
 
+Related: `docs/policy-evaluator.md` for the advisory-only policy evaluator CLI skeleton that executes path-based policy rules.
+
+
 These policy rules are currently **advisory** until runtime policy enforcement is implemented.
 
 The immediate goal is to establish stable machine-readable governance inputs now, so future enforcement can evaluate HC-TRUST-LAYER changes consistently and transparently.
