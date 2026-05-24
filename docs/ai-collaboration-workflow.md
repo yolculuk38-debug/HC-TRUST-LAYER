@@ -66,6 +66,12 @@ Other AI systems contribution scope:
 - Every PR must avoid truth-guarantee language.
 - Every PR must preserve canonical record boundary rules.
 
+## Pull Request Template
+
+Use the PR self-audit template for every contribution: [`/.github/pull_request_template.md`](../.github/pull_request_template.md).
+
+This template reinforces verification infrastructure, provenance, audit consistency, human-supervised validation, AI-assisted witness, public audit trail, and canonical record boundary checks before human review.
+
 ## Self-Audit Workflow for Every PR
 
 Each PR should be checked against these questions:
