@@ -133,3 +133,8 @@ MVP-1 UX goals:
 - `docs/verification-explorer-architecture.md`
 - `docs/provenance-viewer.md`
 - `docs/public-verification-flow.md`
+
+- `docs/core-stabilization-plan.md`
+- `docs/mvp-priority-roadmap.md`
+- `docs/trust-ux-principles.md`
+- `docs/architecture-consolidation.md`

@@ -84,3 +84,8 @@ Any expanded automation remains subject to repository-defined checks and reviewe
 - `docs/trust-impact-analysis.md`
 - `docs/verification-proposal-model.md`
 - `docs/trust-review-workflow.md`
+
+- `docs/core-stabilization-plan.md`
+- `docs/mvp-priority-roadmap.md`
+- `docs/trust-ux-principles.md`
+- `docs/architecture-consolidation.md`

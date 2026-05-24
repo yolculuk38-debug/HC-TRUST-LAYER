@@ -161,3 +161,8 @@ This foundation aligns with HC-TRUST-LAYER and HC:// terminology and preserves t
 - verification package
 - canonical record
 - human-supervised validation
+
+- `docs/core-stabilization-plan.md`
+- `docs/mvp-priority-roadmap.md`
+- `docs/trust-ux-principles.md`
+- `docs/architecture-consolidation.md`
