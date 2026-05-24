@@ -82,8 +82,8 @@ Capability interpretation is aligned with human-supervised validation and public
 - Privacy and redaction model foundation: `docs/privacy-redaction-model.md`
 - C2PA bridge considerations foundation: `docs/c2pa-bridge-considerations.md`
 
-- institutional governance foundation documented
-- evidence lifecycle foundation documented
-- trust query routing foundation documented
-- sustainability model foundation documented
-- long-term archival integrity foundation documented
+- Institutional governance foundation: `docs/institutional-governance.md`
+- Evidence retention lifecycle foundation: `docs/evidence-retention-lifecycle.md`
+- Trust query routing foundation: `docs/trust-query-routing.md`
+- Sustainability model foundation: `docs/sustainability-model.md`
+- Long-term archival integrity foundation: `docs/long-term-archival-integrity.md`

@@ -87,6 +87,11 @@ This checkpoint is documentation-only.
 - [Offline Verification Foundation](offline-verification.md)
 - [Verification Snapshot Foundation](verification-snapshots.md)
 - [AI Model Provenance Foundation](ai-model-provenance.md)
+- [Institutional Governance Foundation](institutional-governance.md)
+- [Evidence Retention Lifecycle Foundation](evidence-retention-lifecycle.md)
+- [Trust Query Routing Foundation](trust-query-routing.md)
+- [Sustainability Model Foundation](sustainability-model.md)
+- [Long-Term Archival Integrity Foundation](long-term-archival-integrity.md)
 
 - [Dispute Resolution and Challenge Architecture Foundation](dispute-challenge-architecture.md)
 - [Validator Identity Architecture Foundation](validator-identity-architecture.md)
@@ -95,8 +100,3 @@ This checkpoint is documentation-only.
 - [Privacy and Redaction Model Foundation](privacy-redaction-model.md)
 - [C2PA Bridge Considerations Foundation](c2pa-bridge-considerations.md)
 
-- institutional governance foundation documented
-- evidence retention lifecycle foundation documented
-- trust query routing foundation documented
-- sustainability model foundation documented
-- long-term archival integrity foundation documented
