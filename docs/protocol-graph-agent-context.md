@@ -208,3 +208,12 @@ This foundation preserves HC-TRUST-LAYER and HC:// terminology and aligns with:
 - audit trail
 - canonical record
 - human-supervised validation
+
+
+## Agent Workspace References
+
+- `agents/README.md`
+- `agents/chatgpt.md`
+- `agents/codex.md`
+- `agents/workflow.md`
+- `agents/task-template.md`

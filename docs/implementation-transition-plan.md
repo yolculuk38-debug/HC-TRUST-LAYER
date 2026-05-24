@@ -13,6 +13,7 @@ This transition plan is documentation-only and prepares HC:// architecture align
 - Protocol graph and agent context map foundation: `docs/protocol-graph-agent-context.md`
 - Machine-readable protocol graph index (advisory): `protocol-graph.json` and `docs/protocol-graph-index.md`
 - Verification map foundation: `docs/verification-map.md`
+- Agent workspace foundation: `agents/README.md`, `agents/chatgpt.md`, `agents/codex.md`, `agents/workflow.md`, and `agents/task-template.md`
 
 ## Constraints
 
