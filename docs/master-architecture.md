@@ -10,7 +10,7 @@ HC-TRUST-LAYER is the primary project name. Humanity Chain is referenced only as
 
 - This architecture describes verification of provenance and integrity signals.
 - Verification output supports integrity verification and provenance verification; it does not establish objective truth.
-- Some layers are currently implemented, while others remain experimental, planned, or research.
+- Some layers are currently implemented, while others remain partial, planned, or research.
 - This document is a technical foundation, not a commitment of commercial rollout.
 
 ## Six Core Layers
@@ -147,7 +147,7 @@ Current model boundaries:
 | Layer | Current status | Notes |
 |---|---|---|
 | Record Integrity Layer | implemented | Core hash, record validation, and deterministic verification logic are active in repository workflows. |
-| Witness & Signature Layer | experimental | Witness and signature capabilities exist in evolving form and are under active refinement. |
+| Witness & Signature Layer | partial | Witness and signature capabilities exist in evolving form and are under active refinement. |
 | Public Verification Layer | implemented | Public verification documentation, CLI flow, and status surfaces are available. |
 | Federation & Sync Layer | planned | Federation specifications exist; broader sync behavior and production hardening are pending. |
 | External Integration Layer | research | External ecosystem adapters and API-facing package standards are in exploratory phase. |
@@ -155,7 +155,7 @@ Current model boundaries:
 
 Status scale reference:
 - implemented
-- experimental
+- partial
 - planned
 - research
 
