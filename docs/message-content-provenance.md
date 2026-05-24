@@ -208,3 +208,11 @@ Planned architecture directions:
 - signing and witness integration for stronger attribution paths
 
 All items above are forward-looking architecture notes for HC-TRUST-LAYER verification infrastructure.
+
+
+## Related Foundations
+
+- Federation discovery foundation: `docs/federation-discovery.md`
+- Offline verification foundation: `docs/offline-verification.md`
+- Verification snapshot foundation: `docs/verification-snapshots.md`
+- AI model provenance foundation: `docs/ai-model-provenance.md`

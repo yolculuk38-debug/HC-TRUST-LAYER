@@ -157,3 +157,10 @@ This foundation aligns agent governance with HC-TRUST-LAYER verification infrast
 - conservative trust escalation
 
 These constraints prepare HC:// workflows for controlled AI assistance without transferring authority from accountable human governance.
+
+## Related Foundations
+
+- Federation discovery foundation: `docs/federation-discovery.md`
+- Offline verification foundation: `docs/offline-verification.md`
+- Verification snapshot foundation: `docs/verification-snapshots.md`
+- AI model provenance foundation: `docs/ai-model-provenance.md`
