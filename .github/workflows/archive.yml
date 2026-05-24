@@ -1,4 +1,5 @@
 name: HC-TRUST-LAYER Archive Automation
+# Security hardening defaults: least-privilege token scopes, deterministic concurrency, and bounded runtime.
 
 on:
   push:
@@ -11,8 +12,16 @@ on:
 permissions:
   contents: read
 
+
+concurrency:
+  # Cancel superseded runs on the same ref to prevent duplicate executions and non-deterministic outcomes.
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   archive-system:
+    # Bound workflow runtime to reduce abuse/DoS risk from stalled jobs.
+    timeout-minutes: 20
     runs-on: ubuntu-latest
 
     steps:
