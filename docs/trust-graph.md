@@ -220,4 +220,9 @@ This document aligns with HC:// architecture terminology and explicitly uses:
 
 - Trust decay and risk history foundation: `docs/trust-decay-risk-history.md`
 
+- Federation discovery foundation: `docs/federation-discovery.md`
+- Offline verification foundation: `docs/offline-verification.md`
+- Verification snapshot foundation: `docs/verification-snapshots.md`
+- AI model provenance foundation: `docs/ai-model-provenance.md`
+
 - Dispute resolution and challenge architecture foundation: `docs/dispute-challenge-architecture.md`
