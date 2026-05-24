@@ -82,3 +82,4 @@ This checkpoint is documentation-only.
 - [Execution Audit Trail](execution-audit-trail.md)
 - [Approval Checkpoints](approval-checkpoints.md)
 - [Message and Content Provenance Foundation](message-content-provenance.md)
+- [Trust Decay and Risk History Foundation](trust-decay-risk-history.md)
