@@ -99,6 +99,7 @@ PYTHONPATH=src python -m hc_trust.cli verify records
 - Limitations and risks: [`docs/limitations-and-risks.md`](docs/limitations-and-risks.md)
 - Record format: [`docs/record-format.md`](docs/record-format.md)
 - Architecture roadmap (planned): [`docs/architecture-roadmap.md`](docs/architecture-roadmap.md)
+- Master architecture foundation: [`docs/master-architecture.md`](docs/master-architecture.md)
 - AI-assisted review workflow: [`docs/ai-assisted-review.md`](docs/ai-assisted-review.md)
 - Reviewer registry and independent review pool: [`docs/reviewer-registry.md`](docs/reviewer-registry.md)
 - Reviewer selection principles: [`docs/reviewer-selection.md`](docs/reviewer-selection.md)
