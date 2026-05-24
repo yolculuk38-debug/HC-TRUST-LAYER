@@ -87,3 +87,7 @@ Capability interpretation is aligned with human-supervised validation and public
 - Trust query routing foundation: `docs/trust-query-routing.md`
 - Sustainability model foundation: `docs/sustainability-model.md`
 - Long-term archival integrity foundation: `docs/long-term-archival-integrity.md`
+- Trust graph data model foundation: `docs/trust-graph-data-model.md`
+- Validator capability model foundation: `docs/validator-capability-model.md`
+- Evidence continuity foundation: `docs/evidence-continuity.md`
+- Verification routing model foundation: `docs/verification-routing-model.md`

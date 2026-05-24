@@ -121,3 +121,7 @@ This foundation explicitly aligns with:
 - human-supervised validation
 - federation
 - canonical record
+- Evidence continuity foundation: `docs/evidence-continuity.md`
+- Trust graph data model foundation: `docs/trust-graph-data-model.md`
+- Validator capability model foundation: `docs/validator-capability-model.md`
+- Verification routing model foundation: `docs/verification-routing-model.md`

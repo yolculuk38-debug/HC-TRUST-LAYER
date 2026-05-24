@@ -197,3 +197,7 @@ Status scale:
 - Verification package v2 architecture foundation (documentation baseline): `docs/verification-package-v2.md`
 - Privacy and redaction model foundation (documentation baseline): `docs/privacy-redaction-model.md`
 - C2PA bridge considerations foundation (documentation baseline): `docs/c2pa-bridge-considerations.md`
+- Trust graph data model foundation (documentation baseline): `docs/trust-graph-data-model.md`
+- Validator capability model foundation (documentation baseline): `docs/validator-capability-model.md`
+- Evidence continuity foundation (documentation baseline): `docs/evidence-continuity.md`
+- Verification routing model foundation (documentation baseline): `docs/verification-routing-model.md`
