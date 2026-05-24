@@ -162,3 +162,5 @@ Status scale reference:
 ## Implementation Map
 
 For a file-level layer mapping and gap-oriented priority plan, see [`implementation-map.md`](implementation-map.md).
+
+For AI-assisted governance contribution flow and authority boundaries, see [`ai-collaboration-workflow.md`](ai-collaboration-workflow.md).
