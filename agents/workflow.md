@@ -11,6 +11,8 @@
 7. merge
 8. audit
 
+Reference model: `docs/idea-to-pr-pipeline.md`.
+
 This lifecycle preserves provenance, audit trail continuity, and human-supervised validation across HC:// changes.
 
 ## PR Risk Classes

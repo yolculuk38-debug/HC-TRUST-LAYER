@@ -20,6 +20,7 @@ This transition plan is documentation-only and prepares HC:// architecture align
 - Provenance viewer foundation: `docs/provenance-viewer.md`
 - Public verification flow foundation: `docs/public-verification-flow.md`
 - Trust workflow model foundation: `docs/trust-workflow-model.md`
+- Idea-to-PR pipeline model foundation: `docs/idea-to-pr-pipeline.md`
 - Trust graph viewer foundation: `docs/trust-graph-viewer.md`
 
 ## Constraints

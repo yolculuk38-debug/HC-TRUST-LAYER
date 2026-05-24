@@ -42,3 +42,8 @@ List exact commands/checks to run and expected pass criteria.
 ## Commit Message
 
 Provide a proposed conventional-style commit message.
+
+
+## Idea-to-PR Reference
+
+For idea intake, classification, risk scoring, and controlled PR routing guidance, reference `docs/idea-to-pr-pipeline.md`.

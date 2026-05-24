@@ -225,3 +225,4 @@ Reference:
 - `agents/codex.md`
 - `agents/workflow.md`
 - `agents/task-template.md`
+- `docs/idea-to-pr-pipeline.md`
