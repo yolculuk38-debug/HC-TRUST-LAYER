@@ -102,6 +102,7 @@ PYTHONPATH=src python -m hc_trust.cli verify records
 - Master architecture foundation: [`docs/master-architecture.md`](docs/master-architecture.md)
 - Implementation map (layer-to-code status): [`docs/implementation-map.md`](docs/implementation-map.md)
 - AI-assisted review workflow: [`docs/ai-assisted-review.md`](docs/ai-assisted-review.md)
+- AI collaboration and contribution workflow: [`docs/ai-collaboration-workflow.md`](docs/ai-collaboration-workflow.md)
 - Reviewer registry and independent review pool: [`docs/reviewer-registry.md`](docs/reviewer-registry.md)
 - Reviewer selection principles: [`docs/reviewer-selection.md`](docs/reviewer-selection.md)
 - Release automation plan: [`docs/release-automation.md`](docs/release-automation.md)

@@ -159,3 +159,4 @@ Status scale:
 
 - Master architecture baseline: `docs/master-architecture.md`
 - Protocol and verification docs: `docs/PROTOCOL.md`, `docs/verify.md`, `docs/VERIFICATION.md`
+- AI collaboration workflow: `docs/ai-collaboration-workflow.md`
