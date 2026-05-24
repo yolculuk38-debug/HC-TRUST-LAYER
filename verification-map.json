@@ -1,0 +1,344 @@
+{
+  "project": {
+    "id": "project",
+    "title": "HC-TRUST-LAYER Project Verification Context",
+    "purpose": "Define repository-level HC:// verification map scope, terminology baseline, and trust-kernel navigation context.",
+    "status": "documentation-foundation",
+    "docs": [
+      "AGENTS.md",
+      "docs/verification-map.md",
+      "docs/implementation-transition-plan.md"
+    ],
+    "risk_level": "medium",
+    "human_review_required": true,
+    "related_components": [
+      "protocol_graph",
+      "agent_workspace",
+      "public_verification"
+    ],
+    "validation_notes": "Advisory-only documentation metadata; no runtime enforcement in this phase."
+  },
+  "canonical_records": {
+    "id": "canonical_records",
+    "title": "Canonical Record Boundaries",
+    "purpose": "Map schema and deterministic record identity surfaces that preserve canonical record continuity and provenance.",
+    "status": "documented",
+    "docs": [
+      "docs/canonical-record-boundary.md",
+      "docs/record-format.md",
+      "schema/record-v1.schema.json"
+    ],
+    "risk_level": "high",
+    "human_review_required": true,
+    "related_components": [
+      "hash_validation",
+      "validators",
+      "verification_packages"
+    ],
+    "validation_notes": "Any boundary impact requires explicit human-supervised validation and canonical artifact continuity checks."
+  },
+  "hash_validation": {
+    "id": "hash_validation",
+    "title": "Hash Validation Continuity",
+    "purpose": "Track hash-linked artifact and record continuity assumptions used by verification flows.",
+    "status": "documented",
+    "docs": [
+      "docs/record-format.md",
+      "docs/evidence-continuity.md",
+      "docs/verification-result-standard.md"
+    ],
+    "risk_level": "high",
+    "human_review_required": true,
+    "related_components": [
+      "canonical_records",
+      "verification_snapshots",
+      "replay_detection"
+    ],
+    "validation_notes": "Do not claim cryptographic guarantees beyond implemented repository evidence and tests."
+  },
+  "validators": {
+    "id": "validators",
+    "title": "Validator Execution Surfaces",
+    "purpose": "Index validator responsibilities, result normalization, and verification lifecycle boundaries.",
+    "status": "documented",
+    "docs": [
+      "docs/public-validator.md",
+      "docs/validator-capability-model.md",
+      "docs/verify.md"
+    ],
+    "risk_level": "high",
+    "human_review_required": true,
+    "related_components": [
+      "policy_evaluator",
+      "verification_packages",
+      "public_verification"
+    ],
+    "validation_notes": "This index does not alter validator logic, runtime behavior, or workflow gates."
+  },
+  "policy_evaluator": {
+    "id": "policy_evaluator",
+    "title": "Policy Evaluator Decision Boundaries",
+    "purpose": "Map policy interpretation surfaces and decision-path documentation for verification routing.",
+    "status": "documented",
+    "docs": [
+      "docs/policy-evaluator.md",
+      "docs/policy-engine-architecture.md",
+      "docs/policy-rules.md"
+    ],
+    "risk_level": "high",
+    "human_review_required": true,
+    "related_components": [
+      "validators",
+      "dispute_challenge",
+      "federation"
+    ],
+    "validation_notes": "Policy-impacting edits require declared decision-path differences and audit trail continuity review."
+  },
+  "verification_packages": {
+    "id": "verification_packages",
+    "title": "Verification Package Artifacts",
+    "purpose": "Index portable evidence package documentation used for reproducible verification and export boundaries.",
+    "status": "documented",
+    "docs": [
+      "docs/verification-package-spec.md",
+      "docs/verification-package-format.md",
+      "docs/verification-package-validation.md"
+    ],
+    "risk_level": "medium",
+    "human_review_required": true,
+    "related_components": [
+      "canonical_records",
+      "validators",
+      "public_verification"
+    ],
+    "validation_notes": "Documentation-only index; no schema or package format contract changes are introduced here."
+  },
+  "signing": {
+    "id": "signing",
+    "title": "Signing and Trust Anchor Boundaries",
+    "purpose": "Capture signing architecture references and trust anchor semantics relevant to HC:// verification.",
+    "status": "documented",
+    "docs": [
+      "docs/signing-architecture.md",
+      "docs/signed-witness-model.md",
+      "docs/witness-layer.md"
+    ],
+    "risk_level": "high",
+    "human_review_required": true,
+    "related_components": [
+      "canonical_records",
+      "validators",
+      "public_verification"
+    ],
+    "validation_notes": "Any signing or trust-anchor semantic change requires escalated human-supervised validation."
+  },
+  "trust_graph": {
+    "id": "trust_graph",
+    "title": "Trust Graph Navigation",
+    "purpose": "Index trust relationship and routing context documentation for impact analysis and review boundaries.",
+    "status": "documented",
+    "docs": [
+      "docs/trust-graph.md",
+      "docs/trust-graph-data-model.md",
+      "docs/trust-query-routing.md"
+    ],
+    "risk_level": "medium",
+    "human_review_required": true,
+    "related_components": [
+      "protocol_graph",
+      "policy_evaluator",
+      "federation"
+    ],
+    "validation_notes": "Advisory navigation only; trust scoring or runtime routing behavior is not modified."
+  },
+  "protocol_graph": {
+    "id": "protocol_graph",
+    "title": "Protocol Graph Orientation",
+    "purpose": "Connect machine-readable protocol graph metadata with human-readable trust-kernel architecture references.",
+    "status": "documented",
+    "docs": [
+      "protocol-graph.json",
+      "docs/protocol-graph-index.md",
+      "docs/protocol-graph-agent-context.md"
+    ],
+    "risk_level": "medium",
+    "human_review_required": true,
+    "related_components": [
+      "trust_graph",
+      "agent_workspace",
+      "project"
+    ],
+    "validation_notes": "Protocol graph metadata remains advisory and does not enforce runtime behavior."
+  },
+  "dispute_challenge": {
+    "id": "dispute_challenge",
+    "title": "Dispute and Challenge Pathways",
+    "purpose": "Index governance and review pathways for contested records and supersession decisions.",
+    "status": "documented",
+    "docs": [
+      "docs/dispute-challenge-architecture.md",
+      "docs/GOVERNANCE.md",
+      "docs/reviewer-selection.md"
+    ],
+    "risk_level": "high",
+    "human_review_required": true,
+    "related_components": [
+      "policy_evaluator",
+      "canonical_records",
+      "public_verification"
+    ],
+    "validation_notes": "No dispute automation claims; human-supervised adjudication remains required."
+  },
+  "replay_detection": {
+    "id": "replay_detection",
+    "title": "Replay and Duplicate Detection",
+    "purpose": "Map replay/duplicate verification references for audit trail continuity and risk triage.",
+    "status": "documented",
+    "docs": [
+      "docs/replay-duplicate-detection.md",
+      "docs/risk-triage-architecture.md",
+      "docs/verification-routing-model.md"
+    ],
+    "risk_level": "medium",
+    "human_review_required": true,
+    "related_components": [
+      "hash_validation",
+      "dispute_challenge",
+      "validators"
+    ],
+    "validation_notes": "Index only; no replay detection algorithm changes or runtime controls are introduced."
+  },
+  "federation": {
+    "id": "federation",
+    "title": "Federation Discovery and Sync",
+    "purpose": "Index multi-node federation boundaries for discovery, sync, and trust-routing context.",
+    "status": "documented",
+    "docs": [
+      "docs/federation-discovery.md",
+      "docs/federation-architecture.md",
+      "docs/federation-sync.md"
+    ],
+    "risk_level": "high",
+    "human_review_required": true,
+    "related_components": [
+      "policy_evaluator",
+      "trust_graph",
+      "public_verification"
+    ],
+    "validation_notes": "No live federation guarantees are implied; documentation reflects current repository evidence."
+  },
+  "offline_verification": {
+    "id": "offline_verification",
+    "title": "Offline Verification Continuity",
+    "purpose": "Map offline verification constraints and continuity boundaries without network dependency.",
+    "status": "documented",
+    "docs": [
+      "docs/offline-verification.md",
+      "docs/export-import-verification.md",
+      "docs/verification-package-validation.md"
+    ],
+    "risk_level": "medium",
+    "human_review_required": true,
+    "related_components": [
+      "verification_packages",
+      "hash_validation",
+      "public_verification"
+    ],
+    "validation_notes": "Offline paths remain documentation-defined and do not add runtime guarantees in this index."
+  },
+  "verification_snapshots": {
+    "id": "verification_snapshots",
+    "title": "Verification Snapshot References",
+    "purpose": "Index reproducible verification state checkpoint references for audit and comparison.",
+    "status": "documented",
+    "docs": [
+      "docs/verification-snapshots.md",
+      "docs/evidence-retention-lifecycle.md",
+      "docs/execution-audit-trail.md"
+    ],
+    "risk_level": "medium",
+    "human_review_required": true,
+    "related_components": [
+      "hash_validation",
+      "canonical_records",
+      "replay_detection"
+    ],
+    "validation_notes": "Snapshot references are advisory and do not enforce runtime snapshot policies."
+  },
+  "message_content_provenance": {
+    "id": "message_content_provenance",
+    "title": "Message and Content Provenance",
+    "purpose": "Track message/content lineage surfaces used to interpret verification and provenance continuity.",
+    "status": "documented",
+    "docs": [
+      "docs/message-content-provenance.md",
+      "docs/PROVENANCE.md",
+      "docs/evidence-continuity.md"
+    ],
+    "risk_level": "medium",
+    "human_review_required": true,
+    "related_components": [
+      "ai_model_provenance",
+      "verification_packages",
+      "dispute_challenge"
+    ],
+    "validation_notes": "No autonomous provenance adjudication is introduced by this metadata index."
+  },
+  "ai_model_provenance": {
+    "id": "ai_model_provenance",
+    "title": "AI Model Provenance",
+    "purpose": "Index model-context lineage documentation that informs human-supervised verification interpretation.",
+    "status": "documented",
+    "docs": [
+      "docs/ai-model-provenance.md",
+      "docs/ai-assisted-review.md",
+      "docs/ai-collaboration-workflow.md"
+    ],
+    "risk_level": "medium",
+    "human_review_required": true,
+    "related_components": [
+      "message_content_provenance",
+      "agent_workspace",
+      "policy_evaluator"
+    ],
+    "validation_notes": "Model provenance references are advisory and do not create autonomous governance finality."
+  },
+  "agent_workspace": {
+    "id": "agent_workspace",
+    "title": "Agent Workspace Context",
+    "purpose": "Map repository-native agent context guidance, task routing, and documentation-first collaboration boundaries.",
+    "status": "documented",
+    "docs": [
+      "agents/README.md",
+      "agents/workflow.md",
+      "agents/task-template.md"
+    ],
+    "risk_level": "medium",
+    "human_review_required": true,
+    "related_components": [
+      "project",
+      "protocol_graph",
+      "public_verification"
+    ],
+    "validation_notes": "Agent outputs remain advisory and require human-supervised validation for non-trivial trust-kernel impacts."
+  },
+  "public_verification": {
+    "id": "public_verification",
+    "title": "Public Verification Surfaces",
+    "purpose": "Index external verification-facing API and routing documentation for boundary-aware review.",
+    "status": "documented",
+    "docs": [
+      "docs/public-verification-api.md",
+      "docs/api/verification-api-v1.md",
+      "docs/public-verification-routing.md"
+    ],
+    "risk_level": "high",
+    "human_review_required": true,
+    "related_components": [
+      "validators",
+      "policy_evaluator",
+      "federation"
+    ],
+    "validation_notes": "No production-readiness claim is made; this index does not alter API behavior or enforcement."
+  }
+}

@@ -185,7 +185,7 @@ It provides documentation metadata for:
 
 This index is advisory and documentation-only. It does not implement runtime enforcement.
 
-See also: `docs/protocol-graph-index.md`.
+See also: `docs/protocol-graph-index.md`, `verification-map.json`, and `docs/verification-map-index.md`.
 
 ## Scope and Constraints
 

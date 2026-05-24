@@ -114,6 +114,13 @@ Changes that affect policy interpretation or routing must:
 
 Use these as advisory navigation aids alongside the verification map and protocol graph documentation.
 
+## Machine-readable Verification Map Index
+
+- `verification-map.json`
+- `docs/verification-map-index.md`
+
+Use these as advisory navigation aids alongside `docs/verification-map.md` and protocol graph documentation.
+
 ## Protocol Graph Integrity and Anti-Spoofing References
 
 - `docs/protocol-graph-integrity.md`
