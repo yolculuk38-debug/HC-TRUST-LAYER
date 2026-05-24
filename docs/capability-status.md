@@ -63,4 +63,5 @@ Capability interpretation is aligned with human-supervised validation and public
 ## Related Governance Reference
 
 - Trusted auto-merge governance model: `docs/trusted-auto-merge.md`
+- Policy engine architecture: `docs/policy-engine-architecture.md`
 
