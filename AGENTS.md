@@ -144,3 +144,7 @@ Use these as advisory navigation aids that connect protocol graph and verificati
 - `agents/codex.md`
 - `agents/workflow.md`
 - `agents/task-template.md`
+- `docs/trust-pr-engine.md`
+- `docs/trust-impact-analysis.md`
+- `docs/verification-proposal-model.md`
+- `docs/trust-review-workflow.md`

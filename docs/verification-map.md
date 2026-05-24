@@ -226,3 +226,7 @@ Reference:
 - `agents/workflow.md`
 - `agents/task-template.md`
 - `docs/idea-to-pr-pipeline.md`
+- `docs/trust-pr-engine.md`
+- `docs/trust-impact-analysis.md`
+- `docs/verification-proposal-model.md`
+- `docs/trust-review-workflow.md`

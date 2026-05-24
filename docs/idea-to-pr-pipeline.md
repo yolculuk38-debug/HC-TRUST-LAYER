@@ -190,3 +190,7 @@ When ideas are unsuitable for immediate implementation:
 - `docs/verification-map.md`
 - `docs/trust-workflow-model.md`
 - `docs/implementation-transition-plan.md`
+- `docs/trust-pr-engine.md`
+- `docs/trust-impact-analysis.md`
+- `docs/verification-proposal-model.md`
+- `docs/trust-review-workflow.md`

@@ -190,3 +190,7 @@ This is an architectural model surface and does not assert production signing co
 - `docs/dispute-challenge-architecture.md`
 - `docs/execution-audit-trail.md`
 - `docs/idea-to-pr-pipeline.md`
+- `docs/trust-pr-engine.md`
+- `docs/trust-impact-analysis.md`
+- `docs/verification-proposal-model.md`
+- `docs/trust-review-workflow.md`

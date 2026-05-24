@@ -84,3 +84,7 @@ Any future expansion remains subject to documentation-first review and explicit 
 
 - `trust-kernel-index.json`
 - `docs/trust-kernel-index.md`
+- `docs/trust-pr-engine.md`
+- `docs/trust-impact-analysis.md`
+- `docs/verification-proposal-model.md`
+- `docs/trust-review-workflow.md`

@@ -44,3 +44,7 @@ This lifecycle preserves provenance, audit trail continuity, and human-supervise
   - Federation and routing reviewers confirm interoperability boundaries, consistency assumptions, and multi-node audit trail continuity.
 - **public API**
   - API contract reviewers confirm backward compatibility, consumer impact, and versioning expectations.
+- `docs/trust-pr-engine.md`
+- `docs/trust-impact-analysis.md`
+- `docs/verification-proposal-model.md`
+- `docs/trust-review-workflow.md`
