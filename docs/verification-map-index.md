@@ -61,3 +61,6 @@ Any future automation remains subject to explicit repository validation and revi
 - `docs/implementation-transition-plan.md`
 - `AGENTS.md`
 - `agents/README.md`
+
+- `trust-kernel-index.json`
+- `docs/trust-kernel-index.md`
