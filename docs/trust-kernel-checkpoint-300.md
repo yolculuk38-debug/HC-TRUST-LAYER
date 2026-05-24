@@ -94,3 +94,9 @@ This checkpoint is documentation-only.
 - [Verification Package v2 Architecture Foundation](verification-package-v2.md)
 - [Privacy and Redaction Model Foundation](privacy-redaction-model.md)
 - [C2PA Bridge Considerations Foundation](c2pa-bridge-considerations.md)
+
+- institutional governance foundation documented
+- evidence retention lifecycle foundation documented
+- trust query routing foundation documented
+- sustainability model foundation documented
+- long-term archival integrity foundation documented

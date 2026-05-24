@@ -100,3 +100,13 @@ This document aligns with HC:// terminology and uses:
 - trust graph
 - human-supervised validation
 - verification infrastructure
+- evidence lifecycle
+- trust query
+- archival integrity
+- canonical record
+
+## Related Documents
+
+- Evidence retention lifecycle foundation: `docs/evidence-retention-lifecycle.md`
+- Long-term archival integrity foundation: `docs/long-term-archival-integrity.md`
+- Trust query routing foundation: `docs/trust-query-routing.md`

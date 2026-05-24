@@ -238,3 +238,7 @@ This architecture baseline explicitly aligns with:
 - Message/content provenance foundation: `docs/message-content-provenance.md`
 - Implementation map: `docs/implementation-map.md`
 - Capability status matrix: `docs/capability-status.md`
+- Institutional governance foundation: `docs/institutional-governance.md`
+- Evidence retention lifecycle foundation: `docs/evidence-retention-lifecycle.md`
+- Trust query routing foundation: `docs/trust-query-routing.md`
+- Long-term archival integrity foundation: `docs/long-term-archival-integrity.md`
