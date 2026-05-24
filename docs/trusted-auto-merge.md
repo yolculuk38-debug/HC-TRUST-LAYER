@@ -148,3 +148,5 @@ Policy enforcement must remain transparent, auditable, and bounded by canonical 
 ## Related Architecture Reference
 
 - Policy engine architecture: `docs/policy-engine-architecture.md`
+- Policy rules baseline: `docs/policy-rules.md`
+

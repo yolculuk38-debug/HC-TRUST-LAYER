@@ -170,4 +170,5 @@ Status scale:
 
 - Trusted auto-merge governance model: `docs/trusted-auto-merge.md`
 - Policy engine architecture: `docs/policy-engine-architecture.md`
+- Policy rules baseline: `docs/policy-rules.md`
 

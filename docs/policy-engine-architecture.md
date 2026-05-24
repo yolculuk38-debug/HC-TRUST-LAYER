@@ -167,3 +167,5 @@ This phase does not:
 - `docs/public-verification-api.md`
 - `docs/implementation-map.md`
 - `docs/capability-status.md`
+- Policy rules baseline: `docs/policy-rules.md`
+
