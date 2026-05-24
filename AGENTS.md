@@ -133,6 +133,7 @@ Use these as advisory navigation aids that connect protocol graph and verificati
 - `docs/protocol-graph-integrity.md`
 - `docs/anti-spoofing-foundations.md`
 - `docs/trusted-relationship-model.md`
+- `docs/trust-workflow-model.md`
 
 
 ## Agent Workspace References

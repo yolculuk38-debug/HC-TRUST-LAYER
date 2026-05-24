@@ -99,6 +99,7 @@ This checkpoint is documentation-only.
 - [Verification Explorer Architecture Foundation](verification-explorer-architecture.md)
 - [Provenance Viewer Foundation](provenance-viewer.md)
 - [Public Verification Flow Foundation](public-verification-flow.md)
+- [Trust Workflow Model Foundation](trust-workflow-model.md)
 - [Trust Graph Viewer Foundation](trust-graph-viewer.md)
 - [Verification Scenario Library Foundation](verification-scenarios.md)
 - [Demo Verification Flow Foundation](demo-verification-flow.md)

@@ -19,6 +19,7 @@ This transition plan is documentation-only and prepares HC:// architecture align
 - Verification explorer architecture foundation: `docs/verification-explorer-architecture.md`
 - Provenance viewer foundation: `docs/provenance-viewer.md`
 - Public verification flow foundation: `docs/public-verification-flow.md`
+- Trust workflow model foundation: `docs/trust-workflow-model.md`
 - Trust graph viewer foundation: `docs/trust-graph-viewer.md`
 
 ## Constraints
