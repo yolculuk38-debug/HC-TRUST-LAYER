@@ -162,3 +162,8 @@ Humanity Chain may appear as historical/origin project context only.
 - Validator capability model foundation: [`docs/validator-capability-model.md`](docs/validator-capability-model.md)
 - Evidence continuity foundation: [`docs/evidence-continuity.md`](docs/evidence-continuity.md)
 - Verification routing model foundation: [`docs/verification-routing-model.md`](docs/verification-routing-model.md)
+
+- Core stabilization and MVP focus plan: [`docs/core-stabilization-plan.md`](docs/core-stabilization-plan.md)
+- MVP priority roadmap: [`docs/mvp-priority-roadmap.md`](docs/mvp-priority-roadmap.md)
+- Trust UX principles: [`docs/trust-ux-principles.md`](docs/trust-ux-principles.md)
+- Architecture consolidation guidance: [`docs/architecture-consolidation.md`](docs/architecture-consolidation.md)

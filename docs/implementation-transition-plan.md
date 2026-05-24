@@ -37,3 +37,8 @@ This transition plan is documentation-only and prepares HC:// architecture align
 ## Terminology Alignment
 
 This plan aligns with HC-TRUST-LAYER and HC:// terminology, including trust graph, provenance, verification routing, validator capability, evidence continuity, audit trail, federation, canonical record, and human-supervised validation.
+
+- Core stabilization and MVP focus plan: `docs/core-stabilization-plan.md`
+- MVP priority roadmap: `docs/mvp-priority-roadmap.md`
+- Trust UX principles: `docs/trust-ux-principles.md`
+- Architecture consolidation guidance: `docs/architecture-consolidation.md`
