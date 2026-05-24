@@ -168,3 +168,5 @@ For cross-capability status across implemented, partial, planned, research, and 
 For the verification package draft format and non-canonical transport boundary, see [`verification-package-format.md`](verification-package-format.md).
 
 For AI-assisted governance contribution flow and authority boundaries, see [`ai-collaboration-workflow.md`](ai-collaboration-workflow.md).
+
+For public verification API architecture planning and endpoint-safety semantics, see [`public-verification-api.md`](public-verification-api.md).
