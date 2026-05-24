@@ -156,3 +156,42 @@ Deterministic generation improves audit trail consistency for HC:// verification
 - verification package validation semantics: `docs/verification-package-validation.md`
 - implementation maturity map: `docs/implementation-map.md`
 - capability status matrix: `docs/capability-status.md`
+
+## Exporter Skeleton Usage (Non-Production)
+
+A safe **exporter skeleton** is available at `scripts/export_verification_package.py` for HC-TRUST-LAYER.
+
+### Safety scope
+
+- accepts only canonical record JSON paths under:
+  - `records/pending/*.json`
+  - `records/verified/*.json`
+  - `records/archived/*.json`
+- rejects generated/index/export/cache artifact paths
+- reads canonical record as input only (no mutation)
+- emits a **verification package** as a **derived artifact** (**non-canonical**)
+- schema-validates against `schema/verification-package-v1.schema.json` when optional validation dependency is available
+- prints package JSON to stdout by default
+- writes to disk only when `--output` is provided and the output is under `examples/generated/`
+
+### Explicit warnings in output
+
+The exporter skeleton includes explicit warnings that:
+
+- this is an exporter skeleton
+- package output is derived and non-canonical
+- signatures are not yet implemented
+
+### Example commands
+
+```bash
+python3 scripts/export_verification_package.py records/pending/HC-EXAMPLE-2026-0001.json
+```
+
+```bash
+python3 scripts/export_verification_package.py \
+  records/pending/HC-EXAMPLE-2026-0001.json \
+  --output examples/generated/HC-EXAMPLE-2026-0001.package.json
+```
+
+This workflow supports integrity verification and portability for HC:// contexts while preserving canonical record authority boundaries.
