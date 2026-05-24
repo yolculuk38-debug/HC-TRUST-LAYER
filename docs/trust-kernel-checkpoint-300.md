@@ -78,3 +78,6 @@ This checkpoint is documentation-only.
 - [Implementation Map](implementation-map.md)
 - [Capability Status Matrix](capability-status.md)
 - [Master Architecture](master-architecture.md)
+- [Agent Governance](agent-governance.md)
+- [Execution Audit Trail](execution-audit-trail.md)
+- [Approval Checkpoints](approval-checkpoints.md)

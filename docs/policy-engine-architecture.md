@@ -167,6 +167,9 @@ This phase does not:
 - `docs/public-verification-api.md`
 - `docs/implementation-map.md`
 - `docs/capability-status.md`
+- `docs/agent-governance.md`
+- `docs/execution-audit-trail.md`
+- `docs/approval-checkpoints.md`
 - Policy rules baseline: `docs/policy-rules.md`
 - Policy evaluator skeleton: `docs/policy-evaluator.md`
 - Advisory policy workflow integration: `docs/policy-workflow-integration.md`
