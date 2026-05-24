@@ -60,3 +60,7 @@ Capability interpretation is aligned with human-supervised validation and public
 - Verification package generation architecture: `docs/verification-package-generation.md`
 - Public verification API architecture draft: `docs/public-verification-api.md`
 
+## Related Governance Reference
+
+- Trusted auto-merge governance model: `docs/trusted-auto-merge.md`
+
