@@ -102,6 +102,7 @@ PYTHONPATH=src python -m hc_trust.cli verify records
 - Master architecture foundation: [`docs/master-architecture.md`](docs/master-architecture.md)
 - Implementation map (layer-to-code status): [`docs/implementation-map.md`](docs/implementation-map.md)
 - Capability status matrix: [`docs/capability-status.md`](docs/capability-status.md)
+- Trust kernel stabilization checkpoint (PR #300): [`docs/trust-kernel-checkpoint-300.md`](docs/trust-kernel-checkpoint-300.md)
 - AI-assisted review workflow: [`docs/ai-assisted-review.md`](docs/ai-assisted-review.md)
 - AI collaboration and contribution workflow: [`docs/ai-collaboration-workflow.md`](docs/ai-collaboration-workflow.md)
 - Reviewer registry and independent review pool: [`docs/reviewer-registry.md`](docs/reviewer-registry.md)
