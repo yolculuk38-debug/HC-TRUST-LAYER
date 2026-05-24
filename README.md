@@ -96,6 +96,7 @@ PYTHONPATH=src python -m hc_trust.cli verify records
 - Trust decay and risk history foundation: [`docs/trust-decay-risk-history.md`](docs/trust-decay-risk-history.md)
 - Message and content provenance foundation: [`docs/message-content-provenance.md`](docs/message-content-provenance.md)
 - Signing architecture foundation: [`docs/signing-architecture.md`](docs/signing-architecture.md)
+- Dispute resolution and challenge architecture foundation: [`docs/dispute-challenge-architecture.md`](docs/dispute-challenge-architecture.md)
 - Verification levels model: [`docs/verification-levels.md`](docs/verification-levels.md)
 - Glossary and naming hierarchy: [`docs/glossary.md`](docs/glossary.md)
 - Trust scoring: [`docs/trust-scoring.md`](docs/trust-scoring.md)

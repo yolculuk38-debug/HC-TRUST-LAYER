@@ -181,3 +181,5 @@ Status scale:
 - Approval checkpoints baseline: `docs/approval-checkpoints.md`
 - Policy rules baseline: `docs/policy-rules.md`
 - Repository security audit checklist: `docs/repo-security-audit.md`
+
+- Dispute resolution and challenge architecture foundation (documentation baseline): `docs/dispute-challenge-architecture.md`

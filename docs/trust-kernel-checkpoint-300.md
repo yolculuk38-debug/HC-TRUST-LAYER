@@ -83,3 +83,5 @@ This checkpoint is documentation-only.
 - [Approval Checkpoints](approval-checkpoints.md)
 - [Message and Content Provenance Foundation](message-content-provenance.md)
 - [Trust Decay and Risk History Foundation](trust-decay-risk-history.md)
+
+- [Dispute Resolution and Challenge Architecture Foundation](dispute-challenge-architecture.md)

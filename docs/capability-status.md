@@ -67,6 +67,7 @@ Capability interpretation is aligned with human-supervised validation and public
 - Trust decay and risk history foundation (documentation baseline): `docs/trust-decay-risk-history.md`
 - Message/content provenance foundation (documentation baseline): `docs/message-content-provenance.md`
 - Signing architecture foundation (documentation baseline): `docs/signing-architecture.md`
+- Dispute resolution and challenge architecture foundation (documentation baseline): `docs/dispute-challenge-architecture.md`
 - Verification levels model (documentation baseline): `docs/verification-levels.md`
 
 ## Related Governance Reference
