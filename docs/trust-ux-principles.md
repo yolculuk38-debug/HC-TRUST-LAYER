@@ -70,3 +70,7 @@ Verification concepts should remain accessible through:
 - `docs/mvp-priority-roadmap.md`
 - `docs/mvp-1-ui-principles.md`
 - `docs/verification-map.md`
+
+- `docs/trust-result-standard.md`
+- `docs/verification-status-ux.md`
+- `docs/replay-warning-standard.md`

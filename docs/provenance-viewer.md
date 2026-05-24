@@ -108,3 +108,9 @@ Provenance continuity concepts include:
 ## Terminology Alignment
 
 This foundation preserves HC-TRUST-LAYER and HC:// terminology, including provenance, audit trail, verification package, canonical record, trust graph, and human-supervised validation.
+
+
+## Related References
+
+- `docs/provenance-timeline-format.md`
+- `docs/trust-result-standard.md`

@@ -89,3 +89,7 @@ Any expanded automation remains subject to repository-defined checks and reviewe
 - `docs/mvp-priority-roadmap.md`
 - `docs/trust-ux-principles.md`
 - `docs/architecture-consolidation.md`
+- `docs/trust-result-standard.md`
+- `docs/verification-status-ux.md`
+- `docs/provenance-timeline-format.md`
+- `docs/replay-warning-standard.md`

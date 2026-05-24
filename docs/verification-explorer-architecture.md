@@ -166,3 +166,9 @@ This foundation aligns with HC-TRUST-LAYER and HC:// terminology and preserves t
 - `docs/mvp-priority-roadmap.md`
 - `docs/trust-ux-principles.md`
 - `docs/architecture-consolidation.md`
+
+## Related References
+
+- `docs/trust-result-standard.md`
+- `docs/verification-status-ux.md`
+- `docs/provenance-timeline-format.md`

@@ -138,3 +138,10 @@ MVP-1 UX goals:
 - `docs/mvp-priority-roadmap.md`
 - `docs/trust-ux-principles.md`
 - `docs/architecture-consolidation.md`
+
+## Related References
+
+- `docs/trust-result-standard.md`
+- `docs/verification-status-ux.md`
+- `docs/provenance-timeline-format.md`
+- `docs/replay-warning-standard.md`

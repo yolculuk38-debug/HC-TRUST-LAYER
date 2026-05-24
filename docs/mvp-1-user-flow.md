@@ -56,3 +56,11 @@ MVP-1 trust result concepts should remain simple and non-absolute:
 - `UNKNOWN`: not enough evidence in displayed scope for a stronger result
 
 All states are advisory and require human-supervised validation for high-impact decisions.
+
+
+## Related References
+
+- `docs/trust-result-standard.md`
+- `docs/verification-status-ux.md`
+- `docs/provenance-timeline-format.md`
+- `docs/replay-warning-standard.md`
