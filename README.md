@@ -124,6 +124,7 @@ PYTHONPATH=src python -m hc_trust.cli verify records
 - Capability status matrix: [`docs/capability-status.md`](docs/capability-status.md)
 - Trust kernel stabilization checkpoint (PR #300): [`docs/trust-kernel-checkpoint-300.md`](docs/trust-kernel-checkpoint-300.md)
 - Protocol graph and agent context map foundation: [`docs/protocol-graph-agent-context.md`](docs/protocol-graph-agent-context.md)
+- Verification map foundation: [`docs/verification-map.md`](docs/verification-map.md)
 - Agent governance foundation: [`docs/agent-governance.md`](docs/agent-governance.md)
 - Execution audit trail foundation: [`docs/execution-audit-trail.md`](docs/execution-audit-trail.md)
 - Approval checkpoints baseline: [`docs/approval-checkpoints.md`](docs/approval-checkpoints.md)
