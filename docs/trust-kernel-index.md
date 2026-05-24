@@ -74,6 +74,10 @@ Any expanded automation remains subject to repository-defined checks and reviewe
 - `docs/verification-map-index.md`
 - `docs/protocol-graph-agent-context.md`
 - `docs/implementation-transition-plan.md`
+- `docs/mvp-1-verification-package-viewer.md`
+- `docs/mvp-1-user-flow.md`
+- `docs/mvp-1-ui-principles.md`
+- `docs/mvp-1-boundaries.md`
 - `AGENTS.md`
 - `agents/README.md`
 - `docs/trust-pr-engine.md`

@@ -100,6 +100,10 @@ Provenance continuity concepts include:
 
 - `docs/verification-scenarios.md`
 - `docs/demo-verification-flow.md`
+- `docs/mvp-1-verification-package-viewer.md`
+- `docs/mvp-1-user-flow.md`
+- `docs/mvp-1-ui-principles.md`
+- `docs/mvp-1-boundaries.md`
 
 ## Terminology Alignment
 
