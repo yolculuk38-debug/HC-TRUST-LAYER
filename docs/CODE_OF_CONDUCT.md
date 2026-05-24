@@ -24,4 +24,4 @@ Project maintainers may remove harmful content or restrict participation when ne
 
 ## Mission
 
-HC-TRUST-LAYER exists to explore transparent human-AI coordination through open documentation and verification systems, while Humanity Chain remains the origin ecosystem context.
+HC-TRUST-LAYER exists to explore transparent human-AI coordination through open documentation and verification systems, while origin archive remains the origin ecosystem context.

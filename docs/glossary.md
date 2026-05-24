@@ -4,7 +4,7 @@ This glossary defines the core naming structure and terms used in this repositor
 
 ## Naming Hierarchy
 
-- **Humanity Chain**: project origin and umbrella context.
+- **origin archive**: project origin and umbrella context.
 - **HC://**: protocol identifier.
 - **HC-TRUST-LAYER**: primary technical brand for the trust and verification infrastructure built around HC://.
 

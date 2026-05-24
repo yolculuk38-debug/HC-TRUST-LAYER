@@ -154,7 +154,7 @@ Required baseline language for this workflow:
 
 - Main brand: HC-TRUST-LAYER
 - Protocol short name: HC://
-- Historical/origin context only: Humanity Chain
+- Historical/origin context only: origin archive
 - Preferred framing: verification infrastructure, provenance infrastructure, public audit trail, human-supervised validation, AI-assisted witness, repo-visible evidence, canonical record boundary
 
 Avoid language that implies final truth authority, including:

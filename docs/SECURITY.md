@@ -17,9 +17,9 @@ Users should verify:
 
 ## Official Source
 
-Official records should point to:
+Official records should point to the HC-TRUST-LAYER canonical repository:
 
-github.com/yolculuk38-debug/Insanlik-Zinciri
+github.com/yolculuk38-debug/HC-TRUST-LAYER
 
 ## Anti-Spoofing Logic
 
