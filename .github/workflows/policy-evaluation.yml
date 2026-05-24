@@ -58,12 +58,12 @@ jobs:
 
           if [ "$EVAL_EXIT" -ne 0 ]; then
             echo "::warning::Advisory policy evaluation parsing failure detected; defaulting recommendation to human_review_required."
-            cat <<'EOF' > policy_summary.txt
-risk_level=high
-affected_categories=unknown
-recommended_merge_outcome=human_review_required
-notes=Evaluator parsing failure fallback activated.
-EOF
+            printf '%s\n' \
+              'risk_level=high' \
+              'affected_categories=unknown' \
+              'recommended_merge_outcome=human_review_required' \
+              'notes=Evaluator parsing failure fallback activated.' \
+              > policy_summary.txt
             exit 0
           fi
 
