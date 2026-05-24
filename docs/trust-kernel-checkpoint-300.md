@@ -81,3 +81,4 @@ This checkpoint is documentation-only.
 - [Agent Governance](agent-governance.md)
 - [Execution Audit Trail](execution-audit-trail.md)
 - [Approval Checkpoints](approval-checkpoints.md)
+- [Message and Content Provenance Foundation](message-content-provenance.md)

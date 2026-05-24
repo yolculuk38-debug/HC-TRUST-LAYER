@@ -212,4 +212,6 @@ This document aligns with HC:// architecture terminology and explicitly uses:
 - witness
 - validator
 - canonical record
+- message provenance
+- content provenance
 - human-supervised validation
