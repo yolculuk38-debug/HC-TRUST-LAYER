@@ -106,3 +106,10 @@ Changes that affect policy interpretation or routing must:
 - Do not bypass terminology/docs/canonical artifact controls.
 - Do not merge trust-kernel-impacting changes without explicit impact checklist coverage.
 - Prefer reversible, well-scoped changes with clear provenance in commit history.
+
+## Machine-readable Protocol Graph Index
+
+- `protocol-graph.json`
+- `docs/protocol-graph-index.md`
+
+Use these as advisory navigation aids alongside the verification map and protocol graph documentation.

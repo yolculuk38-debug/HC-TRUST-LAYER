@@ -11,6 +11,7 @@ This transition plan is documentation-only and prepares HC:// architecture align
 - Evidence continuity foundation: `docs/evidence-continuity.md`
 - Verification routing model foundation: `docs/verification-routing-model.md`
 - Protocol graph and agent context map foundation: `docs/protocol-graph-agent-context.md`
+- Machine-readable protocol graph index (advisory): `protocol-graph.json` and `docs/protocol-graph-index.md`
 - Verification map foundation: `docs/verification-map.md`
 
 ## Constraints

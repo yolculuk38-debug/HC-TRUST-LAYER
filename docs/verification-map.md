@@ -148,6 +148,8 @@ Protocol graph and agent context documentation provide change-impact orientation
 Reference:
 
 - `docs/protocol-graph-agent-context.md`
+- `docs/protocol-graph-index.md`
+- `protocol-graph.json`
 
 ## Public Verification API Path
 

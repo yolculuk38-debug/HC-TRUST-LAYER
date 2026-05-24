@@ -171,20 +171,21 @@ Before approving a change, confirm:
 
 If any answer is yes, escalate to explicit human-supervised validation across the impacted trust kernel domains.
 
-## Future Machine-readable Index
+## Machine-readable Index (Documentation Metadata)
 
-A future documentation-to-runtime transition may add `protocol-graph.json`.
+The machine-readable protocol graph index is now available at `protocol-graph.json`.
 
-Planned index structure (not implemented in this phase):
+It provides documentation metadata for:
 
-- **protocol-graph.json**
-- **component nodes**
-- **dependency edges**
-- **risk tags**
-- **owner/review requirements**
-- **agent routing hints**
+- component nodes
+- related component links
+- risk tags
+- human review requirements
+- agent routing context
 
-This PR intentionally keeps the protocol graph and agent context map as documentation-only foundation.
+This index is advisory and documentation-only. It does not implement runtime enforcement.
+
+See also: `docs/protocol-graph-index.md`.
 
 ## Scope and Constraints
 

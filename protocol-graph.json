@@ -1,0 +1,274 @@
+{
+  "project": {
+    "id": "project",
+    "title": "HC-TRUST-LAYER / HC:// Verification Infrastructure",
+    "status": "active-foundation",
+    "layer": "program",
+    "docs": [
+      "README.md",
+      "AGENTS.md",
+      "docs/verification-map.md"
+    ],
+    "risk_level": "medium",
+    "human_review_required": true,
+    "related_components": [
+      "trust_kernel",
+      "canonical_records",
+      "validators",
+      "policy_engine",
+      "verification_packages",
+      "trust_graph",
+      "signing",
+      "federation",
+      "dispute_challenge",
+      "message_content_provenance",
+      "agent_governance",
+      "public_verification",
+      "implementation_transition"
+    ]
+  },
+  "trust_kernel": {
+    "id": "trust_kernel",
+    "title": "Trust Kernel Boundaries",
+    "status": "stabilizing",
+    "layer": "core",
+    "docs": [
+      "docs/trust-kernel-checkpoint-300.md",
+      "docs/master-architecture.md",
+      "docs/verification-map.md"
+    ],
+    "risk_level": "high",
+    "human_review_required": true,
+    "related_components": [
+      "canonical_records",
+      "validators",
+      "policy_engine",
+      "signing",
+      "federation"
+    ]
+  },
+  "canonical_records": {
+    "id": "canonical_records",
+    "title": "Canonical Record Boundaries",
+    "status": "defined-foundation",
+    "layer": "data-boundary",
+    "docs": [
+      "docs/canonical-record-boundary.md",
+      "docs/record-format.md",
+      "schema/record-v1.schema.json"
+    ],
+    "risk_level": "high",
+    "human_review_required": true,
+    "related_components": [
+      "trust_kernel",
+      "validators",
+      "verification_packages",
+      "public_verification"
+    ]
+  },
+  "validators": {
+    "id": "validators",
+    "title": "Validator Layer",
+    "status": "documented-internal",
+    "layer": "verification-execution",
+    "docs": [
+      "docs/public-validator.md",
+      "docs/validator-capability-model.md",
+      "docs/verify.md"
+    ],
+    "risk_level": "high",
+    "human_review_required": true,
+    "related_components": [
+      "canonical_records",
+      "policy_engine",
+      "verification_packages",
+      "public_verification"
+    ]
+  },
+  "policy_engine": {
+    "id": "policy_engine",
+    "title": "Policy Engine and Evaluator",
+    "status": "documented-foundation",
+    "layer": "decisioning",
+    "docs": [
+      "docs/policy-engine-architecture.md",
+      "docs/policy-evaluator.md",
+      "docs/policy-rules.md"
+    ],
+    "risk_level": "high",
+    "human_review_required": true,
+    "related_components": [
+      "validators",
+      "trust_kernel",
+      "dispute_challenge",
+      "agent_governance"
+    ]
+  },
+  "verification_packages": {
+    "id": "verification_packages",
+    "title": "Verification Package Artifacts",
+    "status": "spec-documented",
+    "layer": "artifact",
+    "docs": [
+      "docs/verification-package-spec.md",
+      "docs/verification-package-format.md",
+      "docs/verification-package-validation.md",
+      "docs/verification-package-generation.md"
+    ],
+    "risk_level": "medium",
+    "human_review_required": true,
+    "related_components": [
+      "canonical_records",
+      "validators",
+      "public_verification"
+    ]
+  },
+  "trust_graph": {
+    "id": "trust_graph",
+    "title": "Trust Graph and Routing Context",
+    "status": "foundation-non-runtime",
+    "layer": "relationship-model",
+    "docs": [
+      "docs/trust-graph.md",
+      "docs/trust-graph-data-model.md",
+      "docs/trust-query-routing.md"
+    ],
+    "risk_level": "medium",
+    "human_review_required": true,
+    "related_components": [
+      "policy_engine",
+      "federation",
+      "implementation_transition"
+    ]
+  },
+  "signing": {
+    "id": "signing",
+    "title": "Signing and Trust Anchors",
+    "status": "architecture-documented",
+    "layer": "integrity",
+    "docs": [
+      "docs/signing-architecture.md",
+      "docs/signed-witness-model.md",
+      "docs/witness-layer.md"
+    ],
+    "risk_level": "high",
+    "human_review_required": true,
+    "related_components": [
+      "trust_kernel",
+      "canonical_records",
+      "public_verification",
+      "federation"
+    ]
+  },
+  "federation": {
+    "id": "federation",
+    "title": "Federation Discovery and Sync",
+    "status": "foundation-non-live",
+    "layer": "network-coordination",
+    "docs": [
+      "docs/federation-architecture.md",
+      "docs/federation-discovery.md",
+      "docs/federation-sync.md"
+    ],
+    "risk_level": "high",
+    "human_review_required": true,
+    "related_components": [
+      "trust_graph",
+      "signing",
+      "public_verification",
+      "dispute_challenge"
+    ]
+  },
+  "dispute_challenge": {
+    "id": "dispute_challenge",
+    "title": "Dispute and Challenge Pathways",
+    "status": "governance-foundation",
+    "layer": "governance",
+    "docs": [
+      "docs/dispute-challenge-architecture.md",
+      "docs/GOVERNANCE.md",
+      "docs/reviewer-selection.md"
+    ],
+    "risk_level": "high",
+    "human_review_required": true,
+    "related_components": [
+      "policy_engine",
+      "canonical_records",
+      "agent_governance"
+    ]
+  },
+  "message_content_provenance": {
+    "id": "message_content_provenance",
+    "title": "Message and Content Provenance",
+    "status": "documented-foundation",
+    "layer": "provenance",
+    "docs": [
+      "docs/message-content-provenance.md",
+      "docs/PROVENANCE.md",
+      "docs/ai-model-provenance.md"
+    ],
+    "risk_level": "medium",
+    "human_review_required": true,
+    "related_components": [
+      "canonical_records",
+      "verification_packages",
+      "agent_governance"
+    ]
+  },
+  "agent_governance": {
+    "id": "agent_governance",
+    "title": "Agent Governance and Human-Supervised Validation",
+    "status": "active-governance",
+    "layer": "oversight",
+    "docs": [
+      "AGENTS.md",
+      "docs/agent-governance.md",
+      "docs/ai-collaboration-workflow.md"
+    ],
+    "risk_level": "high",
+    "human_review_required": true,
+    "related_components": [
+      "policy_engine",
+      "dispute_challenge",
+      "implementation_transition"
+    ]
+  },
+  "public_verification": {
+    "id": "public_verification",
+    "title": "Public Verification Surfaces",
+    "status": "draft-foundation",
+    "layer": "external-interface",
+    "docs": [
+      "docs/public-verification-api.md",
+      "docs/api/verification-api-v1.md",
+      "docs/offline-verification.md"
+    ],
+    "risk_level": "high",
+    "human_review_required": true,
+    "related_components": [
+      "validators",
+      "verification_packages",
+      "signing",
+      "federation"
+    ]
+  },
+  "implementation_transition": {
+    "id": "implementation_transition",
+    "title": "Implementation Transition Planning",
+    "status": "documentation-first",
+    "layer": "roadmap",
+    "docs": [
+      "docs/implementation-transition-plan.md",
+      "docs/implementation-map.md",
+      "docs/capability-status.md"
+    ],
+    "risk_level": "medium",
+    "human_review_required": true,
+    "related_components": [
+      "project",
+      "trust_kernel",
+      "agent_governance",
+      "trust_graph"
+    ]
+  }
+}

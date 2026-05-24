@@ -93,6 +93,7 @@ This checkpoint is documentation-only.
 - [Sustainability Model Foundation](sustainability-model.md)
 - [Long-Term Archival Integrity Foundation](long-term-archival-integrity.md)
 - [Protocol Graph and Agent Context Map Foundation](protocol-graph-agent-context.md)
+- [Protocol Graph Index (Machine-readable Foundation)](protocol-graph-index.md)
 - [Verification Map Foundation](verification-map.md)
 
 - [Dispute Resolution and Challenge Architecture Foundation](dispute-challenge-architecture.md)
