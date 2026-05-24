@@ -215,3 +215,7 @@ This document aligns with HC:// architecture terminology and explicitly uses:
 - message provenance
 - content provenance
 - human-supervised validation
+
+## Related Document
+
+- Trust decay and risk history foundation: `docs/trust-decay-risk-history.md`

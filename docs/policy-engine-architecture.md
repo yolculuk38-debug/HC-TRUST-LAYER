@@ -173,4 +173,5 @@ This phase does not:
 - Policy rules baseline: `docs/policy-rules.md`
 - Policy evaluator skeleton: `docs/policy-evaluator.md`
 - Advisory policy workflow integration: `docs/policy-workflow-integration.md`
+- Trust decay and risk history foundation: `docs/trust-decay-risk-history.md`
 

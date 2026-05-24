@@ -93,6 +93,7 @@ PYTHONPATH=src python -m hc_trust.cli verify records
 - Verification result badges: [`docs/verification-badges.md`](docs/verification-badges.md)
 - Witness layer: [`docs/witness-layer.md`](docs/witness-layer.md)
 - Trust graph foundation: [`docs/trust-graph.md`](docs/trust-graph.md)
+- Trust decay and risk history foundation: [`docs/trust-decay-risk-history.md`](docs/trust-decay-risk-history.md)
 - Message and content provenance foundation: [`docs/message-content-provenance.md`](docs/message-content-provenance.md)
 - Signing architecture foundation: [`docs/signing-architecture.md`](docs/signing-architecture.md)
 - Verification levels model: [`docs/verification-levels.md`](docs/verification-levels.md)

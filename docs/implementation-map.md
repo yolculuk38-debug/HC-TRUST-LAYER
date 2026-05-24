@@ -167,6 +167,7 @@ Status scale:
 - Protocol and verification docs: `docs/PROTOCOL.md`, `docs/verify.md`, `docs/VERIFICATION.md`
 - AI collaboration workflow: `docs/ai-collaboration-workflow.md`
 - Trust graph foundation (documentation baseline): `docs/trust-graph.md`
+- Trust decay and risk history foundation (documentation baseline): `docs/trust-decay-risk-history.md`
 - Message/content provenance foundation (documentation baseline): `docs/message-content-provenance.md`
 - Signing architecture foundation (documentation baseline): `docs/signing-architecture.md`
 - Verification levels model (documentation baseline): `docs/verification-levels.md`
