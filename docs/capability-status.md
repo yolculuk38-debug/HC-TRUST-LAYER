@@ -75,3 +75,9 @@ Capability interpretation is aligned with human-supervised validation and public
 - Trusted auto-merge governance model: `docs/trusted-auto-merge.md`
 - Policy engine architecture: `docs/policy-engine-architecture.md`
 - Repository security audit checklist: `docs/repo-security-audit.md`
+
+- Validator identity architecture foundation: `docs/validator-identity-architecture.md`
+- Replay and duplicate detection foundation: `docs/replay-duplicate-detection.md`
+- Verification package v2 architecture foundation: `docs/verification-package-v2.md`
+- Privacy and redaction model foundation: `docs/privacy-redaction-model.md`
+- C2PA bridge considerations foundation: `docs/c2pa-bridge-considerations.md`

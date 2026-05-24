@@ -197,3 +197,7 @@ This document aligns with HC:// architecture terminology and explicitly uses:
 - human-supervised validation
 
 - Dispute resolution and challenge architecture foundation: `docs/dispute-challenge-architecture.md`
+
+- Validator identity architecture foundation: `docs/validator-identity-architecture.md`
+- Replay and duplicate detection foundation: `docs/replay-duplicate-detection.md`
+- Verification package v2 architecture foundation: `docs/verification-package-v2.md`

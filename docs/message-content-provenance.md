@@ -216,3 +216,7 @@ All items above are forward-looking architecture notes for HC-TRUST-LAYER verifi
 - Offline verification foundation: `docs/offline-verification.md`
 - Verification snapshot foundation: `docs/verification-snapshots.md`
 - AI model provenance foundation: `docs/ai-model-provenance.md`
+- Privacy and redaction model foundation: `docs/privacy-redaction-model.md`
+- C2PA bridge considerations foundation: `docs/c2pa-bridge-considerations.md`
+- Replay and duplicate detection foundation: `docs/replay-duplicate-detection.md`
+- Verification package v2 architecture foundation: `docs/verification-package-v2.md`

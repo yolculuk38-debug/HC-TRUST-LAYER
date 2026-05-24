@@ -89,3 +89,8 @@ This checkpoint is documentation-only.
 - [AI Model Provenance Foundation](ai-model-provenance.md)
 
 - [Dispute Resolution and Challenge Architecture Foundation](dispute-challenge-architecture.md)
+- [Validator Identity Architecture Foundation](validator-identity-architecture.md)
+- [Replay and Duplicate Detection Foundation](replay-duplicate-detection.md)
+- [Verification Package v2 Architecture Foundation](verification-package-v2.md)
+- [Privacy and Redaction Model Foundation](privacy-redaction-model.md)
+- [C2PA Bridge Considerations Foundation](c2pa-bridge-considerations.md)
