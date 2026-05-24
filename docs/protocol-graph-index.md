@@ -61,6 +61,7 @@ Any future expansion remains subject to documentation-first review and explicit 
 - `docs/verification-explorer-architecture.md`
 - `docs/provenance-viewer.md`
 - `docs/public-verification-flow.md`
+- `docs/trust-workflow-model.md`
 - `docs/trust-graph-viewer.md`
 
 - `protocol-graph.json`

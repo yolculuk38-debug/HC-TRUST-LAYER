@@ -112,6 +112,7 @@ PYTHONPATH=src python -m hc_trust.cli verify records
 - Demo verification flow foundation: [`docs/demo-verification-flow.md`](docs/demo-verification-flow.md)
 - Provenance viewer foundation: [`docs/provenance-viewer.md`](docs/provenance-viewer.md)
 - Public verification flow foundation: [`docs/public-verification-flow.md`](docs/public-verification-flow.md)
+- Trust workflow model foundation: [`docs/trust-workflow-model.md`](docs/trust-workflow-model.md)
 - Trust graph viewer foundation: [`docs/trust-graph-viewer.md`](docs/trust-graph-viewer.md)
 - Privacy and redaction model foundation: [`docs/privacy-redaction-model.md`](docs/privacy-redaction-model.md)
 - C2PA bridge considerations foundation: [`docs/c2pa-bridge-considerations.md`](docs/c2pa-bridge-considerations.md)

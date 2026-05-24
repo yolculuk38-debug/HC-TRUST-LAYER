@@ -102,3 +102,5 @@ Future federation verification flow concepts:
 - conflict indicators across federation nodes
 
 These concepts are planning guidance and do not imply live federation guarantees.
+
+Related trust workflow architecture model: `docs/trust-workflow-model.md`.

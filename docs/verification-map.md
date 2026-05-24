@@ -162,6 +162,7 @@ Reference:
 
 - `docs/public-verification-api.md`
 - `docs/public-verification-flow.md`
+- `docs/trust-workflow-model.md`
 - `docs/verification-explorer-architecture.md`
 - `docs/provenance-viewer.md`
 - `docs/verification-scenarios.md`
