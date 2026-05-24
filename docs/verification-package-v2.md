@@ -132,3 +132,7 @@ This document aligns with:
 - canonical record
 - replay detection
 - human-supervised validation
+- Trust graph data model foundation: `docs/trust-graph-data-model.md`
+- Validator capability model foundation: `docs/validator-capability-model.md`
+- Evidence continuity foundation: `docs/evidence-continuity.md`
+- Verification routing model foundation: `docs/verification-routing-model.md`

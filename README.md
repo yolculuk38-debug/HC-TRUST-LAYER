@@ -145,3 +145,7 @@ Humanity Chain may appear as historical/origin project context only.
 
 - **HC-TRUST-LAYER** is the canonical repository for active protocol and implementation.
 - **Insanlik-Zinciri** is the historical/origin mirror for provenance continuity.
+- Trust graph data model foundation: [`docs/trust-graph-data-model.md`](docs/trust-graph-data-model.md)
+- Validator capability model foundation: [`docs/validator-capability-model.md`](docs/validator-capability-model.md)
+- Evidence continuity foundation: [`docs/evidence-continuity.md`](docs/evidence-continuity.md)
+- Verification routing model foundation: [`docs/verification-routing-model.md`](docs/verification-routing-model.md)

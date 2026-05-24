@@ -137,3 +137,7 @@ This document aligns with HC:// terminology and uses:
 - Institutional governance foundation: `docs/institutional-governance.md`
 - Evidence retention lifecycle foundation: `docs/evidence-retention-lifecycle.md`
 - Sustainability model foundation: `docs/sustainability-model.md`
+- Validator capability model foundation: `docs/validator-capability-model.md`
+- Verification routing model foundation: `docs/verification-routing-model.md`
+- Evidence continuity foundation: `docs/evidence-continuity.md`
+- Trust graph data model foundation: `docs/trust-graph-data-model.md`

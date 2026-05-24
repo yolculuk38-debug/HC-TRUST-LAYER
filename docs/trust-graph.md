@@ -236,3 +236,7 @@ This document aligns with HC:// architecture terminology and explicitly uses:
 - Validator identity architecture foundation: `docs/validator-identity-architecture.md`
 - Replay and duplicate detection foundation: `docs/replay-duplicate-detection.md`
 - Verification package v2 architecture foundation: `docs/verification-package-v2.md`
+- Trust graph data model foundation: `docs/trust-graph-data-model.md`
+- Validator capability model foundation: `docs/validator-capability-model.md`
+- Evidence continuity foundation: `docs/evidence-continuity.md`
+- Verification routing model foundation: `docs/verification-routing-model.md`
