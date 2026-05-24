@@ -216,8 +216,12 @@ This document aligns with HC:// architecture terminology and explicitly uses:
 - content provenance
 - human-supervised validation
 
-## Related Document
 ## Related Documents
+
+- `docs/trust-graph-viewer.md`
+- `docs/verification-explorer-architecture.md`
+- `docs/provenance-viewer.md`
+- `docs/public-verification-flow.md`
 
 - Trust query routing foundation: `docs/trust-query-routing.md`
 - Evidence retention lifecycle foundation: `docs/evidence-retention-lifecycle.md`

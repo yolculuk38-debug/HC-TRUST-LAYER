@@ -96,6 +96,10 @@ This checkpoint is documentation-only.
 - [Protocol Graph Index (Machine-readable Foundation)](protocol-graph-index.md)
 - [Verification Map Foundation](verification-map.md)
 - [Trust Kernel Index (Machine-readable Foundation)](trust-kernel-index.md)
+- [Verification Explorer Architecture Foundation](verification-explorer-architecture.md)
+- [Provenance Viewer Foundation](provenance-viewer.md)
+- [Public Verification Flow Foundation](public-verification-flow.md)
+- [Trust Graph Viewer Foundation](trust-graph-viewer.md)
 
 - [Dispute Resolution and Challenge Architecture Foundation](dispute-challenge-architecture.md)
 - [Validator Identity Architecture Foundation](validator-identity-architecture.md)

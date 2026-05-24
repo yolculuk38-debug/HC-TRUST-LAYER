@@ -58,6 +58,11 @@ Any future expansion remains subject to documentation-first review and explicit 
 
 ## Related References
 
+- `docs/verification-explorer-architecture.md`
+- `docs/provenance-viewer.md`
+- `docs/public-verification-flow.md`
+- `docs/trust-graph-viewer.md`
+
 - `protocol-graph.json`
 - `docs/protocol-graph-agent-context.md`
 - `docs/verification-map.md`

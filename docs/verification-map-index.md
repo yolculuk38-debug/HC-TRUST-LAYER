@@ -54,6 +54,11 @@ Any future automation remains subject to explicit repository validation and revi
 
 ## Related References
 
+- `docs/verification-explorer-architecture.md`
+- `docs/provenance-viewer.md`
+- `docs/public-verification-flow.md`
+- `docs/trust-graph-viewer.md`
+
 - `verification-map.json`
 - `docs/verification-map.md`
 - `docs/protocol-graph-index.md`

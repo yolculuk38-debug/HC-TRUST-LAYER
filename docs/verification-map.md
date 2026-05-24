@@ -77,6 +77,7 @@ The trust graph domain maps confidence-relevant relationships and routing contex
 Reference:
 
 - `docs/trust-graph.md`
+- `docs/trust-graph-viewer.md`
 - `docs/trust-graph-data-model.md`
 - `docs/trust-query-routing.md`
 
@@ -160,6 +161,9 @@ Public verification API path documents external verification-facing contracts an
 Reference:
 
 - `docs/public-verification-api.md`
+- `docs/public-verification-flow.md`
+- `docs/verification-explorer-architecture.md`
+- `docs/provenance-viewer.md`
 - `docs/api/verification-api-v1.md`
 
 ## Agent Task Routing
