@@ -176,4 +176,5 @@ It does not introduce new product features, validator behavior changes, or recor
 ## Related Governance Reference
 
 - Trusted auto-merge governance model: `docs/trusted-auto-merge.md`
+- Policy rules baseline: `docs/policy-rules.md`
 

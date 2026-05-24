@@ -1,0 +1,65 @@
+policy_version: "1.0"
+
+risk_levels:
+  - low
+  - medium
+  - high
+  - blocked
+
+path_risk_rules:
+  low:
+    - README.md
+    - docs/**/*.md
+    - examples/**/*.json
+  medium:
+    - .github/workflows/**/*.yml
+    - scripts/check_*.py
+    - scripts/export_verification_package.py
+    - schema/verification-package-v1.schema.json
+  high:
+    - schema/record-v1.schema.json
+    - src/verify_hashes.py
+    - records/pending/**/*.json
+    - records/verified/**/*.json
+    - records/archived/**/*.json
+  blocked_unless_explicitly_reviewed:
+    - generated/**
+    - exports/cache/**
+    - docs/generated/**
+    - records/**/cache/**
+    - records/**/generated/**
+    - records/**/*_index.json
+    - records/**/explorer_index.json
+
+forbidden_terminology:
+  block_phrases:
+    - proves truth
+    - guarantees truth
+    - absolute truth
+    - truth score
+    - AI judge
+    - AI authority
+    - autonomous AI governance
+
+required_human_review_categories:
+  - canonical record schema changes
+  - validator behavior changes
+  - signing/key management changes
+  - federation semantics
+  - trust scoring semantics
+  - branch protection/workflow permission changes
+  - security policy changes
+
+merge_policy_outcomes:
+  - auto_merge_allowed
+  - conditional_merge
+  - human_review_required
+  - blocked
+
+auto_merge_allowed_baseline_requirements:
+  - all checks pass
+  - terminology guard passes
+  - docs drift guard passes
+  - canonical artifact guard passes
+  - no unresolved review threads
+  - no high-risk paths touched
