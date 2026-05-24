@@ -1,4 +1,4 @@
-# HC:// TRUST LAYER
+# HC-TRUST-LAYER
 
 [![HC-TRUST-LAYER Validation](../../actions/workflows/validate.yml/badge.svg)](../../actions/workflows/validate.yml) [![CodeQL](../../actions/workflows/codeql.yml/badge.svg)](../../actions/workflows/codeql.yml)
 
@@ -6,7 +6,7 @@
 
 ## Current Release
 
-[`v0.1.0`](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/releases/tag/v0.1.0) is the first experimental stabilization release. It includes the visible verification flow and supports integrity and provenance as verification signals. Trust scoring and witness systems remain experimental.
+[`v0.1.0`](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/releases/tag/v0.1.0) is the first stabilization release for the current verification infrastructure. It includes the visible verification flow and supports integrity and provenance as verification signals. Trust scoring and witness systems remain experimental.
 
 ## Visible Verification Flow (v0.1)
 
@@ -42,9 +42,9 @@ Start with the HC:// verification experience layer here: [`docs/verify.md`](docs
 
 GitHub currently acts as the public archive mirror layer for HC:// records.
 
-## What Is HC:// TRUST LAYER
+## What Is HC-TRUST-LAYER
 
-HC:// TRUST LAYER is an experimental verification and provenance infrastructure for digital content in the AI era.
+HC-TRUST-LAYER is an open verification and provenance infrastructure for digital content in the AI era.
 
 It provides open, auditable records so people can check whether content is consistent across time, sources, and distribution channels.
 
@@ -52,11 +52,11 @@ It provides open, auditable records so people can check whether content is consi
 
 Digital content is easier to create, remix, and manipulate at scale. Synthetic media, altered documents, and context loss can make trust decisions harder.
 
-HC:// TRUST LAYER exists to make verification workflows transparent instead of relying on unsupported claims.
+HC-TRUST-LAYER exists to make verification workflows transparent instead of relying on unsupported claims.
 
 ## Core Verification Concept
 
-HC:// TRUST LAYER focuses on verifiable records, not narrative authority.
+HC-TRUST-LAYER focuses on verifiable records, not narrative authority.
 
 A record can be checked by comparing:
 
@@ -110,7 +110,7 @@ PYTHONPATH=src python -m hc_trust.cli verify records
 
 ## Project Context
 
-HC:// TRUST LAYER is the primary name for this repository.
+HC-TRUST-LAYER is the primary technical brand and repository name.
 
 Humanity Chain may appear as historical/origin project context only.
 

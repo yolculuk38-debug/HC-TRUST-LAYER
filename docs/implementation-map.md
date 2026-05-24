@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This map connects the six master architecture layers to concrete repository artifacts and current maturity status.
+This map connects the six master architecture layers to concrete repository artifacts and current maturity status for HC-TRUST-LAYER verification infrastructure.
 
 Status scale:
 - implemented

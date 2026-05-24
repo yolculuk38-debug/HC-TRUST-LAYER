@@ -2,7 +2,7 @@
 
 ## What is HC://?
 
-HC:// is an experimental open verification and digital fingerprint protocol designed for the AI era.
+HC:// is an open verification and digital fingerprint protocol designed for the AI era.
 
 The goal of the protocol is simple:
 
@@ -22,7 +22,7 @@ Modern digital systems face increasing problems related to:
 - anonymous redistribution
 - AI-generated content confusion
 
-HC-TRUST-LAYER attempts to create a transparent verification layer for digital content.
+HC-TRUST-LAYER provides transparent verification/provenance infrastructure for digital content.
 
 ---
 
@@ -98,7 +98,7 @@ It may include:
 - multi-model comparison
 - verification notes
 
-AI output should not be treated as absolute truth.
+AI output should not be treated as final authority and must remain in witness context with human-supervised validation.
 
 ---
 
@@ -143,7 +143,7 @@ The long-term vision is to create a globally understandable verification languag
 
 ## Status
 
-Experimental protocol draft.
+Open protocol draft under active development.
 
 ## Related Documents
 
