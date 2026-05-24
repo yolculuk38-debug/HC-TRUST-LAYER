@@ -158,3 +158,7 @@ Status scale reference:
 - experimental
 - planned
 - research
+
+## Implementation Map
+
+For a file-level layer mapping and gap-oriented priority plan, see [`implementation-map.md`](implementation-map.md).
