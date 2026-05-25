@@ -21,6 +21,7 @@ Terminology note: MVP-1 viewer copy should use **advisory trust summary** wordin
 MVP-1 is an interpretive view layer and does not alter trust kernel behavior.
 The static viewer implementation uses a simple timeline-style layout to group provenance events, validator reviews, replay indicators, dispute indicators, and audit snapshot context with plain-text section labels for mobile-readable interpretation.
 The static viewer also includes an advisory trust summary band near the top to improve non-technical readability without changing trust-kernel or canonical record behavior.
+The static viewer includes a compact **Package Health** section for quick package completeness and review routing signals without changing trust-kernel or canonical record behavior.
 
 ## Minimal Verification Experience
 
@@ -117,6 +118,19 @@ MVP-1 trust snapshot visibility should include:
 - snapshot scope summary
 - package-to-snapshot linkage state
 - drift note when newer provenance or audit trail entries exist beyond the snapshot
+
+## Package Health Summary Visibility
+
+MVP-1 package health visibility should include a compact advisory-only section with:
+
+- package metadata present/missing
+- provenance events count
+- validator reviews count
+- replay indicators present/absent
+- dispute indicators present/absent
+- human review required yes/no
+
+This section is a quick inspection aid for human-supervised validation routing. It is not a truth score and does not provide forensic certainty.
 
 ## Audit Trail Visibility
 
