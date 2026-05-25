@@ -27,9 +27,15 @@
     .wrap { max-width: 980px; margin: 0 auto; padding: 1rem; }
     .warn { background: #3a1f1f; border: 1px solid #8c3a3a; padding: .75rem; border-radius: .5rem; }
     .controls { margin: 1rem 0; display: grid; gap: .6rem; }
+    .control-row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
     select, button {
       background: var(--panel); color: var(--text); border: 1px solid var(--border);
       border-radius: .5rem; padding: .65rem .75rem; font-size: 1rem;
+    }
+    input[type="file"] {
+      width: 100%;
+      background: var(--panel); color: var(--text); border: 1px solid var(--border);
+      border-radius: .5rem; padding: .55rem .75rem; font-size: .95rem;
     }
     button { cursor: pointer; }
     .card { background: var(--panel); border: 1px solid var(--border); border-radius: .75rem; padding: .9rem; margin-bottom: .8rem; }
@@ -53,12 +59,18 @@
 <body>
   <main class="wrap">
     <h1>HC:// MVP-1 Static Verification Package Viewer</h1>
-    <p class="warn"><strong>Demo-only warning:</strong> This viewer is advisory for bundled examples and does not provide production readiness, truth guarantees, or forensic certainty.</p>
+    <p class="warn"><strong>Demo-only warning:</strong> This viewer is advisory only, performs local processing only, performs no server upload, provides no truth guarantee, and human review is recommended.</p>
 
     <div class="controls card">
       <label for="exampleSelect"><strong>Select example package</strong></label>
       <select id="exampleSelect"></select>
-      <button id="reloadBtn" type="button">Reload selected package</button>
+      <div class="control-row">
+        <button id="reloadBtn" type="button">Reload selected package</button>
+        <button id="resetBtn" type="button">Reset to selected example</button>
+      </div>
+      <label for="localUpload"><strong>Or load local verification package JSON</strong></label>
+      <input id="localUpload" type="file" accept=".json,application/json" />
+      <p class="muted" id="uploadStatus">Viewing bundled example package.</p>
       <p class="muted">Source path: <span id="selectedPath" class="mono"></span></p>
     </div>
 
@@ -77,6 +89,19 @@
     const select = document.getElementById('exampleSelect');
     const selectedPath = document.getElementById('selectedPath');
     const content = document.getElementById('content');
+    const uploadStatus = document.getElementById('uploadStatus');
+    const localUpload = document.getElementById('localUpload');
+    const REQUIRED_FIELDS = [
+      'package_id',
+      'trust_result',
+      'trust_confidence',
+      'provenance_summary',
+      'provenance_timeline',
+      'validator_reviews',
+      'replay_indicators',
+      'dispute_indicators',
+      'audit_snapshot'
+    ];
 
     function safe(value, fallback = 'unknown') {
       return value === undefined || value === null || value === '' ? fallback : value;
@@ -87,13 +112,38 @@
       return '<ul>' + items.map((it) => `<li>${formatFn(it)}</li>`).join('') + '</ul>';
     }
 
-    function renderPackage(pkg) {
+    function getPackageWarnings(pkg) {
+      const missingFields = REQUIRED_FIELDS.filter((field) => pkg[field] === undefined || pkg[field] === null);
+      const warnings = [];
+      if (missingFields.length > 0) {
+        warnings.push(`Missing required field(s): ${missingFields.join(', ')}`);
+      }
+      if (!['PASS', 'WARNING', 'FAIL', 'UNKNOWN'].includes(safe(pkg.trust_result, 'UNKNOWN'))) {
+        warnings.push('Invalid package warning: trust_result should be PASS, WARNING, FAIL, or UNKNOWN.');
+      }
+      if (!['HIGH', 'MEDIUM', 'LOW', 'UNKNOWN'].includes(safe(pkg.trust_confidence, 'UNKNOWN').toUpperCase())) {
+        warnings.push('Invalid package warning: trust_confidence should be HIGH, MEDIUM, LOW, or UNKNOWN.');
+      }
+      if (!Array.isArray(pkg.provenance_timeline)) {
+        warnings.push('Invalid package warning: provenance_timeline should be an array.');
+      }
+      if (!Array.isArray(pkg.validator_reviews)) {
+        warnings.push('Invalid package warning: validator_reviews should be an array.');
+      }
+      return warnings;
+    }
+
+    function renderPackage(pkg, packageSourceLabel = 'Bundled example package') {
       const trustResult = safe(pkg.trust_result, 'UNKNOWN');
       const trustClass = ['PASS', 'WARNING', 'FAIL'].includes(trustResult) ? trustResult : '';
       const replayDetected = !!pkg.replay_indicators?.detected;
       const disputeActive = !!pkg.dispute_indicators?.active;
       const humanReviewRequired = !!pkg.human_review_required;
       const confidence = safe(pkg.trust_confidence).toUpperCase();
+      const packageWarnings = getPackageWarnings(pkg);
+      const warningHtml = packageWarnings.length > 0
+        ? `<article class="card"><h2>Package Warnings</h2>${renderList(packageWarnings, (w) => safe(w))}</article>`
+        : '';
 
       let summaryLabel = 'Human review required';
       let summaryMeaning = 'This package requires human-supervised validation before consequential trust decisions.';
@@ -115,8 +165,10 @@
       }
 
       content.innerHTML = `
+        ${warningHtml}
         <article class="card">
           <h2>Trust Result Card</h2>
+          <p><strong>Package source:</strong> ${safe(packageSourceLabel)}</p>
           <p><strong>Package:</strong> <span class="mono">${safe(pkg.package_id)}</span></p>
           <p><span class="result ${trustClass}">${trustResult}</span></p>
           <p><strong>Result label:</strong> ${summaryLabel}</p>
@@ -172,6 +224,7 @@
 
     async function loadSelected() {
       const entry = EXAMPLES[select.selectedIndex] || EXAMPLES[0];
+      uploadStatus.textContent = 'Viewing bundled example package.';
       selectedPath.textContent = entry.file;
       content.innerHTML = '<article class="card"><p>Loading example package…</p></article>';
 
@@ -179,9 +232,25 @@
         const resp = await fetch(entry.file, { cache: 'no-store' });
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const pkg = await resp.json();
-        renderPackage(pkg);
+        renderPackage(pkg, `Bundled example (${entry.label})`);
       } catch (error) {
         content.innerHTML = `<article class="card"><h2>Load Error</h2><p>Could not load <span class="mono">${entry.file}</span>.</p><p class="muted">${safe(error.message)}</p></article>`;
+      }
+    }
+
+    async function loadLocalFile(file) {
+      if (!file) return;
+      uploadStatus.textContent = `Loading local package: ${file.name}`;
+      selectedPath.textContent = `local://${file.name}`;
+      content.innerHTML = '<article class="card"><p>Loading local package…</p></article>';
+      try {
+        const text = await file.text();
+        const pkg = JSON.parse(text);
+        renderPackage(pkg, `Local package (${file.name})`);
+        uploadStatus.textContent = 'Viewing local package. Processing is local-only and does not upload to any server.';
+      } catch (error) {
+        uploadStatus.textContent = 'Local package load failed.';
+        content.innerHTML = `<article class="card"><h2>Invalid Package</h2><p>Could not parse local JSON package.</p><p class="muted">${safe(error.message)}</p><p class="muted">Fail-safe behavior preserved: viewer did not render invalid JSON.</p></article>`;
       }
     }
 
@@ -192,7 +261,15 @@
     });
 
     document.getElementById('reloadBtn').addEventListener('click', loadSelected);
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      localUpload.value = '';
+      loadSelected();
+    });
     select.addEventListener('change', loadSelected);
+    localUpload.addEventListener('change', (event) => {
+      const file = event.target.files && event.target.files[0];
+      loadLocalFile(file);
+    });
     loadSelected();
   </script>
 </body>
