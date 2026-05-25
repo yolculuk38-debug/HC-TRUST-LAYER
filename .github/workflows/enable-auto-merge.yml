@@ -17,9 +17,10 @@ permissions:
 
 
 concurrency:
-  # Cancel superseded runs on the same ref to prevent duplicate executions and non-deterministic outcomes.
+  # Keep one execution lane per PR, but do not cancel in-flight runs.
+  # Cancelled runs can leave auto-merge disabled even when required checks later pass.
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   enable-auto-merge:
@@ -30,7 +31,9 @@ jobs:
 
     steps:
       - name: Enable auto-merge when labeled
-        if: contains(github.event.pull_request.labels.*.name, 'automerge')
+        if: >-
+          contains(github.event.pull_request.labels.*.name, 'automerge') ||
+          contains(github.event.pull_request.labels.*.name, 'auto-merge')
         uses: peter-evans/enable-pull-request-automerge@v3
         with:
           pull-request-number: ${{ github.event.pull_request.number }}
