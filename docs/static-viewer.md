@@ -5,6 +5,7 @@
 The MVP-1 static verification package viewer provides a browser-based, demo-only reading surface for HC:// verification package examples.
 
 The viewer helps users inspect trust results, provenance timeline continuity, replay indicators, dispute indicators, validator reviews, and audit snapshot context without command-line usage.
+The trust result card prioritizes mobile-readable labels and plain-language explanations to support non-technical interpretation boundaries.
 
 ## Open the viewer from GitHub Pages
 
@@ -13,6 +14,7 @@ After GitHub Pages publishes repository docs, open:
 - `https://<org-or-user>.github.io/<repo>/docs/verification-viewer.html`
 
 This page loads bundled examples from `examples/verification-packages/` and renders the selected package in a mobile-readable static layout.
+UI labels include `Verified trace`, `Partial trace`, `Replay warning`, `Disputed`, `Unverified`, and `Human review required` for consistent MVP-1 trust interpretation.
 
 Before static rendering demos, run the fixture validation helper:
 
@@ -31,6 +33,7 @@ Expected behavior is `PASS` output per file for all bundled examples. This step 
 - The viewer does not provide truth guarantees.
 - The viewer does not provide forensic certainty claims.
 - The viewer is advisory and does not replace human-supervised validation.
+- The viewer includes explanation text for what the result means, why review may be needed, what users should not assume, and demo-only limitations.
 
 ## Relation to CLI viewer
 

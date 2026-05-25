@@ -46,6 +46,15 @@ Recommended summary pattern:
 3. one-sentence caution or uncertainty note
 4. human-supervised review guidance
 
+For MVP-1 viewer readability, include explicit status labels where applicable:
+
+- Verified trace
+- Partial trace
+- Replay warning
+- Disputed
+- Unverified
+- Human review required
+
 ## Mobile-First Readability
 
 Trust result content should remain readable on small screens:
@@ -54,6 +63,7 @@ Trust result content should remain readable on small screens:
 - compact bullet blocks
 - no dense paragraph walls
 - progressive disclosure for deep evidence details
+- brief explanation blocks for meaning, review needs, assumption boundaries, and demo-only limitations
 
 ## Trust-Oriented UX Principles
 
