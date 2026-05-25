@@ -14,10 +14,19 @@ After GitHub Pages publishes repository docs, open:
 
 This page loads bundled examples from `examples/verification-packages/` and renders the selected package in a mobile-readable static layout.
 
+Before static rendering demos, run the fixture validation helper:
+
+```bash
+python3 scripts/validate_verification_package_examples.py
+```
+
+Expected behavior is `PASS` output per file for all bundled examples. This step checks required MVP-1 example fields only.
+
 ## Demo-only limitations
 
 - The viewer is static HTML/JS with no backend and no external dependencies.
 - The viewer only targets bundled example fixtures in `examples/verification-packages/`.
+- Validation helper coverage is demo-only and does not introduce schema, validator, or workflow changes.
 - The viewer does not provide production readiness guarantees.
 - The viewer does not provide truth guarantees.
 - The viewer does not provide forensic certainty claims.
