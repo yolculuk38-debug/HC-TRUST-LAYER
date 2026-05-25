@@ -67,3 +67,17 @@ For terminal-based review, use `scripts/view_verification_package.py` as documen
 - Add deeper accessibility tuning and keyboard navigation polish.
 - Add linked explanations for verification map and protocol graph context.
 - Expand explicit UI notices for additional malformed nested structures beyond MVP-1 required field checks.
+
+
+## Package copy and download controls
+
+The static viewer in `docs/verification-viewer.html` includes two local-only package actions:
+
+- **Copy current package JSON** copies the currently displayed package JSON to the local clipboard.
+- **Download current package JSON** downloads the currently displayed package JSON as a local `.json` file using a safe filename derived from `package_id`.
+
+These controls work for both bundled example packages and locally uploaded JSON packages. They do not modify package content, do not upload data to any server, and require no backend services.
+
+If no package is currently loaded, the viewer fails safely by showing a status message instead of attempting copy/download. Status messages are cleared automatically after action feedback to keep controls mobile-readable.
+
+This behavior is demo-only and local-only, and does not alter HC:// trust-kernel behavior or canonical record semantics. Human-supervised validation remains required for consequential trust decisions.
