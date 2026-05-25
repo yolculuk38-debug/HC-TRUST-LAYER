@@ -133,7 +133,7 @@ Primary collaboration and governance risks:
 - terminology drift
 - duplicate architecture
 - uncontrolled roadmap expansion
-- trust score being misunderstood as truth score
+- advisory trust summary being misunderstood as a truth guarantee
 - over-reliance on GitHub
 - AI authority confusion
 
@@ -164,7 +164,7 @@ Avoid language that implies final truth authority, including:
 - AI judge
 - AI authority
 - autonomous AI governance
-- truth score
+- advisory trust summary misrepresented as objective certainty
 - world-changing claims
 
 ## Scope Discipline
