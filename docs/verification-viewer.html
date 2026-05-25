@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HC:// MVP-1 Static Verification Package Viewer (Demo)</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #161d33;
+      --text: #e6ebff;
+      --muted: #a8b1d9;
+      --pass: #27c47c;
+      --warn: #ffbf3f;
+      --fail: #ff6b6b;
+      --border: #2b355d;
+      --chip: #243058;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+    }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 1rem; }
+    .warn { background: #3a1f1f; border: 1px solid #8c3a3a; padding: .75rem; border-radius: .5rem; }
+    .controls { margin: 1rem 0; display: grid; gap: .6rem; }
+    select, button {
+      background: var(--panel); color: var(--text); border: 1px solid var(--border);
+      border-radius: .5rem; padding: .65rem .75rem; font-size: 1rem;
+    }
+    button { cursor: pointer; }
+    .card { background: var(--panel); border: 1px solid var(--border); border-radius: .75rem; padding: .9rem; margin-bottom: .8rem; }
+    h1, h2 { margin: .1rem 0 .7rem; }
+    h1 { font-size: 1.3rem; }
+    h2 { font-size: 1rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+    .result { display: inline-block; padding: .25rem .6rem; border-radius: 999px; font-weight: 700; }
+    .PASS { background: rgba(39,196,124,.2); color: var(--pass); }
+    .WARNING { background: rgba(255,191,63,.2); color: var(--warn); }
+    .FAIL { background: rgba(255,107,107,.2); color: var(--fail); }
+    .grid { display: grid; gap: .8rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+    ul { margin: 0; padding-left: 1.1rem; }
+    .chip { display: inline-block; background: var(--chip); border: 1px solid var(--border); border-radius: .4rem; padding: .15rem .45rem; margin: .1rem .15rem .1rem 0; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; word-break: break-all; }
+    .muted { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>HC:// MVP-1 Static Verification Package Viewer</h1>
+    <p class="warn"><strong>Demo-only warning:</strong> This viewer is advisory for bundled examples and does not provide production readiness, truth guarantees, or forensic certainty.</p>
+
+    <div class="controls card">
+      <label for="exampleSelect"><strong>Select example package</strong></label>
+      <select id="exampleSelect"></select>
+      <button id="reloadBtn" type="button">Reload selected package</button>
+      <p class="muted">Source path: <span id="selectedPath" class="mono"></span></p>
+    </div>
+
+    <section id="content"></section>
+  </main>
+
+  <script>
+    const EXAMPLES = [
+      { label: 'verified trace', file: '../examples/verification-packages/verified-trace-example.json' },
+      { label: 'partial trace', file: '../examples/verification-packages/partial-trace-example.json' },
+      { label: 'replay warning', file: '../examples/verification-packages/replay-warning-example.json' },
+      { label: 'disputed', file: '../examples/verification-packages/disputed-example.json' },
+      { label: 'unverified', file: '../examples/verification-packages/unverified-example.json' }
+    ];
+
+    const select = document.getElementById('exampleSelect');
+    const selectedPath = document.getElementById('selectedPath');
+    const content = document.getElementById('content');
+
+    function safe(value, fallback = 'unknown') {
+      return value === undefined || value === null || value === '' ? fallback : value;
+    }
+
+    function renderList(items, formatFn) {
+      if (!Array.isArray(items) || items.length === 0) return '<p class="muted">No entries listed in this package.</p>';
+      return '<ul>' + items.map((it) => `<li>${formatFn(it)}</li>`).join('') + '</ul>';
+    }
+
+    function renderPackage(pkg) {
+      const trustResult = safe(pkg.trust_result, 'UNKNOWN');
+      const trustClass = ['PASS', 'WARNING', 'FAIL'].includes(trustResult) ? trustResult : '';
+
+      content.innerHTML = `
+        <article class="card">
+          <h2>Trust Result Card</h2>
+          <p><strong>Package:</strong> <span class="mono">${safe(pkg.package_id)}</span></p>
+          <p><span class="result ${trustClass}">${trustResult}</span></p>
+          <p><strong>Trust confidence:</strong> ${safe(pkg.trust_confidence)}</p>
+          <p><strong>Human review required:</strong> ${String(!!pkg.human_review_required)}</p>
+        </article>
+
+        <article class="card"><h2>Content Hash</h2><p class="mono">${safe(pkg.content_hash)}</p></article>
+
+        <article class="card"><h2>Provenance Summary</h2><p>${safe(pkg.provenance_summary)}</p></article>
+
+        <article class="card"><h2>Provenance Timeline</h2>
+          ${renderList(pkg.provenance_timeline, (e) => `<span class="chip">${safe(e.stage)}</span> ${safe(e.actor)} at ${safe(e.timestamp)} (${safe(e.status)})`)}
+        </article>
+
+        <article class="card"><h2>Validator Reviews</h2>
+          ${renderList(pkg.validator_reviews, (r) => `<span class="chip">${safe(r.decision)}</span> ${safe(r.validator_id)} at ${safe(r.reviewed_at)} — ${safe(r.notes)}`)}
+        </article>
+
+        <section class="grid">
+          <article class="card"><h2>Replay Indicators</h2>
+            <p><strong>Detected:</strong> ${String(!!pkg.replay_indicators?.detected)}</p>
+            <p><strong>Signal level:</strong> ${safe(pkg.replay_indicators?.signal_level)}</p>
+            ${renderList(pkg.replay_indicators?.details, (d) => `${safe(d)}`)}
+          </article>
+
+          <article class="card"><h2>Dispute Indicators</h2>
+            <p><strong>Active dispute:</strong> ${String(!!pkg.dispute_indicators?.active)}</p>
+            <p><strong>Summary:</strong> ${safe(pkg.dispute_indicators?.summary)}</p>
+            ${renderList(pkg.dispute_indicators?.case_ids, (id) => `<span class="mono">${safe(id)}</span>`)}
+          </article>
+        </section>
+
+        <article class="card"><h2>Audit Snapshot</h2>
+          <p><strong>Audit trail ref:</strong> <span class="mono">${safe(pkg.audit_snapshot?.audit_trail_ref)}</span></p>
+          <p><strong>Last event:</strong> ${safe(pkg.audit_snapshot?.last_event)}</p>
+          <p><strong>Review boundary:</strong> ${safe(pkg.audit_snapshot?.review_boundary)}</p>
+          <p><strong>Generated at:</strong> ${safe(pkg.generated_at)}</p>
+        </article>
+      `;
+    }
+
+    async function loadSelected() {
+      const entry = EXAMPLES[select.selectedIndex] || EXAMPLES[0];
+      selectedPath.textContent = entry.file;
+      content.innerHTML = '<article class="card"><p>Loading example package…</p></article>';
+
+      try {
+        const resp = await fetch(entry.file, { cache: 'no-store' });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const pkg = await resp.json();
+        renderPackage(pkg);
+      } catch (error) {
+        content.innerHTML = `<article class="card"><h2>Load Error</h2><p>Could not load <span class="mono">${entry.file}</span>.</p><p class="muted">${safe(error.message)}</p></article>`;
+      }
+    }
+
+    EXAMPLES.forEach((ex) => {
+      const option = document.createElement('option');
+      option.textContent = ex.label;
+      select.appendChild(option);
+    });
+
+    document.getElementById('reloadBtn').addEventListener('click', loadSelected);
+    select.addEventListener('change', loadSelected);
+    loadSelected();
+  </script>
+</body>
+</html>

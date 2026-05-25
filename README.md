@@ -113,6 +113,8 @@ PYTHONPATH=src python -m hc_trust.cli verify records
 - Provenance viewer foundation: [`docs/provenance-viewer.md`](docs/provenance-viewer.md)
 - Public verification flow foundation: [`docs/public-verification-flow.md`](docs/public-verification-flow.md)
 - MVP-1 verification package viewer specification: [`docs/mvp-1-verification-package-viewer.md`](docs/mvp-1-verification-package-viewer.md)
+- MVP-1 static verification package viewer guide: [`docs/static-viewer.md`](docs/static-viewer.md)
+- MVP-1 static verification package viewer page: [`docs/verification-viewer.html`](docs/verification-viewer.html)
 - MVP-1 user flow: [`docs/mvp-1-user-flow.md`](docs/mvp-1-user-flow.md)
 - MVP-1 UI principles: [`docs/mvp-1-ui-principles.md`](docs/mvp-1-ui-principles.md)
 - MVP-1 boundaries: [`docs/mvp-1-boundaries.md`](docs/mvp-1-boundaries.md)

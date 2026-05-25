@@ -57,6 +57,11 @@ The MVP-1 CLI viewer is currently scoped to the example fixtures in:
 - This viewer is designed for example fixtures and does not imply support for all package variants.
 - Output is advisory and should not be interpreted as an autonomous trust decision.
 
+## Related Viewer Surfaces
+
+- Static browser demo viewer: `docs/verification-viewer.html`
+- Static viewer usage guide: `docs/static-viewer.md`
+
 ## Human-Supervised Validation Note
 
 All non-trivial trust-kernel-impacting decisions require human-supervised validation. CLI viewer output is informational and must be reviewed within repository-defined verification and review workflows.
