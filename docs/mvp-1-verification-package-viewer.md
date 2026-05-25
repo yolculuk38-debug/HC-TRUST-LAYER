@@ -44,6 +44,16 @@ MVP-1 package access concepts:
 In MVP-1, local package parsing is available in a static HTML/JS viewer and remains advisory.
 This behavior should not imply runtime trust-kernel guarantees.
 
+Bundled demo permalink state is supported through URL hash values in `docs/verification-viewer.html`.
+Recognized hashes (`verified-trace`, `partial-trace`, `replay-warning`, `disputed`, `unverified`) map to bundled demo packages so reviewers can share reproducible demo links.
+Unknown hash values fail safely to a bundled fallback selection.
+
+Local upload privacy boundary remains strict:
+
+- uploaded local JSON content is not encoded in URL hash state
+- uploaded local JSON content is not stored in browser local storage
+- reset behavior returns to bundled demo state without exposing local uploaded data
+
 ## Hash Verification Visibility
 
 MVP-1 hash visibility should include:

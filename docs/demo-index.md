@@ -20,6 +20,18 @@ The bundled MVP-1 demo package set includes:
 
 These packages are loaded from `examples/verification-packages/` through the static viewer package selector.
 
+The static viewer also supports shareable demo links via URL hash:
+
+- `verification-viewer.html#verified-trace`
+- `verification-viewer.html#partial-trace`
+- `verification-viewer.html#replay-warning`
+- `verification-viewer.html#disputed`
+- `verification-viewer.html#unverified`
+
+Unknown hash values fail safely by loading a bundled default/selected example state.
+Hash routing applies to bundled demo packages only.
+Local uploaded JSON remains private, is not encoded into URL state, and is not written to local storage.
+
 ## What Users Can Test
 
 With the MVP-1 static viewer, users can test:
