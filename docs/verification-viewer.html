@@ -28,6 +28,8 @@
     .warn { background: #3a1f1f; border: 1px solid #8c3a3a; padding: .75rem; border-radius: .5rem; }
     .controls { margin: 1rem 0; display: grid; gap: .6rem; }
     .control-row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
+    .control-row button { min-height: 2.7rem; }
+    .control-row button:disabled { opacity: .5; cursor: not-allowed; }
     select, button {
       background: var(--panel); color: var(--text); border: 1px solid var(--border);
       border-radius: .5rem; padding: .65rem .75rem; font-size: 1rem;
@@ -68,6 +70,11 @@
         <button id="reloadBtn" type="button">Reload selected package</button>
         <button id="resetBtn" type="button">Reset to selected example</button>
       </div>
+      <div class="control-row">
+        <button id="copyPackageBtn" type="button">Copy current package JSON</button>
+        <button id="downloadPackageBtn" type="button">Download current package JSON</button>
+      </div>
+      <p class="muted" id="packageActionStatus">No package action yet.</p>
       <label for="localUpload"><strong>Or load local verification package JSON</strong></label>
       <input id="localUpload" type="file" accept=".json,application/json" />
       <p class="muted" id="uploadStatus">Viewing bundled example package.</p>
@@ -91,6 +98,10 @@
     const content = document.getElementById('content');
     const uploadStatus = document.getElementById('uploadStatus');
     const localUpload = document.getElementById('localUpload');
+    const copyPackageBtn = document.getElementById('copyPackageBtn');
+    const downloadPackageBtn = document.getElementById('downloadPackageBtn');
+    const packageActionStatus = document.getElementById('packageActionStatus');
+    let currentPackage = null;
     const REQUIRED_FIELDS = [
       'package_id',
       'trust_result',
@@ -139,7 +150,83 @@
       return warnings;
     }
 
+
+    function safePackageFilename(pkg) {
+      const base = safe(pkg?.package_id, 'verification-package').toLowerCase();
+      const normalized = base.replace(/[^a-z0-9._-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
+      const stem = normalized || 'verification-package';
+      return `${stem}.json`;
+    }
+
+    let actionStatusTimer = null;
+
+    function setPackageActionStatus(message, clearAfterMs = 2800) {
+      packageActionStatus.textContent = message;
+      if (actionStatusTimer) clearTimeout(actionStatusTimer);
+      if (clearAfterMs > 0) {
+        actionStatusTimer = setTimeout(() => {
+          packageActionStatus.textContent = 'No package action yet.';
+          actionStatusTimer = null;
+        }, clearAfterMs);
+      }
+    }
+
+    function updateActionButtons() {
+      const disabled = !currentPackage;
+      copyPackageBtn.disabled = disabled;
+      downloadPackageBtn.disabled = disabled;
+    }
+
+    async function copyCurrentPackageJson() {
+      if (!currentPackage) {
+        setPackageActionStatus('No package loaded to copy.');
+        return;
+      }
+      const text = JSON.stringify(currentPackage, null, 2);
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const tempArea = document.createElement('textarea');
+          tempArea.value = text;
+          tempArea.setAttribute('readonly', 'readonly');
+          tempArea.style.position = 'fixed';
+          tempArea.style.left = '-9999px';
+          document.body.appendChild(tempArea);
+          tempArea.select();
+          document.execCommand('copy');
+          document.body.removeChild(tempArea);
+        }
+        setPackageActionStatus('Package JSON copied locally.');
+      } catch (error) {
+        setPackageActionStatus(`Copy failed: ${safe(error.message)}`);
+      }
+    }
+
+    function downloadCurrentPackageJson() {
+      if (!currentPackage) {
+        setPackageActionStatus('No package loaded to download.');
+        return;
+      }
+      try {
+        const blob = new Blob([JSON.stringify(currentPackage, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = safePackageFilename(currentPackage);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+        setPackageActionStatus(`Downloaded ${link.download}.`);
+      } catch (error) {
+        setPackageActionStatus(`Download failed: ${safe(error.message)}`);
+      }
+    }
+
     function renderPackage(pkg, packageSourceLabel = 'Bundled example package') {
+      currentPackage = pkg;
+      updateActionButtons();
       const trustResult = safe(pkg.trust_result, 'UNVERIFIED');
       const packageWarnings = getPackageWarnings(pkg);
       const trustClass = packageWarnings.length > 0 ? 'WARNING' : 'PASS';
@@ -233,11 +320,15 @@
       content.innerHTML = '<article class="card"><p>Loading example package…</p></article>';
 
       try {
+        currentPackage = null;
+        updateActionButtons();
         const resp = await fetch(entry.file, { cache: 'no-store' });
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const pkg = await resp.json();
         renderPackage(pkg, `Bundled example (${entry.label})`);
       } catch (error) {
+        currentPackage = null;
+        updateActionButtons();
         content.innerHTML = `<article class="card"><h2>Load Error</h2><p>Could not load <span class="mono">${entry.file}</span>.</p><p class="muted">${safe(error.message)}</p></article>`;
       }
     }
@@ -248,11 +339,15 @@
       selectedPath.textContent = `local://${file.name}`;
       content.innerHTML = '<article class="card"><p>Loading local package…</p></article>';
       try {
+        currentPackage = null;
+        updateActionButtons();
         const text = await file.text();
         const pkg = JSON.parse(text);
         renderPackage(pkg, `Local package (${file.name})`);
         uploadStatus.textContent = 'Viewing local package. Processing is local-only and does not upload to any server.';
       } catch (error) {
+        currentPackage = null;
+        updateActionButtons();
         uploadStatus.textContent = 'Local package load failed.';
         content.innerHTML = `<article class="card"><h2>Invalid Package</h2><p>Could not parse local JSON package.</p><p class="muted">${safe(error.message)}</p><p class="muted">Fail-safe behavior preserved: viewer did not render invalid JSON.</p></article>`;
       }
@@ -265,15 +360,19 @@
     });
 
     document.getElementById('reloadBtn').addEventListener('click', loadSelected);
+    copyPackageBtn.addEventListener('click', copyCurrentPackageJson);
+    downloadPackageBtn.addEventListener('click', downloadCurrentPackageJson);
     document.getElementById('resetBtn').addEventListener('click', () => {
       localUpload.value = '';
-      loadSelected();
+      updateActionButtons();
+    loadSelected();
     });
     select.addEventListener('change', loadSelected);
     localUpload.addEventListener('change', (event) => {
       const file = event.target.files && event.target.files[0];
       loadLocalFile(file);
     });
+    updateActionButtons();
     loadSelected();
   </script>
 </body>
