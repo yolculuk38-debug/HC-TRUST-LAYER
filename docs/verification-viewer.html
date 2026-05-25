@@ -112,45 +112,51 @@
       return '<ul>' + items.map((it) => `<li>${formatFn(it)}</li>`).join('') + '</ul>';
     }
 
+    const ALLOWED_TRUST_RESULTS = ['VERIFIED TRACE', 'PARTIAL TRACE', 'REPLAY WARNING', 'DISPUTED', 'UNVERIFIED'];
+    const SHA256_HEX_RE = /^[0-9a-f]{64}$/;
+
+    function isHumanReadableConfidence(value) {
+      return typeof value === 'string' && /[A-Za-z]/.test(value) && value.trim().length >= 3;
+    }
+
     function getPackageWarnings(pkg) {
       const missingFields = REQUIRED_FIELDS.filter((field) => pkg[field] === undefined || pkg[field] === null);
       const warnings = [];
-      if (missingFields.length > 0) {
-        warnings.push(`Missing required field(s): ${missingFields.join(', ')}`);
+      if (missingFields.length > 0) warnings.push(`Missing required field(s): ${missingFields.join(', ')}`);
+
+      if (!ALLOWED_TRUST_RESULTS.includes(safe(pkg.trust_result, ''))) {
+        warnings.push('trust_result should be one of: VERIFIED TRACE, PARTIAL TRACE, REPLAY WARNING, DISPUTED, UNVERIFIED.');
       }
-      if (!['PASS', 'WARNING', 'FAIL', 'UNKNOWN'].includes(safe(pkg.trust_result, 'UNKNOWN'))) {
-        warnings.push('Invalid package warning: trust_result should be PASS, WARNING, FAIL, or UNKNOWN.');
+      if (!SHA256_HEX_RE.test(safe(pkg.content_hash, ''))) {
+        warnings.push('content_hash should match lowercase SHA-256 hex format (64 hex characters).');
       }
-      if (!['HIGH', 'MEDIUM', 'LOW', 'UNKNOWN'].includes(safe(pkg.trust_confidence, 'UNKNOWN').toUpperCase())) {
-        warnings.push('Invalid package warning: trust_confidence should be HIGH, MEDIUM, LOW, or UNKNOWN.');
+      if (!isHumanReadableConfidence(pkg.trust_confidence)) {
+        warnings.push('trust_confidence should be present and human-readable.');
       }
-      if (!Array.isArray(pkg.provenance_timeline)) {
-        warnings.push('Invalid package warning: provenance_timeline should be an array.');
-      }
-      if (!Array.isArray(pkg.validator_reviews)) {
-        warnings.push('Invalid package warning: validator_reviews should be an array.');
-      }
+      ['provenance_timeline', 'validator_reviews', 'replay_indicators', 'dispute_indicators'].forEach((field) => {
+        if (!Array.isArray(pkg[field])) warnings.push(`${field} should be an array.`);
+      });
       return warnings;
     }
 
     function renderPackage(pkg, packageSourceLabel = 'Bundled example package') {
-      const trustResult = safe(pkg.trust_result, 'UNKNOWN');
-      const trustClass = ['PASS', 'WARNING', 'FAIL'].includes(trustResult) ? trustResult : '';
-      const replayDetected = !!pkg.replay_indicators?.detected;
-      const disputeActive = !!pkg.dispute_indicators?.active;
-      const humanReviewRequired = !!pkg.human_review_required;
-      const confidence = safe(pkg.trust_confidence).toUpperCase();
+      const trustResult = safe(pkg.trust_result, 'UNVERIFIED');
       const packageWarnings = getPackageWarnings(pkg);
+      const trustClass = packageWarnings.length > 0 ? 'WARNING' : 'PASS';
+      const replayDetected = Array.isArray(pkg.replay_indicators) && pkg.replay_indicators.length > 0;
+      const disputeActive = Array.isArray(pkg.dispute_indicators) && pkg.dispute_indicators.length > 0;
+      const humanReviewRequired = !!pkg.human_review_required;
+      const confidence = safe(pkg.trust_confidence);
       const warningHtml = packageWarnings.length > 0
         ? `<article class="card"><h2>Package Warnings</h2>${renderList(packageWarnings, (w) => safe(w))}</article>`
         : '';
 
       let summaryLabel = 'Human review required';
       let summaryMeaning = 'This package requires human-supervised validation before consequential trust decisions.';
-      if (trustResult === 'PASS' && !replayDetected && !disputeActive && !humanReviewRequired) {
+      if (trustResult === 'VERIFIED TRACE' && !replayDetected && !disputeActive && !humanReviewRequired) {
         summaryLabel = 'Verified trace';
         summaryMeaning = 'Visible verification signals align within this package scope, with no active replay or dispute signal shown.';
-      } else if (trustResult === 'WARNING' && !replayDetected && !disputeActive) {
+      } else if (trustResult === 'PARTIAL TRACE' && !replayDetected && !disputeActive) {
         summaryLabel = 'Partial trace';
         summaryMeaning = 'Some verification signals are present, but scope coverage is incomplete or uncertain.';
       } else if (replayDetected) {
@@ -159,7 +165,7 @@
       } else if (disputeActive) {
         summaryLabel = 'Disputed';
         summaryMeaning = 'An active dispute signal is present, so trust interpretation is unresolved in current scope.';
-      } else if (trustResult === 'FAIL') {
+      } else if (trustResult === 'UNVERIFIED') {
         summaryLabel = 'Unverified';
         summaryMeaning = 'Current package scope does not provide enough verification support for a stronger trust result.';
       }
@@ -182,7 +188,7 @@
             <p class="kicker">What users should not assume</p>
             <p>Do not assume production readiness, truth guarantees, or forensic certainty from this static viewer output.</p>
             <p class="kicker">Demo-only limitation</p>
-            <p>This HC:// viewer reads bundled example fixtures only and does not include backend verification services.</p>
+            <p>This HC:// viewer is local-only, browser-only, reads bundled or uploaded local JSON, and does not include backend verification services.</p>
           </div>
         </article>
 
@@ -202,14 +208,12 @@
         <section class="grid">
           <article class="card"><h2>Replay Warning Display</h2>
             <p><strong>Status:</strong> ${replayDetected ? 'Replay warning' : 'No replay warning shown'}</p>
-            <p><strong>Signal level:</strong> ${safe(pkg.replay_indicators?.signal_level)}</p>
-            ${renderList(pkg.replay_indicators?.details, (d) => `${safe(d)}`)}
+            ${renderList(pkg.replay_indicators, (d) => `${safe(typeof d === 'string' ? d : JSON.stringify(d))}`)}
           </article>
 
           <article class="card"><h2>Dispute Status Display</h2>
             <p><strong>Status:</strong> ${disputeActive ? 'Disputed' : 'No active dispute shown'}</p>
-            <p><strong>Summary:</strong> ${safe(pkg.dispute_indicators?.summary)}</p>
-            ${renderList(pkg.dispute_indicators?.case_ids, (id) => `<span class="mono">${safe(id)}</span>`)}
+            ${renderList(pkg.dispute_indicators, (id) => `<span class="mono">${safe(typeof id === 'string' ? id : JSON.stringify(id))}</span>`)}
           </article>
         </section>
 

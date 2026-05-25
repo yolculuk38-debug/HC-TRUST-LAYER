@@ -20,7 +20,7 @@ python3 scripts/validate_verification_package_examples.py
 
 Expected behavior is `PASS` per file in `examples/verification-packages/*.json`. This helper is demo-only fixture validation and is not a schema validator or production trust decision engine.
 
-The command prints a fixed-order summary for MVP-1 fields:
+The command prints a fixed-order summary for MVP-1 fields and emits advisory `WARNING` lines when content validation findings are present:
 
 - `package_id`
 - `trust_result`
@@ -61,9 +61,18 @@ The MVP-1 CLI viewer is currently scoped to the example fixtures in:
 ## Limitations
 
 - This MVP-1 viewer reads local JSON files only.
-- This viewer validates required MVP fields only and does not perform schema-level enforcement.
+- This viewer validates required MVP fields and performs advisory checks for hash/result/array formatting only; it does not perform schema-level enforcement.
 - This viewer is designed for example fixtures and does not imply support for all package variants.
 - Output is advisory and should not be interpreted as an autonomous trust decision.
+
+Advisory checks include:
+
+- `content_hash` SHA-256 lowercase hex format (`64` characters).
+- `trust_result` membership in `VERIFIED TRACE`, `PARTIAL TRACE`, `REPLAY WARNING`, `DISPUTED`, `UNVERIFIED`.
+- human-readable `trust_confidence` presence.
+- array type checks for `provenance_timeline`, `validator_reviews`, `replay_indicators`, and `dispute_indicators`.
+
+When checks fail, the CLI shows `WARNING` output while still rendering available valid package fields.
 
 ## Related Viewer Surfaces
 

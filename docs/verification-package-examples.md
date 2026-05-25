@@ -42,11 +42,23 @@ These labels are review states, not final certainty guarantees.
 
 `trust_result` is a concise outcome signal for MVP-1 consumption.
 
-- `PASS`: aligns with validator and provenance evidence for current scope.
-- `WARNING`: indicates caution, follow-up, or uncertainty conditions.
-- `FAIL`: indicates unresolved trust concerns, missing continuity, or active dispute impact.
+- `VERIFIED TRACE`: aligns with validator and provenance evidence for current scope.
+- `PARTIAL TRACE`: indicates caution, follow-up, or uncertainty conditions.
+- `REPLAY WARNING`: indicates replay-related caution and review escalation need.
+- `DISPUTED`: indicates active dispute context and unresolved review routing.
+- `UNVERIFIED`: indicates unresolved trust concerns or missing continuity.
 
-`trust_confidence` communicates confidence posture (`high`, `medium`, `low`) for the current package context.
+`trust_confidence` communicates confidence posture in human-readable form for the current package context.
+
+## Hash and advisory warning validation
+
+For MVP-1 static and CLI viewers, example rendering now includes advisory validation checks:
+
+- `content_hash` should use lowercase SHA-256 hex formatting (`64` hex characters).
+- `provenance_timeline`, `validator_reviews`, `replay_indicators`, and `dispute_indicators` should each be arrays.
+- malformed or incomplete values should produce explicit `WARNING` output.
+
+These warnings are advisory and do not change schema contracts, canonical records, or trust-kernel policy behavior.
 
 ## Provenance continuity examples
 

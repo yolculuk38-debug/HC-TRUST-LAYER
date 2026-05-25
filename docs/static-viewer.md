@@ -16,7 +16,7 @@ After GitHub Pages publishes repository docs, open:
 
 This page loads bundled examples from `examples/verification-packages/` and can also load local `.json` verification package files directly in-browser using a file input control.
 All package processing is client-side local processing only with no server upload path.
-The viewer validates required fields before rendering and shows invalid package warnings and missing field warnings when local package data is incomplete.
+The viewer validates required fields before rendering and shows explicit `WARNING` notices when local package data is incomplete, malformed, or advisory-only.
 The layout remains mobile-readable and static-only.
 UI labels include `Verified trace`, `Partial trace`, `Replay warning`, `Disputed`, `Unverified`, and `Human review required` for consistent MVP-1 trust interpretation.
 
@@ -33,6 +33,15 @@ python3 scripts/validate_verification_package_examples.py
 ```
 
 Expected behavior is `PASS` output per file for all bundled examples. This step checks required MVP-1 example fields only.
+
+The viewer also performs content and shape checks used for advisory display boundaries:
+
+- `content_hash` must match lowercase SHA-256 hex format (`64` hex characters).
+- `trust_result` must be one of: `VERIFIED TRACE`, `PARTIAL TRACE`, `REPLAY WARNING`, `DISPUTED`, `UNVERIFIED`.
+- `trust_confidence` must be present and human-readable.
+- `provenance_timeline`, `validator_reviews`, `replay_indicators`, and `dispute_indicators` must each be arrays.
+
+When a package fails these checks, the viewer keeps rendering valid sections where possible and emits advisory `WARNING` messages instead of silently accepting malformed data.
 
 ## Demo-only limitations
 
