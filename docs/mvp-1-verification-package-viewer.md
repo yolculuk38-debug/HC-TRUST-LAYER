@@ -16,6 +16,7 @@ MVP-1 defines the first small working HC:// verification experience for viewing 
 The MVP-1 surface is focused on transparent evidence reading, provenance continuity awareness, replay warning visibility, validator review visibility, and audit trail-linked trust snapshot interpretation.
 
 MVP-1 is an interpretive view layer and does not alter trust kernel behavior.
+The static viewer implementation uses a simple timeline-style layout to group provenance events, validator reviews, replay indicators, dispute indicators, and audit snapshot context with plain-text section labels for mobile-readable interpretation.
 
 ## Minimal Verification Experience
 
@@ -84,6 +85,7 @@ MVP-1 validator visibility should include:
 - validator evidence or rationale pointers when available
 
 Validator visibility is advisory context and does not replace human-supervised validation.
+Where validator review arrays are empty, the viewer shows an explicit empty-state message so missing review context is visible instead of implied.
 
 ## Replay Warning Visibility
 
@@ -92,6 +94,7 @@ MVP-1 replay visibility should include:
 - replay warning indicator when repeated payload/hash reuse appears across conflicting provenance contexts
 - clear caution language for suspicious reuse patterns
 - unresolved-state marker requiring human-supervised validation
+- advisory warning labels in the viewer when replay indicators are present
 
 ## Dispute Indicator Visibility
 
@@ -100,6 +103,7 @@ MVP-1 dispute visibility should include:
 - disputed canonical record indicator
 - dispute state summary label (open/resolved/unknown)
 - pointer to dispute-related provenance and audit trail entries
+- advisory warning labels when dispute indicators are present
 
 ## Trust Snapshot Visibility
 

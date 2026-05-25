@@ -60,6 +60,15 @@
     .raw-warning { margin: .5rem 0 .75rem; padding: .6rem; border-radius: .5rem; border: 1px solid #8c6f2b; background: rgba(255,191,63,.12); color: #ffe4a6; }
     .raw-json { margin: .6rem 0 0; padding: .8rem; border-radius: .5rem; border: 1px solid var(--border); background: #0d1428; overflow-x: auto; white-space: pre; line-height: 1.4; font-size: .9rem; }
     .raw-actions { margin-top: .6rem; display: flex; flex-wrap: wrap; gap: .6rem; }
+    .timeline { margin: 0; padding: 0; list-style: none; display: grid; gap: .65rem; }
+    .timeline-item { border: 1px solid var(--border); border-radius: .55rem; padding: .65rem; background: rgba(11,16,32,.4); }
+    .timeline-meta { display: flex; flex-wrap: wrap; gap: .35rem .6rem; color: var(--muted); font-size: .92rem; }
+    .label { font-weight: 700; color: var(--muted); margin-right: .2rem; }
+    .advisory { border-left: 3px solid #8c6f2b; padding: .5rem .65rem; border-radius: .35rem; background: rgba(255,191,63,.1); margin: .4rem 0; }
+    @media (max-width: 680px) {
+      .card { padding: .8rem; }
+      .timeline-item { padding: .6rem; }
+    }
   </style>
 </head>
 <body>
@@ -363,6 +372,13 @@
         </article>
       `;
     }
+    function renderEmptyState(message) {
+      return `<p class="muted">${safe(message)}</p>`;
+    }
+    function renderTimeline(items, formatFn, emptyMessage) {
+      if (!Array.isArray(items) || items.length === 0) return renderEmptyState(emptyMessage);
+      return `<ol class="timeline">${items.map((it, idx) => `<li class="timeline-item">${formatFn(it, idx)}</li>`).join('')}</ol>`;
+    }
 
     function renderPackage(pkg, packageSourceLabel = 'Bundled example package') {
       currentPackage = pkg;
@@ -423,28 +439,60 @@
 
         <article class="card"><h2>Provenance Summary</h2><p>${safe(pkg.provenance_summary)}</p><p class="muted">Provenance explains where this package came from and how continuity appears in the visible audit trail scope.</p></article>
 
-        <article class="card"><h2>Provenance Timeline</h2>
-          ${renderList(pkg.provenance_timeline, (e) => `<span class="chip">${safe(e.stage)}</span> ${safe(e.actor)} at ${safe(e.timestamp)} (${safe(e.status)})`)}
+        <article class="card"><h2>[Timeline] Provenance Timeline</h2>
+          <p class="muted">Simple timeline view for continuity reading on desktop and mobile. Advisory interpretation only.</p>
+          ${renderTimeline(
+            pkg.provenance_timeline,
+            (e, idx) => `
+              <p><span class="label">Step ${idx + 1}:</span><span class="chip">${safe(e.stage)}</span></p>
+              <p>${safe(e.actor)}</p>
+              <div class="timeline-meta">
+                <span><span class="label">Timestamp:</span>${safe(e.timestamp)}</span>
+                <span><span class="label">Status:</span>${safe(e.status)}</span>
+              </div>
+            `,
+            'No provenance timeline entries are included in this package. Human-supervised validation is recommended before consequential decisions.'
+          )}
         </article>
 
-        <article class="card"><h2>Validator Review Summary</h2>
+        <article class="card"><h2>[Reviews] Validator Review Summary</h2>
           <p class="muted">Validator reviews are advisory interpretation signals, not standalone certainty claims.</p>
-          ${renderList(pkg.validator_reviews, (r) => `<span class="chip">${safe(r.decision)}</span> ${safe(r.validator_id)} at ${safe(r.reviewed_at)} — ${safe(r.notes)}`)}
+          ${renderTimeline(
+            pkg.validator_reviews,
+            (r, idx) => `
+              <p><span class="label">Review ${idx + 1}:</span><span class="chip">${safe(r.decision)}</span></p>
+              <p>${safe(r.validator_id)}</p>
+              <div class="timeline-meta"><span><span class="label">Reviewed at:</span>${safe(r.reviewed_at)}</span></div>
+              <p class="muted">${safe(r.notes)}</p>
+            `,
+            'No validator review entries are listed in this package. Treat the viewer output as incomplete advisory context.'
+          )}
         </article>
 
         <section class="grid">
-          <article class="card"><h2>Replay Warning Display</h2>
+          <article class="card"><h2>[Replay] Replay Warning Display</h2>
             <p><strong>Status:</strong> ${replayDetected ? 'Replay warning' : 'No replay warning shown'}</p>
-            ${renderList(pkg.replay_indicators, (d) => `${safe(typeof d === 'string' ? d : JSON.stringify(d))}`)}
+            ${replayDetected ? '<p class="advisory"><strong>Advisory warning:</strong> Replay indicators are caution signals and require human-supervised validation.</p>' : ''}
+            ${renderTimeline(
+              pkg.replay_indicators,
+              (d, idx) => `<p><span class="label">Signal ${idx + 1}:</span><span class="mono">${safe(typeof d === 'string' ? d : JSON.stringify(d))}</span></p>`,
+              'No replay indicators are present in this package scope.'
+            )}
           </article>
 
-          <article class="card"><h2>Dispute Status Display</h2>
+          <article class="card"><h2>[Dispute] Dispute Status Display</h2>
             <p><strong>Status:</strong> ${disputeActive ? 'Disputed' : 'No active dispute shown'}</p>
-            ${renderList(pkg.dispute_indicators, (id) => `<span class="mono">${safe(typeof id === 'string' ? id : JSON.stringify(id))}</span>`)}
+            ${disputeActive ? '<p class="advisory"><strong>Advisory warning:</strong> Dispute indicators mean interpretation is unresolved in current package scope.</p>' : ''}
+            ${renderTimeline(
+              pkg.dispute_indicators,
+              (id, idx) => `<p><span class="label">Indicator ${idx + 1}:</span><span class="mono">${safe(typeof id === 'string' ? id : JSON.stringify(id))}</span></p>`,
+              'No dispute indicators are present in this package scope.'
+            )}
           </article>
         </section>
 
-        <article class="card"><h2>Audit Snapshot</h2>
+        <article class="card"><h2>[Audit] Audit Snapshot</h2>
+          <p class="advisory"><strong>Advisory boundary:</strong> Audit snapshot values summarize visible package scope only and do not guarantee full canonical record continuity.</p>
           <p><strong>Audit trail ref:</strong> <span class="mono">${safe(pkg.audit_snapshot?.audit_trail_ref)}</span></p>
           <p><strong>Last event:</strong> ${safe(pkg.audit_snapshot?.last_event)}</p>
           <p><strong>Review boundary:</strong> ${safe(pkg.audit_snapshot?.review_boundary)}</p>

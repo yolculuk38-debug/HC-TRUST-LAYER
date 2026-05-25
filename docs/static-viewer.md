@@ -6,6 +6,7 @@ The MVP-1 static verification package viewer provides a browser-based, demo-only
 
 The viewer helps users inspect trust results, provenance timeline continuity, replay indicators, dispute indicators, validator reviews, and audit snapshot context without command-line usage.
 The trust result card prioritizes mobile-readable labels and plain-language explanations to support non-technical interpretation boundaries.
+The provenance, validator review, replay, and dispute sections use a simple timeline-style visual grouping with plain-text section labels (`[Timeline]`, `[Reviews]`, `[Replay]`, `[Dispute]`, `[Audit]`) so review flow is easier to scan on mobile-sized viewports.
 
 ## Open the viewer from GitHub Pages
 
@@ -69,6 +70,7 @@ Local upload privacy boundary:
 ## Mobile-first demo testing note
 
 Before sharing MVP-1 links broadly, test bundled demo hash links on mobile-sized viewports to confirm readable trust labels, warning text, and audit trail context.
+The timeline cards use larger spacing and stacked metadata to keep provenance and validator review details readable without horizontal scrolling.
 
 ## Demo-only limitations
 
