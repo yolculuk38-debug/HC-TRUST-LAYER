@@ -39,7 +39,7 @@ The viewer also performs content and shape checks used for advisory display boun
 
 - `content_hash` must match lowercase SHA-256 hex format (`64` hex characters).
 - `trust_result` must be one of: `VERIFIED TRACE`, `PARTIAL TRACE`, `REPLAY WARNING`, `DISPUTED`, `UNVERIFIED`.
-- `trust_confidence` must be present and human-readable.
+- `advisory trust summary` must be present and human-readable.
 - `provenance_timeline`, `validator_reviews`, `replay_indicators`, and `dispute_indicators` must each be arrays.
 
 When a package fails these checks, the viewer keeps rendering valid sections where possible and emits advisory `WARNING` messages instead of silently accepting malformed data.
@@ -119,7 +119,7 @@ The static viewer includes two report actions for the currently loaded HC:// ver
 - **Print report** opens the browser print dialog for a human-readable report view of the currently loaded package.
 - **Export report summary (.txt)** downloads a local text summary report.
 
-The report summary includes: `package_id`, `trust_result`, `trust_confidence`, `content_hash`, provenance summary, replay indicators, dispute indicators, validator reviews, audit snapshot, human review required, and viewer warnings.
+The report summary includes: `package_id`, `trust_result`, `advisory trust summary`, `content_hash`, provenance summary, replay indicators, dispute indicators, validator reviews, audit snapshot, human review required, and viewer warnings.
 
 Both actions fail safely when no package is loaded by showing a viewer status message instead of producing output.
 
