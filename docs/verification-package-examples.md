@@ -69,3 +69,5 @@ To support mobile readability in MVP-1:
 
 - `docs/mvp-1-viewer-implementation-plan.md`
 - `docs/mvp-1-cli-viewer.md`
+- `docs/static-viewer.md`
+- `docs/verification-viewer.html`

@@ -72,7 +72,8 @@ Recommended starting approach:
 Potential MVP-1 implementation file surfaces:
 
 - `scripts/view_verification_package.py`
-- `docs/demo-viewer.html` or `docs/viewer.md`
+- `docs/verification-viewer.html`
+- `docs/static-viewer.md`
 - `examples/verification-packages/`
 
 This plan documents intended surfaces only and does not implement them in this phase.
