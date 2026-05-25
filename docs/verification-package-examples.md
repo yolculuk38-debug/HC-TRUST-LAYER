@@ -64,3 +64,8 @@ To support mobile readability in MVP-1:
 - avoid deeply nested structures when summary fields are sufficient
 - pair machine-readable indicators with human-readable summaries
 - preserve stable keys across PASS/WARNING/FAIL example variants
+
+## Related References
+
+- `docs/mvp-1-viewer-implementation-plan.md`
+

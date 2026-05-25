@@ -126,6 +126,7 @@ MVP-1 UX goals:
 - provenance and verification focus only
 
 ## Related Foundations
+- `docs/mvp-1-viewer-implementation-plan.md`
 
 - `docs/mvp-1-user-flow.md`
 - `docs/mvp-1-ui-principles.md`
