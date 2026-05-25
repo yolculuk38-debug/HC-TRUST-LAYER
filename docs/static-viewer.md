@@ -126,3 +126,29 @@ Demo-only limitation and local-only processing note:
 - this is a static HTML/JS viewer with no backend and no external dependencies
 - report generation and export run in-browser only with no server upload path
 - outputs remain advisory and require human-supervised validation for consequential trust decisions
+
+## Raw package fields inspector
+
+The static viewer includes a collapsible **Raw package fields** section that displays pretty-printed package JSON for the currently loaded package.
+
+How to inspect raw fields:
+
+1. Open a bundled example or load a local `.json` package.
+2. Expand **Raw package fields**.
+3. Use **Copy raw JSON** to copy the currently loaded JSON for local review.
+
+When raw fields are useful:
+
+- validating exact field names and nested structure shown by the viewer
+- reviewing values that are summarized in higher-level cards
+- preparing reviewer notes about provenance, replay indicators, dispute indicators, and audit trail context
+
+Safety boundaries and limitations:
+
+- local-only processing: raw JSON rendering and copy actions run in-browser only
+- no upload path: the viewer does not upload package content to any server
+- no storage path: local uploaded package content is not written to local storage
+- no mutation path: the viewer does not modify package content
+- fail-safe no-package behavior: when no package is loaded, the section shows a clear safe message instead of rendering content
+- demo-only limitation: this is still a static MVP-1 demo interpretation surface
+- human-supervised validation remains required for consequential trust decisions
