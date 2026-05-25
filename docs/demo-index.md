@@ -57,6 +57,7 @@ With the MVP-1 static viewer, users can test:
 - provenance timeline continuity visibility
 - replay warning and dispute indicator visibility
 - validator review visibility and audit trail-linked context
+- simple timeline-style grouping across provenance, validator reviews, replay indicators, dispute indicators, and audit snapshot context
 - package-level interpretation boundaries before escalation
 
 For terminal-based review of the same package set, use the CLI viewer documentation at `docs/mvp-1-cli-viewer.md`.
@@ -67,6 +68,7 @@ This demo index and the static viewer are documentation/demo surfaces only.
 They do not introduce runtime verification behavior, schema contracts, validator logic, or workflow policy changes.
 
 The MVP-1 demos do not provide production readiness guarantees, truth guarantees, or forensic certainty claims.
+The viewer layout improvements are interpretive UX polish only and do not change workflow policy, schema contracts, validator logic, or canonical record behavior.
 
 ## Human-Supervised Validation Note
 
