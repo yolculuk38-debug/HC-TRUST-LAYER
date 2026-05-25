@@ -195,7 +195,7 @@ Included report fields:
 
 - package_id
 - trust_result
-- trust_confidence
+- advisory trust summary
 - content_hash
 - provenance summary
 - replay indicators
