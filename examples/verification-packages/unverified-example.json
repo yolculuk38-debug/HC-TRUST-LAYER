@@ -1,0 +1,48 @@
+{
+  "package_id": "HC-PKG-MVP1-UNVERIFIED-0001",
+  "content_hash": "sha256:f3b911438a507f2f2eaec50483f4b9f4cde845b2d46ae6de4f6c2600c2e2c2df",
+  "provenance_summary": "Provenance continuity cannot be confirmed because canonical linkage evidence is absent in this example.",
+  "provenance_timeline": [
+    {
+      "stage": "capture",
+      "actor": "unknown-source",
+      "timestamp": "2026-05-16T03:10:00Z",
+      "status": "recorded"
+    },
+    {
+      "stage": "canonical_record_link",
+      "actor": "verification-map",
+      "timestamp": "2026-05-16T03:11:03Z",
+      "status": "not_found"
+    }
+  ],
+  "validator_reviews": [
+    {
+      "validator_id": "validator-node-f",
+      "decision": "FAIL",
+      "notes": "No canonical record linkage found for this sample package.",
+      "reviewed_at": "2026-05-16T03:12:18Z"
+    }
+  ],
+  "replay_indicators": {
+    "detected": false,
+    "signal_level": "unknown",
+    "details": [
+      "Replay evaluation deferred due to missing canonical context."
+    ]
+  },
+  "dispute_indicators": {
+    "active": false,
+    "case_ids": [],
+    "summary": "No dispute opened; package remains unverified pending review."
+  },
+  "trust_result": "FAIL",
+  "trust_confidence": "low",
+  "audit_snapshot": {
+    "audit_trail_ref": "HC://audit/AUD-MVP1-UNVERIFIED-0001",
+    "last_event": "canonical_link_missing",
+    "review_boundary": "human-supervised validation"
+  },
+  "generated_at": "2026-05-16T03:13:00Z",
+  "human_review_required": true
+}

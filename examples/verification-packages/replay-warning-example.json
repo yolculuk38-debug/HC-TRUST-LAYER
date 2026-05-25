@@ -1,0 +1,55 @@
+{
+  "package_id": "HC-PKG-MVP1-REPLAY-0001",
+  "content_hash": "sha256:8c33a7b56a4c7196e9dd31f4cbc82d4fb639ba656208a845f7ec9c04d5f25b89",
+  "provenance_summary": "Provenance continuity is present, but replay indicators show repeated submission behavior requiring caution.",
+  "provenance_timeline": [
+    {
+      "stage": "capture",
+      "actor": "origin-system",
+      "timestamp": "2026-05-18T10:00:00Z",
+      "status": "recorded"
+    },
+    {
+      "stage": "ingest",
+      "actor": "gateway-a",
+      "timestamp": "2026-05-18T10:01:10Z",
+      "status": "accepted"
+    },
+    {
+      "stage": "resubmission_detected",
+      "actor": "gateway-a",
+      "timestamp": "2026-05-18T10:03:42Z",
+      "status": "warning"
+    }
+  ],
+  "validator_reviews": [
+    {
+      "validator_id": "validator-node-c",
+      "decision": "WARNING",
+      "notes": "Replay pattern detected: same content hash submitted multiple times in short interval.",
+      "reviewed_at": "2026-05-18T10:04:11Z"
+    }
+  ],
+  "replay_indicators": {
+    "detected": true,
+    "signal_level": "medium",
+    "details": [
+      "Duplicate content_hash observed 3 times within 5 minutes.",
+      "No conflicting payload mutation detected in this example."
+    ]
+  },
+  "dispute_indicators": {
+    "active": false,
+    "case_ids": [],
+    "summary": "No dispute case opened yet; manual review queue entry created."
+  },
+  "trust_result": "WARNING",
+  "trust_confidence": "medium",
+  "audit_snapshot": {
+    "audit_trail_ref": "HC://audit/AUD-MVP1-REPLAY-0001",
+    "last_event": "replay_warning_logged",
+    "review_boundary": "human-supervised validation"
+  },
+  "generated_at": "2026-05-18T10:05:00Z",
+  "human_review_required": true
+}

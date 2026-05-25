@@ -1,0 +1,60 @@
+{
+  "package_id": "HC-PKG-MVP1-DISPUTED-0001",
+  "content_hash": "sha256:5f0e7ae8d3f2c1be11bd5adcb129ec664ef30f8ad65efcf8b87f37c05a12f0a6",
+  "provenance_summary": "Provenance continuity includes an active dispute marker where validator interpretations diverge.",
+  "provenance_timeline": [
+    {
+      "stage": "capture",
+      "actor": "origin-system",
+      "timestamp": "2026-05-17T07:42:00Z",
+      "status": "recorded"
+    },
+    {
+      "stage": "validator_review",
+      "actor": "validator-node-d",
+      "timestamp": "2026-05-17T07:47:33Z",
+      "status": "warning"
+    },
+    {
+      "stage": "dispute_opened",
+      "actor": "human-reviewer-legal-02",
+      "timestamp": "2026-05-17T07:55:20Z",
+      "status": "active"
+    }
+  ],
+  "validator_reviews": [
+    {
+      "validator_id": "validator-node-d",
+      "decision": "WARNING",
+      "notes": "Payload relation appears valid; origin context requires additional institutional review.",
+      "reviewed_at": "2026-05-17T07:47:33Z"
+    },
+    {
+      "validator_id": "validator-node-e",
+      "decision": "FAIL",
+      "notes": "Confidence boundary exceeded for unresolved provenance interpretation.",
+      "reviewed_at": "2026-05-17T07:49:01Z"
+    }
+  ],
+  "replay_indicators": {
+    "detected": false,
+    "signal_level": "none",
+    "details": []
+  },
+  "dispute_indicators": {
+    "active": true,
+    "case_ids": [
+      "HC-DSP-2026-0044"
+    ],
+    "summary": "Dispute is active pending human-supervised validation outcome."
+  },
+  "trust_result": "FAIL",
+  "trust_confidence": "low",
+  "audit_snapshot": {
+    "audit_trail_ref": "HC://audit/AUD-MVP1-DISPUTED-0001",
+    "last_event": "dispute_opened",
+    "review_boundary": "human-supervised validation"
+  },
+  "generated_at": "2026-05-17T07:56:00Z",
+  "human_review_required": true
+}
