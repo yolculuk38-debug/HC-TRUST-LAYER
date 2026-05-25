@@ -78,11 +78,11 @@ The timeline cards use larger spacing and stacked metadata to keep provenance an
 - The viewer supports bundled fixtures and local `.json` package uploads, but both remain static interpretation surfaces.
 - Validation helper coverage is demo-only and does not introduce schema, validator, or workflow changes.
 - The viewer does not provide production readiness guarantees.
-- The viewer does not provide truth guarantees.
+- The viewer does not provide verification advisory band guidance.
 - The viewer does not provide forensic certainty claims.
 - The viewer is advisory and does not replace human-supervised validation.
 - The viewer includes explanation text for what the result means, why review may be needed, what users should not assume, and demo-only limitations.
-- The viewer includes warnings for demo-only behavior, local-only processing, no server upload, no truth guarantee, and human review recommendation.
+- The viewer includes warnings for demo-only behavior, local-only processing, no server upload, no verification state guidance, and human review recommendation.
 
 ## Relation to CLI viewer
 
