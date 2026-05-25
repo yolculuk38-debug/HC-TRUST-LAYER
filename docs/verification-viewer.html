@@ -173,12 +173,18 @@
       return typeof value === 'string' && /[A-Za-z]/.test(value) && value.trim().length >= 3;
     }
 
+    function normalizeTrustResult(value, fallback = 'UNVERIFIED') {
+      if (typeof value !== 'string') return fallback;
+      const normalized = value.trim().toUpperCase();
+      return normalized || fallback;
+    }
+
     function getPackageWarnings(pkg) {
       const missingFields = REQUIRED_FIELDS.filter((field) => pkg[field] === undefined || pkg[field] === null);
       const warnings = [];
       if (missingFields.length > 0) warnings.push(`Missing required field(s): ${missingFields.join(', ')}`);
 
-      if (!ALLOWED_TRUST_RESULTS.includes(safe(pkg.trust_result, ''))) {
+      if (!ALLOWED_TRUST_RESULTS.includes(normalizeTrustResult(pkg.trust_result, ''))) {
         warnings.push('trust_result should be one of: VERIFIED TRACE, PARTIAL TRACE, REPLAY WARNING, DISPUTED, UNVERIFIED.');
       }
       if (!SHA256_HEX_RE.test(safe(pkg.content_hash, ''))) {
@@ -383,7 +389,7 @@
     function renderPackage(pkg, packageSourceLabel = 'Bundled example package') {
       currentPackage = pkg;
       updateActionButtons();
-      const trustResult = safe(pkg.trust_result, 'UNVERIFIED');
+      const trustResult = normalizeTrustResult(pkg.trust_result);
       const packageWarnings = getPackageWarnings(pkg);
       const trustClass = packageWarnings.length > 0 ? 'WARNING' : 'PASS';
       const replayDetected = Array.isArray(pkg.replay_indicators) && pkg.replay_indicators.length > 0;
