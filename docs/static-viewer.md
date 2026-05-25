@@ -12,9 +12,16 @@ The trust result card prioritizes mobile-readable labels and plain-language expl
 After GitHub Pages publishes repository docs, open:
 
 - `https://<org-or-user>.github.io/<repo>/docs/verification-viewer.html`
+- `https://<org-or-user>.github.io/<repo>/docs/demo-index.md`
 
 This page loads bundled examples from `examples/verification-packages/` and renders the selected package in a mobile-readable static layout.
 UI labels include `Verified trace`, `Partial trace`, `Replay warning`, `Disputed`, `Unverified`, and `Human review required` for consistent MVP-1 trust interpretation.
+
+Use the demo index as the quickest entry point for MVP-1 demo navigation:
+
+- `docs/demo-index.md`
+- `docs/verification-viewer.html`
+- `docs/mvp-1-cli-viewer.md`
 
 Before static rendering demos, run the fixture validation helper:
 
