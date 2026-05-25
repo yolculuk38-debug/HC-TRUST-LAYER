@@ -252,6 +252,22 @@
       ].join('\n');
     }
 
+    function buildPackageHealth(pkg) {
+      const metadataFields = ['package_id', 'trust_result', 'content_hash', 'provenance_summary', 'audit_snapshot'];
+      const metadataMissing = metadataFields.filter((field) => pkg[field] === undefined || pkg[field] === null || pkg[field] === '');
+      const metadataSummary = metadataMissing.length === 0
+        ? 'Present'
+        : `Missing field(s): ${metadataMissing.join(', ')}`;
+      return {
+        metadataSummary,
+        provenanceEventsCount: Array.isArray(pkg.provenance_timeline) ? pkg.provenance_timeline.length : 0,
+        validatorReviewsCount: Array.isArray(pkg.validator_reviews) ? pkg.validator_reviews.length : 0,
+        replayStatus: Array.isArray(pkg.replay_indicators) && pkg.replay_indicators.length > 0 ? 'Present' : 'Absent',
+        disputeStatus: Array.isArray(pkg.dispute_indicators) && pkg.dispute_indicators.length > 0 ? 'Present' : 'Absent',
+        humanReviewStatus: !!pkg.human_review_required ? 'Yes' : 'No'
+      };
+    }
+
     let actionStatusTimer = null;
 
     function setPackageActionStatus(message, clearAfterMs = 2800) {
@@ -401,6 +417,7 @@
       const replayDetected = Array.isArray(pkg.replay_indicators) && pkg.replay_indicators.length > 0;
       const disputeActive = Array.isArray(pkg.dispute_indicators) && pkg.dispute_indicators.length > 0;
       const humanReviewRequired = !!pkg.human_review_required;
+      const packageHealth = buildPackageHealth(pkg);
       const confidence = safe(pkg.trust_confidence);
       const warningHtml = packageWarnings.length > 0
         ? `<article class="card"><h2>Package Warnings</h2>${renderList(packageWarnings, (w) => safe(w))}</article>`
@@ -455,6 +472,18 @@
         </article>
 
         <article class="card"><h2>Content Hash</h2><p class="mono">${safe(pkg.content_hash)}</p></article>
+
+        <article class="card"><h2>Package Health</h2>
+          <p class="muted">Advisory-only summary for quick package completeness and review routing. This is not a truth score and does not replace human-supervised validation.</p>
+          <ul>
+            <li><strong>Package metadata:</strong> ${safe(packageHealth.metadataSummary)}</li>
+            <li><strong>Provenance events count:</strong> ${packageHealth.provenanceEventsCount}</li>
+            <li><strong>Validator reviews count:</strong> ${packageHealth.validatorReviewsCount}</li>
+            <li><strong>Replay indicators:</strong> ${packageHealth.replayStatus}</li>
+            <li><strong>Dispute indicators:</strong> ${packageHealth.disputeStatus}</li>
+            <li><strong>Human review required:</strong> ${packageHealth.humanReviewStatus}</li>
+          </ul>
+        </article>
 
         <article class="card"><h2>Provenance Summary</h2><p>${safe(pkg.provenance_summary)}</p><p class="muted">Provenance explains where this package came from and how continuity appears in the visible audit trail scope.</p></article>
 

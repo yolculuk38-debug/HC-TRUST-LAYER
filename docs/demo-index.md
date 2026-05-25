@@ -58,6 +58,7 @@ With the MVP-1 static viewer, users can test:
 - replay warning and dispute indicator visibility
 - validator review visibility and audit trail-linked context
 - simple timeline-style grouping across provenance, validator reviews, replay indicators, dispute indicators, and audit snapshot context
+- compact package health summary visibility (metadata completeness, provenance/review counts, replay/dispute presence, human review required)
 - package-level interpretation boundaries before escalation
 - advisory trust summary band labels (`Review OK`, `Review With Caution`, `Needs Human Review`, `Insufficient Data`)
 
