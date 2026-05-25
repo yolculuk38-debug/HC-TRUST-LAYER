@@ -20,6 +20,14 @@ MVP-1 can use these files as reference fixtures for:
 
 Files are located in `examples/verification-packages/`.
 
+Before rendering or using these fixtures in MVP-1 viewer flows, run:
+
+```bash
+python3 scripts/validate_verification_package_examples.py
+```
+
+Expected behavior is `PASS` output per file when JSON parsing succeeds and all required MVP-1 fields are present. Any `FAIL` output indicates fixture issues that should be resolved before demo review usage.
+
 ## PASS / WARNING / FAIL interpretation
 
 Use the following interpretation pattern in MVP-1 review surfaces.

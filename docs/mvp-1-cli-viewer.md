@@ -12,6 +12,14 @@ The viewer is interpretive and advisory. It preserves trust-kernel boundaries an
 python3 scripts/view_verification_package.py examples/verification-packages/verified-trace-example.json
 ```
 
+Before running the CLI viewer across example fixtures, validate fixture completeness:
+
+```bash
+python3 scripts/validate_verification_package_examples.py
+```
+
+Expected behavior is `PASS` per file in `examples/verification-packages/*.json`. This helper is demo-only fixture validation and is not a schema validator or production trust decision engine.
+
 The command prints a fixed-order summary for MVP-1 fields:
 
 - `package_id`
