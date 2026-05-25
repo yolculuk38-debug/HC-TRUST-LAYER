@@ -84,3 +84,20 @@ From `docs/verification-viewer.html`, reviewers can additionally test:
 The export summary includes package identity, trust result, confidence, content hash, provenance summary, replay/dispute indicators, validator reviews, audit snapshot, human review required, and viewer warnings.
 
 Demo-only/local-only note: these actions run in-browser with static HTML/JS only, use no backend services, and provide advisory outputs that still require human-supervised validation.
+
+## Raw package fields quick test
+
+From `docs/verification-viewer.html`, reviewers can test the MVP-1 raw field inspector:
+
+- expand **Raw package fields** for any bundled demo package
+- load a local `.json` package and expand **Raw package fields**
+- verify pretty-printed JSON visibility on mobile-sized viewports
+- use **Copy raw JSON** for local-only clipboard capture
+- verify no-package safety messaging when no package is loaded
+
+Local-only/demo-only reminder:
+
+- raw package field inspection is static HTML/JS only
+- no backend services or external dependencies are used
+- package content is not uploaded and local uploaded package content is not stored
+- viewer outputs remain advisory and require human-supervised validation

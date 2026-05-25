@@ -210,3 +210,23 @@ Implementation boundaries:
 - fail-safe behavior when no package is loaded
 
 These actions do not change schema contracts, canonical record boundaries, trust-kernel behavior, or workflow policy. Human-supervised validation remains required.
+
+## Raw structured field inspection (MVP-1)
+
+MVP-1 includes a collapsible **Raw package fields** inspector in `docs/verification-viewer.html`.
+
+Behavior coverage:
+
+- works with bundled demo packages
+- works with local uploaded JSON packages
+- shows pretty-printed structured JSON
+- includes a local **Copy raw JSON** control near the inspector
+- preserves local-only behavior with no backend and no external dependencies
+- preserves fail-safe no-package state messaging
+
+Interpretation boundary:
+
+- raw JSON is technical detail for transparent inspection only
+- raw JSON display does not change schema contracts or canonical record boundaries
+- raw JSON display does not modify package content, upload package content, or store local uploaded package content
+- outputs remain advisory and require human-supervised validation
