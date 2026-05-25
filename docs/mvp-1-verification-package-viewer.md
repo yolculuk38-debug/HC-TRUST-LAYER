@@ -146,6 +146,7 @@ MVP-1 UX goals:
 - `docs/verification-status-ux.md`
 - `docs/provenance-timeline-format.md`
 - `docs/replay-warning-standard.md`
+- `docs/demo-index.md`
 - `docs/mvp-1-cli-viewer.md`
 - `docs/static-viewer.md`
 - `docs/verification-viewer.html`
