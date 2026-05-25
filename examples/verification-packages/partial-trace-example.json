@@ -1,0 +1,54 @@
+{
+  "package_id": "HC-PKG-MVP1-PARTIAL-0001",
+  "content_hash": "sha256:2b0df3c143b8cd5c9c51867f533fc4e9df44abde89c0be2d28f1dc50f519c7a1",
+  "provenance_summary": "Provenance continuity is partially available; one intermediate handoff is missing from the exported trail.",
+  "provenance_timeline": [
+    {
+      "stage": "capture",
+      "actor": "origin-system",
+      "timestamp": "2026-05-19T14:22:00Z",
+      "status": "recorded"
+    },
+    {
+      "stage": "handoff",
+      "actor": "bridge-node-2",
+      "timestamp": "2026-05-19T14:25:40Z",
+      "status": "missing_context"
+    },
+    {
+      "stage": "validator_review",
+      "actor": "validator-node-b",
+      "timestamp": "2026-05-19T14:30:05Z",
+      "status": "needs_followup"
+    }
+  ],
+  "validator_reviews": [
+    {
+      "validator_id": "validator-node-b",
+      "decision": "WARNING",
+      "notes": "Verification map link is present, but intermediate provenance context is incomplete.",
+      "reviewed_at": "2026-05-19T14:30:05Z"
+    }
+  ],
+  "replay_indicators": {
+    "detected": false,
+    "signal_level": "low",
+    "details": [
+      "No duplicate package_id detected in this sample window."
+    ]
+  },
+  "dispute_indicators": {
+    "active": false,
+    "case_ids": [],
+    "summary": "No dispute filed; follow-up review is recommended."
+  },
+  "trust_result": "WARNING",
+  "trust_confidence": "medium",
+  "audit_snapshot": {
+    "audit_trail_ref": "HC://audit/AUD-MVP1-PARTIAL-0001",
+    "last_event": "provenance_gap_flagged",
+    "review_boundary": "human-supervised validation"
+  },
+  "generated_at": "2026-05-19T14:31:00Z",
+  "human_review_required": true
+}

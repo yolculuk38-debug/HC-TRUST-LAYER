@@ -1,0 +1,58 @@
+{
+  "package_id": "HC-PKG-MVP1-VERIFIED-0001",
+  "content_hash": "sha256:10b81f4ea6cb9a7df77e68935f8ec26fdd8c67b0aefeb413d379e6f5a0ac4f2d",
+  "provenance_summary": "Provenance continuity is intact across capture, ingest, and validator confirmation for this HC:// package example.",
+  "provenance_timeline": [
+    {
+      "stage": "capture",
+      "actor": "origin-system",
+      "timestamp": "2026-05-20T09:00:00Z",
+      "status": "recorded"
+    },
+    {
+      "stage": "canonical_record_link",
+      "actor": "verification-map",
+      "timestamp": "2026-05-20T09:01:15Z",
+      "status": "linked"
+    },
+    {
+      "stage": "validator_review",
+      "actor": "validator-node-a",
+      "timestamp": "2026-05-20T09:04:10Z",
+      "status": "confirmed"
+    }
+  ],
+  "validator_reviews": [
+    {
+      "validator_id": "validator-node-a",
+      "decision": "PASS",
+      "notes": "Hash continuity and protocol graph routing are internally consistent for this example.",
+      "reviewed_at": "2026-05-20T09:04:10Z"
+    },
+    {
+      "validator_id": "human-reviewer-ops-01",
+      "decision": "PASS",
+      "notes": "Human-supervised validation completed for demo context.",
+      "reviewed_at": "2026-05-20T09:07:45Z"
+    }
+  ],
+  "replay_indicators": {
+    "detected": false,
+    "signal_level": "none",
+    "details": []
+  },
+  "dispute_indicators": {
+    "active": false,
+    "case_ids": [],
+    "summary": "No active dispute for this example package."
+  },
+  "trust_result": "PASS",
+  "trust_confidence": "high",
+  "audit_snapshot": {
+    "audit_trail_ref": "HC://audit/AUD-MVP1-VERIFIED-0001",
+    "last_event": "validator_review_confirmed",
+    "review_boundary": "human-supervised validation"
+  },
+  "generated_at": "2026-05-20T09:08:00Z",
+  "human_review_required": false
+}
