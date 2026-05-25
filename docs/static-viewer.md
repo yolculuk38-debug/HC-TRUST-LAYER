@@ -14,7 +14,10 @@ After GitHub Pages publishes repository docs, open:
 - `https://<org-or-user>.github.io/<repo>/docs/verification-viewer.html`
 - `https://<org-or-user>.github.io/<repo>/docs/demo-index.md`
 
-This page loads bundled examples from `examples/verification-packages/` and renders the selected package in a mobile-readable static layout.
+This page loads bundled examples from `examples/verification-packages/` and can also load local `.json` verification package files directly in-browser using a file input control.
+All package processing is client-side local processing only with no server upload path.
+The viewer validates required fields before rendering and shows invalid package warnings and missing field warnings when local package data is incomplete.
+The layout remains mobile-readable and static-only.
 UI labels include `Verified trace`, `Partial trace`, `Replay warning`, `Disputed`, `Unverified`, and `Human review required` for consistent MVP-1 trust interpretation.
 
 Use the demo index as the quickest entry point for MVP-1 demo navigation:
@@ -34,13 +37,14 @@ Expected behavior is `PASS` output per file for all bundled examples. This step 
 ## Demo-only limitations
 
 - The viewer is static HTML/JS with no backend and no external dependencies.
-- The viewer only targets bundled example fixtures in `examples/verification-packages/`.
+- The viewer supports bundled fixtures and local `.json` package uploads, but both remain static interpretation surfaces.
 - Validation helper coverage is demo-only and does not introduce schema, validator, or workflow changes.
 - The viewer does not provide production readiness guarantees.
 - The viewer does not provide truth guarantees.
 - The viewer does not provide forensic certainty claims.
 - The viewer is advisory and does not replace human-supervised validation.
 - The viewer includes explanation text for what the result means, why review may be needed, what users should not assume, and demo-only limitations.
+- The viewer includes warnings for demo-only behavior, local-only processing, no server upload, no truth guarantee, and human review recommendation.
 
 ## Relation to CLI viewer
 
@@ -50,8 +54,7 @@ For terminal-based review, use `scripts/view_verification_package.py` as documen
 
 ## Future improvements
 
-- Add package upload support while preserving static-only boundaries.
 - Add richer timeline filtering and section collapse controls.
 - Add deeper accessibility tuning and keyboard navigation polish.
 - Add linked explanations for verification map and protocol graph context.
-- Add explicit UI notices when fields are missing or unknown.
+- Expand explicit UI notices for additional malformed nested structures beyond MVP-1 required field checks.

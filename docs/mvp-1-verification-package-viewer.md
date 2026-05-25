@@ -2,9 +2,10 @@
 
 ## Status
 
-- documentation-only specification
-- no frontend implementation in this phase
-- no runtime package parsing in this phase
+- static frontend implementation available in `docs/verification-viewer.html`
+- local JSON package parsing implemented in-browser for demo interpretation
+- no backend workflow changes
+- no schema or validator logic changes
 - no production readiness claim
 - no automatic trust decisions
 
@@ -40,7 +41,8 @@ MVP-1 package access concepts:
 - show package scope boundaries (included evidence vs missing evidence)
 - show non-parsed fallback state when package content cannot be interpreted in this phase
 
-In MVP-1, presentation is documentation-driven and should not imply runtime package parsing guarantees.
+In MVP-1, local package parsing is available in a static HTML/JS viewer and remains advisory.
+This behavior should not imply runtime trust-kernel guarantees.
 
 ## Hash Verification Visibility
 
@@ -124,6 +126,8 @@ MVP-1 UX goals:
 - no legal certification claims
 - no political authority claims
 - provenance and verification focus only
+- local processing only (no server upload path in static viewer)
+- fail safely on invalid JSON package content
 
 ## Related Foundations
 - `docs/mvp-1-viewer-implementation-plan.md`
