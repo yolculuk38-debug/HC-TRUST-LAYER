@@ -2,6 +2,8 @@
 
 ## Purpose
 
+
+Terminology note: trust result summaries in MVP-1 should be described as **advisory trust summary** language and remain advisory-only.
 This document defines a documentation-only, human-readable trust result format for HC-TRUST-LAYER and HC:// MVP-1 verification surfaces.
 
 The standard is designed to help non-technical readers interpret verification outcomes quickly without requiring deep protocol graph, provenance, validator, or replay-analysis expertise.

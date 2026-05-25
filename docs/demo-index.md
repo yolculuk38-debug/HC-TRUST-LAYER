@@ -86,6 +86,8 @@ From `docs/verification-viewer.html`, reviewers can additionally test:
 The export summary includes package identity, trust result, advisory trust summary, content hash, provenance summary, replay/dispute indicators, validator reviews, audit snapshot, human review required, and viewer warnings.
 This output remains advisory trust summary content intended for trust interpretation and review guidance only.
 
+Terminology note: use **advisory trust summary** wording for MVP-1 outputs and avoid deprecated truth-guarantee phrasing.
+
 Demo-only/local-only note: these actions run in-browser with static HTML/JS only, use no backend services, and provide advisory outputs that still require human-supervised validation.
 
 ## Raw package fields quick test
