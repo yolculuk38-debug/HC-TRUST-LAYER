@@ -6,6 +6,8 @@ This playbook helps repair pull requests when Terminology Guard fails on forbidd
 
 Use this workflow when CI reports terminology violations (for example, `truth score`) and you need a safe local fix path.
 
+For broader failed-check triage (terminology, docs drift, canonical artifact, CodeQL/security, and auto-merge-only outcomes), see `docs/failed-check-diagnosis.md`.
+
 ## Commands
 
 Run dry-run first (default):
