@@ -39,7 +39,7 @@ The viewer also performs content and shape checks used for advisory display boun
 
 - `content_hash` must match lowercase SHA-256 hex format (`64` hex characters).
 - `trust_result` must be one of: `VERIFIED TRACE`, `PARTIAL TRACE`, `REPLAY WARNING`, `DISPUTED`, `UNVERIFIED`.
-- `advisory trust summary` must be present and human-readable.
+- `advisory trust summary` must be present and human-readable as trust interpretation review guidance.
 - `provenance_timeline`, `validator_reviews`, `replay_indicators`, and `dispute_indicators` must each be arrays.
 
 When a package fails these checks, the viewer keeps rendering valid sections where possible and emits advisory `WARNING` messages instead of silently accepting malformed data.
