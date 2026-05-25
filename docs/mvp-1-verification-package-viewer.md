@@ -17,6 +17,7 @@ The MVP-1 surface is focused on transparent evidence reading, provenance continu
 
 MVP-1 is an interpretive view layer and does not alter trust kernel behavior.
 The static viewer implementation uses a simple timeline-style layout to group provenance events, validator reviews, replay indicators, dispute indicators, and audit snapshot context with plain-text section labels for mobile-readable interpretation.
+The static viewer also includes an advisory trust summary band near the top to improve non-technical readability without changing trust-kernel or canonical record behavior.
 
 ## Minimal Verification Experience
 
@@ -132,6 +133,7 @@ MVP-1 UX goals:
 - use short plain-language labels before advanced details
 - separate verification evidence from interpretation hints
 - emphasize escalation to human-supervised validation for uncertain/high-impact outcomes
+- include a simple advisory trust summary band with explicit non-certainty language
 
 ## Boundaries
 
@@ -142,6 +144,40 @@ MVP-1 UX goals:
 - provenance and verification focus only
 - local processing only (no server upload path in static viewer)
 - fail safely on invalid JSON package content
+- trust summary band remains advisory only and is not a truth score
+
+## MVP-1 advisory trust summary band
+
+The viewer trust summary band labels are:
+
+- Review OK
+- Review With Caution
+- Needs Human Review
+- Insufficient Data
+
+Band derivation inputs:
+
+- `trust_result`
+- `human_review_required`
+- viewer warnings
+- replay indicators
+- dispute indicators
+
+The band updates whenever the loaded package changes (bundled examples or local uploaded JSON), handles missing fields safely, and does not modify package content.
+
+Examples:
+
+- **Review OK**: `VERIFIED TRACE` with no replay/dispute indicators, no viewer warnings, and no explicit human review required.
+- **Review With Caution**: partial or warning-oriented trust context that does not trigger direct escalation flags.
+- **Needs Human Review**: `REPLAY WARNING`, `DISPUTED`, `UNVERIFIED`, replay/dispute indicators, or explicit human review requirement.
+- **Insufficient Data**: missing or malformed summary inputs (for example, absent `trust_result`).
+
+Interpretation boundary:
+
+- advisory only
+- no truth guarantee
+- no forensic certainty claim
+- human-supervised validation required for consequential trust decisions
 
 ## Related Foundations
 - `docs/mvp-1-viewer-implementation-plan.md`

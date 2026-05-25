@@ -65,6 +65,12 @@
     .timeline-meta { display: flex; flex-wrap: wrap; gap: .35rem .6rem; color: var(--muted); font-size: .92rem; }
     .label { font-weight: 700; color: var(--muted); margin-right: .2rem; }
     .advisory { border-left: 3px solid #8c6f2b; padding: .5rem .65rem; border-radius: .35rem; background: rgba(255,191,63,.1); margin: .4rem 0; }
+    .trust-band { border-width: 2px; border-style: solid; border-radius: .7rem; padding: .8rem; margin-bottom: .8rem; }
+    .trust-band-title { margin: 0 0 .35rem; font-size: 1.02rem; font-weight: 800; }
+    .trust-band-ok { border-color: rgba(39,196,124,.7); background: rgba(39,196,124,.13); }
+    .trust-band-caution { border-color: rgba(255,191,63,.75); background: rgba(255,191,63,.12); }
+    .trust-band-review { border-color: rgba(255,107,107,.75); background: rgba(255,107,107,.11); }
+    .trust-band-insufficient { border-color: rgba(168,177,217,.6); background: rgba(168,177,217,.1); }
     @media (max-width: 680px) {
       .card { padding: .8rem; }
       .timeline-item { padding: .6rem; }
@@ -393,6 +399,7 @@
       const warningHtml = packageWarnings.length > 0
         ? `<article class="card"><h2>Package Warnings</h2>${renderList(packageWarnings, (w) => safe(w))}</article>`
         : '';
+      const trustSummary = deriveTrustSummaryBand(pkg, packageWarnings);
 
       let summaryLabel = 'Human review required';
       let summaryMeaning = 'This package requires human-supervised validation before consequential trust decisions.';
@@ -415,6 +422,12 @@
 
       content.innerHTML = `
         ${warningHtml}
+        <article class="trust-band ${trustSummary.cssClass}" aria-live="polite">
+          <p class="kicker">Advisory Trust Summary Band (MVP-1)</p>
+          <p class="trust-band-title">${trustSummary.label}</p>
+          <p>${trustSummary.reason}</p>
+          <p class="muted">Advisory-only boundary: this HC:// summary band is a simple interpretation aid derived from package trust fields and viewer warnings. It is not a truth score, does not provide forensic certainty, and does not replace human-supervised validation.</p>
+        </article>
         <article class="card">
           <h2>Trust Result Card</h2>
           <p><strong>Package source:</strong> ${safe(packageSourceLabel)}</p>
@@ -504,6 +517,45 @@
 
       const copyRawJsonBtn = document.getElementById('copyRawJsonBtn');
       if (copyRawJsonBtn) copyRawJsonBtn.addEventListener('click', copyCurrentPackageJson);
+    }
+
+    function deriveTrustSummaryBand(pkg, packageWarnings) {
+      const trustResult = safe(pkg?.trust_result, '').toUpperCase();
+      const replayDetected = Array.isArray(pkg?.replay_indicators) && pkg.replay_indicators.length > 0;
+      const disputeActive = Array.isArray(pkg?.dispute_indicators) && pkg.dispute_indicators.length > 0;
+      const humanReviewRequired = !!pkg?.human_review_required;
+      const warningsCount = Array.isArray(packageWarnings) ? packageWarnings.length : 0;
+      const missingPrimaryFields = !pkg?.trust_result || !Array.isArray(pkg?.replay_indicators) || !Array.isArray(pkg?.dispute_indicators);
+
+      if (missingPrimaryFields) {
+        return {
+          label: 'Insufficient Data',
+          reason: 'Required trust summary inputs are missing or malformed in this package, so the viewer cannot provide a stronger advisory summary.',
+          cssClass: 'trust-band-insufficient'
+        };
+      }
+
+      if (trustResult === 'VERIFIED TRACE' && !humanReviewRequired && !replayDetected && !disputeActive && warningsCount === 0) {
+        return {
+          label: 'Review OK',
+          reason: 'Visible package signals align to a clean advisory read in current scope; continue with normal reviewer confirmation.',
+          cssClass: 'trust-band-ok'
+        };
+      }
+
+      if (trustResult === 'DISPUTED' || trustResult === 'UNVERIFIED' || humanReviewRequired || replayDetected || disputeActive) {
+        return {
+          label: 'Needs Human Review',
+          reason: 'Dispute, replay, unverified state, or explicit human review requirement is present and should be escalated through human-supervised validation.',
+          cssClass: 'trust-band-review'
+        };
+      }
+
+      return {
+        label: 'Review With Caution',
+        reason: 'Some trust context is present but warnings, partial trace conditions, or advisory uncertainty require cautious interpretation.',
+        cssClass: 'trust-band-caution'
+      };
     }
 
     async function loadSelected({ updateHash = true } = {}) {
