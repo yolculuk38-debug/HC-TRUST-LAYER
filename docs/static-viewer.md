@@ -42,6 +42,8 @@ The viewer also performs content and shape checks used for advisory display boun
 - `advisory trust summary` must be present and human-readable as trust interpretation review guidance.
 - `provenance_timeline`, `validator_reviews`, `replay_indicators`, and `dispute_indicators` must each be arrays.
 
+Terminology note: static viewer documentation should use **advisory trust summary** wording and avoid deprecated truth-guarantee phrasing.
+
 When a package fails these checks, the viewer keeps rendering valid sections where possible and emits advisory `WARNING` messages instead of silently accepting malformed data.
 
 ## Demo permalink state (URL hash)

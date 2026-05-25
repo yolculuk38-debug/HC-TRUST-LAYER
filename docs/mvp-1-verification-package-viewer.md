@@ -16,6 +16,8 @@ MVP-1 defines the first small working HC:// verification experience for viewing 
 The MVP-1 surface is focused on transparent evidence reading, provenance continuity awareness, replay warning visibility, validator review visibility, and audit trail-linked trust snapshot interpretation.
 MVP-1 trust output language is advisory-only and should be framed as advisory trust summary, trust interpretation, and review guidance.
 
+
+Terminology note: MVP-1 viewer copy should use **advisory trust summary** wording and avoid deprecated truth-guarantee phrasing.
 MVP-1 is an interpretive view layer and does not alter trust kernel behavior.
 The static viewer implementation uses a simple timeline-style layout to group provenance events, validator reviews, replay indicators, dispute indicators, and audit snapshot context with plain-text section labels for mobile-readable interpretation.
 
