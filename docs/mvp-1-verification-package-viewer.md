@@ -178,3 +178,35 @@ These controls work for both bundled example packages and locally uploaded JSON 
 If no package is currently loaded, the viewer fails safely by showing a status message instead of attempting copy/download. Status messages are cleared automatically after action feedback to keep controls mobile-readable.
 
 This behavior is demo-only and local-only, and does not alter HC:// trust-kernel behavior or canonical record semantics. Human-supervised validation remains required for consequential trust decisions.
+
+
+## MVP-1 report output actions (static viewer)
+
+The MVP-1 static viewer supports report output actions for bundled examples and local uploaded JSON:
+
+- **Print report** for human-readable review and documentation sharing.
+- **Export report summary (.txt)** for local text report capture.
+
+Included report fields:
+
+- package_id
+- trust_result
+- trust_confidence
+- content_hash
+- provenance summary
+- replay indicators
+- dispute indicators
+- validator reviews
+- audit snapshot
+- human review required
+- viewer warnings
+
+Implementation boundaries:
+
+- static HTML/JS only
+- no backend
+- no external dependencies
+- local-only processing
+- fail-safe behavior when no package is loaded
+
+These actions do not change schema contracts, canonical record boundaries, trust-kernel behavior, or workflow policy. Human-supervised validation remains required.

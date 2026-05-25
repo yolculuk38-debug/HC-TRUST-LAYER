@@ -108,3 +108,21 @@ These controls work for both bundled example packages and locally uploaded JSON 
 If no package is currently loaded, the viewer fails safely by showing a status message instead of attempting copy/download. Status messages are cleared automatically after action feedback to keep controls mobile-readable.
 
 This behavior is demo-only and local-only, and does not alter HC:// trust-kernel behavior or canonical record semantics. Human-supervised validation remains required for consequential trust decisions.
+
+
+## Print report and export summary
+
+The static viewer includes two report actions for the currently loaded HC:// verification package:
+
+- **Print report** opens the browser print dialog for a human-readable report view of the currently loaded package.
+- **Export report summary (.txt)** downloads a local text summary report.
+
+The report summary includes: `package_id`, `trust_result`, `trust_confidence`, `content_hash`, provenance summary, replay indicators, dispute indicators, validator reviews, audit snapshot, human review required, and viewer warnings.
+
+Both actions fail safely when no package is loaded by showing a viewer status message instead of producing output.
+
+Demo-only limitation and local-only processing note:
+
+- this is a static HTML/JS viewer with no backend and no external dependencies
+- report generation and export run in-browser only with no server upload path
+- outputs remain advisory and require human-supervised validation for consequential trust decisions

@@ -72,3 +72,15 @@ The MVP-1 demos do not provide production readiness guarantees, truth guarantees
 
 MVP-1 viewer outputs are advisory verification signals.
 Uncertain, disputed, replay-flagged, or high-impact outcomes require human-supervised validation before trust decisions.
+
+
+## Report output quick test
+
+From `docs/verification-viewer.html`, reviewers can additionally test:
+
+- **Print report** for the currently loaded package.
+- **Export report summary (.txt)** for the currently loaded package.
+
+The export summary includes package identity, trust result, confidence, content hash, provenance summary, replay/dispute indicators, validator reviews, audit snapshot, human review required, and viewer warnings.
+
+Demo-only/local-only note: these actions run in-browser with static HTML/JS only, use no backend services, and provide advisory outputs that still require human-supervised validation.
