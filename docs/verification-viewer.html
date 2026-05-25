@@ -86,11 +86,11 @@
 
   <script>
     const EXAMPLES = [
-      { label: 'Verified trace', file: '../examples/verification-packages/verified-trace-example.json' },
-      { label: 'Partial trace', file: '../examples/verification-packages/partial-trace-example.json' },
-      { label: 'Replay warning', file: '../examples/verification-packages/replay-warning-example.json' },
-      { label: 'Disputed', file: '../examples/verification-packages/disputed-example.json' },
-      { label: 'Unverified', file: '../examples/verification-packages/unverified-example.json' }
+      { label: 'Verified trace', hash: 'verified-trace', file: '../examples/verification-packages/verified-trace-example.json' },
+      { label: 'Partial trace', hash: 'partial-trace', file: '../examples/verification-packages/partial-trace-example.json' },
+      { label: 'Replay warning', hash: 'replay-warning', file: '../examples/verification-packages/replay-warning-example.json' },
+      { label: 'Disputed', hash: 'disputed', file: '../examples/verification-packages/disputed-example.json' },
+      { label: 'Unverified', hash: 'unverified', file: '../examples/verification-packages/unverified-example.json' }
     ];
 
     const select = document.getElementById('exampleSelect');
@@ -102,6 +102,7 @@
     const downloadPackageBtn = document.getElementById('downloadPackageBtn');
     const packageActionStatus = document.getElementById('packageActionStatus');
     let currentPackage = null;
+    let activeBundledHash = EXAMPLES[0].hash;
     const REQUIRED_FIELDS = [
       'package_id',
       'trust_result',
@@ -116,6 +117,29 @@
 
     function safe(value, fallback = 'unknown') {
       return value === undefined || value === null || value === '' ? fallback : value;
+    }
+
+    function getCurrentHashValue() {
+      return window.location.hash ? window.location.hash.slice(1).trim().toLowerCase() : '';
+    }
+
+    function findExampleIndexByHash(hashValue) {
+      if (!hashValue) return -1;
+      return EXAMPLES.findIndex((entry) => entry.hash === hashValue);
+    }
+
+    function setHashForExample(entry) {
+      if (!entry?.hash) return;
+      if (getCurrentHashValue() !== entry.hash) {
+        window.location.hash = entry.hash;
+      }
+    }
+
+    function clearDemoHashIfActive() {
+      const currentHash = getCurrentHashValue();
+      if (findExampleIndexByHash(currentHash) !== -1) {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
     }
 
     function renderList(items, formatFn) {
@@ -313,11 +337,13 @@
       `;
     }
 
-    async function loadSelected() {
+    async function loadSelected({ updateHash = true } = {}) {
       const entry = EXAMPLES[select.selectedIndex] || EXAMPLES[0];
+      activeBundledHash = entry.hash;
       uploadStatus.textContent = 'Viewing bundled example package.';
       selectedPath.textContent = entry.file;
       content.innerHTML = '<article class="card"><p>Loading example package…</p></article>';
+      if (updateHash) setHashForExample(entry);
 
       try {
         currentPackage = null;
@@ -335,6 +361,7 @@
 
     async function loadLocalFile(file) {
       if (!file) return;
+      clearDemoHashIfActive();
       uploadStatus.textContent = `Loading local package: ${file.name}`;
       selectedPath.textContent = `local://${file.name}`;
       content.innerHTML = '<article class="card"><p>Loading local package…</p></article>';
@@ -344,6 +371,7 @@
         const text = await file.text();
         const pkg = JSON.parse(text);
         renderPackage(pkg, `Local package (${file.name})`);
+        setPackageActionStatus('Loaded local package. Uploaded JSON stays local and is not encoded in URL.', 4200);
         uploadStatus.textContent = 'Viewing local package. Processing is local-only and does not upload to any server.';
       } catch (error) {
         currentPackage = null;
@@ -359,21 +387,43 @@
       select.appendChild(option);
     });
 
-    document.getElementById('reloadBtn').addEventListener('click', loadSelected);
+    function loadSelectedFromHashOrDefault() {
+      const hashValue = getCurrentHashValue();
+      const indexFromHash = findExampleIndexByHash(hashValue);
+      if (indexFromHash === -1) {
+        if (hashValue) setPackageActionStatus(`Unknown demo hash "${hashValue}". Loaded selected bundled example instead.`, 4200);
+        select.selectedIndex = findExampleIndexByHash(activeBundledHash) >= 0 ? findExampleIndexByHash(activeBundledHash) : 0;
+        loadSelected({ updateHash: true });
+        return;
+      }
+      select.selectedIndex = indexFromHash;
+      loadSelected({ updateHash: false });
+    }
+
+    document.getElementById('reloadBtn').addEventListener('click', () => loadSelected({ updateHash: true }));
     copyPackageBtn.addEventListener('click', copyCurrentPackageJson);
     downloadPackageBtn.addEventListener('click', downloadCurrentPackageJson);
     document.getElementById('resetBtn').addEventListener('click', () => {
       localUpload.value = '';
       updateActionButtons();
-    loadSelected();
+      const hashIndex = findExampleIndexByHash(getCurrentHashValue());
+      if (hashIndex !== -1) {
+        select.selectedIndex = hashIndex;
+      } else {
+        select.selectedIndex = findExampleIndexByHash(activeBundledHash) >= 0 ? findExampleIndexByHash(activeBundledHash) : 0;
+      }
+      loadSelected({ updateHash: true });
     });
-    select.addEventListener('change', loadSelected);
+    select.addEventListener('change', () => loadSelected({ updateHash: true }));
     localUpload.addEventListener('change', (event) => {
       const file = event.target.files && event.target.files[0];
       loadLocalFile(file);
     });
+    window.addEventListener('hashchange', () => {
+      loadSelectedFromHashOrDefault();
+    });
     updateActionButtons();
-    loadSelected();
+    loadSelectedFromHashOrDefault();
   </script>
 </body>
 </html>

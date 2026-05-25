@@ -43,6 +43,26 @@ The viewer also performs content and shape checks used for advisory display boun
 
 When a package fails these checks, the viewer keeps rendering valid sections where possible and emits advisory `WARNING` messages instead of silently accepting malformed data.
 
+## Demo permalink state (URL hash)
+
+The static viewer supports demo permalink state using URL hash values for bundled examples only:
+
+- `docs/verification-viewer.html#verified-trace`
+- `docs/verification-viewer.html#partial-trace`
+- `docs/verification-viewer.html#replay-warning`
+- `docs/verification-viewer.html#disputed`
+- `docs/verification-viewer.html#unverified`
+
+When a bundled example is selected in the viewer, the URL hash is updated so reviewers can share the same demo state.
+On page load, the viewer reads the hash and loads the matching bundled example when recognized.
+If the hash value is unknown, the viewer falls back safely to the current/default bundled selection and shows advisory status.
+
+Local upload privacy boundary:
+
+- local uploaded JSON is never encoded in the URL hash
+- local uploaded JSON is never stored in local storage
+- reset returns to bundled demo state safely without sharing local upload contents
+
 ## Demo-only limitations
 
 - The viewer is static HTML/JS with no backend and no external dependencies.
