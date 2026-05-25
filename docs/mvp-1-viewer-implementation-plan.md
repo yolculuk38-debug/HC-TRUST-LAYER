@@ -111,3 +111,4 @@ The first implementation should include validation behavior that is transparent 
 - `docs/trust-result-standard.md`
 - `docs/mvp-1-user-flow.md`
 - `docs/implementation-transition-plan.md`
+- `docs/mvp-1-cli-viewer.md`
