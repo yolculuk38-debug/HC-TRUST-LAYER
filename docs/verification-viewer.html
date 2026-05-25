@@ -229,7 +229,7 @@
         '',
         `package_id: ${safe(pkg.package_id)}`,
         `trust_result: ${safe(pkg.trust_result, 'UNVERIFIED')}`,
-        `trust_confidence: ${safe(pkg.trust_confidence)}`,
+        `advisory trust summary: ${safe(pkg.trust_confidence)}`,
         `content_hash: ${safe(pkg.content_hash)}`,
         `provenance summary: ${safe(pkg.provenance_summary)}`,
         `replay indicators: ${replayDetected ? 'Replay warning present' : 'No replay warning shown'}`,
@@ -241,6 +241,7 @@
         `viewer warnings: ${packageWarnings.length > 0 ? packageWarnings.join(' | ') : 'None'}`,
         '',
         'Local-only processing note: this report is generated in-browser with no server upload path.',
+        'Trust interpretation note: this report provides review guidance only.',
         'Human-supervised validation note: consequential trust decisions require human-supervised validation.'
       ].join('\n');
     }
