@@ -87,7 +87,7 @@ Example interpretation states:
 - **Needs Human Review**: replay/dispute signals, unverified/disputed trust results, or explicit human review required.
 - **Insufficient Data**: missing or malformed trust summary inputs in package fields.
 
-Boundary reminder: this band is advisory-only, is not a truth score, does not provide forensic certainty, and must be interpreted with human-supervised validation.
+Boundary reminder: this band is advisory-only, is not a definitive trust determination, does not provide forensic certainty, and must be interpreted with human-supervised validation.
 
 
 ## Report output quick test
