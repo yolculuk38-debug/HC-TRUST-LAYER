@@ -211,6 +211,7 @@ Should not be reframed as either positive or negative certainty.
 Gather missing evidence, then re-run human-supervised validation using documented workflows.
 
 ## Related References
+- `docs/mvp-1-viewer-implementation-plan.md`
 
 - `docs/verification-status-ux.md`
 - `docs/provenance-timeline-format.md`

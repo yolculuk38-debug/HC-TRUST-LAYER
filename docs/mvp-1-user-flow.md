@@ -59,6 +59,7 @@ All states are advisory and require human-supervised validation for high-impact 
 
 
 ## Related References
+- `docs/mvp-1-viewer-implementation-plan.md`
 
 - `docs/trust-result-standard.md`
 - `docs/verification-status-ux.md`

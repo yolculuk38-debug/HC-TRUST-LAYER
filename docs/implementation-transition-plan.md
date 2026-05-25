@@ -20,6 +20,7 @@ This transition plan is documentation-only and prepares HC:// architecture align
 - Provenance viewer foundation: `docs/provenance-viewer.md`
 - Public verification flow foundation: `docs/public-verification-flow.md`
 - MVP-1 verification package viewer specification: `docs/mvp-1-verification-package-viewer.md`
+- MVP-1 viewer implementation plan: `docs/mvp-1-viewer-implementation-plan.md`
 - MVP-1 user flow foundation: `docs/mvp-1-user-flow.md`
 - MVP-1 UI principles foundation: `docs/mvp-1-ui-principles.md`
 - MVP-1 boundaries foundation: `docs/mvp-1-boundaries.md`
