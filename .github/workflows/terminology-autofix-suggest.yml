@@ -1,0 +1,73 @@
+name: Terminology Autofix Suggest (Advisory)
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  advisory-autofix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Evaluate terminology guard status for this PR
+        id: guard
+        run: |
+          set +e
+          python3 scripts/check_terminology.py > guard-output.txt 2>&1
+          status=$?
+          set -e
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          if [ "$status" -eq 0 ]; then
+            echo "Terminology Guard passed. No advisory autofix report generated."
+          else
+            echo "Terminology Guard failed. Generating advisory autofix report."
+          fi
+
+      - name: Generate advisory terminology autofix report
+        if: steps.guard.outputs.status != '0'
+        run: |
+          {
+            echo "HC-TRUST-LAYER Terminology Autofix Advisory Report"
+            echo "Generated at: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+            echo "PR: #${{ github.event.pull_request.number }}"
+            echo
+            echo "Detected forbidden phrases:"
+            echo "- truth score"
+            echo
+            echo "Suggested replacements:"
+            echo "- truth score -> advisory trust summary"
+            echo
+            echo "Affected files:"
+          } > terminology-autofix-report.txt
+
+          python3 scripts/autofix_terminology.py >> terminology-autofix-report.txt
+
+          {
+            echo
+            echo "Guard output:"
+            cat guard-output.txt
+            echo
+            echo "Safety boundaries:"
+            echo "- Advisory-only report; no automatic code modification."
+            echo "- No automatic commit or push."
+            echo "- No automatic merge."
+            echo "- Human-supervised validation remains required."
+          } >> terminology-autofix-report.txt
+
+          cat terminology-autofix-report.txt
+
+      - name: Upload terminology autofix report artifact
+        if: steps.guard.outputs.status != '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: terminology-autofix-report
+          path: terminology-autofix-report.txt
