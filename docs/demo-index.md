@@ -59,6 +59,7 @@ With the MVP-1 static viewer, users can test:
 - validator review visibility and audit trail-linked context
 - simple timeline-style grouping across provenance, validator reviews, replay indicators, dispute indicators, and audit snapshot context
 - package-level interpretation boundaries before escalation
+- advisory trust summary band labels (`Review OK`, `Review With Caution`, `Needs Human Review`, `Insufficient Data`)
 
 For terminal-based review of the same package set, use the CLI viewer documentation at `docs/mvp-1-cli-viewer.md`.
 
@@ -74,6 +75,19 @@ The viewer layout improvements are interpretive UX polish only and do not change
 
 MVP-1 viewer outputs are advisory verification signals.
 Uncertain, disputed, replay-flagged, or high-impact outcomes require human-supervised validation before trust decisions.
+
+## Advisory trust summary band examples
+
+The static viewer includes an advisory trust summary band near the top of the page.
+
+Example interpretation states:
+
+- **Review OK**: clean verified-trace style package signals in current scope.
+- **Review With Caution**: partial or warning-oriented signals that do not yet trigger direct escalation flags.
+- **Needs Human Review**: replay/dispute signals, unverified/disputed trust results, or explicit human review required.
+- **Insufficient Data**: missing or malformed trust summary inputs in package fields.
+
+Boundary reminder: this band is advisory-only, is not a definitive trust determination, does not provide forensic certainty, and must be interpreted with human-supervised validation.
 
 
 ## Report output quick test

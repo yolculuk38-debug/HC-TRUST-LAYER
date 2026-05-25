@@ -7,6 +7,7 @@ The MVP-1 static verification package viewer provides a browser-based, demo-only
 The viewer helps users inspect trust results, provenance timeline continuity, replay indicators, dispute indicators, validator reviews, and audit snapshot context without command-line usage.
 The trust result card prioritizes mobile-readable labels and plain-language explanations to support non-technical interpretation boundaries.
 The provenance, validator review, replay, and dispute sections use a simple timeline-style visual grouping with plain-text section labels (`[Timeline]`, `[Reviews]`, `[Replay]`, `[Dispute]`, `[Audit]`) so review flow is easier to scan on mobile-sized viewports.
+The viewer also includes an MVP-1 **advisory trust summary band** near the top of the page for non-technical readability while preserving HC:// trust boundaries.
 
 ## Open the viewer from GitHub Pages
 
@@ -20,6 +21,7 @@ All package processing is client-side local processing only with no server uploa
 The viewer validates required fields before rendering and shows explicit `WARNING` notices when local package data is incomplete, malformed, or advisory-only.
 The layout remains mobile-readable and static-only.
 UI labels include `Verified trace`, `Partial trace`, `Replay warning`, `Disputed`, `Unverified`, and `Human review required` for consistent MVP-1 trust interpretation.
+The trust summary band labels are: `Review OK`, `Review With Caution`, `Needs Human Review`, and `Insufficient Data`.
 
 Use the demo index as the quickest entry point for MVP-1 demo navigation:
 
@@ -45,6 +47,25 @@ The viewer also performs content and shape checks used for advisory display boun
 Terminology note: static viewer documentation should use **advisory trust summary** wording and avoid deprecated truth-guarantee phrasing.
 
 When a package fails these checks, the viewer keeps rendering valid sections where possible and emits advisory `WARNING` messages instead of silently accepting malformed data.
+
+## Advisory trust summary band (MVP-1)
+
+`docs/verification-viewer.html` includes a trust summary band that derives a simple advisory label from:
+
+- `trust_result`
+- `human_review_required`
+- viewer warnings from required-field and shape checks
+- replay indicators
+- dispute indicators
+
+This summary is advisory-only. It is not a truth score, does not provide forensic certainty, and does not replace human-supervised validation.
+
+Band examples:
+
+- **Review OK**: `VERIFIED TRACE`, no replay indicators, no dispute indicators, no viewer warnings, and no `human_review_required` flag.
+- **Review With Caution**: partial or warning-oriented trust context without direct escalation flags.
+- **Needs Human Review**: replay indicators, dispute indicators, `UNVERIFIED`, `DISPUTED`, or `human_review_required` present.
+- **Insufficient Data**: missing/malformed trust summary inputs such as absent `trust_result` or non-array replay/dispute fields.
 
 ## Demo permalink state (URL hash)
 

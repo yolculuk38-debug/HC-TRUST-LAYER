@@ -57,6 +57,15 @@ For MVP-1 viewer readability, include explicit status labels where applicable:
 - Unverified
 - Human review required
 
+For the static viewer advisory trust summary band, include one of:
+
+- Review OK
+- Review With Caution
+- Needs Human Review
+- Insufficient Data
+
+These summary-band labels are interpretation aids only and must never be presented as truth scores or forensic certainty.
+
 ## Mobile-First Readability
 
 Trust result content should remain readable on small screens:
@@ -75,6 +84,7 @@ Trust result messaging should preserve HC:// boundary semantics:
 - communicate limitations directly
 - preserve provenance and audit trail context
 - route ambiguity to human-supervised validation
+- keep summary-band logic transparent and derived from visible package fields/warnings
 
 ## Result Classes
 
