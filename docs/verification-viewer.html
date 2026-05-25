@@ -74,6 +74,10 @@
         <button id="copyPackageBtn" type="button">Copy current package JSON</button>
         <button id="downloadPackageBtn" type="button">Download current package JSON</button>
       </div>
+      <div class="control-row">
+        <button id="printReportBtn" type="button">Print report</button>
+        <button id="exportSummaryBtn" type="button">Export report summary (.txt)</button>
+      </div>
       <p class="muted" id="packageActionStatus">No package action yet.</p>
       <label for="localUpload"><strong>Or load local verification package JSON</strong></label>
       <input id="localUpload" type="file" accept=".json,application/json" />
@@ -101,6 +105,8 @@
     const copyPackageBtn = document.getElementById('copyPackageBtn');
     const downloadPackageBtn = document.getElementById('downloadPackageBtn');
     const packageActionStatus = document.getElementById('packageActionStatus');
+    const printReportBtn = document.getElementById('printReportBtn');
+    const exportSummaryBtn = document.getElementById('exportSummaryBtn');
     let currentPackage = null;
     let activeBundledHash = EXAMPLES[0].hash;
     const REQUIRED_FIELDS = [
@@ -182,6 +188,45 @@
       return `${stem}.json`;
     }
 
+    
+
+    function safeReportFilename(pkg) {
+      const base = safe(pkg?.package_id, 'verification-package-report').toLowerCase();
+      const normalized = base.replace(/[^a-z0-9._-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
+      const stem = normalized || 'verification-package-report';
+      return `${stem}-report-summary.txt`;
+    }
+
+    function buildReportSummaryText(pkg, packageWarnings) {
+      const replayDetected = Array.isArray(pkg.replay_indicators) && pkg.replay_indicators.length > 0;
+      const disputeActive = Array.isArray(pkg.dispute_indicators) && pkg.dispute_indicators.length > 0;
+      const humanReviewRequired = !!pkg.human_review_required;
+      const validatorText = Array.isArray(pkg.validator_reviews) && pkg.validator_reviews.length > 0
+        ? pkg.validator_reviews.map((r, idx) => `${idx + 1}. ${safe(r.validator_id)} | ${safe(r.decision)} | ${safe(r.reviewed_at)} | ${safe(r.notes)}`).join('\n')
+        : 'None listed.';
+      const auditSnapshot = pkg.audit_snapshot || {};
+      return [
+        'HC:// Verification Package Viewer Report (Demo-Only)',
+        'HC-TRUST-LAYER static viewer output: advisory only.',
+        '',
+        `package_id: ${safe(pkg.package_id)}`,
+        `trust_result: ${safe(pkg.trust_result, 'UNVERIFIED')}`,
+        `trust_confidence: ${safe(pkg.trust_confidence)}`,
+        `content_hash: ${safe(pkg.content_hash)}`,
+        `provenance summary: ${safe(pkg.provenance_summary)}`,
+        `replay indicators: ${replayDetected ? 'Replay warning present' : 'No replay warning shown'}`,
+        `dispute indicators: ${disputeActive ? 'Dispute indicator present' : 'No active dispute shown'}`,
+        'validator reviews:',
+        validatorText,
+        `audit snapshot: trail_ref=${safe(auditSnapshot.audit_trail_ref)}; last_event=${safe(auditSnapshot.last_event)}; review_boundary=${safe(auditSnapshot.review_boundary)}` ,
+        `human review required: ${humanReviewRequired ? 'Yes' : 'No explicit review flag in this package'}`,
+        `viewer warnings: ${packageWarnings.length > 0 ? packageWarnings.join(' | ') : 'None'}`,
+        '',
+        'Local-only processing note: this report is generated in-browser with no server upload path.',
+        'Human-supervised validation note: consequential trust decisions require human-supervised validation.'
+      ].join('\n');
+    }
+
     let actionStatusTimer = null;
 
     function setPackageActionStatus(message, clearAfterMs = 2800) {
@@ -199,6 +244,8 @@
       const disabled = !currentPackage;
       copyPackageBtn.disabled = disabled;
       downloadPackageBtn.disabled = disabled;
+      printReportBtn.disabled = disabled;
+      exportSummaryBtn.disabled = disabled;
     }
 
     async function copyCurrentPackageJson() {
@@ -245,6 +292,44 @@
         setPackageActionStatus(`Downloaded ${link.download}.`);
       } catch (error) {
         setPackageActionStatus(`Download failed: ${safe(error.message)}`);
+      }
+    }
+
+    
+
+    function printCurrentReport() {
+      if (!currentPackage) {
+        setPackageActionStatus('No package loaded to print.');
+        return;
+      }
+      try {
+        window.print();
+        setPackageActionStatus('Opened browser print dialog for current report.');
+      } catch (error) {
+        setPackageActionStatus(`Print failed: ${safe(error.message)}`);
+      }
+    }
+
+    function exportCurrentSummaryText() {
+      if (!currentPackage) {
+        setPackageActionStatus('No package loaded to export.');
+        return;
+      }
+      try {
+        const warnings = getPackageWarnings(currentPackage);
+        const reportText = buildReportSummaryText(currentPackage, warnings);
+        const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = safeReportFilename(currentPackage);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+        setPackageActionStatus(`Exported ${link.download}.`);
+      } catch (error) {
+        setPackageActionStatus(`Export failed: ${safe(error.message)}`);
       }
     }
 
@@ -403,6 +488,8 @@
     document.getElementById('reloadBtn').addEventListener('click', () => loadSelected({ updateHash: true }));
     copyPackageBtn.addEventListener('click', copyCurrentPackageJson);
     downloadPackageBtn.addEventListener('click', downloadCurrentPackageJson);
+    printReportBtn.addEventListener('click', printCurrentReport);
+    exportSummaryBtn.addEventListener('click', exportCurrentSummaryText);
     document.getElementById('resetBtn').addEventListener('click', () => {
       localUpload.value = '';
       updateActionButtons();
