@@ -174,8 +174,7 @@
     }
 
     function normalizeTrustResult(value, fallback = 'UNVERIFIED') {
-      if (typeof value !== 'string') return fallback;
-      const normalized = value.trim().toUpperCase();
+      const normalized = String(value ?? '').trim().toUpperCase();
       return normalized || fallback;
     }
 
