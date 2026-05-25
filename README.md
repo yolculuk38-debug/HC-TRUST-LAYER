@@ -57,8 +57,22 @@ PYTHONPATH=src python -m hc_trust.cli verify records
 Then continue with:
 
 - Static viewer onboarding: [`docs/static-viewer.md`](docs/static-viewer.md)
+- MVP-1 public demo quick links: [`docs/demo-index.md`](docs/demo-index.md)
 - MVP-1 package viewer specification: [`docs/mvp-1-verification-package-viewer.md`](docs/mvp-1-verification-package-viewer.md)
 - Package examples for replay and review: [`docs/verification-package-examples.md`](docs/verification-package-examples.md)
+
+MVP-1 public demo quick links (bundled samples):
+
+- `docs/verification-viewer.html#verified-trace`
+- `docs/verification-viewer.html#partial-trace`
+- `docs/verification-viewer.html#replay-warning`
+- `docs/verification-viewer.html#disputed`
+- `docs/verification-viewer.html#unverified`
+
+Shareable hash links map only to bundled demo packages.
+Local uploaded package content is not stored in URL state.
+For reviewer handoff, prefer mobile-first checks so trust labels and warnings remain readable on phone-sized viewports.
+As with all HC:// trust outcomes, consequential interpretation requires human-supervised validation.
 
 ## Verification Flow Example
 
