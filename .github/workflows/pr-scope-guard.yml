@@ -1,0 +1,28 @@
+name: PR Scope Guard
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  pr-scope-guard:
+    name: Advisory PR scope boundary guard
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run advisory scope boundary checker
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          python3 scripts/check_pr_scope.py \
+            --base-ref "origin/${{ github.base_ref }}" \
+            --head-ref "${{ github.event.pull_request.head.sha }}"
+
+      - name: Human-supervised validation reminder
+        run: |
+          echo "PR scope guard is advisory-only in this phase."
+          echo "Human-supervised validation and reviewer authority are preserved."
