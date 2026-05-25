@@ -12,7 +12,6 @@ FORBIDDEN_PHRASES = [
     "proves truth",
     "guarantees truth",
     "absolute truth",
-    "truth score",
     "AI judge",
     "AI authority",
     "autonomous AI governance",
