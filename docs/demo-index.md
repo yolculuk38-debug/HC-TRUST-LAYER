@@ -67,7 +67,7 @@ For terminal-based review of the same package set, use the CLI viewer documentat
 This demo index and the static viewer are documentation/demo surfaces only.
 They do not introduce runtime verification behavior, schema contracts, validator logic, or workflow policy changes.
 
-The MVP-1 demos do not provide production readiness guarantees, truth guarantees, or forensic certainty claims.
+The MVP-1 demos do not provide production readiness guarantees, trust review guidance limitations, or forensic certainty claims.
 The viewer layout improvements are interpretive UX polish only and do not change workflow policy, schema contracts, validator logic, or canonical record behavior.
 
 ## Human-Supervised Validation Note

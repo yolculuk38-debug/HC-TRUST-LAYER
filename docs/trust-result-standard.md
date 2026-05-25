@@ -10,7 +10,7 @@ The standard is designed to help non-technical readers interpret verification ou
 
 - documentation standard only
 - no runtime implementation in this phase
-- no automatic truth determination
+- no automatic verification state determination
 - no forensic certainty claims
 - no production-readiness claim
 - all outcomes remain advisory and require human-supervised validation for high-impact decisions
@@ -94,7 +94,7 @@ Treat as a positive trust signal for the displayed scope only.
 
 **Limitations**
 
-Does not prove complete truth certainty, complete ecosystem coverage, or future-state validity.
+Does not prove complete verification state certainty, complete ecosystem coverage, or future-state validity.
 
 **Human-supervised review guidance**
 

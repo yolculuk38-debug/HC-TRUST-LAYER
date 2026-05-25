@@ -64,7 +64,7 @@ MVP-1 hash visibility should include:
 - explicit mismatch/unknown states
 - timestamp context for the last visible hash verification event
 
-Hash visibility is a verification signal, not an automatic truth guarantee.
+Hash visibility is a verification signal, not an automatic verification state determination.
 
 ## Provenance Visibility
 
@@ -135,7 +135,7 @@ MVP-1 UX goals:
 
 ## Boundaries
 
-- no automatic truth guarantee
+- no automatic verification state determination
 - no forensic certainty claims
 - no legal certification claims
 - no political authority claims
