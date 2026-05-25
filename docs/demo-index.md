@@ -8,6 +8,16 @@ This index provides direct navigation for the HC:// MVP-1 static verification vi
 - Static viewer guide: [`docs/static-viewer.md`](static-viewer.md)
 - CLI viewer documentation: [`docs/mvp-1-cli-viewer.md`](mvp-1-cli-viewer.md)
 
+## MVP-1 Public Demo Quick Links
+
+Use these shareable viewer hash links to open each bundled MVP-1 verification package state directly:
+
+- [verified trace demo](verification-viewer.html#verified-trace)
+- [partial trace demo](verification-viewer.html#partial-trace)
+- [replay warning demo](verification-viewer.html#replay-warning)
+- [disputed demo](verification-viewer.html#disputed)
+- [unverified demo](verification-viewer.html#unverified)
+
 ## Available Demo Packages
 
 The bundled MVP-1 demo package set includes:
@@ -20,17 +30,24 @@ The bundled MVP-1 demo package set includes:
 
 These packages are loaded from `examples/verification-packages/` through the static viewer package selector.
 
+Shareable hash links route only to bundled sample packages and are intended for quick demo handoff between reviewers.
+Local uploaded packages are not stored in URL state and are not included in shared links.
+
 The static viewer also supports shareable demo links via URL hash:
 
-- `verification-viewer.html#verified-trace`
-- `verification-viewer.html#partial-trace`
-- `verification-viewer.html#replay-warning`
-- `verification-viewer.html#disputed`
-- `verification-viewer.html#unverified`
+- `docs/verification-viewer.html#verified-trace`
+- `docs/verification-viewer.html#partial-trace`
+- `docs/verification-viewer.html#replay-warning`
+- `docs/verification-viewer.html#disputed`
+- `docs/verification-viewer.html#unverified`
 
 Unknown hash values fail safely by loading a bundled default/selected example state.
 Hash routing applies to bundled demo packages only.
 Local uploaded JSON remains private, is not encoded into URL state, and is not written to local storage.
+
+## Mobile-First Testing Note
+
+The static viewer is optimized for mobile-readable demo review. Validate share links on phone-sized viewports before broader reviewer circulation.
 
 ## What Users Can Test
 

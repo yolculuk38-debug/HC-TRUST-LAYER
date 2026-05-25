@@ -53,6 +53,9 @@ The static viewer supports demo permalink state using URL hash values for bundle
 - `docs/verification-viewer.html#disputed`
 - `docs/verification-viewer.html#unverified`
 
+These hash links are shareable for reviewer demo navigation and always resolve to bundled sample packages only.
+Local uploaded packages are never serialized into URL state and are not shareable through these links.
+
 When a bundled example is selected in the viewer, the URL hash is updated so reviewers can share the same demo state.
 On page load, the viewer reads the hash and loads the matching bundled example when recognized.
 If the hash value is unknown, the viewer falls back safely to the current/default bundled selection and shows advisory status.
@@ -62,6 +65,10 @@ Local upload privacy boundary:
 - local uploaded JSON is never encoded in the URL hash
 - local uploaded JSON is never stored in local storage
 - reset returns to bundled demo state safely without sharing local upload contents
+
+## Mobile-first demo testing note
+
+Before sharing MVP-1 links broadly, test bundled demo hash links on mobile-sized viewports to confirm readable trust labels, warning text, and audit trail context.
 
 ## Demo-only limitations
 
