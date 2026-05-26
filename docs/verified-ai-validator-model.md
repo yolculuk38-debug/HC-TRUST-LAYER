@@ -139,3 +139,4 @@ Signal usage notes:
 - `docs/public-verification-boundaries.md`
 - `docs/authenticated-ai-validator-access.md`
 - `docs/federated-oversight-model.md`
+- `docs/public-verification-disputes.md`
