@@ -176,3 +176,4 @@ Trust signals must communicate uncertainty, boundary conditions, and review requ
 - `docs/HC_CONTROL_PANEL.md`
 - `docs/federated-oversight-model.md`
 - `docs/public-verification-disputes.md`
+- `docs/immutable-state-history-model.md`
