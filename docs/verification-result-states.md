@@ -156,3 +156,8 @@ Always include a persistent notice:
 ## Implementation note
 
 These states are UX-standardization guidance for the self-service prototype and do not alter canonical records, validator behavior, signing semantics, federation behavior, or policy evaluator behavior.
+
+
+## Related visual examples
+
+- `docs/visual-verification-signals.md`
