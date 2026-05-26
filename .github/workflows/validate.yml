@@ -72,8 +72,18 @@ jobs:
                       validate(instance=record, schema=schema)
                       print(f"PASS: {path}")
 
+          print("Generated audit snapshots are excluded from canonical record validation.")
           print("All records validated successfully.")
           PY
 
       - name: Verify content hashes
         run: python src/verify_hashes.py records
+
+      - name: Generate audit snapshot
+        run: python src/generate_audit_snapshot.py
+
+      - name: Upload audit snapshot artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-snapshot
+          path: generated/audit_snapshot.json

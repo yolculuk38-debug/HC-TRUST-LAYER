@@ -1,0 +1,19 @@
+{
+  "file_count": 9,
+  "record_ids": [
+    ".gitkeep",
+    "HC-2026-0002",
+    "HC-CHATGPT-2026-0001",
+    "HC-CHATGPT-2026-0002",
+    "HC-EXAMPLE-2026-0001",
+    "HC-TEST-2026-0001",
+    "README"
+  ],
+  "sha256_manifest_hash": "7882c93453c3ed3f1b165b495621f3a17e51e035ee0e9d988e8f3b5914b0a5a4",
+  "snapshot_timestamp": "2026-05-26T16:05:54Z",
+  "source_directories": [
+    "records/pending/",
+    "records/verified/",
+    "records/archived/"
+  ]
+}
