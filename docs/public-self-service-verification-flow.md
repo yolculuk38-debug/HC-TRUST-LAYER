@@ -117,3 +117,4 @@ Additional boundary clarifications:
 - `docs/content-verification-signal-model.md`
 - `docs/public-verification-boundaries.md`
 - `docs/HC_CONTROL_PANEL.md`
+- `docs/self-service-smoke-test.md`
