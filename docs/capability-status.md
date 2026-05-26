@@ -1,5 +1,11 @@
 # HC-TRUST-LAYER Capability Status Matrix
 
+> **Documentation Status**
+> - **status:** PARTIAL
+> - **scope:** Evidence-based capability classification for implemented, partial, planned, and research components.
+> - **canonical relevance:** Advisory matrix; points to canonical and trust-kernel evidence without redefining those boundaries.
+> - **runtime relevance:** Medium; supports review routing and expectation setting, not runtime enforcement.
+
 ## Purpose
 
 This document tracks current capability status for HC-TRUST-LAYER using repository evidence.

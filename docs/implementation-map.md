@@ -1,20 +1,26 @@
 # HC-TRUST-LAYER Implementation Map
 
+> **Documentation Status**
+> - **status:** PARTIAL
+> - **scope:** Layer-to-artifact implementation visibility across HC:// verification infrastructure.
+> - **canonical relevance:** Advisory mapping document; references canonical boundaries but is not canonical schema.
+> - **runtime relevance:** Medium; informs reviewer/operator expectations without changing runtime logic.
+
 ## Purpose
 
 This map connects the six master architecture layers to concrete repository artifacts and current maturity status for HC-TRUST-LAYER verification infrastructure.
 
 Status scale:
-- implemented
-- partial
-- planned
-- research
+- IMPLEMENTED
+- PARTIAL
+- PLANNED
+- RESEARCH
 
 ## Layer-to-Implementation Map
 
 ## 1) Record Integrity Layer
 
-**Status:** implemented
+**Status:** IMPLEMENTED
 
 **Primary files and docs**
 - `schema/record-v1.schema.json`
@@ -32,7 +38,7 @@ Status scale:
 
 ## 2) Witness & Signature Layer
 
-**Status:** partial
+**Status:** PARTIAL
 
 **Primary files and docs**
 - `src/signed_witness.py`
@@ -51,7 +57,7 @@ Status scale:
 
 ## 3) Public Verification Layer
 
-**Status:** implemented
+**Status:** IMPLEMENTED
 
 **Primary files and docs**
 - `src/hc_trust/cli.py`
@@ -73,7 +79,7 @@ Status scale:
 
 ## 4) Federation & Sync Layer
 
-**Status:** planned
+**Status:** PLANNED
 
 **Primary files and docs**
 - `src/federation_sync.py`
@@ -94,7 +100,7 @@ Status scale:
 
 ## 5) External Integration Layer
 
-**Status:** research
+**Status:** RESEARCH
 
 **Primary files and docs**
 - `src/external_verification_package.py`
