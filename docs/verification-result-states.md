@@ -163,3 +163,4 @@ These states are UX-standardization guidance for the self-service prototype and 
 - `docs/visual-verification-signals.md`
 - `docs/verified-ai-validator-model.md`
 - `docs/authenticated-ai-validator-access.md`
+- `docs/accountability-defense-layer.md`

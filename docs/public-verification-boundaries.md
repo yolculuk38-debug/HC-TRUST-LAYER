@@ -63,3 +63,5 @@ For advisory content-class verification state semantics and media provenance sig
 For verified AI-assisted analysis disclosure boundaries and validator trace expectations, see `docs/verified-ai-validator-model.md`.
 
 For authenticated AI validator access boundaries, identity verification flow, and replay-resistant advisory access signaling, see `docs/authenticated-ai-validator-access.md`.
+For HC:// accountability posture against internal abuse, spoofing, and manipulation attempts, see `docs/accountability-defense-layer.md`.
+
