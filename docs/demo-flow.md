@@ -36,7 +36,7 @@ Example output:
 
 ```text
 ✅ Secure QR oluşturuldu: qr/HC-DEMO-2026-0001.png
-🔗 URL: https://yolculuk38-debug.github.io/HC-TRUST-LAYER/?record=HC-DEMO-2026-0001&hash=9c169042065246d3b963163cfe8ffe876ffce57fa8759e402281d036f0f9cffc&ref=https://github.com/owner/repo/blob/main/examples/demo_record.json&sig=<signature>
+🔗 URL: https://<owner>.github.io/HC-TRUST-LAYER/docs/verify.html?record=HC-DEMO2026-0001&hash=9c169042065246d3b963163cfe8ffe876ffce57fa8759e402281d036f0f9cffc
 ```
 
 > Do not commit generated QR image files (`*.png`, `*.jpg`, etc.). Keep demo evidence text-only.
