@@ -49,3 +49,4 @@ Use this plan to quickly confirm that the basic self-service verification user f
 ## Related guidance
 
 - `docs/verification-result-states.md`
+- `docs/public-verification-walkthrough.md`
