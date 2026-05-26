@@ -131,6 +131,8 @@ Signal usage notes:
 
 ## Related documents
 
+
+- `docs/accountability-defense-layer.md`
 - `docs/verification-result-states.md`
 - `docs/visual-verification-signals.md`
 - `docs/HC_CONTROL_PANEL.md`

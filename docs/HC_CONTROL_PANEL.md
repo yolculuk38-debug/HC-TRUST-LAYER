@@ -253,3 +253,9 @@ For a repeatable manual mobile/desktop UX verification checklist for the prototy
 For a start-to-finish normal-user walkthrough of the public self-service prototype flow, see `docs/public-verification-walkthrough.md`.
 
 For the first browser-side self-service verification prototype page (local-only SHA-256 preview and non-canonical HC:// route preview), see `docs/self-service-verify.html`.
+## Accountability and defense layer reference
+
+For HC:// trust integrity abuse and anti-manipulation posture guidance, see:
+
+- `docs/accountability-defense-layer.md`
+

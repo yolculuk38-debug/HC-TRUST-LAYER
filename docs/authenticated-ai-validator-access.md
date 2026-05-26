@@ -167,6 +167,8 @@ Signal usage guidance:
 
 ## Related documents
 
+
+- `docs/accountability-defense-layer.md`
 - `docs/verified-ai-validator-model.md`
 - `docs/verification-result-states.md`
 - `docs/HC_CONTROL_PANEL.md`
