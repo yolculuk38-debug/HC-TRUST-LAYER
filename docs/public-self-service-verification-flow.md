@@ -112,7 +112,7 @@ Additional boundary clarifications:
 
 ## Related references
 
-- `docs/self-service-verify.html`
+- `docs/self-service-verify.html` (mobile-first step-by-step prototype with local-only advisory verification boundaries)
 - `docs/public-onboarding-model.md`
 - `docs/content-verification-signal-model.md`
 - `docs/public-verification-boundaries.md`

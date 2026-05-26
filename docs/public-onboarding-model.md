@@ -156,3 +156,7 @@ Use direct, non-technical wording while preserving HC:// boundary semantics.
 - `docs/media-verification-showcase.md`
 - `docs/public-self-service-verification-flow.md`
 - `docs/self-service-verify.html`
+
+## Prototype reference
+
+For an HC:// self-service, local-only verification prototype with step-by-step mobile UX guidance, see `docs/self-service-verify.html`.

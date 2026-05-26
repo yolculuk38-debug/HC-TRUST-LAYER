@@ -14,6 +14,7 @@
       --border: #cbd5e1;
       --accent: #0f766e;
       --warn: #9a3412;
+      --soft: #e2e8f0;
     }
     @media (prefers-color-scheme: dark) {
       :root {
@@ -26,30 +27,41 @@
         --warn: #fdba74;
       }
     }
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; line-height: 1.5; margin: 0; background: var(--bg); color: var(--fg); }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; line-height: 1.6; margin: 0; background: var(--bg); color: var(--fg); }
     main { max-width: 52rem; margin: 0 auto; padding: 1rem; }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; margin-bottom: 1rem; }
-    h1, h2 { margin-top: 0; }
-    label { font-weight: 600; display: block; margin-bottom: 0.35rem; }
-    textarea, input[type="file"], input[type="text"] { width: 100%; box-sizing: border-box; padding: 0.6rem; border-radius: 0.5rem; border: 1px solid var(--border); }
-    textarea { min-height: 8rem; }
-    .row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
-    button { border: 1px solid var(--border); padding: 0.6rem 0.8rem; border-radius: 0.5rem; background: var(--bg); color: var(--fg); cursor: pointer; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 0.9rem; padding: 1rem; margin-bottom: 1rem; }
+    h1, h2, h3 { margin-top: 0; }
+    p, li { font-size: 1rem; }
+    label { font-weight: 700; display: block; margin-bottom: 0.45rem; }
+    textarea, input[type="file"], input[type="text"] { width: 100%; box-sizing: border-box; padding: 0.85rem; border-radius: 0.65rem; border: 1px solid var(--border); font-size: 1rem; }
+    textarea { min-height: 9rem; }
+    .row { display: flex; gap: 0.65rem; flex-wrap: wrap; margin-top: 1rem; }
+    button { border: 1px solid var(--border); padding: 0.9rem 1rem; border-radius: 0.65rem; background: var(--bg); color: var(--fg); cursor: pointer; font-size: 1rem; font-weight: 700; min-height: 2.9rem; }
     button.primary { background: var(--accent); color: #fff; border-color: transparent; }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; overflow-wrap: anywhere; }
     .note { color: var(--muted); }
     .warn { color: var(--warn); font-weight: 700; }
     .status { font-weight: 700; }
+    .step { border-left: 0.35rem solid var(--accent); }
+    .mini { margin: 0.5rem 0 0; padding: 0.65rem 0.8rem; border-radius: 0.65rem; border: 1px solid var(--soft); }
+    .warning-list li { margin-bottom: 0.45rem; }
     a { color: var(--accent); }
+    @media (max-width: 640px) {
+      main { padding: 0.8rem; }
+      .card { padding: 0.9rem; }
+      h1 { font-size: 1.5rem; }
+      h2 { font-size: 1.2rem; }
+      button { width: 100%; }
+    }
   </style>
 </head>
 <body>
 <main>
   <h1>HC:// Self-Service Verification Preview</h1>
-  <p class="note">This prototype runs in your browser for a local-only SHA-256 verification preview in HC-TRUST-LAYER.</p>
+  <p class="note">Use this HC:// prototype to create a local SHA-256 fingerprint from text or a file on your device. It is advisory-only verification in HC-TRUST-LAYER and supports human-supervised validation workflows.</p>
 
   <section class="card" aria-labelledby="boundaries-title">
-    <h2 id="boundaries-title">Verification boundaries (read first)</h2>
+    <h2 id="boundaries-title">Start here: what this page does</h2>
     <ul>
       <li>Local preview only: this page computes hash values on your device.</li>
       <li>No upload happens from this page.</li>
@@ -58,14 +70,15 @@
       <li>Authorship is not proven by this preview.</li>
       <li>Human-supervised validation and registration are separate steps.</li>
     </ul>
+    <p class="mini"><strong>Quick summary:</strong> local-only hashing, advisory-only preview route, and separate human-supervised validation for consequential decisions.</p>
   </section>
 
-  <section class="card" aria-labelledby="input-title">
-    <h2 id="input-title">1) Select input for local SHA-256</h2>
+  <section class="card step" aria-labelledby="input-title">
+    <h2 id="input-title">Step 1: Enter text or select a file</h2>
     <label for="text-input">Text input</label>
     <textarea id="text-input" placeholder="Enter text for local SHA-256 preview"></textarea>
 
-    <p class="note">or</p>
+    <p class="note"><strong>Choose one path:</strong> enter text above or select a file below.</p>
 
     <label for="file-input">File input (processed in-browser)</label>
     <input id="file-input" type="file" aria-describedby="file-help">
@@ -78,29 +91,35 @@
     </div>
   </section>
 
-  <section class="card" aria-labelledby="result-title">
-    <h2 id="result-title">2) Local verification preview output</h2>
+  <section class="card step" aria-labelledby="result-title">
+    <h2 id="result-title">Step 2: Generate SHA-256 and review preview output</h2>
     <p><span class="status">State:</span> <span id="registration-state">Not registered yet (preview only)</span></p>
     <p><span class="status">Advisory verification signal:</span> <span id="signal">HC REVIEW (Preview / Advisory)</span></p>
 
-    <p class="status">SHA-256 digest</p>
+    <p class="status">Step 3A: Copy SHA-256 hash result</p>
     <p id="digest" class="mono" aria-live="polite">No digest generated yet.</p>
     <div class="row">
       <button id="copy" type="button">Copy hash</button>
     </div>
 
-    <p class="status">HC:// preview route</p>
+    <p class="status">Step 3B: Copy HC:// preview route</p>
     <p id="route" class="mono" aria-live="polite">No preview route yet.</p>
 
-    <p class="status">QR preview placeholder / lightweight link</p>
+    <p class="status">Preview route helper (for QR generation tooling)</p>
     <p id="qr-text" class="note">Generate a digest to create a non-canonical preview link containing only hash preview parameters.</p>
     <p><a id="qr-link" href="#" hidden>Open preview link for QR generation tooling</a></p>
   </section>
 
-  <section class="card" aria-labelledby="next-title">
-    <h2 id="next-title">3) Next-step guidance</h2>
+  <section class="card step" aria-labelledby="next-title">
+    <h2 id="next-title">Step 4: Understand the advisory result</h2>
     <p class="note">This prototype is advisory-only. It helps with local integrity preview and route preparation. Registration and consequential interpretation remain separate and require human-supervised validation in HC-TRUST-LAYER workflows.</p>
-    <p class="warn">Do not use this preview as proof of truth, proof of authorship, legal certification, or AI detection certainty.</p>
+    <ul class="warning-list">
+      <li class="warn">Your file is not uploaded by this page.</li>
+      <li class="warn">Preview route output is not canonical registration.</li>
+      <li class="warn">A hash match does not prove truth.</li>
+      <li class="warn">Authorship is not proven by this preview.</li>
+      <li class="warn">Human-supervised validation is separate and required for consequential use.</li>
+    </ul>
   </section>
 </main>
 
