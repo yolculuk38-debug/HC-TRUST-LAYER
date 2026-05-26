@@ -212,3 +212,5 @@ For explicit public verification limits and advisory-only boundary language, use
 For federation interoperability boundaries and verification package scope, see `docs/federation-readiness-model.md`.
 
 See `docs/qr-verification-security-model.md` for permission-aware HC:// QR entry constraints, spoofing risks, and advisory trust-boundary handling.
+
+For advisory verification badge semantics and visible trust-signal boundaries, see `docs/verification-signal-model.md`.
