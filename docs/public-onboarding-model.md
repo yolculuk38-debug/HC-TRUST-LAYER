@@ -16,6 +16,16 @@ This document defines a lightweight, mobile-first HC:// public verification onbo
 
 Enable normal users to understand HC:// verification outcomes quickly while preserving strict verification boundaries, provenance visibility, and audit trail continuity.
 
+## Public self-service entry point
+
+Try local verification preview at `docs/self-service-verify.html`.
+
+- **No upload**
+- **Browser-side SHA-256**
+- **Preview only, not registration**
+
+This entry point is mobile-friendly and supports local-only, advisory verification preview before human-supervised validation.
+
 ## Public onboarding flow (lightweight)
 
 1. **QR scan**

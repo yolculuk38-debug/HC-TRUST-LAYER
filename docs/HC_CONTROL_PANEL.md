@@ -219,7 +219,7 @@ For anti-spoof visible verification signal stabilization guidance, see `docs/ant
 
 For advisory content verification signal design across quotes/text, images, videos, documents, social posts, and archived records, see `docs/content-verification-signal-model.md`.
 
-For the mobile-readable self-service local hashing prototype (advisory-only, no upload), see `docs/self-service-verify.html`.
+For the mobile-readable self-service local hashing prototype, use the public entry point **Try local verification preview** at `docs/self-service-verify.html` (**No upload**, **Browser-side SHA-256**, **Preview only, not registration**).
 
 For lightweight public onboarding flow guidance for normal users (QR scan through advisory interpretation with human-supervised validation notice), see `docs/public-onboarding-model.md`.
 
