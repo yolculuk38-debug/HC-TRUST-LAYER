@@ -112,6 +112,7 @@ Additional boundary clarifications:
 
 ## Related references
 
+- `docs/self-service-verify.html`
 - `docs/public-onboarding-model.md`
 - `docs/content-verification-signal-model.md`
 - `docs/public-verification-boundaries.md`

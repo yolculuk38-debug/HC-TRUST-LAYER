@@ -222,3 +222,5 @@ For advisory content verification signal design across quotes/text, images, vide
 For lightweight public onboarding flow guidance for normal users (QR scan through advisory interpretation with human-supervised validation notice), see `docs/public-onboarding-model.md`.
 
 For first public self-service local hash preview flow guidance (text/file input through advisory preview, with registration/review separated), see `docs/public-self-service-verification-flow.md`.
+
+For the first browser-side self-service verification prototype page (local-only SHA-256 preview and non-canonical HC:// route preview), see `docs/self-service-verify.html`.
