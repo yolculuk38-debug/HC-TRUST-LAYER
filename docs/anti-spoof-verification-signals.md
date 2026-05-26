@@ -129,3 +129,5 @@ Accessibility notes:
 - `docs/qr-verification-security-model.md`
 - `docs/anti-spoofing-foundations.md`
 - `docs/HC_CONTROL_PANEL.md`
+
+For content verification states across text, media, social posts, and archived records, see `docs/content-verification-signal-model.md`.

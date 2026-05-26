@@ -57,3 +57,5 @@ For future federation interoperability boundaries and advisory verification pack
 For safe visible verification signals and advisory verification badge language, see `docs/verification-signal-model.md`.
 
 For anti-spoof verification signal rendering boundaries and non-authoritative UX guidance, see `docs/anti-spoof-verification-signals.md`.
+
+For advisory content-class verification state semantics and media provenance signal boundaries, see `docs/content-verification-signal-model.md`.
