@@ -162,3 +162,4 @@ The verification layer, reviewer actions, and policy evolution processes require
 - `docs/public-verification-disputes.md`
 - `docs/immutable-state-history-model.md`
 - `docs/maintainer-accountability-model.md`
+- `docs/evidence-preservation-recovery-model.md`

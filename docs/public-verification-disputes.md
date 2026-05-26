@@ -174,3 +174,4 @@ State usage guidance:
 - `docs/trust-review-workflow.md`
 - `docs/immutable-state-history-model.md`
 - `docs/maintainer-accountability-model.md`
+- `docs/evidence-preservation-recovery-model.md`

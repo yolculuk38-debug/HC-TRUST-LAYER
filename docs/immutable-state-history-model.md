@@ -157,3 +157,4 @@ State usage guidance:
 - `docs/verification-result-states.md`
 - `docs/HC_CONTROL_PANEL.md`
 - `docs/maintainer-accountability-model.md`
+- `docs/evidence-preservation-recovery-model.md`
