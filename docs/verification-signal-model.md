@@ -105,3 +105,5 @@ identity authority, or legal certification.
 - `docs/public-verification-boundaries.md`
 - `docs/federation-readiness-model.md`
 - `docs/HC_CONTROL_PANEL.md`
+
+For anti-spoof signal presentation patterns, unofficial/fake signal risks, and accessibility-oriented rendering guidance, see `docs/anti-spoof-verification-signals.md`.

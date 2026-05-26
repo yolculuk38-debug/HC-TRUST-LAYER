@@ -214,3 +214,5 @@ For federation interoperability boundaries and verification package scope, see `
 See `docs/qr-verification-security-model.md` for permission-aware HC:// QR entry constraints, spoofing risks, and advisory trust-boundary handling.
 
 For advisory verification badge semantics and visible trust-signal boundaries, see `docs/verification-signal-model.md`.
+
+For anti-spoof visible verification signal stabilization guidance, see `docs/anti-spoof-verification-signals.md`.

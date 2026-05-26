@@ -92,3 +92,5 @@ Mitigation: Confirm official domain/page route and compare against repository-li
 In HC-TRUST-LAYER, QR verification is an entry point into continuity diagnostics.
 
 A hash match confirms integrity alignment for referenced bytes under this workflow. It does not prove objective truth, intent, or autonomous authority.
+
+For anti-spoof visible verification signal behavior, including fake-page and stale-artifact handling, see `docs/anti-spoof-verification-signals.md`.

@@ -55,3 +55,5 @@ See `docs/qr-verification-security-model.md` for permission-aware HC:// QR entry
 For future federation interoperability boundaries and advisory verification package semantics, see `docs/federation-readiness-model.md`.
 
 For safe visible verification signals and advisory verification badge language, see `docs/verification-signal-model.md`.
+
+For anti-spoof verification signal rendering boundaries and non-authoritative UX guidance, see `docs/anti-spoof-verification-signals.md`.
