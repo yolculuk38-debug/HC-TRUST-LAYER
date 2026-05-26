@@ -59,3 +59,5 @@ For safe visible verification signals and advisory verification badge language, 
 For anti-spoof verification signal rendering boundaries and non-authoritative UX guidance, see `docs/anti-spoof-verification-signals.md`.
 
 For advisory content-class verification state semantics and media provenance signal boundaries, see `docs/content-verification-signal-model.md`.
+
+For verified AI-assisted analysis disclosure boundaries and validator trace expectations, see `docs/verified-ai-validator-model.md`.
