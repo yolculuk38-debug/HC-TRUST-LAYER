@@ -156,6 +156,7 @@ For detailed status, use:
 - `docs/capability-status.md`
 - `docs/implementation-map.md`
 - `docs/master-architecture.md`
+- `docs/federated-oversight-model.md`
 - `protocol-graph.json`
 - `verification-map.json`
 - `trust-kernel-index.json`
