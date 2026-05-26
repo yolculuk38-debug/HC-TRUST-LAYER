@@ -67,4 +67,5 @@ The package is non-canonical and does not enter canonical record validation work
 
 - `docs/public-verification-boundaries.md`
 - `docs/HC_CONTROL_PANEL.md`
+- `docs/verification-signal-model.md`
 - `docs/implementation-map.md`
