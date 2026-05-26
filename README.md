@@ -90,6 +90,7 @@ Then continue with:
 
 - Static viewer onboarding: [`docs/static-viewer.md`](docs/static-viewer.md)
 - MVP-1 public demo quick links: [`docs/demo-index.md`](docs/demo-index.md)
+- Public verification walkthrough: [`docs/public-verification-walkthrough.md`](docs/public-verification-walkthrough.md)
 - MVP-1 package viewer specification: [`docs/mvp-1-verification-package-viewer.md`](docs/mvp-1-verification-package-viewer.md)
 - Package examples for replay and review: [`docs/verification-package-examples.md`](docs/verification-package-examples.md)
 

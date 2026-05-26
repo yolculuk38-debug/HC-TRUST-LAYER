@@ -15,6 +15,7 @@ Start with the quickest public demo route:
 
 - Static viewer page: [`docs/verification-viewer.html`](verification-viewer.html)
 - Static viewer guide: [`docs/static-viewer.md`](static-viewer.md)
+- Public verification walkthrough: [`docs/public-verification-walkthrough.md`](public-verification-walkthrough.md)
 - CLI viewer documentation: [`docs/mvp-1-cli-viewer.md`](mvp-1-cli-viewer.md)
 
 ## Try local verification preview

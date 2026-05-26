@@ -246,4 +246,6 @@ For first public self-service local hash preview flow guidance (text/file input 
 
 For a repeatable manual mobile/desktop UX verification checklist for the prototype, see `docs/self-service-smoke-test.md`.
 
+For a start-to-finish normal-user walkthrough of the public self-service prototype flow, see `docs/public-verification-walkthrough.md`.
+
 For the first browser-side self-service verification prototype page (local-only SHA-256 preview and non-canonical HC:// route preview), see `docs/self-service-verify.html`.
