@@ -149,3 +149,4 @@ Users and reviewers should be able to inspect emergency-event summaries, caution
 - `docs/federated-oversight-model.md`
 - `docs/public-verification-disputes.md`
 - `docs/HC_CONTROL_PANEL.md`
+- `docs/evidence-preservation-recovery-model.md`
