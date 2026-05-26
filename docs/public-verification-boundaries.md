@@ -50,3 +50,6 @@ The first public HC:// verification flow remains advisory-only.
 Human-supervised validation remains required before consequential decisions. Public verification diagnostics should be treated as review inputs and continuity indicators, not final authority.
 
 See `docs/qr-verification-security-model.md` for permission-aware HC:// QR entry constraints, spoofing risks, and advisory trust-boundary handling.
+
+
+For future federation interoperability boundaries and advisory verification package semantics, see `docs/federation-readiness-model.md`.
