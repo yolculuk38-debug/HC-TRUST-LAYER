@@ -1,0 +1,34 @@
+{
+  "package_type": "hc_federation_verification_package",
+  "package_version": "0.1.0-advisory",
+  "record_reference": {
+    "record_path": "records/verified/example-record.json",
+    "record_id": "example-record",
+    "canonical_record_authority": "records/verified/*"
+  },
+  "hash_reference": {
+    "algorithm": "sha256",
+    "hash": "replace-with-local-hash",
+    "hash_source": "local verifier output"
+  },
+  "audit_reference": {
+    "audit_snapshot_path": "generated/audit_snapshot.json",
+    "audit_event_id": "example-audit-event"
+  },
+  "explorer_reference": {
+    "explorer_index_path": "generated/explorer_index.json",
+    "explorer_entry_id": "example-explorer-entry"
+  },
+  "advisory_metadata": {
+    "verification_mode": "advisory-only",
+    "human_supervised_validation_required": true,
+    "external_verification_authority": "none",
+    "interoperability_purpose": "federation reference exchange"
+  },
+  "generated_artifact_warning": "This package is generated and non-canonical. It is excluded from strict canonical validation and cannot override canonical records.",
+  "provenance": {
+    "generated_by": "local verifier",
+    "generated_at": "1970-01-01T00:00:00Z",
+    "notes": "Example structure for interoperability planning only."
+  }
+}
