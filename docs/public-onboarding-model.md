@@ -155,3 +155,4 @@ Use direct, non-technical wording while preserving HC:// boundary semantics.
 - `docs/HC_CONTROL_PANEL.md`
 - `docs/media-verification-showcase.md`
 - `docs/public-self-service-verification-flow.md`
+- `docs/self-service-verify.html`

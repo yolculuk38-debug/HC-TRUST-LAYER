@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HC:// Self-Service Verification Preview (Local Only)</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #ffffff;
+      --fg: #0f172a;
+      --muted: #334155;
+      --card: #f8fafc;
+      --border: #cbd5e1;
+      --accent: #0f766e;
+      --warn: #9a3412;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #020617;
+        --fg: #e2e8f0;
+        --muted: #cbd5e1;
+        --card: #0f172a;
+        --border: #334155;
+        --accent: #2dd4bf;
+        --warn: #fdba74;
+      }
+    }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; line-height: 1.5; margin: 0; background: var(--bg); color: var(--fg); }
+    main { max-width: 52rem; margin: 0 auto; padding: 1rem; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; margin-bottom: 1rem; }
+    h1, h2 { margin-top: 0; }
+    label { font-weight: 600; display: block; margin-bottom: 0.35rem; }
+    textarea, input[type="file"], input[type="text"] { width: 100%; box-sizing: border-box; padding: 0.6rem; border-radius: 0.5rem; border: 1px solid var(--border); }
+    textarea { min-height: 8rem; }
+    .row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
+    button { border: 1px solid var(--border); padding: 0.6rem 0.8rem; border-radius: 0.5rem; background: var(--bg); color: var(--fg); cursor: pointer; }
+    button.primary { background: var(--accent); color: #fff; border-color: transparent; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; overflow-wrap: anywhere; }
+    .note { color: var(--muted); }
+    .warn { color: var(--warn); font-weight: 700; }
+    .status { font-weight: 700; }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+<main>
+  <h1>HC:// Self-Service Verification Preview</h1>
+  <p class="note">This prototype runs in your browser for a local-only SHA-256 verification preview in HC-TRUST-LAYER.</p>
+
+  <section class="card" aria-labelledby="boundaries-title">
+    <h2 id="boundaries-title">Verification boundaries (read first)</h2>
+    <ul>
+      <li>Local preview only: this page computes hash values on your device.</li>
+      <li>No upload happens from this page.</li>
+      <li>No canonical record is created here.</li>
+      <li>Hash match does not prove truth.</li>
+      <li>Authorship is not proven by this preview.</li>
+      <li>Human-supervised validation and registration are separate steps.</li>
+    </ul>
+  </section>
+
+  <section class="card" aria-labelledby="input-title">
+    <h2 id="input-title">1) Select input for local SHA-256</h2>
+    <label for="text-input">Text input</label>
+    <textarea id="text-input" placeholder="Enter text for local SHA-256 preview"></textarea>
+
+    <p class="note">or</p>
+
+    <label for="file-input">File input (processed in-browser)</label>
+    <input id="file-input" type="file" aria-describedby="file-help">
+    <p id="file-help" class="note">Your file is read locally via browser APIs and is not uploaded by this page.</p>
+
+    <div class="row">
+      <button id="hash-text" class="primary" type="button">Generate hash from text</button>
+      <button id="hash-file" class="primary" type="button">Generate hash from file</button>
+      <button id="clear" type="button">Clear preview</button>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="result-title">
+    <h2 id="result-title">2) Local verification preview output</h2>
+    <p><span class="status">State:</span> <span id="registration-state">Not registered yet (preview only)</span></p>
+    <p><span class="status">Advisory verification signal:</span> <span id="signal">HC REVIEW (Preview / Advisory)</span></p>
+
+    <p class="status">SHA-256 digest</p>
+    <p id="digest" class="mono" aria-live="polite">No digest generated yet.</p>
+    <div class="row">
+      <button id="copy" type="button">Copy hash</button>
+    </div>
+
+    <p class="status">HC:// preview route</p>
+    <p id="route" class="mono" aria-live="polite">No preview route yet.</p>
+
+    <p class="status">QR preview placeholder / lightweight link</p>
+    <p id="qr-text" class="note">Generate a digest to create a non-canonical preview link containing only hash preview parameters.</p>
+    <p><a id="qr-link" href="#" hidden>Open preview link for QR generation tooling</a></p>
+  </section>
+
+  <section class="card" aria-labelledby="next-title">
+    <h2 id="next-title">3) Next-step guidance</h2>
+    <p class="note">This prototype is advisory-only. It helps with local integrity preview and route preparation. Registration and consequential interpretation remain separate and require human-supervised validation in HC-TRUST-LAYER workflows.</p>
+    <p class="warn">Do not use this preview as proof of truth, proof of authorship, legal certification, or AI detection certainty.</p>
+  </section>
+</main>
+
+<script>
+(async function () {
+  const textInput = document.getElementById('text-input');
+  const fileInput = document.getElementById('file-input');
+  const digestEl = document.getElementById('digest');
+  const routeEl = document.getElementById('route');
+  const qrTextEl = document.getElementById('qr-text');
+  const qrLinkEl = document.getElementById('qr-link');
+
+  let latestDigest = '';
+
+  function toHex(buffer) {
+    return Array.from(new Uint8Array(buffer)).map((b) => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function hashBytes(bytes) {
+    const hash = await crypto.subtle.digest('SHA-256', bytes);
+    return toHex(hash);
+  }
+
+  function applyPreview(digest, inputType) {
+    latestDigest = digest;
+    const route = `hc://verify/preview?algo=sha256&input=${encodeURIComponent(inputType)}&hash=${digest}`;
+    digestEl.textContent = digest;
+    routeEl.textContent = route;
+    const lightweightUrl = `./verification-viewer.html?preview=1&algo=sha256&hash=${encodeURIComponent(digest)}`;
+    qrLinkEl.href = lightweightUrl;
+    qrLinkEl.hidden = false;
+    qrTextEl.textContent = 'Use this lightweight link for QR generation. It includes preview parameters only (no private payload).';
+  }
+
+  document.getElementById('hash-text').addEventListener('click', async () => {
+    const value = textInput.value;
+    if (!value) {
+      digestEl.textContent = 'Enter text before generating a hash.';
+      return;
+    }
+    const bytes = new TextEncoder().encode(value);
+    applyPreview(await hashBytes(bytes), 'text');
+  });
+
+  document.getElementById('hash-file').addEventListener('click', async () => {
+    const file = fileInput.files && fileInput.files[0];
+    if (!file) {
+      digestEl.textContent = 'Select a file before generating a hash.';
+      return;
+    }
+    const bytes = await file.arrayBuffer();
+    applyPreview(await hashBytes(bytes), 'file');
+  });
+
+  document.getElementById('copy').addEventListener('click', async () => {
+    if (!latestDigest) {
+      digestEl.textContent = 'Generate a digest before copying.';
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(latestDigest);
+      qrTextEl.textContent = 'Digest copied. Continue with human-supervised validation steps if you need registration.';
+    } catch (_error) {
+      qrTextEl.textContent = 'Clipboard copy was blocked by this browser context. Copy the digest manually.';
+    }
+  });
+
+  document.getElementById('clear').addEventListener('click', () => {
+    textInput.value = '';
+    fileInput.value = '';
+    latestDigest = '';
+    digestEl.textContent = 'No digest generated yet.';
+    routeEl.textContent = 'No preview route yet.';
+    qrTextEl.textContent = 'Generate a digest to create a non-canonical preview link containing only hash preview parameters.';
+    qrLinkEl.hidden = true;
+    qrLinkEl.href = '#';
+  });
+})();
+</script>
+</body>
+</html>
