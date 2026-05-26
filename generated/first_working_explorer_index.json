@@ -1,0 +1,12 @@
+{
+  "generated_by": "docs/FIRST_WORKING_RECORD.md",
+  "advisory_only": true,
+  "records": [
+    {
+      "record_id": "HC-DEMO2026-0001",
+      "record_hash": "ae83383b191d02970eb3df834c56b15e7a688fcd63f782d3408aaefd60b7b56a",
+      "source_file": "examples/demo_record.json",
+      "verification_status": "advisory"
+    }
+  ]
+}

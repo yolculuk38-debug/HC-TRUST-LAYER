@@ -56,6 +56,7 @@
       <h2>Verification result</h2>
       <p><strong>Record status:</strong> <span id="recordStatus" class="status warn">Checking…</span></p>
       <p><strong>Hash status:</strong> <span id="hashStatus" class="status warn">Checking…</span></p>
+      <p><strong>Advisory verification status:</strong> <span id="advisoryStatus" class="status warn">Checking…</span></p>
       <dl>
         <dt>Input record</dt>
         <dd id="inputRecord" class="mono"></dd>
@@ -69,6 +70,8 @@
       <p><strong>Expected record:</strong> <span id="expectedRecord" class="mono"></span></p>
       <p><strong>Expected hash:</strong> <span id="expectedHash" class="mono"></span></p>
       <p><strong>Source record:</strong> <a id="recordLink" href="../examples/demo_record.json">examples/demo_record.json</a></p>
+      <p><strong>Explorer index artifact:</strong> <a id="explorerLink" href="../generated/first_working_explorer_index.json">generated/first_working_explorer_index.json</a></p>
+      <p><strong>Audit snapshot artifact:</strong> <a id="auditLink" href="../generated/first_working_audit_snapshot.json">generated/first_working_audit_snapshot.json</a></p>
     </section>
 
     <section class="card">
@@ -80,8 +83,10 @@
   <script>
     const FIRST_DEMO_RECORD = {
       record: 'HC-DEMO2026-0001',
-      hash: '9c169042065246d3b963163cfe8ffe876ffce57fa8759e402281d036f0f9cffc',
-      sourcePath: '../examples/demo_record.json'
+      hash: 'ae83383b191d02970eb3df834c56b15e7a688fcd63f782d3408aaefd60b7b56a',
+      sourcePath: '../examples/demo_record.json',
+      explorerPath: '../generated/first_working_explorer_index.json',
+      auditPath: '../generated/first_working_audit_snapshot.json'
     };
 
     function getParam(name) {
@@ -104,6 +109,8 @@
     document.getElementById('expectedRecord').textContent = FIRST_DEMO_RECORD.record;
     document.getElementById('expectedHash').textContent = FIRST_DEMO_RECORD.hash;
     document.getElementById('recordLink').setAttribute('href', FIRST_DEMO_RECORD.sourcePath);
+    document.getElementById('explorerLink').setAttribute('href', FIRST_DEMO_RECORD.explorerPath);
+    document.getElementById('auditLink').setAttribute('href', FIRST_DEMO_RECORD.auditPath);
 
     setStatus(
       document.getElementById('recordStatus'),
@@ -116,6 +123,13 @@
       document.getElementById('hashStatus'),
       'Hash match',
       'Hash mismatch',
+      hashMatch
+    );
+
+    setStatus(
+      document.getElementById('advisoryStatus'),
+      'Advisory verification: match (human-supervised validation still required)',
+      'Advisory verification: mismatch (human-supervised validation required)',
       hashMatch
     );
   </script>
