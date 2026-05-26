@@ -172,3 +172,4 @@ State usage guidance:
 - `docs/verification-result-states.md`
 - `docs/HC_CONTROL_PANEL.md`
 - `docs/trust-review-workflow.md`
+- `docs/immutable-state-history-model.md`

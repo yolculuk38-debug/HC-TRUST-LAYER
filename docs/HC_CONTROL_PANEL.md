@@ -237,6 +237,7 @@ For advisory verification badge semantics and visible trust-signal boundaries, s
 For standardized self-service public-facing verification result states and advisory signal language, see `docs/verification-result-states.md`.
 
 For anti-spoof visible verification signal stabilization guidance, see `docs/anti-spoof-verification-signals.md`.
+For immutable-style state history, tamper trace visibility, and continuity divergence guidance, see `docs/immutable-state-history-model.md`.
 
 For verified AI-assisted analysis disclosure boundaries, validator trace expectations, and anti-spoof AI-claim guidance, see `docs/verified-ai-validator-model.md`.
 
