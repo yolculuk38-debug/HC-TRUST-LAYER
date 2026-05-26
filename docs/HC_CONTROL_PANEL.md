@@ -159,6 +159,25 @@ For detailed status, use:
 - External ecosystem integrations and institutional adapters.
 - Long-horizon governance/dispute automation expansion.
 
+## Mobile PR Merge Operations Baseline
+
+HC-TRUST-LAYER merge operations on mobile should follow a clear precedence order:
+
+1. Required checks on latest SHA
+2. Mergeable PR state
+3. Resolved review conversations
+4. Safe Auto Merge job status interpretation
+
+Operational clarification:
+
+- A cancelled Safe Auto Merge job is not automatically a code failure.
+- Duplicate/concurrency cancellation can occur while newer valid runs succeed.
+- Successful required checks on latest SHA are the primary merge signal.
+- Unresolved review conversations remain a hard merge blocker until resolved.
+- Manual **Merge pull request** is acceptable when mergeable state and required checks are satisfied and review conversations are resolved.
+
+Reference guide: `docs/mobile-pr-merge-guide.md`.
+
 ## Safe Next Direction
 
 After PR #362, the safest next direction is not to add a large new runtime system.
