@@ -4,6 +4,15 @@
 
 This index provides direct navigation for the HC:// MVP-1 static verification viewer so reviewers can quickly open demo packages from GitHub Pages.
 
+## Public self-service entry point (mobile-friendly)
+
+Start with the quickest public demo route:
+
+- **Try local verification preview:** [`docs/self-service-verify.html`](self-service-verify.html)
+- **No upload**
+- **Browser-side SHA-256**
+- **Preview only, not registration**
+
 - Static viewer page: [`docs/verification-viewer.html`](verification-viewer.html)
 - Static viewer guide: [`docs/static-viewer.md`](static-viewer.md)
 - CLI viewer documentation: [`docs/mvp-1-cli-viewer.md`](mvp-1-cli-viewer.md)

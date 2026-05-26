@@ -20,6 +20,7 @@ HC-TRUST-LAYER is an early-stage verification infrastructure that helps teams ev
 
 - [MVP Snapshot](#mvp-snapshot)
 - [Demo & Verification Viewer](#demo--verification-viewer)
+- [Try local verification preview](#try-local-verification-preview-entry-point)
 - [Verification Flow Example](#verification-flow-example)
 - [Verification Result Types](#verification-result-types)
 - [Architecture Overview](#architecture-overview)
@@ -60,6 +61,15 @@ Core architecture/status references:
 ## Demo & Verification Viewer
 
 Use the CLI + viewer workflow to inspect verification packages and provenance timeline signals.
+
+### Try local verification preview entry point
+
+For the fastest public HC:// demo path on mobile or desktop, start here:
+
+- **Try local verification preview:** [`docs/self-service-verify.html`](docs/self-service-verify.html)
+- **No upload**
+- **Browser-side SHA-256**
+- **Preview only, not registration**
 
 ### Try local verification preview
 
