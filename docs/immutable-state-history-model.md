@@ -156,3 +156,4 @@ State usage guidance:
 - `docs/public-verification-disputes.md`
 - `docs/verification-result-states.md`
 - `docs/HC_CONTROL_PANEL.md`
+- `docs/maintainer-accountability-model.md`

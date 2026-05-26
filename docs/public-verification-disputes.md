@@ -173,3 +173,4 @@ State usage guidance:
 - `docs/HC_CONTROL_PANEL.md`
 - `docs/trust-review-workflow.md`
 - `docs/immutable-state-history-model.md`
+- `docs/maintainer-accountability-model.md`
