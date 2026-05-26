@@ -138,3 +138,4 @@ Signal usage notes:
 - `docs/HC_CONTROL_PANEL.md`
 - `docs/public-verification-boundaries.md`
 - `docs/authenticated-ai-validator-access.md`
+- `docs/federated-oversight-model.md`

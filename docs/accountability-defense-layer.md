@@ -174,3 +174,4 @@ Trust signals must communicate uncertainty, boundary conditions, and review requ
 - `docs/anti-spoof-verification-signals.md`
 - `docs/qr-verification-security-model.md`
 - `docs/HC_CONTROL_PANEL.md`
+- `docs/federated-oversight-model.md`
