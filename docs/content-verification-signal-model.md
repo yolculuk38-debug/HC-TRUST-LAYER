@@ -109,3 +109,4 @@ Canonical record boundaries and repository-defined validation controls remain au
 - `docs/HC_CONTROL_PANEL.md`
 - `docs/public-onboarding-model.md`
 - `docs/media-verification-showcase.md`
+- `docs/public-self-service-verification-flow.md`

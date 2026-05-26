@@ -220,3 +220,5 @@ For anti-spoof visible verification signal stabilization guidance, see `docs/ant
 For advisory content verification signal design across quotes/text, images, videos, documents, social posts, and archived records, see `docs/content-verification-signal-model.md`.
 
 For lightweight public onboarding flow guidance for normal users (QR scan through advisory interpretation with human-supervised validation notice), see `docs/public-onboarding-model.md`.
+
+For first public self-service local hash preview flow guidance (text/file input through advisory preview, with registration/review separated), see `docs/public-self-service-verification-flow.md`.
