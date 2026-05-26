@@ -45,3 +45,7 @@ Use this plan to quickly confirm that the basic self-service verification user f
 - This smoke test verifies UX continuity and trust-boundary messaging only.
 - A successful smoke test does not imply production readiness or autonomous trust decisions.
 - Consequential interpretation still requires human-supervised validation within HC-TRUST-LAYER workflows.
+
+## Related guidance
+
+- `docs/verification-result-states.md`
