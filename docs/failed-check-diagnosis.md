@@ -140,3 +140,19 @@ Use this pattern to avoid wasting time on old workflow results:
 - Never weaken policy or guard scripts just to pass a PR.
 - Fix content first, rerun second.
 - Auto-merge failures may be harmless if the PR is already merged.
+
+## Cancelled Safe Auto Merge Interpretation
+
+Cancelled Safe Auto Merge jobs are not always code/content failures.
+
+Use this interpretation order:
+
+1. Check required checks on the latest PR commit SHA.
+2. Check whether the cancelled run is an older duplicate/concurrency-cancelled run.
+3. Check unresolved review conversations before merge action.
+
+Operational rule: successful required checks on the latest SHA carry more decision weight than a cancelled duplicate auto-merge job.
+
+If required checks are green, unresolved conversations are resolved, and PR is mergeable, manual **Merge pull request** is an acceptable fallback.
+
+If unresolved conversations remain, do not merge even if checks are green.

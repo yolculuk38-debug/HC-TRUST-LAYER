@@ -57,3 +57,17 @@ python3 scripts/check_terminology.py
 - Do **not** weaken, bypass, or disable Terminology Guard.
 - Do **not** replace advisory-only wording with truth guarantee language.
 - Preserve HC:// and HC-TRUST-LAYER terminology.
+
+## Merge-Blocking Conversation and Auto-Merge Notes
+
+After terminology repair and passing checks:
+
+1. Confirm required checks passed on the latest SHA.
+2. Confirm unresolved review conversations are resolved appropriately.
+3. If Safe Auto Merge shows cancelled due to duplicate/concurrency behavior, use manual **Merge pull request** only when PR is mergeable and review threads are clear.
+
+Do not treat a cancelled duplicate auto-merge run as proof of branch failure when required checks are successful.
+
+Do not merge when unresolved review conversations remain.
+
+For mobile-first merge flow details, use `docs/mobile-pr-merge-guide.md`.
