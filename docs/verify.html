@@ -53,36 +53,12 @@
       padding: .55rem;
       background: rgba(11,16,32,.35);
     }
-    .state-item strong {
-      display: block;
-      margin-bottom: .3rem;
-      color: var(--muted);
-    }
-    .timeline {
-      list-style: none;
-      margin: .4rem 0 0;
-      padding: 0;
-    }
-    .timeline li {
-      margin-bottom: .55rem;
-      padding-left: .75rem;
-      border-left: 2px solid var(--border);
-    }
-    .timeline span {
-      display: inline-block;
-      font-weight: 700;
-      margin-right: .4rem;
-    }
-    .link-list {
-      margin: .2rem 0;
-      padding-left: 1.1rem;
-    }
-    .notice {
-      border-left: 4px solid var(--warn);
-      padding: .55rem .6rem;
-      background: rgba(255,191,63,.08);
-      border-radius: .4rem;
-    }
+    .state-item strong { display: block; margin-bottom: .3rem; color: var(--muted); }
+    .timeline { list-style: none; margin: .4rem 0 0; padding: 0; }
+    .timeline li { margin-bottom: .55rem; padding-left: .75rem; border-left: 2px solid var(--border); }
+    .timeline span { display: inline-block; font-weight: 700; margin-right: .4rem; }
+    .link-list { margin: .2rem 0; padding-left: 1.1rem; }
+    .notice { border-left: 4px solid var(--warn); padding: .55rem .6rem; background: rgba(255,191,63,.08); border-radius: .4rem; }
     a { color: #8fc6ff; }
     dl { margin: .2rem 0; }
     dt { font-weight: 700; margin-top: .4rem; }
@@ -101,8 +77,18 @@
   <main>
     <section class="card">
       <h1>HC:// Demo QR Verification Landing</h1>
-      <p class="muted">This HC-TRUST-LAYER page is a QR verification entry point that performs local-only advisory comparison for first demo record metadata.</p>
+      <p class="muted">This HC-TRUST-LAYER page is the official HC:// QR verification entry point for local-only advisory comparison in the first demo record flow.</p>
       <p><span class="status info">Generated advisory view (non-canonical)</span></p>
+    </section>
+
+    <section class="card">
+      <h2>Verification onboarding flow</h2>
+      <ul class="timeline">
+        <li><span id="qrScannedStatus" class="status warn">QR scanned: pending</span><span class="muted">Confirm this QR opened the official HC:// verification page.</span></li>
+        <li><span id="routeLoadedStatus" class="status warn">Verification route loaded: pending</span><span class="muted">The QR entry route must resolve to this HC-TRUST-LAYER verification path.</span></li>
+        <li><span id="continuityCheckStatus" class="status warn">Record continuity check: pending</span><span class="muted">Match record identity and hash continuity before advisory interpretation.</span></li>
+        <li><span id="humanReviewStatus" class="status warn">Human review required: active</span><span class="muted">Human-supervised validation remains mandatory for consequential use.</span></li>
+      </ul>
     </section>
 
     <section class="card">
@@ -113,7 +99,11 @@
           <span id="continuityStatus" class="status warn">Checking…</span>
         </div>
         <div class="state-item">
-          <strong>Record resolution</strong>
+          <strong>Verification start state</strong>
+          <span id="startStatus" class="status warn">Waiting for QR query input</span>
+        </div>
+        <div class="state-item">
+          <strong>Record identity resolution</strong>
           <span id="recordStatus" class="status warn">Checking…</span>
         </div>
         <div class="state-item">
@@ -126,16 +116,16 @@
         </div>
       </div>
       <dl>
-        <dt>Input record</dt>
+        <dt>Input record identity (QR)</dt>
         <dd id="inputRecord" class="mono"></dd>
-        <dt>Input hash</dt>
+        <dt>Input hash (QR)</dt>
         <dd id="inputHash" class="mono"></dd>
-        <dt>Expected canonical record ID</dt>
+        <dt>Expected canonical record identity</dt>
         <dd id="expectedRecord" class="mono"></dd>
         <dt>Expected canonical record hash</dt>
         <dd id="expectedHash" class="mono"></dd>
       </dl>
-      <p class="muted">Hash continuity compares query hash input against the expected hash linked to the canonical record reference below. A hash match confirms integrity continuity only and does not prove objective truth.</p>
+      <p class="muted">Hash continuity compares query hash input against the expected hash linked to the canonical record reference below. A hash match confirms integrity continuity only and does not establish objective truth.</p>
     </section>
 
     <section class="card">
@@ -146,34 +136,24 @@
         <li><strong>Audit snapshot entry:</strong> <a id="auditLink" href="../generated/first_working_audit_snapshot.json">generated/first_working_audit_snapshot.json</a></li>
         <li><strong>QR verification route:</strong> <a id="qrRoute" href="./verify.html">docs/verify.html</a></li>
       </ul>
-      <p class="muted">Canonical and generated artifacts are linked for continuity diagnostics in the first public HC:// flow. Generated artifacts remain advisory and non-canonical.</p>
+      <p class="muted">Canonical and generated artifacts are linked for continuity diagnostics in this HC:// flow. Generated artifacts remain advisory and non-canonical.</p>
       <ul id="continuityWarnings" class="link-list"></ul>
     </section>
 
     <section class="card">
-      <h2>Integrity timeline (lightweight)</h2>
+      <h2>Anti-spoofing visibility</h2>
       <ul class="timeline">
-        <li><span class="status info">1</span>Record created <span class="mono">(canonical record reference)</span></li>
-        <li><span class="status info">2</span>Verification generated <span class="mono">(advisory result on this page)</span></li>
-        <li><span class="status info">3</span>Explorer indexed <span class="mono">(generated explorer index entry)</span></li>
-        <li><span class="status info">4</span>Audit snapshot included <span class="mono">(generated audit snapshot entry)</span></li>
-      </ul>
-    </section>
-
-    <section class="card">
-      <h2>Verification status legend</h2>
-      <ul class="timeline">
-        <li><span class="status ok">verified</span><span class="muted">Continuity check passed for this page input.</span></li>
-        <li><span class="status warn">advisory</span><span class="muted">Verification remains advisory-only and requires human-supervised validation.</span></li>
-        <li><span class="status info">generated artifact</span><span class="muted">Explorer and audit JSON outputs are non-canonical generated artifacts.</span></li>
-        <li><span class="status info">canonical record</span><span class="muted">`examples/demo_record.json` is the canonical record reference in this first public flow.</span></li>
+        <li><span class="status info">official page reminder</span><span class="muted">Only proceed when the QR opens the official HC:// verification page path in HC-TRUST-LAYER.</span></li>
+        <li><span class="status info">generated artifact warning</span><span class="muted">Explorer and audit entries are generated artifacts and remain non-canonical advisory material.</span></li>
+        <li><span id="continuityIncompleteBadge" class="status warn">continuity incomplete warning: pending</span><span class="muted">Continuity remains incomplete until all references and hash checks are consistent.</span></li>
+        <li><span id="hashMismatchBadge" class="status warn">hash mismatch warning: pending</span><span class="muted">Any hash mismatch indicates broken continuity and must be escalated for human review.</span></li>
       </ul>
     </section>
 
     <section class="card">
       <h2>Trust-boundary notice</h2>
       <div class="notice">
-        <p class="muted">QR scan is only an entry point. Verification results must be checked on the official HC:// verification page and against canonical source links. Integrity verification on this page does not guarantee objective truth. Advisory review and human-supervised validation remain required for consequential decisions.</p>
+        <p class="muted">QR scan is an entry point, not a truth guarantee. Verification results must be reviewed on the official HC:// verification page and checked against canonical source links. Advisory interpretation and human-supervised validation remain required for consequential decisions.</p>
       </div>
     </section>
   </main>
@@ -196,17 +176,23 @@
       el.textContent = isOk ? okText : badText;
       el.className = `status ${isOk ? 'ok' : 'bad'}`;
     }
+
+    function setWarnStatus(el, text, isIssue) {
+      el.textContent = text;
+      el.className = `status ${isIssue ? 'warn' : 'ok'}`;
+    }
+
     function addWarning(text) {
       const warnings = document.getElementById('continuityWarnings');
       const item = document.createElement('li');
       item.innerHTML = `<span class="status warn">warning</span> <span class="mono">${text}</span>`;
       warnings.appendChild(item);
     }
+
     function isLikelyVerificationRoute() {
       const path = window.location.pathname || '';
       return path.endsWith('/docs/verify.html') || path.endsWith('/verify.html');
     }
-
 
     const continuityIssues = [];
 
@@ -215,19 +201,41 @@
       addWarning(message);
     }
 
-    function renderContinuityStatus() {
+    function renderContinuityStatus(hashMatch) {
       const continuityStatus = document.getElementById('continuityStatus');
+      const continuityIncompleteBadge = document.getElementById('continuityIncompleteBadge');
+      const hashMismatchBadge = document.getElementById('hashMismatchBadge');
       if (!continuityStatus) return;
+
       const ok = continuityIssues.length === 0;
       continuityStatus.textContent = ok
         ? 'Continuity diagnostics: no issues detected'
         : `Continuity diagnostics: ${continuityIssues.length} issue(s) detected`;
       continuityStatus.className = `status ${ok ? 'ok' : 'warn'}`;
+
+      setWarnStatus(
+        continuityIncompleteBadge,
+        ok ? 'continuity incomplete warning: cleared' : 'continuity incomplete warning: active',
+        !ok
+      );
+
+      setWarnStatus(
+        hashMismatchBadge,
+        hashMatch ? 'hash mismatch warning: cleared' : 'hash mismatch warning: active',
+        !hashMatch
+      );
+
+      setWarnStatus(
+        document.getElementById('continuityCheckStatus'),
+        ok ? 'Record continuity check: complete' : 'Record continuity check: requires review',
+        !ok
+      );
     }
 
     const inputRecord = getParam('record').trim();
     const inputHash = getParam('hash').trim().toLowerCase();
 
+    const hasInput = Boolean(inputRecord || inputHash);
     const recordMatch = inputRecord === FIRST_DEMO_RECORD.record;
     const hashMatch = recordMatch && inputHash === FIRST_DEMO_RECORD.hash;
 
@@ -240,10 +248,36 @@
     document.getElementById('auditLink').setAttribute('href', FIRST_DEMO_RECORD.auditPath);
     document.getElementById('qrRoute').setAttribute('href', FIRST_DEMO_RECORD.qrRoutePath);
 
+    setWarnStatus(
+      document.getElementById('qrScannedStatus'),
+      hasInput ? 'QR scanned: parameters detected' : 'QR scanned: pending',
+      !hasInput
+    );
+
+    setWarnStatus(
+      document.getElementById('routeLoadedStatus'),
+      isLikelyVerificationRoute()
+        ? 'Verification route loaded: official HC:// page path detected'
+        : 'Verification route loaded: route mismatch',
+      !isLikelyVerificationRoute()
+    );
+
+    setWarnStatus(
+      document.getElementById('startStatus'),
+      hasInput ? 'Verification start state: query input detected' : 'Verification start state: waiting for QR query input',
+      !hasInput
+    );
+
+    setWarnStatus(
+      document.getElementById('humanReviewStatus'),
+      'Human review required: active',
+      true
+    );
+
     setStatus(
       document.getElementById('recordStatus'),
-      'Record found in first demo flow',
-      'Record not found in first demo flow',
+      'Record identity matched in first demo flow',
+      'Record identity mismatch in first demo flow',
       recordMatch
     );
 
@@ -264,7 +298,6 @@
     if (!isLikelyVerificationRoute()) {
       markIssue('broken continuity reference: expected path ending with /docs/verify.html for QR route consistency');
     }
-
 
     const continuityChecks = [];
 
@@ -308,7 +341,7 @@
       })
       .catch(() => markIssue('missing generated artifact: audit artifact unavailable for continuity diagnostics')));
 
-    Promise.allSettled(continuityChecks).then(renderContinuityStatus);
+    Promise.allSettled(continuityChecks).then(() => renderContinuityStatus(hashMatch));
   </script>
 </body>
 </html>
