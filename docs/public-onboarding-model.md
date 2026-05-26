@@ -26,6 +26,13 @@ Try local verification preview at `docs/self-service-verify.html`.
 
 This entry point is mobile-friendly and supports local-only, advisory verification preview before human-supervised validation.
 
+For quick public documentation/demo routing, place this entry point near top-level onboarding navigation:
+
+- **Try local verification preview**
+- **No upload**
+- **Browser-side SHA-256**
+- **Preview only, not registration**
+
 ## Public onboarding flow (lightweight)
 
 1. **QR scan**

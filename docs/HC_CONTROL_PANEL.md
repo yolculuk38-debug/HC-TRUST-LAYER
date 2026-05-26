@@ -14,6 +14,17 @@ It is designed to help maintainers, ChatGPT, Codex, and future contributors unde
 
 This document is advisory and documentation-only. It does not change schemas, validators, workflows, runtime behavior, or trust-kernel semantics.
 
+## Public demo entry point
+
+For public-facing, low-friction verification onboarding, use:
+
+- **Try local verification preview:** `docs/self-service-verify.html`
+- **No upload**
+- **Browser-side SHA-256**
+- **Preview only, not registration**
+
+This entry point is mobile-friendly, browser-side, and advisory-only before human-supervised validation.
+
 ## Project Identity
 
 - Canonical repository: `HC-TRUST-LAYER`
