@@ -190,4 +190,5 @@ To preserve public trust and boundary clarity:
 - `docs/verification-result-states.md`
 - `docs/public-onboarding-model.md`
 - `docs/HC_CONTROL_PANEL.md`
+- `docs/verified-ai-validator-model.md`
 - `docs/self-service-verify.html`
