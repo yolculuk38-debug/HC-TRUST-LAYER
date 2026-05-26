@@ -167,3 +167,5 @@ State usage guidance:
 - `docs/federated-oversight-model.md`
 - `docs/verification-result-states.md`
 - `docs/HC_CONTROL_PANEL.md`
+- `docs/multi-layer-consensus-model.md`
+

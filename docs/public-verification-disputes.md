@@ -175,3 +175,5 @@ State usage guidance:
 - `docs/immutable-state-history-model.md`
 - `docs/maintainer-accountability-model.md`
 - `docs/evidence-preservation-recovery-model.md`
+- `docs/multi-layer-consensus-model.md`
+
