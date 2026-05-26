@@ -107,3 +107,5 @@ identity authority, or legal certification.
 - `docs/HC_CONTROL_PANEL.md`
 
 For anti-spoof signal presentation patterns, unofficial/fake signal risks, and accessibility-oriented rendering guidance, see `docs/anti-spoof-verification-signals.md`.
+
+For content-class-specific signals (text, quote, image, video, document, social media, and archived record) with badge/color/QR semantics and provenance inspection boundaries, see `docs/content-verification-signal-model.md`.
