@@ -140,3 +140,5 @@ Signal usage notes:
 - `docs/authenticated-ai-validator-access.md`
 - `docs/federated-oversight-model.md`
 - `docs/public-verification-disputes.md`
+- `docs/multi-layer-consensus-model.md`
+
