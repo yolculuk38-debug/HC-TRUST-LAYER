@@ -1,0 +1,22 @@
+{
+  "generated_by": "src/generate_explorer_index.py",
+  "advisory_only": true,
+  "records": [
+    {
+      "record_id": "HC-2026-0000-0002",
+      "verification_status": "draft",
+      "timestamp": "2026-05-12T09:45:00Z",
+      "author": "Fatih",
+      "content_hash_prefix": "7fdd78c9832e",
+      "source_file": "records/pending/HC-2026-0002.json"
+    },
+    {
+      "record_id": "HC-EXAMPLE-2026-0001",
+      "verification_status": "draft",
+      "timestamp": "2026-05-12T10:00:00Z",
+      "author": "Fatih",
+      "content_hash_prefix": "740f84dec83c",
+      "source_file": "records/pending/HC-EXAMPLE-2026-0001.json"
+    }
+  ]
+}

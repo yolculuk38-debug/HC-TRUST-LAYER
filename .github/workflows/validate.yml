@@ -55,6 +55,7 @@ jobs:
           records_dir = "records"
           skip_files = {
               os.path.normpath("records/explorer_index.json"),
+              os.path.normpath("generated/explorer_index.json"),
           }
 
           with open(schema_path, "r", encoding="utf-8") as f:
@@ -81,6 +82,16 @@ jobs:
 
       - name: Generate audit snapshot
         run: python src/generate_audit_snapshot.py
+
+
+      - name: Generate explorer index
+        run: python src/generate_explorer_index.py
+
+      - name: Upload explorer index artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: explorer-index
+          path: generated/explorer_index.json
 
       - name: Upload audit snapshot artifact
         uses: actions/upload-artifact@v4
