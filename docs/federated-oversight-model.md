@@ -161,3 +161,4 @@ The verification layer, reviewer actions, and policy evolution processes require
 - `docs/HC_CONTROL_PANEL.md`
 - `docs/public-verification-disputes.md`
 - `docs/immutable-state-history-model.md`
+- `docs/maintainer-accountability-model.md`

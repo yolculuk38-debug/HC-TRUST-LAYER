@@ -161,6 +161,7 @@ For detailed status, use:
 - `verification-map.json`
 - `trust-kernel-index.json`
 - `docs/public-verification-disputes.md`
+- `docs/maintainer-accountability-model.md`
 
 ## Status Visibility Summary
 
@@ -262,3 +263,4 @@ For HC:// trust integrity abuse and anti-manipulation posture guidance, see:
 
 - `docs/accountability-defense-layer.md`
 - `docs/public-verification-disputes.md`
+- `docs/maintainer-accountability-model.md`
