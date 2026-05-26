@@ -61,3 +61,5 @@ Integrity verification proves that bytes match the expected hash under the selec
 HC:// verification in this flow remains advisory-only and requires human-supervised validation before consequential decisions.
 
 See `docs/public-verification-boundaries.md` for public verification boundary definitions and integrity-versus-truth framing.
+
+See `docs/qr-verification-security-model.md` for permission-aware HC:// QR entry constraints, spoofing risks, and advisory trust-boundary handling.
