@@ -1,0 +1,166 @@
+# HC Control Panel — Current Project State
+
+## Purpose
+
+This file is the repo-native control panel for HC-TRUST-LAYER.
+
+It is designed to help maintainers, ChatGPT, Codex, and future contributors understand the current state without relying on scattered chat memory or outdated assumptions.
+
+This document is advisory and documentation-only. It does not change schemas, validators, workflows, runtime behavior, or trust-kernel semantics.
+
+## Project Identity
+
+- Canonical repository: `HC-TRUST-LAYER`
+- Protocol surface: `HC://`
+- Project type: verification and provenance infrastructure
+- Core posture: integrity, provenance, audit trail, and human-supervised validation
+- Motto: `Trust the record, not the narrative.`
+- Turkish motto: `Beyan değil, kayıt esastır.`
+
+## Current Strategy
+
+Development proceeds in this order:
+
+1. Stabilize the working core.
+2. Preserve canonical validation boundaries.
+3. Harden QR and viewer flows.
+4. Expand explorer visibility.
+5. Improve immutable audit snapshots.
+6. Prepare federation and external verification packages.
+7. Move toward public trust-layer interoperability.
+
+The project must not jump into broad ecosystem claims before the core verification pipeline remains stable, reproducible, and reviewable.
+
+## Current PR State Anchor
+
+As of the latest control-panel update:
+
+| PR | State | Meaning |
+|---|---|---|
+| #359 | Merged | First demo record was aligned with the canonical schema. |
+| #360 | Merged | Minimal QR verification landing page was added. |
+| #361 | Merged | Immutable audit snapshot foundation was added. |
+| #362 | Merged | Lightweight verification explorer index foundation was added. |
+
+Earlier relevant foundations:
+
+| PR | State | Meaning |
+|---|---|---|
+| #252 | Merged | Generated explorer/index artifacts are skipped by hash validation. |
+| #278 | Merged | Canonical artifact guard was added. |
+| #300 | Merged | Trust-kernel stabilization checkpoint was documented. |
+| #312–#317 | Merged | Agent, protocol graph, verification map, and trust-kernel indexes were added. |
+| #324–#357 | Merged | MVP viewer, trust UX, terminology, repair, and guard workflows were expanded. |
+
+## Canonical Record Paths
+
+Only these paths are canonical record locations:
+
+- `records/pending/*.json`
+- `records/verified/*.json`
+- `records/archived/*.json`
+
+Canonical records are the strict validation surface.
+
+## Generated Artifact Boundary
+
+Generated or derived artifacts must not be treated as canonical records.
+
+Examples of non-canonical artifacts:
+
+- `generated/**`
+- `records/explorer_index.json`
+- `generated/explorer_index.json`
+- `generated/audit_snapshot.json`
+- index files
+- manifest files
+- cache files
+- export artifacts
+- verification packages outside canonical record paths
+
+These may support visibility, audit, viewer, export, or federation workflows, but they do not replace canonical records.
+
+## Active Guardrail Baseline
+
+The repository currently uses guardrails including:
+
+- schema validation
+- SHA-256 record hash verification
+- terminology guard
+- documentation drift guard
+- canonical artifact guard
+- advisory PR scope guard
+- advisory policy evaluation
+- verification package validation helpers
+- PR self-audit template
+- issue templates
+- workflow security hardening
+
+Guardrails must not be weakened to make a PR pass.
+
+## Do Not Break Rules
+
+The following rules are mandatory unless a PR explicitly scopes, documents, and receives human-supervised validation for a change:
+
+- Do not modify canonical schema casually.
+- Do not weaken validators.
+- Do not weaken guard scripts or guard workflows.
+- Do not treat generated artifacts as canonical records.
+- Do not add blockchain, token, or economic-token claims.
+- Do not add truth-guarantee, objective-certainty, or autonomous-authority claims.
+- Do not imply production readiness unless backed by repository evidence.
+- Preserve advisory-only verification language.
+- Preserve human-supervised validation.
+- Keep changes small, auditable, and reversible.
+
+## Current Implemented / Partial Layers
+
+Current repo evidence indicates:
+
+- Record integrity: implemented baseline.
+- Public verification: implemented baseline.
+- QR verification: implemented baseline with demo landing flow.
+- Explorer/index visibility: partial and expanding.
+- Immutable audit snapshots: foundation added.
+- Witness/signature: partial.
+- Federation/sync: planned/partial foundation.
+- Governance/dispute: planned/partial foundation.
+- External integrations: research/planned foundation.
+
+For detailed status, use:
+
+- `docs/capability-status.md`
+- `docs/implementation-map.md`
+- `docs/master-architecture.md`
+- `protocol-graph.json`
+- `verification-map.json`
+- `trust-kernel-index.json`
+
+## Safe Next Direction
+
+After PR #362, the safest next direction is not to add a large new runtime system.
+
+Recommended next steps:
+
+1. Stabilize the control panel and state anchor.
+2. Verify generated explorer and audit artifacts remain non-canonical.
+3. Add small tests or documentation for explorer/audit artifact expectations if missing.
+4. Improve public viewer routing only after the validation pipeline stays green.
+5. Continue federation work only through bounded, documented, human-supervised increments.
+
+## New Chat / New Agent Usage
+
+When a new AI conversation or Codex task starts, read this file first together with:
+
+- `AGENTS.md`
+- `ROADMAP.md`
+- `docs/capability-status.md`
+- `docs/implementation-map.md`
+
+This prevents mixing old chat context with current repository state.
+
+## Status Meaning
+
+This file is a control panel, not a marketing page.
+
+It summarizes current repository state and next safe direction. Repository evidence remains authoritative.
