@@ -43,7 +43,7 @@ ae83383b191d02970eb3df834c56b15e7a688fcd63f782d3408aaefd60b7b56a  examples/demo_
 5. Audit continuity:
    - `generated/first_working_audit_snapshot.json` contains `HC-DEMO2026-0001` with the same `record_hash`.
 
-If continuity warnings appear on `docs/verify.html`, treat them as advisory diagnostic signals and continue with human-supervised validation.
+If continuity warnings appear on `docs/verify.html`, treat them as advisory continuity diagnostics (missing generated artifact, missing canonical record, hash mismatch, or broken continuity reference) and continue with human-supervised validation.
 
 ## Integrity boundary explanation
 
@@ -59,3 +59,5 @@ If continuity warnings appear on `docs/verify.html`, treat them as advisory diag
 Integrity verification proves that bytes match the expected hash under the selected workflow. Integrity verification does **not** prove objective truth.
 
 HC:// verification in this flow remains advisory-only and requires human-supervised validation before consequential decisions.
+
+See `docs/public-verification-boundaries.md` for public verification boundary definitions and integrity-versus-truth framing.

@@ -109,6 +109,10 @@
       <h2>Verification result states</h2>
       <div class="state-grid">
         <div class="state-item">
+          <strong>Continuity diagnostics</strong>
+          <span id="continuityStatus" class="status warn">Checking…</span>
+        </div>
+        <div class="state-item">
           <strong>Record resolution</strong>
           <span id="recordStatus" class="status warn">Checking…</span>
         </div>
@@ -135,14 +139,14 @@
     </section>
 
     <section class="card">
-      <h2>Verification continuity links</h2>
+      <h2>Verification continuity references</h2>
       <ul class="link-list">
         <li><strong>Canonical record:</strong> <a id="recordLink" href="../examples/demo_record.json">examples/demo_record.json</a></li>
         <li><strong>Explorer index entry:</strong> <a id="explorerLink" href="../generated/first_working_explorer_index.json">generated/first_working_explorer_index.json</a></li>
         <li><strong>Audit snapshot entry:</strong> <a id="auditLink" href="../generated/first_working_audit_snapshot.json">generated/first_working_audit_snapshot.json</a></li>
         <li><strong>QR verification route:</strong> <a id="qrRoute" href="./verify.html">docs/verify.html</a></li>
       </ul>
-      <p class="muted">Canonical and generated artifacts are linked together for continuity review. Generated artifacts remain advisory and non-canonical.</p>
+      <p class="muted">Canonical and generated artifacts are linked for continuity diagnostics in the first public HC:// flow. Generated artifacts remain advisory and non-canonical.</p>
       <ul id="continuityWarnings" class="link-list"></ul>
     </section>
 
@@ -203,6 +207,24 @@
       return path.endsWith('/docs/verify.html') || path.endsWith('/verify.html');
     }
 
+
+    const continuityIssues = [];
+
+    function markIssue(message) {
+      continuityIssues.push(message);
+      addWarning(message);
+    }
+
+    function renderContinuityStatus() {
+      const continuityStatus = document.getElementById('continuityStatus');
+      if (!continuityStatus) return;
+      const ok = continuityIssues.length === 0;
+      continuityStatus.textContent = ok
+        ? 'Continuity diagnostics: no issues detected'
+        : `Continuity diagnostics: ${continuityIssues.length} issue(s) detected`;
+      continuityStatus.className = `status ${ok ? 'ok' : 'warn'}`;
+    }
+
     const inputRecord = getParam('record').trim();
     const inputHash = getParam('hash').trim().toLowerCase();
 
@@ -240,30 +262,53 @@
     );
 
     if (!isLikelyVerificationRoute()) {
-      addWarning('broken verification route warning: expected path ending with /docs/verify.html');
+      markIssue('broken continuity reference: expected path ending with /docs/verify.html for QR route consistency');
     }
 
-    fetch(FIRST_DEMO_RECORD.explorerPath)
+
+    const continuityChecks = [];
+
+    continuityChecks.push(fetch(FIRST_DEMO_RECORD.sourcePath)
+      .then((response) => (response.ok ? response.text() : Promise.reject(new Error('canonical fetch failed'))))
+      .then((text) => {
+        const canonicalPresent = text && text.trim().length > 0;
+        if (!canonicalPresent) {
+          markIssue('missing canonical record: examples/demo_record.json is empty or unreadable');
+          return;
+        }
+
+        return crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)).then((buffer) => {
+          const digest = Array.from(new Uint8Array(buffer)).map((b) => b.toString(16).padStart(2, '0')).join('');
+          if (digest !== FIRST_DEMO_RECORD.hash) {
+            markIssue('hash mismatch: canonical record SHA-256 does not match expected first public flow hash');
+          }
+        });
+      })
+      .catch(() => markIssue('missing canonical record: examples/demo_record.json unavailable for continuity diagnostics')));
+
+    continuityChecks.push(fetch(FIRST_DEMO_RECORD.explorerPath)
       .then((response) => (response.ok ? response.json() : Promise.reject(new Error('explorer fetch failed'))))
       .then((payload) => {
         const found = Array.isArray(payload.records)
           && payload.records.some((entry) => entry.record_id === FIRST_DEMO_RECORD.record && entry.record_hash === FIRST_DEMO_RECORD.hash);
         if (!found) {
-          addWarning('missing explorer entry warning: expected HC-DEMO2026-0001 with matching full SHA-256 record_hash');
+          markIssue('broken continuity reference: explorer artifact is present but missing HC-DEMO2026-0001 with matching record_hash');
         }
       })
-      .catch(() => addWarning('missing explorer entry warning: explorer artifact unavailable for continuity check'));
+      .catch(() => markIssue('missing generated artifact: explorer artifact unavailable for continuity diagnostics')));
 
-    fetch(FIRST_DEMO_RECORD.auditPath)
+    continuityChecks.push(fetch(FIRST_DEMO_RECORD.auditPath)
       .then((response) => (response.ok ? response.json() : Promise.reject(new Error('audit fetch failed'))))
       .then((payload) => {
         const found = Array.isArray(payload.records)
           && payload.records.some((entry) => entry.record_id === FIRST_DEMO_RECORD.record && entry.record_hash === FIRST_DEMO_RECORD.hash);
         if (!found) {
-          addWarning('missing audit entry warning: expected HC-DEMO2026-0001 with matching full SHA-256 record_hash');
+          markIssue('broken continuity reference: audit artifact is present but missing HC-DEMO2026-0001 with matching record_hash');
         }
       })
-      .catch(() => addWarning('missing audit entry warning: audit artifact unavailable for continuity check'));
+      .catch(() => markIssue('missing generated artifact: audit artifact unavailable for continuity diagnostics')));
+
+    Promise.allSettled(continuityChecks).then(renderContinuityStatus);
   </script>
 </body>
 </html>
