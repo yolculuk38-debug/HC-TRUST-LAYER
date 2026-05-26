@@ -135,3 +135,4 @@ Signal usage notes:
 - `docs/visual-verification-signals.md`
 - `docs/HC_CONTROL_PANEL.md`
 - `docs/public-verification-boundaries.md`
+- `docs/authenticated-ai-validator-access.md`

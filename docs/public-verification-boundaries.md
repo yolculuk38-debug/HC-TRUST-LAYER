@@ -61,3 +61,5 @@ For anti-spoof verification signal rendering boundaries and non-authoritative UX
 For advisory content-class verification state semantics and media provenance signal boundaries, see `docs/content-verification-signal-model.md`.
 
 For verified AI-assisted analysis disclosure boundaries and validator trace expectations, see `docs/verified-ai-validator-model.md`.
+
+For authenticated AI validator access boundaries, identity verification flow, and replay-resistant advisory access signaling, see `docs/authenticated-ai-validator-access.md`.
