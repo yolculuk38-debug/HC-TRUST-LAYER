@@ -208,3 +208,5 @@ This file is a control panel, not a marketing page.
 It summarizes current repository state and next safe direction. Repository evidence remains authoritative.
 
 For explicit public verification limits and advisory-only boundary language, use `docs/public-verification-boundaries.md` alongside this control panel.
+
+See `docs/qr-verification-security-model.md` for permission-aware HC:// QR entry constraints, spoofing risks, and advisory trust-boundary handling.
