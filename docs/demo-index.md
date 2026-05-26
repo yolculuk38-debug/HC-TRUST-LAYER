@@ -8,6 +8,16 @@ This index provides direct navigation for the HC:// MVP-1 static verification vi
 - Static viewer guide: [`docs/static-viewer.md`](static-viewer.md)
 - CLI viewer documentation: [`docs/mvp-1-cli-viewer.md`](mvp-1-cli-viewer.md)
 
+## Try local verification preview
+
+Use the public self-service entry point: [`docs/self-service-verify.html`](self-service-verify.html).
+
+- **No upload**
+- **Browser-side SHA-256**
+- **Preview only, not registration**
+
+This path is mobile-friendly and intended for low-friction, browser-side HC:// preview checks.
+
 ## MVP-1 Public Demo Quick Links
 
 Use these shareable viewer hash links to open each bundled MVP-1 verification package state directly:

@@ -61,6 +61,16 @@ Core architecture/status references:
 
 Use the CLI + viewer workflow to inspect verification packages and provenance timeline signals.
 
+### Try local verification preview
+
+Open the public self-service verification prototype at [`docs/self-service-verify.html`](docs/self-service-verify.html).
+
+- **No upload**
+- **Browser-side SHA-256**
+- **Preview only, not registration**
+
+This mobile-readable entry point is designed for quick HC:// self-service verification preview before any human-supervised validation handoff.
+
 ```bash
 pip install -r requirements.txt
 PYTHONPATH=src python -m hc_trust.cli verify records
