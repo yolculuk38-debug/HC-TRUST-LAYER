@@ -168,6 +168,7 @@ Use direct, non-technical wording while preserving HC:// boundary semantics.
 
 - `docs/verification-signal-model.md`
 - `docs/verification-result-states.md`
+- `docs/visual-verification-signals.md`
 - `docs/content-verification-signal-model.md`
 - `docs/public-verification-boundaries.md`
 - `docs/HC_CONTROL_PANEL.md`

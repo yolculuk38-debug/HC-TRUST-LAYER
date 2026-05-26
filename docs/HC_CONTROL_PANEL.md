@@ -25,6 +25,13 @@ For public-facing, low-friction verification onboarding, use:
 
 This entry point is mobile-friendly, browser-side, and advisory-only before human-supervised validation.
 
+
+## Public visual verification examples
+
+For standardized, static HC:// visual verification signal examples for public UX, see:
+
+- `docs/visual-verification-signals.md`
+
 ## Project Identity
 
 - Canonical repository: `HC-TRUST-LAYER`
