@@ -238,6 +238,8 @@ For anti-spoof visible verification signal stabilization guidance, see `docs/ant
 
 For verified AI-assisted analysis disclosure boundaries, validator trace expectations, and anti-spoof AI-claim guidance, see `docs/verified-ai-validator-model.md`.
 
+For authenticated AI validator access boundaries, signed token and challenge expectations, and replay-resistant advisory access states, see `docs/authenticated-ai-validator-access.md`.
+
 For advisory content verification signal design across quotes/text, images, videos, documents, social posts, and archived records, see `docs/content-verification-signal-model.md`.
 
 For the mobile-readable self-service local hashing prototype, use the public entry point **Try local verification preview** at `docs/self-service-verify.html` (**No upload**, **Browser-side SHA-256**, **Preview only, not registration**).
