@@ -159,3 +159,4 @@ The verification layer, reviewer actions, and policy evolution processes require
 - `docs/verification-result-states.md`
 - `docs/trust-review-workflow.md`
 - `docs/HC_CONTROL_PANEL.md`
+- `docs/public-verification-disputes.md`

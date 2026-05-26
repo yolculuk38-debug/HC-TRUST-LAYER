@@ -160,6 +160,7 @@ For detailed status, use:
 - `protocol-graph.json`
 - `verification-map.json`
 - `trust-kernel-index.json`
+- `docs/public-verification-disputes.md`
 
 ## Status Visibility Summary
 
@@ -259,4 +260,4 @@ For the first browser-side self-service verification prototype page (local-only 
 For HC:// trust integrity abuse and anti-manipulation posture guidance, see:
 
 - `docs/accountability-defense-layer.md`
-
+- `docs/public-verification-disputes.md`

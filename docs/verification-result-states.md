@@ -165,3 +165,4 @@ These states are UX-standardization guidance for the self-service prototype and 
 - `docs/authenticated-ai-validator-access.md`
 - `docs/accountability-defense-layer.md`
 - `docs/federated-oversight-model.md`
+- `docs/public-verification-disputes.md`
