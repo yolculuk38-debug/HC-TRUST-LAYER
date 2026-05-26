@@ -1,64 +1,56 @@
-# Demo Flow (Visible Verification)
+# HC:// Demo Verification Flow
 
-This demo shows the shortest **text-first** verification path for HC:// TRUST LAYER:
+This document defines the first real end-to-end HC:// demo verification flow in HC-TRUST-LAYER.
 
-`record → hash → QR → verify → trust explanation`
+## 1) Record file path
 
-## 1) Record
+- `records/verified/demo-record-001.json`
 
-Use the sample record:
+## 2) Content used for hash
 
-- `examples/demo_record.json`
-
-## 2) Hash
-
-Generate a SHA-256 hash for the record:
-
-```bash
-PYTHONPATH=src python src/hash.py examples/demo_record.json
-```
-
-Example output:
+The `content_hash` is computed from the exact `content` field value in the demo record:
 
 ```text
-SHA256: 9c169042065246d3b963163cfe8ffe876ffce57fa8759e402281d036f0f9cffc
+HC:// demo verification payload v1
+package_id: HC-DEMO-PKG-2026-0001
+record_id: HC-DEMO-RECORD-2026-0001
+subject: first end-to-end verification flow demonstration
+provenance: generated in-repo with human-supervised validation required
+audit_ref: AUDIT-HC-DEMO-2026-0001
+timestamp: 2026-05-26T00:00:00Z
 ```
 
-## 3) QR (text-only demo)
+## 3) SHA-256 hash
 
-Generate a QR artifact from record id + hash + archive reference:
+- `4e0639d833024b68a5961362ef959d480f9ad79e1df29ee228c6f5b64bcc82f4`
+
+## 4) How to verify the hash locally
 
 ```bash
-PYTHONPATH=src python src/qr.py HC-DEMO-2026-0001 9c169042065246d3b963163cfe8ffe876ffce57fa8759e402281d036f0f9cffc https://github.com/owner/repo/blob/main/examples/demo_record.json
+python - <<'PY'
+import hashlib
+content = """HC:// demo verification payload v1
+package_id: HC-DEMO-PKG-2026-0001
+record_id: HC-DEMO-RECORD-2026-0001
+subject: first end-to-end verification flow demonstration
+provenance: generated in-repo with human-supervised validation required
+audit_ref: AUDIT-HC-DEMO-2026-0001
+timestamp: 2026-05-26T00:00:00Z
+"""
+print(hashlib.sha256(content.encode()).hexdigest())
+PY
 ```
 
-Example output:
+## 5) Expected verification result
+
+The command should print:
 
 ```text
-✅ Secure QR oluşturuldu: qr/HC-DEMO-2026-0001.png
-🔗 URL: https://yolculuk38-debug.github.io/HC-TRUST-LAYER/?record=HC-DEMO-2026-0001&hash=9c169042065246d3b963163cfe8ffe876ffce57fa8759e402281d036f0f9cffc&ref=https://github.com/owner/repo/blob/main/examples/demo_record.json&sig=<signature>
+4e0639d833024b68a5961362ef959d480f9ad79e1df29ee228c6f5b64bcc82f4
 ```
 
-> Do not commit generated QR image files (`*.png`, `*.jpg`, etc.). Keep demo evidence text-only.
+This matches `records/verified/demo-record-001.json` and demonstrates a real advisory integrity/provenance check path in-repo.
 
-## 4) Verify
+## 6) QR/landing page status
 
-Run repository verification:
-
-```bash
-PYTHONPATH=src python -m hc_trust.cli verify records
-```
-
-Example output:
-
-```text
-Verifying SHA-256 hashes for 2 record(s)...
-✅ PASS: records/pending/HC-2026-0002.json (hash: 7fdd78c9832ea154...)
-✅ PASS: records/pending/HC-EXAMPLE-2026-0001.json (hash: 740f84dec83cce22...)
-
-Results: 2 passed, 0 failed
-```
-
-## 5) Trust explanation
-
-HC:// verifies integrity and provenance signals, not objective truth.
+QR and landing-page integration for this demo record is planned and not yet implemented as part of this scoped change.

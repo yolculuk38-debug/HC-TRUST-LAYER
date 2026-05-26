@@ -1,0 +1,21 @@
+{
+  "id": "HC-DEMO-RECORD-2026-0001",
+  "record_id": "HC-DEMO-RECORD-2026-0001",
+  "package_id": "HC-DEMO-PKG-2026-0001",
+  "record_type": "verification_demo",
+  "status": "verified_demo",
+  "timestamp": "2026-05-26T00:00:00Z",
+  "created_at": "2026-05-26T00:00:00Z",
+  "title": "HC:// First End-to-End Demo Verification Record",
+  "source": "HC-TRUST-LAYER",
+  "content": "HC:// demo verification payload v1\npackage_id: HC-DEMO-PKG-2026-0001\nrecord_id: HC-DEMO-RECORD-2026-0001\nsubject: first end-to-end verification flow demonstration\nprovenance: generated in-repo with human-supervised validation required\naudit_ref: AUDIT-HC-DEMO-2026-0001\ntimestamp: 2026-05-26T00:00:00Z\n",
+  "content_hash": "4e0639d833024b68a5961362ef959d480f9ad79e1df29ee228c6f5b64bcc82f4",
+  "provenance_summary": "This advisory demo record was generated in-repo for HC:// verification flow demonstration and requires human-supervised validation for acceptance decisions.",
+  "audit_reference": "AUDIT-HC-DEMO-2026-0001",
+  "human_supervised_validation": {
+    "required": true,
+    "note": "Advisory-only demo output; human-supervised validation is required before relying on this record in any review context."
+  },
+  "verification_status": "advisory_demo",
+  "verification_note": "This record demonstrates integrity and provenance flow only and does not claim production readiness or objective truth guarantees."
+}
