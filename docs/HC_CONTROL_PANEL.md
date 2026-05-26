@@ -146,7 +146,7 @@ For detailed status, use:
 
 ### Implemented systems
 - Record integrity verification baseline.
-- Public verification baseline (CLI/API and verification output pathways).
+- Public verification baseline (CLI/API and verification output pathways), including static-site client-side continuity diagnostics for the first public HC:// flow.
 - QR verification baseline for demo/operator flow.
 
 ### Experimental systems (partial)
@@ -187,3 +187,5 @@ This prevents mixing old chat context with current repository state.
 This file is a control panel, not a marketing page.
 
 It summarizes current repository state and next safe direction. Repository evidence remains authoritative.
+
+For explicit public verification limits and advisory-only boundary language, use `docs/public-verification-boundaries.md` alongside this control panel.
