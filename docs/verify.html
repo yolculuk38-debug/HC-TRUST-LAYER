@@ -143,6 +143,7 @@
         <li><strong>QR verification route:</strong> <a id="qrRoute" href="./verify.html">docs/verify.html</a></li>
       </ul>
       <p class="muted">Canonical and generated artifacts are linked together for continuity review. Generated artifacts remain advisory and non-canonical.</p>
+      <ul id="continuityWarnings" class="link-list"></ul>
     </section>
 
     <section class="card">
@@ -152,6 +153,16 @@
         <li><span class="status info">2</span>Verification generated <span class="mono">(advisory result on this page)</span></li>
         <li><span class="status info">3</span>Explorer indexed <span class="mono">(generated explorer index entry)</span></li>
         <li><span class="status info">4</span>Audit snapshot included <span class="mono">(generated audit snapshot entry)</span></li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Verification status legend</h2>
+      <ul class="timeline">
+        <li><span class="status ok">verified</span><span class="muted">Continuity check passed for this page input.</span></li>
+        <li><span class="status warn">advisory</span><span class="muted">Verification remains advisory-only and requires human-supervised validation.</span></li>
+        <li><span class="status info">generated artifact</span><span class="muted">Explorer and audit JSON outputs are non-canonical generated artifacts.</span></li>
+        <li><span class="status info">canonical record</span><span class="muted">`examples/demo_record.json` is the canonical record reference in this first public flow.</span></li>
       </ul>
     </section>
 
@@ -180,6 +191,16 @@
     function setStatus(el, okText, badText, isOk) {
       el.textContent = isOk ? okText : badText;
       el.className = `status ${isOk ? 'ok' : 'bad'}`;
+    }
+    function addWarning(text) {
+      const warnings = document.getElementById('continuityWarnings');
+      const item = document.createElement('li');
+      item.innerHTML = `<span class="status warn">warning</span> <span class="mono">${text}</span>`;
+      warnings.appendChild(item);
+    }
+    function isLikelyVerificationRoute() {
+      const path = window.location.pathname || '';
+      return path.endsWith('/docs/verify.html') || path.endsWith('/verify.html');
     }
 
     const inputRecord = getParam('record').trim();
@@ -217,6 +238,32 @@
       'Advisory verification: mismatch (human-supervised validation required)',
       hashMatch
     );
+
+    if (!isLikelyVerificationRoute()) {
+      addWarning('broken verification route warning: expected path ending with /docs/verify.html');
+    }
+
+    fetch(FIRST_DEMO_RECORD.explorerPath)
+      .then((response) => (response.ok ? response.json() : Promise.reject(new Error('explorer fetch failed'))))
+      .then((payload) => {
+        const found = Array.isArray(payload.records)
+          && payload.records.some((entry) => entry.record_id === FIRST_DEMO_RECORD.record && entry.record_hash === FIRST_DEMO_RECORD.hash);
+        if (!found) {
+          addWarning('missing explorer entry warning: expected HC-DEMO2026-0001 with matching full SHA-256 record_hash');
+        }
+      })
+      .catch(() => addWarning('missing explorer entry warning: explorer artifact unavailable for continuity check'));
+
+    fetch(FIRST_DEMO_RECORD.auditPath)
+      .then((response) => (response.ok ? response.json() : Promise.reject(new Error('audit fetch failed'))))
+      .then((payload) => {
+        const found = Array.isArray(payload.records)
+          && payload.records.some((entry) => entry.record_id === FIRST_DEMO_RECORD.record && entry.record_hash === FIRST_DEMO_RECORD.hash);
+        if (!found) {
+          addWarning('missing audit entry warning: expected HC-DEMO2026-0001 with matching full SHA-256 record_hash');
+        }
+      })
+      .catch(() => addWarning('missing audit entry warning: audit artifact unavailable for continuity check'));
   </script>
 </body>
 </html>
