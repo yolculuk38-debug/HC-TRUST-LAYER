@@ -14,6 +14,7 @@
       --ok: #27c47c;
       --warn: #ffbf3f;
       --bad: #ff6b6b;
+      --info: #8fc6ff;
     }
     * { box-sizing: border-box; }
     body {
@@ -23,7 +24,7 @@
       color: var(--text);
       line-height: 1.45;
     }
-    main { max-width: 760px; margin: 0 auto; padding: 1rem; }
+    main { max-width: 860px; margin: 0 auto; padding: 1rem; }
     .card {
       background: var(--panel);
       border: 1px solid var(--border);
@@ -37,12 +38,63 @@
     .ok { background: rgba(39,196,124,.16); color: var(--ok); }
     .bad { background: rgba(255,107,107,.16); color: var(--bad); }
     .warn { background: rgba(255,191,63,.16); color: var(--warn); }
+    .info { background: rgba(143,198,255,.16); color: var(--info); }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; word-break: break-all; }
     .muted { color: var(--muted); }
+    .state-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: .6rem;
+      margin-top: .6rem;
+    }
+    .state-item {
+      border: 1px solid var(--border);
+      border-radius: .55rem;
+      padding: .55rem;
+      background: rgba(11,16,32,.35);
+    }
+    .state-item strong {
+      display: block;
+      margin-bottom: .3rem;
+      color: var(--muted);
+    }
+    .timeline {
+      list-style: none;
+      margin: .4rem 0 0;
+      padding: 0;
+    }
+    .timeline li {
+      margin-bottom: .55rem;
+      padding-left: .75rem;
+      border-left: 2px solid var(--border);
+    }
+    .timeline span {
+      display: inline-block;
+      font-weight: 700;
+      margin-right: .4rem;
+    }
+    .link-list {
+      margin: .2rem 0;
+      padding-left: 1.1rem;
+    }
+    .notice {
+      border-left: 4px solid var(--warn);
+      padding: .55rem .6rem;
+      background: rgba(255,191,63,.08);
+      border-radius: .4rem;
+    }
     a { color: #8fc6ff; }
     dl { margin: .2rem 0; }
     dt { font-weight: 700; margin-top: .4rem; }
     dd { margin-left: 0; }
+
+    @media (max-width: 640px) {
+      main { padding: .7rem; }
+      .card { padding: .75rem; }
+      h1 { font-size: 1.12rem; }
+      h2 { font-size: .95rem; }
+      .status { display: block; width: fit-content; margin-top: .3rem; }
+    }
   </style>
 </head>
 <body>
@@ -50,33 +102,64 @@
     <section class="card">
       <h1>HC:// Demo QR Verification Landing</h1>
       <p class="muted">This HC-TRUST-LAYER page performs local-only advisory comparison for the first demo record metadata.</p>
+      <p><span class="status info">Generated advisory view (non-canonical)</span></p>
     </section>
 
     <section class="card">
-      <h2>Verification result</h2>
-      <p><strong>Record status:</strong> <span id="recordStatus" class="status warn">Checking…</span></p>
-      <p><strong>Hash status:</strong> <span id="hashStatus" class="status warn">Checking…</span></p>
-      <p><strong>Advisory verification status:</strong> <span id="advisoryStatus" class="status warn">Checking…</span></p>
+      <h2>Verification result states</h2>
+      <div class="state-grid">
+        <div class="state-item">
+          <strong>Record resolution</strong>
+          <span id="recordStatus" class="status warn">Checking…</span>
+        </div>
+        <div class="state-item">
+          <strong>Hash continuity</strong>
+          <span id="hashStatus" class="status warn">Checking…</span>
+        </div>
+        <div class="state-item">
+          <strong>Advisory verification</strong>
+          <span id="advisoryStatus" class="status warn">Checking…</span>
+        </div>
+      </div>
       <dl>
         <dt>Input record</dt>
         <dd id="inputRecord" class="mono"></dd>
         <dt>Input hash</dt>
         <dd id="inputHash" class="mono"></dd>
+        <dt>Expected canonical record ID</dt>
+        <dd id="expectedRecord" class="mono"></dd>
+        <dt>Expected canonical record hash</dt>
+        <dd id="expectedHash" class="mono"></dd>
       </dl>
+      <p class="muted">Hash continuity compares query hash input against the expected hash linked to the canonical record reference below.</p>
     </section>
 
     <section class="card">
-      <h2>First demo record metadata</h2>
-      <p><strong>Expected record:</strong> <span id="expectedRecord" class="mono"></span></p>
-      <p><strong>Expected hash:</strong> <span id="expectedHash" class="mono"></span></p>
-      <p><strong>Source record:</strong> <a id="recordLink" href="../examples/demo_record.json">examples/demo_record.json</a></p>
-      <p><strong>Explorer index artifact:</strong> <a id="explorerLink" href="../generated/first_working_explorer_index.json">generated/first_working_explorer_index.json</a></p>
-      <p><strong>Audit snapshot artifact:</strong> <a id="auditLink" href="../generated/first_working_audit_snapshot.json">generated/first_working_audit_snapshot.json</a></p>
+      <h2>Verification continuity links</h2>
+      <ul class="link-list">
+        <li><strong>Canonical record:</strong> <a id="recordLink" href="../examples/demo_record.json">examples/demo_record.json</a></li>
+        <li><strong>Explorer index entry:</strong> <a id="explorerLink" href="../generated/first_working_explorer_index.json">generated/first_working_explorer_index.json</a></li>
+        <li><strong>Audit snapshot entry:</strong> <a id="auditLink" href="../generated/first_working_audit_snapshot.json">generated/first_working_audit_snapshot.json</a></li>
+        <li><strong>QR verification route:</strong> <a id="qrRoute" href="./verify.html">docs/verify.html</a></li>
+      </ul>
+      <p class="muted">Canonical and generated artifacts are linked together for continuity review. Generated artifacts remain advisory and non-canonical.</p>
     </section>
 
     <section class="card">
-      <h2>Advisory note</h2>
-      <p class="muted">Advisory-only verification note: this page compares query parameters to demo metadata and does not provide truth guarantees. Use human-supervised validation for consequential decisions.</p>
+      <h2>Integrity timeline (lightweight)</h2>
+      <ul class="timeline">
+        <li><span class="status info">1</span>Record created <span class="mono">(canonical record reference)</span></li>
+        <li><span class="status info">2</span>Verification generated <span class="mono">(advisory result on this page)</span></li>
+        <li><span class="status info">3</span>Explorer indexed <span class="mono">(generated explorer index entry)</span></li>
+        <li><span class="status info">4</span>Audit snapshot included <span class="mono">(generated audit snapshot entry)</span></li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Trust-boundary notice</h2>
+      <div class="notice">
+        <p class="muted">Integrity verification on this page does not guarantee objective truth. Advisory review and human-supervised validation remain required for consequential decisions.</p>
+      </div>
     </section>
   </main>
 
@@ -86,7 +169,8 @@
       hash: 'ae83383b191d02970eb3df834c56b15e7a688fcd63f782d3408aaefd60b7b56a',
       sourcePath: '../examples/demo_record.json',
       explorerPath: '../generated/first_working_explorer_index.json',
-      auditPath: '../generated/first_working_audit_snapshot.json'
+      auditPath: '../generated/first_working_audit_snapshot.json',
+      qrRoutePath: './verify.html'
     };
 
     function getParam(name) {
@@ -111,24 +195,25 @@
     document.getElementById('recordLink').setAttribute('href', FIRST_DEMO_RECORD.sourcePath);
     document.getElementById('explorerLink').setAttribute('href', FIRST_DEMO_RECORD.explorerPath);
     document.getElementById('auditLink').setAttribute('href', FIRST_DEMO_RECORD.auditPath);
+    document.getElementById('qrRoute').setAttribute('href', FIRST_DEMO_RECORD.qrRoutePath);
 
     setStatus(
       document.getElementById('recordStatus'),
-      'Record found',
-      'Record not found',
+      'Record found in first demo flow',
+      'Record not found in first demo flow',
       recordMatch
     );
 
     setStatus(
       document.getElementById('hashStatus'),
-      'Hash match',
-      'Hash mismatch',
+      'Hash continuity match',
+      'Hash continuity mismatch',
       hashMatch
     );
 
     setStatus(
       document.getElementById('advisoryStatus'),
-      'Advisory verification: match (human-supervised validation still required)',
+      'Advisory verification: match (human-supervised validation required)',
       'Advisory verification: mismatch (human-supervised validation required)',
       hashMatch
     );
