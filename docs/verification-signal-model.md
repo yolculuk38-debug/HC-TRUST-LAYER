@@ -109,3 +109,5 @@ identity authority, or legal certification.
 For anti-spoof signal presentation patterns, unofficial/fake signal risks, and accessibility-oriented rendering guidance, see `docs/anti-spoof-verification-signals.md`.
 
 For content-class-specific signals (text, quote, image, video, document, social media, and archived record) with badge/color/QR semantics and provenance inspection boundaries, see `docs/content-verification-signal-model.md`.
+
+For lightweight public onboarding flow design (QR entry, visible signal interpretation, continuity, provenance visibility, advisory explanation, and human review notice), see `docs/public-onboarding-model.md`.

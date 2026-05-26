@@ -107,3 +107,4 @@ Canonical record boundaries and repository-defined validation controls remain au
 - `docs/anti-spoof-verification-signals.md`
 - `docs/qr-verification-security-model.md`
 - `docs/HC_CONTROL_PANEL.md`
+- `docs/public-onboarding-model.md`

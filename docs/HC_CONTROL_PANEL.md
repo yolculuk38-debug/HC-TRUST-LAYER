@@ -218,3 +218,5 @@ For advisory verification badge semantics and visible trust-signal boundaries, s
 For anti-spoof visible verification signal stabilization guidance, see `docs/anti-spoof-verification-signals.md`.
 
 For advisory content verification signal design across quotes/text, images, videos, documents, social posts, and archived records, see `docs/content-verification-signal-model.md`.
+
+For lightweight public onboarding flow guidance for normal users (QR scan through advisory interpretation with human-supervised validation notice), see `docs/public-onboarding-model.md`.
