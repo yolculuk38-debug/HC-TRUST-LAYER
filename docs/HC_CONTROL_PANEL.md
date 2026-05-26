@@ -1,5 +1,11 @@
 # HC Control Panel — Current Project State
 
+> **Documentation Status**
+> - **status:** PARTIAL
+> - **scope:** Operator-facing status snapshot for HC-TRUST-LAYER documentation and guardrail posture.
+> - **canonical relevance:** Advisory only; references canonical record boundaries but is not a canonical record surface.
+> - **runtime relevance:** Medium for operations alignment; does not alter validator or trust-kernel runtime behavior.
+
 ## Purpose
 
 This file is the repo-native control panel for HC-TRUST-LAYER.
@@ -135,6 +141,23 @@ For detailed status, use:
 - `protocol-graph.json`
 - `verification-map.json`
 - `trust-kernel-index.json`
+
+## Status Visibility Summary
+
+### Implemented systems
+- Record integrity verification baseline.
+- Public verification baseline (CLI/API and verification output pathways).
+- QR verification baseline for demo/operator flow.
+
+### Experimental systems (partial)
+- Witness/signature and revocation-related expansion.
+- Explorer/index visibility and trust scoring foundations.
+- Immutable audit snapshot foundation and related review tooling.
+
+### Conceptual future layers (planned/research)
+- Federation and sync interoperability rollout semantics.
+- External ecosystem integrations and institutional adapters.
+- Long-horizon governance/dispute automation expansion.
 
 ## Safe Next Direction
 

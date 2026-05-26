@@ -1,5 +1,11 @@
 # HC-TRUST-LAYER
 
+> **Documentation Status**
+> - **status:** ARCHIVED
+> - **scope:** Legacy high-level project index retained for provenance continuity.
+> - **canonical relevance:** Non-canonical informational surface.
+> - **runtime relevance:** Low; historical orientation only.
+
 ## Open Human-AI Interaction Archive
 
 **Status:** Experimental  

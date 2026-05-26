@@ -1,5 +1,11 @@
 # HC-TRUST-LAYER
 
+> **Documentation Status**
+> - **status:** PARTIAL
+> - **scope:** Repository entrypoint, verification map navigation, and trust kernel orientation.
+> - **canonical relevance:** Advisory index into canonical record and schema boundaries; not a canonical record surface.
+> - **runtime relevance:** High for operator/reviewer navigation; does not define runtime enforcement logic.
+
 [![Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 ![MVP Status](https://img.shields.io/badge/Status-MVP%20(Early--Stage)-orange)
 ![Trust Infrastructure](https://img.shields.io/badge/Category-Trust%20Infrastructure-4c1)
@@ -33,6 +39,12 @@ Current focus: establish a stable HC:// verification workflow with clear trust-k
 - Canonical boundaries: schema continuity, provenance continuity, audit trail continuity.
 
 Key docs:
+
+### Implementation Status View
+
+- **Implemented systems:** record integrity verification baseline, public verification CLI/API baseline, QR verification baseline.
+- **Experimental systems (partial):** witness/signature expansion, explorer/index visibility, trust scoring foundations.
+- **Conceptual future layers (planned/research):** federation/sync interoperability, ecosystem integrations, long-horizon institutional adapters.
 
 Core architecture/status references:
 
