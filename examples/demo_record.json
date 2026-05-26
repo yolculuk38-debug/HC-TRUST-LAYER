@@ -1,7 +1,13 @@
 {
-  "record_id": "HC-DEMO-2026-0001",
-  "source": "demo",
+  "id": "HC-DEMO2026-0001",
+  "timestamp": "2026-01-01T00:00:00Z",
   "title": "Visible verification demo record",
-  "content": "This is a text-only record used for hash, QR, and verification flow documentation.",
-  "created_at": "2026-01-01T00:00:00Z"
+  "source": "hc-trust-layer-demo",
+  "content": "This advisory demo record preserves provenance language for the HC:// end-to-end verification flow and does not assert production truth guarantees.",
+  "witnesses": [
+    "human-supervised-validation"
+  ],
+  "status": "verified",
+  "prev_hash": "",
+  "hash": "9c169042065246d3b963163cfe8ffe876ffce57fa8759e402281d036f0f9cffc"
 }
