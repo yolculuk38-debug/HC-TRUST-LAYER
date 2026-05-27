@@ -17,19 +17,19 @@ Provide an inspectable orchestration routing model that preserves modular Operat
 
 ## Routing baseline
 
-Normal low-risk verification can proceed from review/trust-state assignment toward continuity snapshot and public verification exposure without mandatory federation cross-review or dispute escalation.
+Normal verification remains lightweight and local-first. Uncontested records can complete verification without mandatory federation cross-review or dispute escalation.
 
 Core baseline sequence:
 
-1. verification intake and scope framing
-2. validator execution and evidence linkage
-3. human-supervised review and trust-state assignment
-4. continuity snapshot capture
-5. public verification exposure
+1. intake
+2. schema validation
+3. integrity verification
+4. local validator review
+5. public verification
 
 ## Conditional branches
 
-Federation cross-review and dispute escalation activate only after qualifying review signals:
+Federation cross-review, dispute escalation, and continuity escalation activate only after qualifying review signals:
 
 - qualifying dispute
 - unresolved conflict
@@ -41,7 +41,7 @@ If none of these qualifying signals are present, orchestration remains on the ba
 Lifecycle routing consistency:
 
 - Conditional branches are side-paths from the baseline sequence and do not replace the baseline for low-risk verification.
-- After conditional federation cross-review or dispute escalation completes, routing returns to human-supervised trust-state confirmation and continuity snapshot capture before public verification exposure.
+- After a conditional path completes, routing returns to local validator review closure and human-supervised verification confirmation before public verification.
 
 ## Conditional federation routing
 
@@ -62,6 +62,17 @@ Trigger examples:
 - qualifying dispute remains unresolved after documented re-review
 - conflicting analysis persists with consequential decision-path impact
 - audit divergence remains open across checkpoints or review snapshots
+
+
+## Conditional continuity escalation routing
+
+Continuity escalation is conditional and is routed only when continuity integrity cannot be resolved within baseline local validator review.
+
+Trigger examples:
+
+- continuity chain gaps remain unresolved after local evidence re-check
+- provenance linkage divergence affects review closure for the current verification lifecycle
+- unresolved continuity ambiguity prevents transparent audit trail closure
 
 ## Orchestration safety constraints
 
