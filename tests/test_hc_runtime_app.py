@@ -238,6 +238,22 @@ async def test_duplicate_verification_input_sets_replay_visibility_and_stable_sh
     first = await client.post("/verify/dup-record", json={"qr_input": "hc://dup hash:ok replay"})
     second = await client.post("/verify/dup-record", json={"qr_input": "hc://dup hash:ok replay"})
 
+    assert first.status_code == 200
+    assert second.status_code == 200
+
+    first_payload = first.json()
+    second_payload = second.json()
+    assert first_payload["replay_warning"] is True
+    assert second_payload["replay_warning"] is True
+    assert first_payload["public_safe"] is True
+    assert second_payload["public_safe"] is True
+    assert isinstance(first_payload["warnings"], list)
+    assert isinstance(second_payload["warnings"], list)
+    assert first_payload["warnings"] == second_payload["warnings"]
+
+    history = (await client.get("/verify/dup-record/history")).json()
+    assert history["replay_warning_visible"] is True
+
 
 @pytest.mark.anyio
 async def test_advisory_downgrade_safety_keeps_warnings_visible_and_public_safe(client: httpx.AsyncClient) -> None:
@@ -449,3 +465,57 @@ async def test_telemetry_and_event_visibility_remain_internally_consistent(clien
     assert queues_after["escalation_queue"] >= queues_before["escalation_queue"] + 1
     assert isinstance(runtime_after["warnings"], list)
     assert isinstance(queues_after["warnings"], list)
+
+
+@pytest.mark.anyio
+async def test_verify_rejects_invalid_qr_input_placeholder_with_sanitized_public_error(client: httpx.AsyncClient) -> None:
+    response = await client.post("/verify/invalid-placeholder-record", json={"qr_input": None})
+
+    assert response.status_code == 422
+    payload = response.json()
+    assert "detail" in payload
+    serialized = str(payload).lower()
+    assert "traceback" not in serialized
+    assert "exception" not in serialized
+
+
+@pytest.mark.anyio
+async def test_telemetry_remains_structurally_stable_after_failure_and_degraded_paths(client: httpx.AsyncClient) -> None:
+    await client.post("/verify/failure-visible-record", json={})
+    await client.post("/verify/failure-visible-record", json={"qr_input": "hc://demo hash:ok degraded replay"})
+
+    telemetry_runtime = (await client.get("/telemetry/runtime")).json()
+    telemetry_queues = (await client.get("/telemetry/queues")).json()
+
+    assert telemetry_runtime["advisory_only"] is True
+    assert telemetry_runtime["public_safe"] is True
+    assert telemetry_runtime["truth_guarantee"] is False
+    assert isinstance(telemetry_runtime["warnings"], list)
+
+    assert telemetry_queues["advisory_only"] is True
+    assert telemetry_queues["public_safe"] is True
+    assert telemetry_queues["truth_guarantee"] is False
+    assert isinstance(telemetry_queues["warnings"], list)
+    assert telemetry_queues["degraded_queue_handling"] is True
+
+
+@pytest.mark.anyio
+async def test_degraded_recovery_path_preserves_traceable_advisory_metadata(client: httpx.AsyncClient) -> None:
+    record_id = "recovery-trace-record"
+    payload = (
+        await client.post(f"/verify/{record_id}", json={"qr_input": "hc://trace hash:ok degraded replay"})
+    ).json()
+    history = (await client.get(f"/verify/{record_id}/history")).json()
+
+    assert payload["degraded_runtime"] is True
+    assert payload["recovery_mode"] is True
+    assert payload["advisory_only"] is True
+    assert payload["public_safe"] is True
+    assert payload["truth_guarantee"] is False
+    assert isinstance(payload["warnings"], list)
+
+    assert history["replay_warning_visible"] is True
+    assert history["advisory_only"] is True
+    assert history["public_safe"] is True
+    assert history["truth_guarantee"] is False
+    assert isinstance(history["warnings"], list)
