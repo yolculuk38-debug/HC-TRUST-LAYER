@@ -185,6 +185,8 @@ This model should be interpreted alongside:
 - `docs/core/public-verification-runtime-flow.md`
 - `docs/HC_CONTROL_PANEL.md`
 
+- `docs/core/runtime-observability-and-telemetry-model.md`
+
 ## Implementation reminder
 
 This document is architecture and governance guidance only. It does not modify canonical records, schema contracts, validator logic, federation logic, policy evaluator behavior, signing semantics, or workflow controls.
