@@ -162,6 +162,7 @@ For detailed status, use:
 - `verification-map.json`
 - `trust-kernel-index.json`
 - `docs/public-verification-disputes.md`
+- `docs/public/hc-public-trust-guide.md`
 - `docs/maintainer-accountability-model.md`
 - `docs/FOUNDATION_STATUS.md`
 - `docs/foundation/trust-taxonomy-and-terminology.md`
