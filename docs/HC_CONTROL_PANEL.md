@@ -164,6 +164,7 @@ For detailed status, use:
 - `docs/public-verification-disputes.md`
 - `docs/maintainer-accountability-model.md`
 - `docs/FOUNDATION_STATUS.md`
+- `docs/foundation/trust-taxonomy-and-terminology.md`
 
 ## Status Visibility Summary
 
@@ -267,6 +268,7 @@ For HC:// trust integrity abuse and anti-manipulation posture guidance, see:
 - `docs/public-verification-disputes.md`
 - `docs/maintainer-accountability-model.md`
 - `docs/FOUNDATION_STATUS.md`
+- `docs/foundation/trust-taxonomy-and-terminology.md`
 
 For evidence preservation, continuity gap visibility, and trace reconstruction guidance, see `docs/evidence-preservation-recovery-model.md`.
 

@@ -159,3 +159,4 @@ State usage guidance:
 - `docs/HC_CONTROL_PANEL.md`
 - `docs/maintainer-accountability-model.md`
 - `docs/evidence-preservation-recovery-model.md`
+- `docs/foundation/trust-taxonomy-and-terminology.md`

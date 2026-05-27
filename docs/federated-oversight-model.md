@@ -165,4 +165,5 @@ The verification layer, reviewer actions, and policy evolution processes require
 - `docs/maintainer-accountability-model.md`
 - `docs/evidence-preservation-recovery-model.md`
 - `docs/multi-layer-consensus-model.md`
+- `docs/foundation/trust-taxonomy-and-terminology.md`
 
