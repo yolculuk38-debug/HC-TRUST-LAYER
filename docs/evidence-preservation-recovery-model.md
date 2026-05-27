@@ -168,4 +168,5 @@ State usage guidance:
 - `docs/verification-result-states.md`
 - `docs/HC_CONTROL_PANEL.md`
 - `docs/multi-layer-consensus-model.md`
+- `docs/security/threat-model-master-map.md`
 
