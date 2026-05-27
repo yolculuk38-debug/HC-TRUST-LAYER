@@ -122,3 +122,5 @@ HC:// governance progression should remain staged and auditable:
 - `docs/HC_CONTROL_PANEL.md`
 - `docs/public-verification-disputes.md`
 - `docs/maintainer-accountability-model.md`
+
+- `docs/foundation/foundation-stable-candidate.md`

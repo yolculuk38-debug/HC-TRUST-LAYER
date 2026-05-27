@@ -113,3 +113,5 @@ Federation ethics in HC:// requires:
 - `docs/trust-review-workflow.md`
 
 - `docs/governance/governance-structure-map.md`
+
+- `docs/foundation/foundation-stable-candidate.md`

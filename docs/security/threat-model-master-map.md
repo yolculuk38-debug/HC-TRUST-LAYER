@@ -121,3 +121,5 @@ HC:// is designed for layered risk reduction, not perfect security.
 - `docs/anti-spoofing-foundations.md`
 - `docs/authenticated-ai-validator-access.md`
 - `docs/governance/validator-ethics-and-conduct.md`
+
+- `docs/foundation/foundation-stable-candidate.md`
