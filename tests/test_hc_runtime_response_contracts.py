@@ -149,3 +149,20 @@ async def test_telemetry_payload_shape_stability_regression() -> None:
     assert set(telemetry_health_payload.keys()) == expected_health_keys
     assert set(telemetry_runtime_payload.keys()) == expected_runtime_keys
     assert set(telemetry_queues_payload.keys()) == expected_queue_keys
+
+
+@pytest.mark.anyio
+async def test_replay_and_degraded_response_warning_lists_remain_stable() -> None:
+    transport = httpx.ASGITransport(app=create_app())
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as client:
+        replay_payload = (
+            await client.post("/verify/replay-contract-record", json={"qr_input": "hc://demo hash:ok replay"})
+        ).json()
+        degraded_payload = (
+            await client.post("/verify/degraded-contract-record", json={"qr_input": "hc://demo hash:ok degraded"})
+        ).json()
+
+    assert isinstance(replay_payload["warnings"], list)
+    assert isinstance(degraded_payload["warnings"], list)
+    assert all(isinstance(warning, str) for warning in replay_payload["warnings"])
+    assert all(isinstance(warning, str) for warning in degraded_payload["warnings"])

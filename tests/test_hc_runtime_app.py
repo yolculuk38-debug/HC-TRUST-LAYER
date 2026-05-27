@@ -305,3 +305,47 @@ async def test_runtime_state_isolation_starts_clean_for_each_test(client: httpx.
     assert QUEUE_STORE.verification_queue == []
     assert QUEUE_STORE.escalation_queue == []
     assert QUEUE_STORE.replay_warning_queue == []
+
+
+@pytest.mark.anyio
+async def test_runtime_response_aligns_with_emitted_event_metadata(client: httpx.AsyncClient) -> None:
+    response = await client.post("/verify/alignment-record", json={"qr_input": "hc://alignment hash:ok replay"})
+    payload = response.json()
+    history = (await client.get("/verify/alignment-record/history")).json()
+
+    latest_transition = history["trust_state_transitions"][-1]
+    assert payload["trust_state"] == latest_transition["details"]["trust_state"]
+    assert payload["replay_warning"] is True
+    assert history["replay_warning_visible"] is True
+
+
+@pytest.mark.anyio
+async def test_degraded_response_and_history_remain_consistent(client: httpx.AsyncClient) -> None:
+    response = await client.post("/verify/degraded-consistency-record", json={"qr_input": "hc://demo hash:ok degraded"})
+    payload = response.json()
+    history = (await client.get("/verify/degraded-consistency-record/history")).json()
+
+    event_types = [event["event_type"] for event in history["events"]]
+    assert payload["degraded_runtime"] is True
+    assert payload["recovery_mode"] is True
+    assert "runtime_recovery_mode" in event_types
+
+
+@pytest.mark.anyio
+async def test_telemetry_and_event_visibility_remain_internally_consistent(client: httpx.AsyncClient) -> None:
+    runtime_before = (await client.get("/telemetry/runtime")).json()
+    queues_before = (await client.get("/telemetry/queues")).json()
+
+    await client.post("/verify/telemetry-consistency-record", json={"qr_input": "hc://demo hash:ok replay degraded"})
+
+    runtime_after = (await client.get("/telemetry/runtime")).json()
+    queues_after = (await client.get("/telemetry/queues")).json()
+    history = (await client.get("/verify/telemetry-consistency-record/history")).json()
+
+    assert runtime_after["events_total"] >= runtime_before["events_total"] + len(history["events"])
+    assert runtime_after["degraded_events"] >= runtime_before["degraded_events"] + 1
+    assert queues_after["verification_queue"] == queues_before["verification_queue"] + 1
+    assert queues_after["replay_warning_queue"] == queues_before["replay_warning_queue"] + 1
+    assert queues_after["escalation_queue"] >= queues_before["escalation_queue"] + 1
+    assert isinstance(runtime_after["warnings"], list)
+    assert isinstance(queues_after["warnings"], list)
