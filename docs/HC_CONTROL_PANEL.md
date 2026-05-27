@@ -163,6 +163,7 @@ For detailed status, use:
 - `trust-kernel-index.json`
 - `docs/public-verification-disputes.md`
 - `docs/maintainer-accountability-model.md`
+- `docs/FOUNDATION_STATUS.md`
 
 ## Status Visibility Summary
 
@@ -265,6 +266,7 @@ For HC:// trust integrity abuse and anti-manipulation posture guidance, see:
 - `docs/accountability-defense-layer.md`
 - `docs/public-verification-disputes.md`
 - `docs/maintainer-accountability-model.md`
+- `docs/FOUNDATION_STATUS.md`
 
 For evidence preservation, continuity gap visibility, and trace reconstruction guidance, see `docs/evidence-preservation-recovery-model.md`.
 

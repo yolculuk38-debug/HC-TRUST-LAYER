@@ -52,6 +52,7 @@ Core architecture/status references:
 - Master architecture: [`docs/master-architecture.md`](docs/master-architecture.md)
 - Implementation map: [`docs/implementation-map.md`](docs/implementation-map.md)
 - Capability status matrix: [`docs/capability-status.md`](docs/capability-status.md)
+- Foundation completion and transition: [`docs/FOUNDATION_STATUS.md`](docs/FOUNDATION_STATUS.md)
 
 - MVP CLI viewer: [`docs/mvp-1-cli-viewer.md`](docs/mvp-1-cli-viewer.md)
 - Static viewer guide: [`docs/static-viewer.md`](docs/static-viewer.md)
