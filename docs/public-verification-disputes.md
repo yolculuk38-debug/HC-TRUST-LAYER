@@ -176,3 +176,5 @@ State usage guidance:
 - `docs/maintainer-accountability-model.md`
 - `docs/evidence-preservation-recovery-model.md`
 - `docs/multi-layer-consensus-model.md`
+
+For distributed validator consensus-oriented coordination guidance, see `docs/core/distributed-validator-consensus-coordination.md`.

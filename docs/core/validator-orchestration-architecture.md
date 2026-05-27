@@ -91,3 +91,5 @@ Trigger examples:
 - `docs/core/runtime-state-model.md`
 - `docs/core/runtime-communication-and-sync-model.md`
 - `docs/core/autonomous-validator-runtime-architecture.md`
+
+For distributed validator consensus-oriented coordination guidance, see `docs/core/distributed-validator-consensus-coordination.md`.
