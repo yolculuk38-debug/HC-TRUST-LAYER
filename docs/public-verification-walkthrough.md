@@ -88,3 +88,4 @@ A successful run should visibly communicate all of the following:
 - `docs/self-service-smoke-test.md`
 - `docs/verification-result-states.md`
 - `docs/public-verification-boundaries.md`
+- `docs/public/hc-public-trust-guide.md`
