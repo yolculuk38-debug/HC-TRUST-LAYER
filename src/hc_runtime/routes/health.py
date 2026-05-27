@@ -8,11 +8,15 @@ router = APIRouter()
 
 
 @router.get("/health")
-def health() -> dict[str, str | bool]:
+def health() -> dict[str, object]:
     return {
         "status": "ok",
         "runtime": "hc-reference-runtime",
         "advisory_only": True,
+        "public_safe": True,
+        "traceable": True,
+        "truth_guarantee": False,
+        "warnings": [],
     }
 
 

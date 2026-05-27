@@ -2,6 +2,11 @@
 
 from pathlib import Path
 
+import pytest
+
+httpx = pytest.importorskip("httpx")
+pytest.importorskip("fastapi")
+
 from hc_runtime.contracts.responses import (
     advisory_response,
     continuity_warning_response,
@@ -11,6 +16,7 @@ from hc_runtime.contracts.responses import (
     unresolved_response,
     verified_placeholder_response,
 )
+from hc_runtime.app import create_app
 
 
 def _assert_public_safe_contract(payload: dict, expected_status: str, expected_record_id: str | None) -> None:
@@ -113,3 +119,33 @@ def test_advisory_contract_messages_do_not_imply_forbidden_claims() -> None:
         assert isinstance(payload["warnings"], list)
         for forbidden in forbidden_phrases:
             assert forbidden not in message
+
+
+@pytest.mark.anyio
+async def test_telemetry_payload_shape_stability_regression() -> None:
+    expected_health_keys = {
+        "status",
+        "runtime_mode",
+        "advisory_only",
+        "public_safe",
+        "traceable",
+        "truth_guarantee",
+        "warnings",
+    }
+    expected_runtime_keys = expected_health_keys | {"events_total", "degraded_events"}
+    expected_queue_keys = expected_health_keys | {
+        "verification_queue",
+        "escalation_queue",
+        "replay_warning_queue",
+        "degraded_queue_handling",
+    }
+
+    transport = httpx.ASGITransport(app=create_app())
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as client:
+        telemetry_health_payload = (await client.get("/telemetry/health")).json()
+        telemetry_runtime_payload = (await client.get("/telemetry/runtime")).json()
+        telemetry_queues_payload = (await client.get("/telemetry/queues")).json()
+
+    assert set(telemetry_health_payload.keys()) == expected_health_keys
+    assert set(telemetry_runtime_payload.keys()) == expected_runtime_keys
+    assert set(telemetry_queues_payload.keys()) == expected_queue_keys
