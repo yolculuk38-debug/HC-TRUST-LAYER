@@ -280,3 +280,5 @@ For HC:// trust integrity abuse and anti-manipulation posture guidance, see:
 For evidence preservation, continuity gap visibility, and trace reconstruction guidance, see `docs/evidence-preservation-recovery-model.md`.
 
 For multi-layer consensus visibility, disagreement escalation, and conflict preservation guidance, see `docs/multi-layer-consensus-model.md`.
+
+- `docs/core/validator-orchestration-architecture.md`

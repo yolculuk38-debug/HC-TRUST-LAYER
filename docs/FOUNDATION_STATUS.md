@@ -109,3 +109,4 @@ HC:// remains a transparent verification and provenance surface where trust inte
 
 - `docs/governance/governance-structure-map.md`
 - `docs/architecture/operational-core-transition-map.md`
+- `docs/core/validator-orchestration-architecture.md`
