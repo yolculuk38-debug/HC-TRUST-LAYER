@@ -124,6 +124,11 @@ def federation_review(payload: dict[str, object]) -> dict[str, object]:
         "status": "ADVISORY",
         "advisory_only": True,
         "public_safe": True,
+        "traceable": True,
+        "truth_guarantee": False,
         "message": "Federation review placeholder accepted for human-supervised validation routing.",
+        "warnings": [
+            "Federation routing remains advisory in the HC:// reference runtime with no production-readiness or objective-truth guarantee."
+        ],
         "relay": relay,
     }

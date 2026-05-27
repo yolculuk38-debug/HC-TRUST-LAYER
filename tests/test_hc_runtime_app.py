@@ -37,6 +37,11 @@ async def test_verify_endpoint_returns_advisory_placeholder_contract(client: htt
     assert payload["status"] == "ADVISORY"
     assert payload["advisory_only"] is True
     assert payload["public_safe"] is True
+    assert payload["traceable"] is True
+    assert payload["truth_guarantee"] is False
+    assert isinstance(payload["warnings"], list)
+    assert "production readiness" in payload["message"].lower()
+    assert "truth guarantee" in payload["message"].lower()
 
 
 @pytest.mark.anyio
@@ -50,6 +55,10 @@ async def test_verify_qr_flow_runs_pipeline_decision_and_response_contract(clien
     assert payload["replay_warning"] is False
     assert payload["continuity_warning"] is False
     assert payload["advisory_only"] is True
+    assert payload["public_safe"] is True
+    assert payload["traceable"] is True
+    assert payload["truth_guarantee"] is False
+    assert isinstance(payload["warnings"], list)
 
 
 @pytest.mark.anyio
@@ -61,6 +70,10 @@ async def test_qr_get_flow_runs_pipeline_and_public_safe_contract(client: httpx.
     assert payload["record_id"] == "qr-get-record"
     assert payload["status"] == "ADVISORY"
     assert payload["public_safe"] is True
+    assert payload["advisory_only"] is True
+    assert payload["traceable"] is True
+    assert payload["truth_guarantee"] is False
+    assert isinstance(payload["warnings"], list)
 
 
 @pytest.mark.anyio
@@ -97,6 +110,13 @@ async def test_federation_review_route_is_advisory_placeholder(client: httpx.Asy
     payload = response.json()
     assert payload["status"] == "ADVISORY"
     assert payload["relay"]["relay_mode"] == "local-placeholder"
+    assert payload["advisory_only"] is True
+    assert payload["public_safe"] is True
+    assert payload["traceable"] is True
+    assert payload["truth_guarantee"] is False
+    assert isinstance(payload["warnings"], list)
+    assert "production" not in payload["message"].lower()
+    assert "objective truth" not in payload["message"].lower()
 
 
 @pytest.mark.anyio

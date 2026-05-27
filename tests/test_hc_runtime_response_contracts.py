@@ -26,6 +26,8 @@ def _assert_public_safe_contract(payload: dict, expected_status: str, expected_r
     assert isinstance(payload["warnings"], list)
     assert payload["traceable"] is True
     assert payload["truth_guarantee"] is False
+    assert "production" not in payload["message"].lower() or "no production readiness" in payload["message"].lower()
+    assert "objective truth" not in payload["message"].lower()
 
 
 def test_advisory_response_contract_shape() -> None:
@@ -73,3 +75,12 @@ def test_verify_route_uses_advisory_response_contract_builder() -> None:
 
     assert "from hc_runtime.contracts import advisory_response" in verify_route
     assert "return advisory_response(" in verify_route
+
+
+def test_verify_runtime_routes_preserve_advisory_contract_guarantees() -> None:
+    verify_route = Path("src/hc_runtime/routes/verify.py").read_text(encoding="utf-8")
+
+    assert '"advisory_only": True' in verify_route
+    assert '"public_safe": True' in verify_route
+    assert '"truth_guarantee": False' in verify_route
+    assert '"warnings": [' in verify_route or '"warnings": []' in verify_route
