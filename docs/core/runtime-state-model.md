@@ -141,8 +141,8 @@ This model is an architecture and governance reference only. It does not modify 
 
 - `docs/architecture/operational-core-transition-map.md`
 - `docs/core/validator-orchestration-architecture.md`
+- `docs/core/runtime-communication-and-sync-model.md`
 - `docs/governance/governance-structure-map.md`
 - `docs/security/threat-model-master-map.md`
 - `docs/HC_CONTROL_PANEL.md`
 - `docs/core/autonomous-validator-runtime-architecture.md`
-

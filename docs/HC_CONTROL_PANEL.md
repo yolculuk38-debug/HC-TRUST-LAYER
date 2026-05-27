@@ -171,6 +171,7 @@ For detailed status, use:
 - `docs/governance/validator-ethics-and-conduct.md`
 - `docs/governance/governance-structure-map.md`
 - `docs/architecture/operational-core-transition-map.md`
+- `docs/core/runtime-communication-and-sync-model.md`
 
 
 ### Implemented systems
