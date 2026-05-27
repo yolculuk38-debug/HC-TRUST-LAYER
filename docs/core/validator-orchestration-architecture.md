@@ -38,6 +38,11 @@ Federation cross-review and dispute escalation activate only after qualifying re
 
 If none of these qualifying signals are present, orchestration remains on the baseline sequence.
 
+Lifecycle routing consistency:
+
+- Conditional branches are side-paths from the baseline sequence and do not replace the baseline for low-risk verification.
+- After conditional federation cross-review or dispute escalation completes, routing returns to human-supervised trust-state confirmation and continuity snapshot capture before public verification exposure.
+
 ## Conditional federation routing
 
 Federation cross-review is conditional and is routed only when independent cross-context review is required to address unresolved or elevated-risk interpretation boundaries.
