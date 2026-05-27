@@ -389,7 +389,7 @@ python src/hash.py --text "<content>"
 **Solution:**
 ```bash
 # Install test dependencies
-pip install pytest
+pip install pytest fastapi httpx anyio
 
 # Run tests with verbose output
 pytest tests/ -v --tb=long
