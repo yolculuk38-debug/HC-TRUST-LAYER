@@ -68,7 +68,7 @@ Public verifier or reviewer dispute signals route to documented review intake, h
 
 ### Federation review escalation
 
-Conflicting local and federation interpretations route to cross-participant escalation with preserved rationale, trace links, and attributable reconciliation steps.
+Conflicting local and federation interpretations conditionally route to cross-participant escalation after qualifying dispute, unresolved conflict, audit divergence, or elevated-risk review state, with preserved rationale, trace links, and attributable reconciliation steps.
 
 ### Emergency integrity escalation
 
