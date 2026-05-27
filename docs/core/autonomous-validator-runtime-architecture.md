@@ -137,3 +137,4 @@ HC:// remains an advisory verification and provenance surface requiring human-su
 - `docs/governance/governance-structure-map.md`
 - `HC_CONSTITUTION.md`
 - `docs/HC_CONTROL_PANEL.md`
+- `docs/core/public-qr-verification-gateway.md`

@@ -148,3 +148,4 @@ This model is an architecture and governance reference only. It does not modify 
 - `docs/security/threat-model-master-map.md`
 - `docs/HC_CONTROL_PANEL.md`
 - `docs/core/autonomous-validator-runtime-architecture.md`
+- `docs/core/public-qr-verification-gateway.md`

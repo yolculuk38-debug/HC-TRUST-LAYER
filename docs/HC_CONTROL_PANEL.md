@@ -290,3 +290,4 @@ For runtime lifecycle and autonomous validator runtime coordination architecture
 - `docs/core/trust-state-persistence-and-audit-runtime.md`
 
 For distributed validator consensus-oriented coordination guidance, see `docs/core/distributed-validator-consensus-coordination.md`.
+- `docs/core/public-qr-verification-gateway.md`

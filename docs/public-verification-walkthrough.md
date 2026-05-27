@@ -84,6 +84,7 @@ A successful run should visibly communicate all of the following:
 
 ## Related references
 
+- `docs/core/public-qr-verification-gateway.md`
 - `docs/public-self-service-verification-flow.md`
 - `docs/self-service-smoke-test.md`
 - `docs/verification-result-states.md`
