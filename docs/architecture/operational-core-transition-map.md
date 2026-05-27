@@ -149,3 +149,4 @@ HC:// remains an advisory verification and provenance surface requiring human-su
 - `HC_CONSTITUTION.md`
 - `docs/security/threat-model-master-map.md`
 - `docs/HC_CONTROL_PANEL.md`
+- `docs/core/runtime-state-model.md`
