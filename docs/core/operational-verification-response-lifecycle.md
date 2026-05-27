@@ -170,6 +170,7 @@ This lifecycle depends on coordinated behavior across these runtime surfaces:
 - **orchestration runtime**: coordinates stage ordering, routing, retries, and escalation paths.
 - **trust-state runtime**: resolves current trust-state signals used by advisory response generation.
 - **trust-state scoring model**: interprets confidence, uncertainty, evidence quality, and escalation severity with advisory-only boundaries.
+- **runtime observability model**: defines runtime telemetry visibility, warning indicators, and operational integrity observability boundaries.
 
 ## Verification and Governance Boundary Note
 
