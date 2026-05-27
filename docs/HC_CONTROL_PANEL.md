@@ -153,6 +153,7 @@ Current repo evidence indicates:
 
 For detailed status, use:
 
+- `HC_CONSTITUTION.md`
 - `docs/capability-status.md`
 - `docs/implementation-map.md`
 - `docs/master-architecture.md`

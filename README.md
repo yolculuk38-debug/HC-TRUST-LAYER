@@ -192,6 +192,7 @@ Long-term direction includes stronger verification package interoperability, cle
 
 Planning references:
 
+- [`HC_CONSTITUTION.md`](HC_CONSTITUTION.md)
 - [`docs/core-stabilization-plan.md`](docs/core-stabilization-plan.md)
 - [`docs/mvp-priority-roadmap.md`](docs/mvp-priority-roadmap.md)
 - [`docs/architecture-consolidation.md`](docs/architecture-consolidation.md)
