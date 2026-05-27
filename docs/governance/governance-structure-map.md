@@ -124,3 +124,4 @@ HC:// governance progression should remain staged and auditable:
 - `docs/maintainer-accountability-model.md`
 
 - `docs/foundation/foundation-stable-candidate.md`
+- `docs/architecture/operational-core-transition-map.md`

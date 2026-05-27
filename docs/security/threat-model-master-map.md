@@ -123,3 +123,4 @@ HC:// is designed for layered risk reduction, not perfect security.
 - `docs/governance/validator-ethics-and-conduct.md`
 
 - `docs/foundation/foundation-stable-candidate.md`
+- `docs/architecture/operational-core-transition-map.md`
