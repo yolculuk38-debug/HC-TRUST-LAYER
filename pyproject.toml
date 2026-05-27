@@ -25,5 +25,7 @@ where = ["src"]
 
 [project.optional-dependencies]
 test = [
+  "anyio",
+  "fastapi",
   "httpx",
 ]

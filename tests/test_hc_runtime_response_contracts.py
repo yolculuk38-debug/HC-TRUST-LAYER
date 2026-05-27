@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pytest
 
-httpx = pytest.importorskip("httpx")
-pytest.importorskip("fastapi")
+import fastapi  # noqa: F401
+import httpx
 
 from hc_runtime.contracts.responses import (
     advisory_response,
