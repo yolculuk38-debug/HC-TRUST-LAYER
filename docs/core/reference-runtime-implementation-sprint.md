@@ -110,8 +110,8 @@ This plan aligns with the following HC-TRUST-LAYER documents:
 
 - Implemented advisory-only validator runtime pipeline hooks under `src/hc_runtime`.
 - Implemented minimal append-only in-memory runtime event utilities for trust-state transitions, continuity checkpoints, and replay warnings.
-- Added minimal trust-state decision engine states: `ADVISORY`, `REVIEW_REQUIRED`, `DEGRADED`, `UNRESOLVED`.
-- Added advisory QR verification runtime flow and continuity history endpoint.
+- Added minimal trust-state decision engine states: `ADVISORY`, `REVIEW_REQUIRED`, `UNRESOLVED`, `DEGRADED`, and `REPLAY_WARNING`.
+- Added advisory QR verification runtime integration flow across `/verify/{record_id}` and `/qr/{record_id}` with replay warning and continuity warning propagation, plus continuity history endpoint.
 - Added advisory federation review placeholder route with local-only behavior and no external networking.
 - Added a minimal end-to-end runtime flow demo path through `/verify/{record_id}` and `/verify/{record_id}/history`.
 
