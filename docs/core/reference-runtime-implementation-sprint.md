@@ -79,7 +79,7 @@ This plan aligns with the following HC-TRUST-LAYER documents:
 
 ## Phased Implementation Order
 
-- **Phase A: API skeleton**
+- **Phase A: API skeleton** ✅ Scaffolded/started (`src/hc_runtime/`)
 - **Phase B: validator service**
 - **Phase C: event store**
 - **Phase D: decision engine**

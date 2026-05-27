@@ -190,6 +190,15 @@ For detailed status, use:
 - External ecosystem integrations and institutional adapters.
 - Long-horizon governance/dispute automation expansion.
 
+
+## Reference Runtime Scaffold Status
+
+The first HC:// FastAPI reference runtime skeleton is now scaffolded as an advisory-only implementation surface under:
+
+- `src/hc_runtime/`
+
+This scaffold is intentionally minimal and non-production. It does not mutate canonical records and does not alter existing HC-TRUST-LAYER verification behavior.
+
 ## Mobile PR Merge Operations Baseline
 
 HC-TRUST-LAYER merge operations on mobile should follow a clear precedence order:
