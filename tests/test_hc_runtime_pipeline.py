@@ -1,5 +1,7 @@
 """Tests for HC:// advisory validator pipeline and decision engine."""
 
+from copy import deepcopy
+
 from hc_runtime.events import RuntimeEventStore
 from hc_runtime.decision_engine import TrustState
 from hc_runtime.runtime import RuntimeQueueStore, TrustStateDecisionEngine, ValidatorPipeline
@@ -139,3 +141,38 @@ def test_runtime_event_store_history_ordering_is_deterministic() -> None:
     ]
     assert all(event["advisory_only"] is True for event in history)
     assert all(event["public_safe"] is True for event in history)
+
+
+def test_runtime_event_store_is_append_only_and_preserves_previous_events() -> None:
+    store = RuntimeEventStore()
+    record_id = "append-only-record"
+
+    first_event = store.append_trust_transition(record_id=record_id, trust_state="ADVISORY", warnings=["w1"])
+    first_event_snapshot = deepcopy(first_event)
+
+    store.append_continuity_checkpoint(record_id=record_id, continuity_ok=True, warnings=[])
+    store.append_replay_warning(record_id=record_id, reason="Replay marker detected.")
+
+    history = store.history(record_id=record_id)
+    assert len(history) == 3
+    assert history[0] == first_event_snapshot
+    assert history[0]["details"]["warnings"] == ["w1"]
+
+
+def test_runtime_event_store_replay_and_continuity_history_is_deterministic() -> None:
+    store = RuntimeEventStore()
+    record_id = "deterministic-replay-record"
+
+    store.append_trust_transition(record_id=record_id, trust_state="REPLAY_WARNING", warnings=["Replay warning active."])
+    store.append_continuity_checkpoint(record_id=record_id, continuity_ok=False, warnings=["Continuity warning active."])
+    store.append_replay_warning(record_id=record_id, reason="Replay marker detected.")
+
+    history = store.history(record_id=record_id)
+    assert [event["event_type"] for event in history] == [
+        "trust_state_transition",
+        "continuity_checkpoint",
+        "replay_warning",
+    ]
+    assert history[0]["details"]["trust_state"] == "REPLAY_WARNING"
+    assert history[1]["details"]["continuity_ok"] is False
+    assert history[2]["details"]["reason"] == "Replay marker detected."
