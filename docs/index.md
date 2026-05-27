@@ -48,3 +48,10 @@ Optional hash references, QR-linked archive paths, and additional verification l
 HC-TRUST-LAYER is an experimental documentation project.
 
 AI-generated responses are archived as interaction records and do not represent autonomous institutional participation or legal endorsement.
+
+
+## Core Runtime Architecture References
+
+- [Runtime Orchestration Overview](core/runtime-orchestration.md)
+- [Validator Health-State and Federation Heartbeat Model](core/validator-health-model.md)
+
