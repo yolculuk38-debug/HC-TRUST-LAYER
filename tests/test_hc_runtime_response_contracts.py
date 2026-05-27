@@ -166,3 +166,29 @@ async def test_replay_and_degraded_response_warning_lists_remain_stable() -> Non
     assert isinstance(degraded_payload["warnings"], list)
     assert all(isinstance(warning, str) for warning in replay_payload["warnings"])
     assert all(isinstance(warning, str) for warning in degraded_payload["warnings"])
+
+
+@pytest.mark.anyio
+async def test_verify_response_field_order_and_shape_are_stable_for_runtime_outputs() -> None:
+    transport = httpx.ASGITransport(app=create_app())
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as client:
+        payload = (await client.post("/verify/order-contract-record", json={"qr_input": "hc://demo hash:ok replay"})).json()
+
+    expected_order = [
+        "status",
+        "advisory_only",
+        "public_safe",
+        "message",
+        "warnings",
+        "traceable",
+        "truth_guarantee",
+        "record_id",
+        "trust_state",
+        "replay_warning",
+        "continuity_warning",
+        "degraded_runtime",
+        "recovery_mode",
+        "public_exposure",
+    ]
+    assert list(payload.keys()) == expected_order
+    assert isinstance(payload["warnings"], list)

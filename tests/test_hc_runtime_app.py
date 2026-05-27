@@ -280,6 +280,53 @@ async def test_identical_verification_inputs_are_deterministic_for_advisory_cont
 
 
 @pytest.mark.anyio
+async def test_runtime_policy_flags_are_visible_and_deterministic(client: httpx.AsyncClient) -> None:
+    payload = (await client.post("/verify/policy-visible-record", json={"qr_input": "hc://demo hash:ok replay degraded"})).json()
+
+    assert payload["replay_warning"] is True
+    assert payload["degraded_runtime"] is True
+    assert payload["recovery_mode"] is True
+    assert payload["public_exposure"] == "restricted"
+    assert isinstance(payload["warnings"], list)
+    assert any("replay-warning escalation policy" in warning.lower() for warning in payload["warnings"])
+    assert any("degraded runtime restriction policy" in warning.lower() for warning in payload["warnings"])
+
+
+@pytest.mark.anyio
+async def test_verify_rejects_empty_payload_with_public_safe_validation_error(client: httpx.AsyncClient) -> None:
+    response = await client.post("/verify/empty-payload-record", json={})
+
+    assert response.status_code == 422
+    payload = response.json()
+    assert "detail" in payload
+    assert "traceback" not in str(payload).lower()
+
+
+@pytest.mark.anyio
+async def test_verify_rejects_malformed_qr_input_type_with_public_safe_validation_error(client: httpx.AsyncClient) -> None:
+    response = await client.post("/verify/malformed-qr-record", json={"qr_input": {"unexpected": "object"}})
+
+    assert response.status_code == 422
+    payload = response.json()
+    assert "detail" in payload
+    assert "traceback" not in str(payload).lower()
+
+
+@pytest.mark.anyio
+async def test_verify_accepts_oversized_advisory_input_placeholder_with_stable_contract(client: httpx.AsyncClient) -> None:
+    oversized_qr_input = f"hc://oversized {'a' * 12000} hash:ok"
+    response = await client.post("/verify/oversized-placeholder-record", json={"qr_input": oversized_qr_input})
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["status"] == "ADVISORY"
+    assert payload["advisory_only"] is True
+    assert payload["public_safe"] is True
+    assert payload["truth_guarantee"] is False
+    assert isinstance(payload["warnings"], list)
+
+
+@pytest.mark.anyio
 async def test_continuity_history_ordering_and_append_only_visibility(client: httpx.AsyncClient) -> None:
     await client.post("/verify/continuity-record", json={"qr_input": "hc://continuity hash:ok"})
     history_first = (await client.get("/verify/continuity-record/history")).json()

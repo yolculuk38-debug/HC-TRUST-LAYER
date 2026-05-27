@@ -109,6 +109,39 @@ def test_validator_pipeline_consistency_for_input_variants() -> None:
         assert all(isinstance(warning, str) for warning in warnings)
 
 
+def test_runtime_policy_layer_cannot_silently_override_validator_semantics() -> None:
+    pipeline = ValidatorPipeline()
+    engine = TrustStateDecisionEngine()
+
+    pipeline_result = pipeline.run(record_id="boundary-record", qr_input="")
+    assert pipeline_result["schema_result"]["valid"] is False
+    assert pipeline_result["hash_result"]["hash_verified"] is False
+
+    trust_state, warnings = engine.classify(
+        record_id="boundary-record",
+        qr_input="",
+        schema_valid=pipeline_result["schema_result"]["valid"],
+        hash_verified=pipeline_result["hash_result"]["hash_verified"],
+        continuity_ok=True,
+        replay_warning=False,
+    )
+
+    assert trust_state is TrustState.UNRESOLVED
+    assert any("schema" in warning.lower() or "hash" in warning.lower() for warning in warnings)
+
+
+def test_validator_escalation_routing_is_deterministic_for_identical_inputs() -> None:
+    pipeline = ValidatorPipeline()
+
+    first = pipeline.run(record_id="det-route", qr_input="hc://det-route")
+    second = pipeline.run(record_id="det-route", qr_input="hc://det-route")
+
+    assert first["escalation"] == second["escalation"]
+    assert first["escalation"]["route"] == "human-supervised-validation"
+    assert first["escalation"]["required"] is True
+    assert first["escalation"]["placeholder"] is True
+
+
 def test_runtime_queue_store_instances_are_state_isolated() -> None:
     first_store = RuntimeQueueStore()
     second_store = RuntimeQueueStore()
