@@ -33,6 +33,8 @@ Human reviewer consensus requires attributable rationale and remains challengeab
 
 **Federation cross-review** is independent cross-organization or cross-context review of the same evidence package to reduce single-context interpretation risk.
 
+Federation cross-review is conditional and is activated after qualifying dispute, unresolved conflict, audit divergence, or elevated-risk review state.
+
 Federation cross-review may confirm, refine, or dispute local interpretations.
 
 ### conflicting analysis

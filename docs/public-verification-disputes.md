@@ -122,7 +122,7 @@ State usage guidance:
 ### 4) federation cross-review
 
 - Local review cannot resolve a material dispute with sufficient confidence.
-- A federation review escalation routes the case to independent external participants.
+- A federation review escalation conditionally routes the case to independent external participants after qualifying dispute, unresolved conflict, audit divergence, or elevated-risk review state.
 - The case state is updated to `ESCALATED REVIEW` while preserving prior reasoning and dispute chronology.
 
 ### 5) policy conflict escalation
@@ -176,4 +176,3 @@ State usage guidance:
 - `docs/maintainer-accountability-model.md`
 - `docs/evidence-preservation-recovery-model.md`
 - `docs/multi-layer-consensus-model.md`
-
