@@ -84,3 +84,32 @@ def test_verify_runtime_routes_preserve_advisory_contract_guarantees() -> None:
     assert '"public_safe": True' in verify_route
     assert '"truth_guarantee": False' in verify_route
     assert '"warnings": [' in verify_route or '"warnings": []' in verify_route
+
+
+def test_advisory_contract_messages_do_not_imply_forbidden_claims() -> None:
+    payloads = [
+        advisory_response("rec-a", "Advisory only response with no truth guarantee."),
+        verified_placeholder_response("rec-b"),
+        disputed_response("rec-c"),
+        unresolved_response("rec-d"),
+        continuity_warning_response("rec-e"),
+        degraded_runtime_response("rec-f"),
+        not_found_response("rec-g"),
+    ]
+    forbidden_phrases = [
+        "objective truth",
+        "forensic certainty",
+        "autonomous governance",
+        "production ready",
+        "production readiness achieved",
+        "enforcement authority",
+    ]
+
+    for payload in payloads:
+        message = payload["message"].lower()
+        assert payload["advisory_only"] is True
+        assert payload["public_safe"] is True
+        assert payload["truth_guarantee"] is False
+        assert isinstance(payload["warnings"], list)
+        for forbidden in forbidden_phrases:
+            assert forbidden not in message

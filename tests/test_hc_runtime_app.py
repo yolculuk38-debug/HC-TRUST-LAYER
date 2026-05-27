@@ -8,6 +8,16 @@ httpx = pytest.importorskip("httpx")
 pytest.importorskip("fastapi")
 
 from hc_runtime.app import create_app
+from hc_runtime.state import EVENT_STORE, QUEUE_STORE
+
+
+@pytest.fixture(autouse=True)
+def reset_runtime_state() -> None:
+    """Reset shared in-memory runtime state for test isolation."""
+    EVENT_STORE._events.clear()
+    QUEUE_STORE.verification_queue.clear()
+    QUEUE_STORE.escalation_queue.clear()
+    QUEUE_STORE.replay_warning_queue.clear()
 
 
 @pytest.fixture()
@@ -156,3 +166,52 @@ async def test_degraded_runtime_recovery_behavior_is_public_safe(client: httpx.A
     assert response.status_code == 200
     assert payload["degraded_runtime"] is True
     assert payload["recovery_mode"] is True
+    assert payload["advisory_only"] is True
+    assert payload["public_safe"] is True
+    assert payload["traceable"] is True
+    assert payload["truth_guarantee"] is False
+    assert isinstance(payload["warnings"], list)
+
+
+@pytest.mark.anyio
+async def test_duplicate_verification_input_sets_replay_visibility_and_stable_shape(client: httpx.AsyncClient) -> None:
+    first = await client.post("/verify/dup-record", json={"qr_input": "hc://dup hash:ok replay"})
+    second = await client.post("/verify/dup-record", json={"qr_input": "hc://dup hash:ok replay"})
+
+    assert first.status_code == 200
+    assert second.status_code == 200
+
+    expected_keys = set(first.json().keys())
+    assert set(second.json().keys()) == expected_keys
+    assert second.json()["replay_warning"] is True
+
+    history = (await client.get("/verify/dup-record/history")).json()
+    assert history["replay_warning_visible"] is True
+
+
+@pytest.mark.anyio
+async def test_continuity_history_ordering_and_append_only_visibility(client: httpx.AsyncClient) -> None:
+    await client.post("/verify/continuity-record", json={"qr_input": "hc://continuity hash:ok"})
+    history_first = (await client.get("/verify/continuity-record/history")).json()
+    first_events = history_first["events"]
+    first_events_snapshot = [event.copy() for event in first_events]
+
+    await client.post("/verify/continuity-record", json={"qr_input": "hc://continuity hash:ok continuity-warning"})
+    history_second = (await client.get("/verify/continuity-record/history")).json()
+    second_events = history_second["events"]
+
+    assert len(second_events) > len(first_events_snapshot)
+    assert second_events[: len(first_events_snapshot)] == first_events_snapshot
+    assert [event["event_type"] for event in first_events_snapshot[:2]] == [
+        "trust_state_transition",
+        "continuity_checkpoint",
+    ]
+
+
+@pytest.mark.anyio
+async def test_runtime_state_isolation_starts_clean_for_each_test(client: httpx.AsyncClient) -> None:
+    history = (await client.get("/verify/isolation-record/history")).json()
+    assert history["events"] == []
+    assert QUEUE_STORE.verification_queue == []
+    assert QUEUE_STORE.escalation_queue == []
+    assert QUEUE_STORE.replay_warning_queue == []
