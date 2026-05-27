@@ -197,6 +197,28 @@ async def test_telemetry_routes_return_advisory_operational_signals(client: http
 
 
 @pytest.mark.anyio
+async def test_telemetry_endpoints_expose_consistent_advisory_metadata(client: httpx.AsyncClient) -> None:
+    telemetry_payloads = [
+        (await client.get("/telemetry/health")).json(),
+        (await client.get("/telemetry/runtime")).json(),
+        (await client.get("/telemetry/queues")).json(),
+    ]
+    expected_metadata = {
+        "advisory_only": True,
+        "public_safe": True,
+        "traceable": True,
+        "truth_guarantee": False,
+    }
+
+    for payload in telemetry_payloads:
+        for key, expected in expected_metadata.items():
+            assert key in payload
+            assert payload[key] is expected
+        assert isinstance(payload["warnings"], list)
+        assert all(isinstance(warning, str) for warning in payload["warnings"])
+
+
+@pytest.mark.anyio
 async def test_degraded_runtime_recovery_behavior_is_public_safe(client: httpx.AsyncClient) -> None:
     response = await client.post("/verify/degraded-record", json={"qr_input": "hc://demo hash:ok degraded"})
 
@@ -225,6 +247,36 @@ async def test_duplicate_verification_input_sets_replay_visibility_and_stable_sh
 
     history = (await client.get("/verify/dup-record/history")).json()
     assert history["replay_warning_visible"] is True
+
+
+@pytest.mark.anyio
+async def test_identical_verification_inputs_are_deterministic_for_advisory_contract(client: httpx.AsyncClient) -> None:
+    qr_input = "hc://deterministic hash:ok replay"
+    first_payload = (await client.post("/verify/deterministic-record", json={"qr_input": qr_input})).json()
+    second_payload = (await client.post("/verify/deterministic-record", json={"qr_input": qr_input})).json()
+
+    stable_keys = {
+        "status",
+        "advisory_only",
+        "public_safe",
+        "traceable",
+        "truth_guarantee",
+        "trust_state",
+        "replay_warning",
+        "continuity_warning",
+        "degraded_runtime",
+        "recovery_mode",
+        "public_exposure",
+    }
+
+    assert set(first_payload.keys()) == set(second_payload.keys())
+    assert stable_keys.issubset(first_payload.keys())
+    for key in stable_keys:
+        assert first_payload[key] == second_payload[key]
+    assert isinstance(first_payload["warnings"], list)
+    assert isinstance(second_payload["warnings"], list)
+    assert all(isinstance(warning, str) for warning in first_payload["warnings"])
+    assert first_payload["warnings"] == second_payload["warnings"]
 
 
 @pytest.mark.anyio

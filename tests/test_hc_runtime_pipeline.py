@@ -1,7 +1,8 @@
 """Tests for HC:// advisory validator pipeline and decision engine."""
 
+from hc_runtime.events import RuntimeEventStore
 from hc_runtime.decision_engine import TrustState
-from hc_runtime.runtime import TrustStateDecisionEngine, ValidatorPipeline
+from hc_runtime.runtime import RuntimeQueueStore, TrustStateDecisionEngine, ValidatorPipeline
 
 
 def test_validator_pipeline_hooks_execute() -> None:
@@ -104,3 +105,37 @@ def test_validator_pipeline_consistency_for_input_variants() -> None:
 
         assert isinstance(warnings, list)
         assert all(isinstance(warning, str) for warning in warnings)
+
+
+def test_runtime_queue_store_instances_are_state_isolated() -> None:
+    first_store = RuntimeQueueStore()
+    second_store = RuntimeQueueStore()
+
+    first_store.enqueue_verification({"record_id": "r1"})
+    first_store.enqueue_escalation({"record_id": "r1", "reason": "check"})
+    first_store.enqueue_replay_warning({"record_id": "r1"})
+
+    assert len(first_store.verification_queue) == 1
+    assert len(first_store.escalation_queue) == 1
+    assert len(first_store.replay_warning_queue) == 1
+    assert second_store.verification_queue == []
+    assert second_store.escalation_queue == []
+    assert second_store.replay_warning_queue == []
+
+
+def test_runtime_event_store_history_ordering_is_deterministic() -> None:
+    store = RuntimeEventStore()
+    record_id = "history-order-record"
+
+    store.append_trust_transition(record_id=record_id, trust_state="ADVISORY", warnings=[])
+    store.append_continuity_checkpoint(record_id=record_id, continuity_ok=True, warnings=[])
+    store.append_replay_warning(record_id=record_id, reason="Replay marker detected.")
+
+    history = store.history(record_id=record_id)
+    assert [event["event_type"] for event in history] == [
+        "trust_state_transition",
+        "continuity_checkpoint",
+        "replay_warning",
+    ]
+    assert all(event["advisory_only"] is True for event in history)
+    assert all(event["public_safe"] is True for event in history)
