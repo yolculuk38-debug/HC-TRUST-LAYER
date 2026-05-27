@@ -128,6 +128,8 @@ HC:// remains an advisory verification and provenance surface requiring human-su
 
 ## Related references
 
+- `docs/core/trust-state-persistence-and-audit-runtime.md`
+
 - `docs/core/runtime-state-model.md`
 - `docs/core/runtime-communication-and-sync-model.md`
 - `docs/core/validator-orchestration-architecture.md`

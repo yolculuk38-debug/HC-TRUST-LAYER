@@ -139,6 +139,8 @@ This model is an architecture and governance reference only. It does not modify 
 
 ## Related references
 
+- `docs/core/trust-state-persistence-and-audit-runtime.md`
+
 - `docs/architecture/operational-core-transition-map.md`
 - `docs/core/validator-orchestration-architecture.md`
 - `docs/core/runtime-communication-and-sync-model.md`

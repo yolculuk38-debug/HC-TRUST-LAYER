@@ -285,3 +285,6 @@ For runtime lifecycle and autonomous validator runtime coordination architecture
 
 - `docs/core/runtime-state-model.md`
 - `docs/core/autonomous-validator-runtime-architecture.md`
+
+
+- `docs/core/trust-state-persistence-and-audit-runtime.md`
