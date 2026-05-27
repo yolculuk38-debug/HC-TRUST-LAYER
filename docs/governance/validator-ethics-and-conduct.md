@@ -111,3 +111,5 @@ Federation ethics in HC:// requires:
 - `docs/HC_CONTROL_PANEL.md`
 - `docs/maintainer-accountability-model.md`
 - `docs/trust-review-workflow.md`
+
+- `docs/governance/governance-structure-map.md`

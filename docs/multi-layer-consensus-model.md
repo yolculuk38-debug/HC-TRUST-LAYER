@@ -197,3 +197,4 @@ Trust systems should preserve inspectable disagreement so reviewers and external
 - `docs/verification-result-states.md`
 - `docs/HC_CONTROL_PANEL.md`
 - `docs/governance/validator-ethics-and-conduct.md`
+- `docs/governance/governance-structure-map.md`
