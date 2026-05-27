@@ -165,8 +165,8 @@ For detailed status, use:
 - `docs/maintainer-accountability-model.md`
 - `docs/FOUNDATION_STATUS.md`
 - `docs/foundation/trust-taxonomy-and-terminology.md`
+- `docs/security/threat-model-master-map.md`
 
-## Status Visibility Summary
 
 ### Implemented systems
 - Record integrity verification baseline.

@@ -179,3 +179,4 @@ Trust signals must communicate uncertainty, boundary conditions, and review requ
 - `docs/public-verification-disputes.md`
 - `docs/immutable-state-history-model.md`
 - `docs/maintainer-accountability-model.md`
+- `docs/security/threat-model-master-map.md`

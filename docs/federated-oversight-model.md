@@ -166,4 +166,5 @@ The verification layer, reviewer actions, and policy evolution processes require
 - `docs/evidence-preservation-recovery-model.md`
 - `docs/multi-layer-consensus-model.md`
 - `docs/foundation/trust-taxonomy-and-terminology.md`
+- `docs/security/threat-model-master-map.md`
 
