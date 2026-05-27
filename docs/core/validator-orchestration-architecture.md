@@ -88,3 +88,4 @@ Trigger examples:
 - `docs/multi-layer-consensus-model.md`
 - `docs/governance/governance-structure-map.md`
 - `docs/architecture/operational-core-transition-map.md`
+- `docs/core/runtime-state-model.md`
