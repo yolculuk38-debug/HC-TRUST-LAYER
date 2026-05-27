@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-httpx = pytest.importorskip("httpx")
-pytest.importorskip("fastapi")
+import fastapi  # noqa: F401
+import httpx
 
 from hc_runtime.app import create_app
 from hc_runtime.state import EVENT_STORE, QUEUE_STORE
