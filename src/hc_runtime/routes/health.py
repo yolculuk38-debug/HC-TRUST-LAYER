@@ -18,14 +18,27 @@ def health() -> dict[str, str | bool]:
 
 @router.get("/telemetry/health")
 def telemetry_health() -> dict[str, object]:
-    return {"status": "ok", "advisory_only": True, "runtime_mode": "prototype"}
+    return {
+        "status": "ok",
+        "runtime_mode": "prototype",
+        "advisory_only": True,
+        "public_safe": True,
+        "traceable": True,
+        "truth_guarantee": False,
+        "warnings": [],
+    }
 
 
 @router.get("/telemetry/runtime")
 def telemetry_runtime() -> dict[str, object]:
     return {
+        "status": "ok",
+        "runtime_mode": "prototype",
         "advisory_only": True,
         "public_safe": True,
+        "traceable": True,
+        "truth_guarantee": False,
+        "warnings": [],
         "events_total": len(EVENT_STORE._events),
         "degraded_events": len([e for e in EVENT_STORE._events if e["event_type"] == "runtime_recovery_mode"]),
     }
@@ -34,7 +47,13 @@ def telemetry_runtime() -> dict[str, object]:
 @router.get("/telemetry/queues")
 def telemetry_queues() -> dict[str, object]:
     return {
+        "status": "ok",
+        "runtime_mode": "prototype",
         "advisory_only": True,
+        "public_safe": True,
+        "traceable": True,
+        "truth_guarantee": False,
+        "warnings": [],
         "verification_queue": len(QUEUE_STORE.verification_queue),
         "escalation_queue": len(QUEUE_STORE.escalation_queue),
         "replay_warning_queue": len(QUEUE_STORE.replay_warning_queue),

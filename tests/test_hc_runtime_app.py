@@ -125,9 +125,26 @@ async def test_telemetry_routes_return_advisory_operational_signals(client: http
     runtime_payload = (await client.get("/telemetry/runtime")).json()
     queues_payload = (await client.get("/telemetry/queues")).json()
 
-    assert telemetry_health_payload["status"] == "ok"
-    assert telemetry_health_payload["advisory_only"] is True
-    assert runtime_payload["advisory_only"] is True
+    expected_shared_keys = {
+        "status",
+        "runtime_mode",
+        "advisory_only",
+        "public_safe",
+        "traceable",
+        "truth_guarantee",
+        "warnings",
+    }
+
+    for payload in (telemetry_health_payload, runtime_payload, queues_payload):
+        assert expected_shared_keys.issubset(payload.keys())
+        assert payload["status"] == "ok"
+        assert payload["runtime_mode"] == "prototype"
+        assert payload["advisory_only"] is True
+        assert payload["public_safe"] is True
+        assert payload["traceable"] is True
+        assert payload["truth_guarantee"] is False
+        assert isinstance(payload["warnings"], list)
+
     assert queues_payload["degraded_queue_handling"] is True
 
 
