@@ -40,7 +40,7 @@ async def test_verify_endpoint_returns_advisory_placeholder_contract(client: htt
     assert payload["traceable"] is True
     assert payload["truth_guarantee"] is False
     assert isinstance(payload["warnings"], list)
-    assert "production readiness" in payload["message"].lower()
+    assert "no truth guarantee" in payload["message"].lower()
     assert "truth guarantee" in payload["message"].lower()
 
 
