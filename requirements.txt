@@ -5,3 +5,4 @@ qrcode[pil]==7.4.2
 # API scaffold dependencies for the advisory-only HC:// reference runtime skeleton.
 fastapi==0.115.14
 pydantic==2.11.7
+httpx==0.28.1
