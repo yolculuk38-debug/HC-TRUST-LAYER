@@ -251,3 +251,29 @@ def test_runtime_policy_degraded_and_replay_controls_are_deterministic() -> None
     assert replay_first["replay_warning_escalation"] is True
     assert degraded_first["advisory_downgrade"] is True
     assert replay_first["advisory_downgrade"] is True
+
+
+def test_validator_pipeline_handles_malformed_advisory_inputs_with_normalized_shape() -> None:
+    pipeline = ValidatorPipeline()
+
+    malformed_cases = [None, 42, {"bad": "input"}, ["unexpected"]]
+    for value in malformed_cases:
+        qr_input = "" if value is None else str(value)
+        result = pipeline.run(record_id="malformed-runtime-record", qr_input=qr_input)
+
+        assert set(result.keys()) == {"record_id", "schema_result", "hash_result", "trust_assignment", "escalation"}
+        assert result["record_id"] == "malformed-runtime-record"
+        assert isinstance(result["trust_assignment"]["warnings"], list)
+        assert result["escalation"]["placeholder"] is True
+
+
+def test_policy_engine_failure_path_warnings_are_stable_lists() -> None:
+    policy = RuntimePolicyEngine()
+
+    degraded = policy.evaluate(trust_state=TrustState.DEGRADED, replay_warning=False, degraded_mode=True)
+    replay = policy.evaluate(trust_state=TrustState.REPLAY_WARNING, replay_warning=True, degraded_mode=False)
+
+    assert isinstance(degraded["warnings"], list)
+    assert isinstance(replay["warnings"], list)
+    assert degraded["advisory_downgrade"] is True
+    assert replay["advisory_downgrade"] is True
