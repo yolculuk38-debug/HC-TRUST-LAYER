@@ -144,6 +144,7 @@ Users and reviewers should be able to inspect emergency-event summaries, caution
 
 ## Related documents
 
+- `HC_CONSTITUTION.md`
 - `docs/immutable-state-history-model.md`
 - `docs/accountability-defense-layer.md`
 - `docs/federated-oversight-model.md`

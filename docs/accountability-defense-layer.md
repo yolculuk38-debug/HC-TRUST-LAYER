@@ -167,6 +167,7 @@ Trust signals must communicate uncertainty, boundary conditions, and review requ
 
 ## Related documents
 
+- `HC_CONSTITUTION.md`
 - `docs/verified-ai-validator-model.md`
 - `docs/authenticated-ai-validator-access.md`
 - `docs/verification-result-states.md`

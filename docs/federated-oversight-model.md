@@ -154,6 +154,7 @@ The verification layer, reviewer actions, and policy evolution processes require
 
 ## Related documents
 
+- `HC_CONSTITUTION.md`
 - `docs/accountability-defense-layer.md`
 - `docs/verified-ai-validator-model.md`
 - `docs/verification-result-states.md`

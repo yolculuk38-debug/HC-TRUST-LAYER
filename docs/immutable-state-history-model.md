@@ -151,6 +151,7 @@ State usage guidance:
 
 ## Related documents
 
+- `HC_CONSTITUTION.md`
 - `docs/accountability-defense-layer.md`
 - `docs/federated-oversight-model.md`
 - `docs/public-verification-disputes.md`
