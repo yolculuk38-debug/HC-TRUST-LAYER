@@ -2,60 +2,10 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from enum import StrEnum
 from typing import Any
 
-
-class TrustState(StrEnum):
-    """Advisory trust-state values for the reference runtime."""
-
-    ADVISORY = "ADVISORY"
-    REVIEW_REQUIRED = "REVIEW_REQUIRED"
-    DEGRADED = "DEGRADED"
-    UNRESOLVED = "UNRESOLVED"
-
-
-@dataclass(slots=True)
-class RuntimeEventStore:
-    """Append-only in-memory runtime event storage placeholder."""
-
-    _events: list[dict[str, Any]] = field(default_factory=list)
-
-    def append_event(self, *, event_type: str, record_id: str, details: dict[str, Any] | None = None) -> dict[str, Any]:
-        event = {
-            "event_type": event_type,
-            "record_id": record_id,
-            "occurred_at": datetime.now(tz=timezone.utc).isoformat(),
-            "details": details or {},
-        }
-        self._events.append(event)
-        return event
-
-    def append_trust_state_transition(self, *, record_id: str, trust_state: str, warnings: list[str]) -> dict[str, Any]:
-        return self.append_event(
-            event_type="trust_state_transition",
-            record_id=record_id,
-            details={"trust_state": trust_state, "warnings": warnings},
-        )
-
-    def append_continuity_checkpoint(self, *, record_id: str, continuity_ok: bool) -> dict[str, Any]:
-        return self.append_event(
-            event_type="continuity_checkpoint",
-            record_id=record_id,
-            details={"continuity_ok": continuity_ok},
-        )
-
-    def append_replay_warning(self, *, record_id: str, reason: str) -> dict[str, Any]:
-        return self.append_event(
-            event_type="replay_warning",
-            record_id=record_id,
-            details={"reason": reason},
-        )
-
-    def history(self, record_id: str) -> list[dict[str, Any]]:
-        return [event for event in self._events if event["record_id"] == record_id]
+from hc_runtime.decision_engine import TrustState, TrustStateDecisionEngine
+from hc_runtime.events import RuntimeEventStore
 
 
 class ValidatorPipeline:
@@ -96,30 +46,3 @@ class ValidatorPipeline:
             "required": bool(warnings),
             "placeholder": True,
         }
-
-
-class TrustStateDecisionEngine:
-    """Minimal advisory trust-state classifier and warning generator."""
-
-    def classify(self, pipeline_result: dict[str, Any]) -> tuple[TrustState, list[str]]:
-        warnings = list(pipeline_result["trust_assignment"]["warnings"])
-        schema_valid = pipeline_result["schema_result"]["valid"]
-        hash_verified = pipeline_result["hash_result"]["hash_verified"]
-
-        if not schema_valid:
-            state = TrustState.UNRESOLVED
-        elif not hash_verified:
-            state = TrustState.REVIEW_REQUIRED
-        elif "degraded" in pipeline_result["record_id"].lower():
-            state = TrustState.DEGRADED
-            warnings.append("Runtime is operating in advisory degraded placeholder mode for this record.")
-        else:
-            state = TrustState.ADVISORY
-
-        if state is not TrustState.ADVISORY:
-            warnings.append("Human-supervised validation is required before trust interpretation.")
-
-        return state, self.public_safe_warnings(warnings)
-
-    def public_safe_warnings(self, warnings: list[str]) -> list[str]:
-        return [warning for warning in warnings if "private" not in warning.lower()]
