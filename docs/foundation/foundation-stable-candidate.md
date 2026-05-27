@@ -115,3 +115,4 @@ HC:// remains an advisory verification and provenance surface that requires huma
 - `docs/governance/validator-ethics-and-conduct.md`
 - `docs/HC_CONTROL_PANEL.md`
 - `docs/foundation/trust-taxonomy-and-terminology.md`
+- `docs/architecture/operational-core-transition-map.md`

@@ -170,6 +170,7 @@ For detailed status, use:
 - `docs/security/threat-model-master-map.md`
 - `docs/governance/validator-ethics-and-conduct.md`
 - `docs/governance/governance-structure-map.md`
+- `docs/architecture/operational-core-transition-map.md`
 
 
 ### Implemented systems
@@ -274,6 +275,7 @@ For HC:// trust integrity abuse and anti-manipulation posture guidance, see:
 - `docs/FOUNDATION_STATUS.md`
 - `docs/foundation/trust-taxonomy-and-terminology.md`
 - `docs/foundation/foundation-stable-candidate.md`
+- `docs/architecture/operational-core-transition-map.md`
 
 For evidence preservation, continuity gap visibility, and trace reconstruction guidance, see `docs/evidence-preservation-recovery-model.md`.
 
