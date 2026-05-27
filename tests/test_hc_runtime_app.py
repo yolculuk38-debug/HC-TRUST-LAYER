@@ -35,6 +35,10 @@ async def test_health_endpoint_returns_advisory_runtime_status(client: httpx.Asy
     payload = response.json()
     assert payload["status"] == "ok"
     assert payload["advisory_only"] is True
+    assert payload["public_safe"] is True
+    assert payload["traceable"] is True
+    assert payload["truth_guarantee"] is False
+    assert isinstance(payload["warnings"], list)
 
 
 @pytest.mark.anyio
@@ -94,9 +98,43 @@ async def test_verify_history_endpoint_returns_public_safe_event_history(client:
     assert response.status_code == 200
     payload = response.json()
     assert payload["record_id"] == "history-record"
+    assert payload["advisory_only"] is True
     assert payload["public_safe"] is True
+    assert payload["traceable"] is True
+    assert payload["truth_guarantee"] is False
+    assert isinstance(payload["warnings"], list)
     assert isinstance(payload["events"], list)
     assert isinstance(payload["trust_state_transitions"], list)
+
+
+@pytest.mark.anyio
+async def test_runtime_public_endpoints_never_expose_forbidden_authority_claims(client: httpx.AsyncClient) -> None:
+    endpoint_payloads = [
+        (await client.get("/health")).json(),
+        (await client.get("/verify/unsafe-terms")).json(),
+        (await client.post("/verify/unsafe-terms", json={"qr_input": "hc://demo hash:ok"})).json(),
+        (await client.get("/qr/unsafe-terms")).json(),
+        (await client.get("/verify/unsafe-terms/history")).json(),
+        (await client.post("/federation/review", json={"record_id": "unsafe-terms"})).json(),
+        (await client.get("/telemetry/health")).json(),
+        (await client.get("/telemetry/runtime")).json(),
+        (await client.get("/telemetry/queues")).json(),
+    ]
+
+    forbidden_phrases = [
+        "objective truth",
+        "forensic certainty",
+        "enforcement",
+        "autonomous governance",
+        "production-ready",
+    ]
+
+    for payload in endpoint_payloads:
+        message_text = str(payload.get("message", "")).lower()
+        warning_text = " ".join(str(item).lower() for item in payload.get("warnings", []))
+        searchable_text = f"{message_text} {warning_text}"
+        for phrase in forbidden_phrases:
+            assert phrase not in searchable_text
 
 
 @pytest.mark.anyio
