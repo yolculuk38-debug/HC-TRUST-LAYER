@@ -238,12 +238,65 @@ async def test_duplicate_verification_input_sets_replay_visibility_and_stable_sh
     first = await client.post("/verify/dup-record", json={"qr_input": "hc://dup hash:ok replay"})
     second = await client.post("/verify/dup-record", json={"qr_input": "hc://dup hash:ok replay"})
 
-    assert first.status_code == 200
-    assert second.status_code == 200
 
-    expected_keys = set(first.json().keys())
-    assert set(second.json().keys()) == expected_keys
-    assert second.json()["replay_warning"] is True
+@pytest.mark.anyio
+async def test_advisory_downgrade_safety_keeps_warnings_visible_and_public_safe(client: httpx.AsyncClient) -> None:
+    degraded = (await client.post("/verify/downgrade-record", json={"qr_input": "hc://downgrade hash:ok degraded"})).json()
+    replay = (await client.post("/verify/downgrade-record", json={"qr_input": "hc://downgrade hash:ok replay"})).json()
+
+    for payload in (degraded, replay):
+        assert payload["advisory_only"] is True
+        assert payload["public_safe"] is True
+        assert isinstance(payload["warnings"], list)
+        assert payload["warnings"]
+        assert all(isinstance(warning, str) for warning in payload["warnings"])
+
+    assert any("degraded runtime restriction policy" in warning.lower() for warning in degraded["warnings"])
+    assert any("replay-warning escalation policy" in warning.lower() for warning in replay["warnings"])
+
+
+@pytest.mark.anyio
+async def test_event_policy_correlation_remains_append_only_and_telemetry_consistent(client: httpx.AsyncClient) -> None:
+    record_id = "event-policy-record"
+    response = await client.post(f"/verify/{record_id}", json={"qr_input": "hc://event hash:ok replay"})
+    payload = response.json()
+    history_payload = (await client.get(f"/verify/{record_id}/history")).json()
+    telemetry_runtime = (await client.get("/telemetry/runtime")).json()
+
+    assert payload["public_exposure"] == "restricted"
+    assert history_payload["replay_warning_visible"] is True
+    assert isinstance(history_payload["events"], list)
+    assert len(history_payload["events"]) >= 3
+    assert all(event["public_safe"] is True for event in history_payload["events"])
+    assert telemetry_runtime["advisory_only"] is True
+    assert telemetry_runtime["public_safe"] is True
+
+
+@pytest.mark.anyio
+async def test_runtime_warning_lists_remain_deterministic_and_ordered(client: httpx.AsyncClient) -> None:
+    first_response = await client.post(
+        "/verify/warning-order-record",
+        json={"qr_input": "hc://warning-order hash:ok replay degraded"},
+    )
+    second_response = await client.post(
+        "/verify/warning-order-record",
+        json={"qr_input": "hc://warning-order hash:ok replay degraded"},
+    )
+    first = first_response.json()
+    second = second_response.json()
+
+    assert isinstance(first["warnings"], list)
+    assert isinstance(second["warnings"], list)
+    assert first["warnings"] == second["warnings"]
+    assert first["warnings"][0].lower().startswith("replay warning")
+    assert first["warnings"][-1].lower().startswith("degraded runtime restriction policy")
+
+    assert first_response.status_code == 200
+    assert second_response.status_code == 200
+
+    expected_keys = set(first.keys())
+    assert set(second.keys()) == expected_keys
+    assert second["replay_warning"] is True
 
     history = (await client.get("/verify/dup-record/history")).json()
     assert history["replay_warning_visible"] is True

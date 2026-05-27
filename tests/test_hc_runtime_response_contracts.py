@@ -192,3 +192,29 @@ async def test_verify_response_field_order_and_shape_are_stable_for_runtime_outp
     ]
     assert list(payload.keys()) == expected_order
     assert isinstance(payload["warnings"], list)
+
+
+@pytest.mark.anyio
+async def test_malformed_verify_payload_does_not_leak_internal_trace_text() -> None:
+    transport = httpx.ASGITransport(app=create_app())
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as client:
+        response = await client.post("/verify/malformed-record", json={"unexpected": "field"})
+
+    assert response.status_code == 422
+    payload = response.json()
+    serialized = str(payload).lower()
+    assert "traceback" not in serialized
+    assert "internal server error" not in serialized
+    assert "exception" not in serialized
+
+
+def test_runtime_response_builders_keep_warning_lists_normalized() -> None:
+    payload = advisory_response("normalized-warning-record", "Normalized warning response.", warnings=["one", "two"])
+    degraded = degraded_runtime_response("normalized-degraded-record", warnings=["degraded warning"])
+
+    assert isinstance(payload["warnings"], list)
+    assert isinstance(degraded["warnings"], list)
+    assert payload["warnings"] == ["one", "two"]
+    assert degraded["warnings"] == ["degraded warning"]
+    assert payload["public_safe"] is True
+    assert degraded["public_safe"] is True
