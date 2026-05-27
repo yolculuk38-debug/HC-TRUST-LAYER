@@ -161,6 +161,8 @@ State usage guidance:
 
 ## Related documents
 
+- `docs/core/trust-state-persistence-and-audit-runtime.md`
+
 - `docs/immutable-state-history-model.md`
 - `docs/maintainer-accountability-model.md`
 - `docs/public-verification-disputes.md`

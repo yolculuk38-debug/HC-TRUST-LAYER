@@ -151,6 +151,8 @@ State usage guidance:
 
 ## Related documents
 
+- `docs/core/trust-state-persistence-and-audit-runtime.md`
+
 - `HC_CONSTITUTION.md`
 - `docs/accountability-defense-layer.md`
 - `docs/federated-oversight-model.md`
