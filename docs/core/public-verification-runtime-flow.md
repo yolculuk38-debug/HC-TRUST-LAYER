@@ -174,3 +174,5 @@ This runtime flow specification is documentation guidance only. It does not modi
 - `docs/core/trust-state-persistence-and-audit-runtime.md`
 - `docs/protocol-graph-integrity.md`
 - `docs/anti-spoofing-foundations.md`
+
+- `docs/core/trust-state-scoring-and-confidence-model.md`

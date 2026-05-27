@@ -169,6 +169,7 @@ This lifecycle depends on coordinated behavior across these runtime surfaces:
 - **public verification gateway**: enforces boundary-safe intake and response exposure shaping.
 - **orchestration runtime**: coordinates stage ordering, routing, retries, and escalation paths.
 - **trust-state runtime**: resolves current trust-state signals used by advisory response generation.
+- **trust-state scoring model**: interprets confidence, uncertainty, evidence quality, and escalation severity with advisory-only boundaries.
 
 ## Verification and Governance Boundary Note
 

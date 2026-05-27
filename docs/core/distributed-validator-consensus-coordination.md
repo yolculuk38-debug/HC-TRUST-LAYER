@@ -141,3 +141,4 @@ This model is documentation guidance only. It does not modify canonical records,
 - `docs/public-verification-disputes.md`
 - `docs/core/federation-trust-exchange.md`
 - `docs/HC_CONTROL_PANEL.md`
+- `docs/core/trust-state-scoring-and-confidence-model.md`
