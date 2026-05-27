@@ -1,7 +1,8 @@
-"""Advisory-only HC:// runtime service components for minimal operational flow."""
+"""Advisory-only HC:// runtime service components for operational prototype flow."""
 
 from __future__ import annotations
 
+from dataclasses import dataclass, field
 from typing import Any
 
 from hc_runtime.decision_engine import TrustState, TrustStateDecisionEngine
@@ -45,4 +46,69 @@ class ValidatorPipeline:
             "route": "human-supervised-validation" if warnings else "none",
             "required": bool(warnings),
             "placeholder": True,
+        }
+
+
+@dataclass(slots=True)
+class RuntimeQueueStore:
+    verification_queue: list[dict[str, Any]] = field(default_factory=list)
+    escalation_queue: list[dict[str, Any]] = field(default_factory=list)
+    replay_warning_queue: list[dict[str, Any]] = field(default_factory=list)
+
+    def enqueue_verification(self, item: dict[str, Any]) -> None:
+        self.verification_queue.append(item)
+
+    def enqueue_escalation(self, item: dict[str, Any]) -> None:
+        self.escalation_queue.append(item)
+
+    def enqueue_replay_warning(self, item: dict[str, Any]) -> None:
+        self.replay_warning_queue.append(item)
+
+
+@dataclass(slots=True)
+class RuntimePolicyEngine:
+    def evaluate(
+        self,
+        *,
+        trust_state: TrustState,
+        replay_warning: bool,
+        degraded_mode: bool,
+    ) -> dict[str, Any]:
+        warnings: list[str] = []
+        public_exposure = "standard"
+
+        if trust_state is not TrustState.ADVISORY:
+            warnings.append("Advisory downgrade active for non-advisory trust-state response.")
+
+        if replay_warning:
+            warnings.append("Replay-warning escalation policy routed to human-supervised validation queue.")
+            public_exposure = "restricted"
+
+        if degraded_mode:
+            warnings.append("Degraded runtime restriction policy applied to runtime response scope.")
+            public_exposure = "restricted"
+
+        return {
+            "advisory_downgrade": trust_state is not TrustState.ADVISORY,
+            "replay_warning_escalation": replay_warning,
+            "degraded_runtime_restriction": degraded_mode,
+            "public_exposure": public_exposure,
+            "warnings": warnings,
+            "advisory_only": True,
+        }
+
+
+@dataclass(slots=True)
+class FederationRelay:
+    def review(self, *, record_id: str, degraded_mode: bool, replay_warning: bool) -> dict[str, Any]:
+        warnings: list[str] = []
+        if degraded_mode:
+            warnings.append("Degraded federation visibility is active in this advisory relay placeholder.")
+        if replay_warning:
+            warnings.append("Federation warning propagation includes replay-warning visibility.")
+        return {
+            "record_id": record_id,
+            "relay_mode": "local-placeholder",
+            "advisory_only": True,
+            "warnings": warnings,
         }
