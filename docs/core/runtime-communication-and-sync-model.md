@@ -117,3 +117,5 @@ HC:// remains an advisory verification and provenance surface requiring human-su
 - `docs/governance/governance-structure-map.md`
 - `HC_CONSTITUTION.md`
 - `docs/HC_CONTROL_PANEL.md`
+
+For distributed validator consensus-oriented coordination guidance, see `docs/core/distributed-validator-consensus-coordination.md`.
