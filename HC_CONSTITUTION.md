@@ -93,4 +93,4 @@ HC:// constitutional guarantees are process guarantees rooted in visibility and 
 - `docs/governance/governance-structure-map.md`
 - `docs/architecture/operational-core-transition-map.md`
 - `docs/core/autonomous-validator-runtime-architecture.md`
-
+- `docs/core/runtime-communication-and-sync-model.md`

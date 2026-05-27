@@ -89,5 +89,5 @@ Trigger examples:
 - `docs/governance/governance-structure-map.md`
 - `docs/architecture/operational-core-transition-map.md`
 - `docs/core/runtime-state-model.md`
+- `docs/core/runtime-communication-and-sync-model.md`
 - `docs/core/autonomous-validator-runtime-architecture.md`
-

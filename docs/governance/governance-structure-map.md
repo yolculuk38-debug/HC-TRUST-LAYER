@@ -127,4 +127,4 @@ HC:// governance progression should remain staged and auditable:
 - `docs/architecture/operational-core-transition-map.md`
 - `docs/core/runtime-state-model.md`
 - `docs/core/autonomous-validator-runtime-architecture.md`
-
+- `docs/core/runtime-communication-and-sync-model.md`
