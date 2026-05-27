@@ -145,6 +145,7 @@ This model aligns with and should be interpreted alongside:
 - `docs/core/distributed-validator-consensus-coordination.md`
 - `docs/core/public-qr-verification-gateway.md`
 - `docs/HC_CONTROL_PANEL.md`
+- `docs/core/trust-state-scoring-and-confidence-model.md`
 
 ## Implementation reminder
 

@@ -172,6 +172,7 @@ For detailed status, use:
 - `docs/governance/governance-structure-map.md`
 - `docs/architecture/operational-core-transition-map.md`
 - `docs/core/runtime-communication-and-sync-model.md`
+- `docs/core/trust-state-scoring-and-confidence-model.md`
 
 
 ### Implemented systems

@@ -132,6 +132,7 @@ This model is documentation and runtime guidance only. It does not modify canoni
 - `docs/immutable-state-history-model.md`
 - `docs/evidence-preservation-recovery-model.md`
 - `docs/HC_CONTROL_PANEL.md`
+- `docs/core/trust-state-scoring-and-confidence-model.md`
 
 For distributed validator consensus-oriented coordination guidance, see `docs/core/distributed-validator-consensus-coordination.md`.
 - `docs/core/public-qr-verification-gateway.md`
