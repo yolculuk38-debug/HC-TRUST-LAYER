@@ -167,4 +167,4 @@ The verification layer, reviewer actions, and policy evolution processes require
 - `docs/multi-layer-consensus-model.md`
 - `docs/foundation/trust-taxonomy-and-terminology.md`
 - `docs/security/threat-model-master-map.md`
-
+- `docs/governance/validator-ethics-and-conduct.md`
