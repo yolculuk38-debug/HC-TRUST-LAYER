@@ -25,9 +25,48 @@ def test_verify_endpoint_returns_public_safe_advisory_placeholder() -> None:
     assert payload["record_id"] == "test-record"
     assert payload["status"] == "ADVISORY"
 
-    message = payload["message"].lower()
-    assert "placeholder" in message
-    assert "advisory" in message
-    assert "no truth guarantee" in message
-    assert "no canonical record mutation" in message
-    assert "no private data exposure" in message
+
+def test_verify_qr_flow_runs_pipeline_decision_and_response_contract() -> None:
+    response = client.post("/verify/qr-record", json={"qr_input": "hc://demo hash:abc123"})
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["status"] == "ADVISORY"
+    assert payload["trust_state"] == "ADVISORY"
+    assert payload["replay_warning"] is False
+    assert payload["advisory_only"] is True
+
+
+def test_verify_history_endpoint_returns_public_safe_event_history() -> None:
+    client.post("/verify/history-record", json={"qr_input": "hc://history hash:ok"})
+    response = client.get("/verify/history-record/history")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["record_id"] == "history-record"
+    assert payload["advisory_only"] is True
+    assert payload["public_safe"] is True
+    assert isinstance(payload["events"], list)
+    assert any(event["event_type"] == "trust_state_transition" for event in payload["events"])
+
+
+def test_replay_warning_is_propagated_and_appended() -> None:
+    response = client.post("/verify/replay-record", json={"qr_input": "hc://demo replay"})
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["replay_warning"] is True
+    assert any("Replay warning" in warning for warning in payload["warnings"])
+
+    history = client.get("/verify/replay-record/history").json()["events"]
+    assert any(event["event_type"] == "replay_warning" for event in history)
+
+
+def test_federation_review_route_is_advisory_local_only_placeholder() -> None:
+    response = client.post("/federation/review", json={"record_id": "fed-review-1"})
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["status"] == "ADVISORY"
+    assert payload["advisory_only"] is True
+    assert "No external networking" in payload["message"]

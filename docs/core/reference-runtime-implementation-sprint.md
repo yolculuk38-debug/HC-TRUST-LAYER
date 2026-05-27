@@ -80,12 +80,12 @@ This plan aligns with the following HC-TRUST-LAYER documents:
 ## Phased Implementation Order
 
 - **Phase A: API skeleton** ✅ Scaffolded/started (`src/hc_runtime/`)
-- **Phase B: validator service**
-- **Phase C: event store**
-- **Phase D: decision engine**
-- **Phase E: public gateway**
+- **Phase B: validator service** ✅ Completed (#443)
+- **Phase C: event store** ✅ Completed (#444)
+- **Phase D: decision engine** ✅ Completed (#445)
+- **Phase E: public gateway** ✅ Completed (#446, #447, #448, #449)
 - **Phase F: observability**
-- **Phase G: end-to-end demo**
+- **Phase G: end-to-end demo** ✅ Completed (#450)
 - **Phase H: hardening**
 
 ## Constraints
@@ -104,3 +104,21 @@ This plan aligns with the following HC-TRUST-LAYER documents:
 - Keep each implementation increment small, reversible, and auditable.
 - Require human-supervised validation for non-trivial trust-kernel-impacting changes before merge.
 - Maintain verification map and protocol graph continuity in follow-on runtime work where boundaries are affected.
+
+
+## Sprint #443-#450 Runtime Notes
+
+- Implemented advisory-only validator runtime pipeline hooks under `src/hc_runtime`.
+- Implemented minimal append-only in-memory runtime event utilities for trust-state transitions, continuity checkpoints, and replay warnings.
+- Added minimal trust-state decision engine states: `ADVISORY`, `REVIEW_REQUIRED`, `DEGRADED`, `UNRESOLVED`.
+- Added advisory QR verification runtime flow and continuity history endpoint.
+- Added advisory federation review placeholder route with local-only behavior and no external networking.
+- Added a minimal end-to-end runtime flow demo path through `/verify/{record_id}` and `/verify/{record_id}/history`.
+
+### Advisory-only Runtime Limitations
+
+- This runtime remains advisory-only and requires human-supervised validation for trust interpretation.
+- No production readiness claim is made.
+- No canonical schema contract modifications are included.
+- No validator weakening, workflow weakening, or federation transport implementation is included.
+- Runtime event storage is an in-memory placeholder and not a durable canonical record surface.
