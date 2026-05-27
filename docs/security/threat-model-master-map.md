@@ -120,3 +120,4 @@ HC:// is designed for layered risk reduction, not perfect security.
 - `docs/verification-result-states.md`
 - `docs/anti-spoofing-foundations.md`
 - `docs/authenticated-ai-validator-access.md`
+- `docs/governance/validator-ethics-and-conduct.md`
