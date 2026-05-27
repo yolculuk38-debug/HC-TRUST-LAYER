@@ -1,0 +1,75 @@
+"""Tests for HC:// reference runtime public verification response contracts."""
+
+from pathlib import Path
+
+from hc_runtime.contracts.responses import (
+    advisory_response,
+    continuity_warning_response,
+    degraded_runtime_response,
+    disputed_response,
+    not_found_response,
+    unresolved_response,
+    verified_placeholder_response,
+)
+
+
+def _assert_public_safe_contract(payload: dict, expected_status: str, expected_record_id: str | None) -> None:
+    if expected_record_id is None:
+        assert "record_id" not in payload
+    else:
+        assert payload["record_id"] == expected_record_id
+
+    assert payload["status"] == expected_status
+    assert payload["advisory_only"] is True
+    assert payload["public_safe"] is True
+    assert isinstance(payload["message"], str)
+    assert isinstance(payload["warnings"], list)
+    assert payload["traceable"] is True
+    assert payload["truth_guarantee"] is False
+
+
+def test_advisory_response_contract_shape() -> None:
+    payload = advisory_response("rec-1", "Advisory message", warnings=["w1"])
+    _assert_public_safe_contract(payload, "ADVISORY", "rec-1")
+
+
+def test_verified_placeholder_response_contract_shape() -> None:
+    payload = verified_placeholder_response("rec-2")
+    _assert_public_safe_contract(payload, "VERIFIED_PLACEHOLDER", "rec-2")
+
+
+def test_disputed_response_contract_shape() -> None:
+    payload = disputed_response("rec-3")
+    _assert_public_safe_contract(payload, "DISPUTED", "rec-3")
+
+
+def test_unresolved_response_contract_shape() -> None:
+    payload = unresolved_response("rec-4")
+    _assert_public_safe_contract(payload, "UNRESOLVED", "rec-4")
+
+
+def test_continuity_warning_response_contract_shape() -> None:
+    payload = continuity_warning_response("rec-5")
+    _assert_public_safe_contract(payload, "CONTINUITY_WARNING", "rec-5")
+
+
+def test_degraded_runtime_response_contract_shape() -> None:
+    payload = degraded_runtime_response("rec-6")
+    _assert_public_safe_contract(payload, "DEGRADED_RUNTIME", "rec-6")
+
+
+def test_not_found_response_contract_shape_without_record_id() -> None:
+    payload = not_found_response()
+    _assert_public_safe_contract(payload, "NOT_FOUND", None)
+
+
+def test_not_found_response_contract_shape_with_record_id() -> None:
+    payload = not_found_response("rec-404")
+    _assert_public_safe_contract(payload, "NOT_FOUND", "rec-404")
+
+
+def test_verify_route_uses_advisory_response_contract_builder() -> None:
+    verify_route = Path("src/hc_runtime/routes/verify.py").read_text(encoding="utf-8")
+
+    assert "from hc_runtime.contracts import advisory_response" in verify_route
+    assert "return advisory_response(" in verify_route
