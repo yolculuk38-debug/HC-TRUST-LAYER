@@ -4,7 +4,7 @@ from copy import deepcopy
 
 from hc_runtime.events import RuntimeEventStore
 from hc_runtime.decision_engine import TrustState
-from hc_runtime.runtime import RuntimeQueueStore, TrustStateDecisionEngine, ValidatorPipeline
+from hc_runtime.runtime import RuntimePolicyEngine, RuntimeQueueStore, TrustStateDecisionEngine, ValidatorPipeline
 
 
 def test_validator_pipeline_hooks_execute() -> None:
@@ -209,3 +209,45 @@ def test_runtime_event_store_replay_and_continuity_history_is_deterministic() ->
     assert history[0]["details"]["trust_state"] == "REPLAY_WARNING"
     assert history[1]["details"]["continuity_ok"] is False
     assert history[2]["details"]["reason"] == "Replay marker detected."
+
+
+def test_runtime_policy_determinism_for_identical_advisory_inputs() -> None:
+    engine = TrustStateDecisionEngine()
+
+    advisory_state, _ = engine.classify(
+        record_id="deterministic-advisory-record",
+        qr_input="hc://deterministic hash:ok",
+        schema_valid=True,
+        hash_verified=True,
+        continuity_ok=True,
+        replay_warning=False,
+    )
+    first = RuntimePolicyEngine().evaluate(trust_state=advisory_state, replay_warning=False, degraded_mode=False)
+    second = RuntimePolicyEngine().evaluate(trust_state=advisory_state, replay_warning=False, degraded_mode=False)
+
+    assert first == second
+    assert first["advisory_downgrade"] is False
+    assert first["degraded_runtime_restriction"] is False
+    assert first["replay_warning_escalation"] is False
+    assert first["public_exposure"] == "standard"
+
+
+def test_runtime_policy_degraded_and_replay_controls_are_deterministic() -> None:
+    policy_engine = RuntimePolicyEngine()
+    degraded_state = TrustState.DEGRADED
+
+    degraded_first = policy_engine.evaluate(trust_state=degraded_state, replay_warning=False, degraded_mode=True)
+    degraded_second = policy_engine.evaluate(trust_state=degraded_state, replay_warning=False, degraded_mode=True)
+    replay_first = policy_engine.evaluate(trust_state=TrustState.REPLAY_WARNING, replay_warning=True, degraded_mode=False)
+    replay_second = policy_engine.evaluate(
+        trust_state=TrustState.REPLAY_WARNING,
+        replay_warning=True,
+        degraded_mode=False,
+    )
+
+    assert degraded_first == degraded_second
+    assert replay_first == replay_second
+    assert degraded_first["degraded_runtime_restriction"] is True
+    assert replay_first["replay_warning_escalation"] is True
+    assert degraded_first["advisory_downgrade"] is True
+    assert replay_first["advisory_downgrade"] is True
