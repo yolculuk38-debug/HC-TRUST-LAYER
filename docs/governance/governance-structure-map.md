@@ -126,3 +126,5 @@ HC:// governance progression should remain staged and auditable:
 - `docs/foundation/foundation-stable-candidate.md`
 - `docs/architecture/operational-core-transition-map.md`
 - `docs/core/runtime-state-model.md`
+- `docs/core/autonomous-validator-runtime-architecture.md`
+
