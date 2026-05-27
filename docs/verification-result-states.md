@@ -167,3 +167,4 @@ These states are UX-standardization guidance for the self-service prototype and 
 - `docs/federated-oversight-model.md`
 - `docs/public-verification-disputes.md`
 - `docs/immutable-state-history-model.md`
+- `docs/foundation/trust-taxonomy-and-terminology.md`
