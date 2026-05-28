@@ -219,6 +219,56 @@ async def test_telemetry_endpoints_expose_consistent_advisory_metadata(client: h
 
 
 @pytest.mark.anyio
+async def test_degraded_telemetry_keeps_runtime_state_visible_without_hidden_fallback(client: httpx.AsyncClient) -> None:
+    await client.post("/verify/degraded-telemetry-record", json={"qr_input": "hc://demo hash:ok degraded"})
+
+    telemetry_health_payload = (await client.get("/telemetry/health")).json()
+    runtime_payload = (await client.get("/telemetry/runtime")).json()
+    queues_payload = (await client.get("/telemetry/queues")).json()
+
+    for payload in (telemetry_health_payload, runtime_payload, queues_payload):
+        assert payload["status"] == "degraded"
+        assert payload["degraded"] is True
+        assert payload["degraded_reasons"] == ["runtime_recovery_mode"]
+        assert payload["warnings"] == [
+            "Degraded runtime events are visible for advisory human-supervised validation."
+        ]
+        assert payload["advisory_only"] is True
+        assert payload["public_safe"] is True
+        assert payload["truth_guarantee"] is False
+
+    assert runtime_payload["degraded_events"] == 1
+    assert queues_payload["degraded_queue_handling"] is True
+
+
+@pytest.mark.anyio
+async def test_telemetry_response_key_order_is_deterministic(client: httpx.AsyncClient) -> None:
+    expected_health_order = [
+        "status",
+        "runtime_mode",
+        "advisory_only",
+        "public_safe",
+        "traceable",
+        "truth_guarantee",
+        "warnings",
+        "degraded",
+        "degraded_reasons",
+    ]
+    expected_runtime_order = [*expected_health_order, "events_total", "degraded_events"]
+    expected_queue_order = [
+        *expected_health_order,
+        "verification_queue",
+        "escalation_queue",
+        "replay_warning_queue",
+        "degraded_queue_handling",
+    ]
+
+    assert list((await client.get("/telemetry/health")).json()) == expected_health_order
+    assert list((await client.get("/telemetry/runtime")).json()) == expected_runtime_order
+    assert list((await client.get("/telemetry/queues")).json()) == expected_queue_order
+
+
+@pytest.mark.anyio
 async def test_degraded_runtime_recovery_behavior_is_public_safe(client: httpx.AsyncClient) -> None:
     response = await client.post("/verify/degraded-record", json={"qr_input": "hc://demo hash:ok degraded"})
 

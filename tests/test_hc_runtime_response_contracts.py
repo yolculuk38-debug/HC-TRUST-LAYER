@@ -131,6 +131,8 @@ async def test_telemetry_payload_shape_stability_regression() -> None:
         "traceable",
         "truth_guarantee",
         "warnings",
+        "degraded",
+        "degraded_reasons",
     }
     expected_runtime_keys = expected_health_keys | {"events_total", "degraded_events"}
     expected_queue_keys = expected_health_keys | {
