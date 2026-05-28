@@ -74,10 +74,33 @@ def test_rendered_output_includes_required_control_fields(capsys):
     render_summary(summary, changed_paths)
     output = capsys.readouterr().out
 
+    assert "HUMAN_READABLE_SUMMARY:" in output
+    assert "- Risk level: LOW" in output
+    assert "- Auto-merge eligible: yes" in output
+    assert "- Human review required: no" in output
+    assert "- Protected paths touched: no" in output
+    assert "- Protected path list: none" in output
+    assert "- Override reason: none" in output
+
+    assert "MACHINE_READABLE_SUMMARY:" in output
     assert "RISK:" in output
     assert "AUTO_MERGE_ELIGIBLE:" in output
     assert "HUMAN_REVIEW_REQUIRED:" in output
     assert "PROTECTED_PATHS_TOUCHED:" in output
+
+
+def test_rendered_output_lists_protected_paths_and_override_reason(capsys):
+    changed_paths = ["docs/verification-map.md", "policy/routing.yaml"]
+    summary = summarize_governance(changed_paths)
+    summary = apply_label_overrides(summary, {"manual-review", "auto-merge"})
+
+    render_summary(summary, changed_paths)
+    output = capsys.readouterr().out
+
+    assert "- Protected paths touched: yes" in output
+    assert "- Protected path list:" in output
+    assert "  - policy/routing.yaml" in output
+    assert "- Override reason: label-conflict: manual-review overrides auto-merge;" in output
 
 
 def test_manual_review_overrides_auto_merge_label_conflict():

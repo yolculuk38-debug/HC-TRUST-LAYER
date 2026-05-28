@@ -13,15 +13,28 @@ This control-layer script helps reviewers quickly triage scope while preserving 
 
 ## Governance Signals
 
-The script classifies changed paths into `LOW`, `MEDIUM`, or `HIGH` risk and prints:
+The script classifies changed paths into `LOW`, `MEDIUM`, or `HIGH` risk and prints two report sections:
+
+1. `HUMAN_READABLE_SUMMARY` for maintainers and reviewers.
+2. `MACHINE_READABLE_SUMMARY` for automation and parser stability.
+
+Human-readable fields include:
+
+- risk level
+- auto-merge eligibility
+- human review requirement
+- protected-path touch status and protected path list
+- override reason (or `none`)
+
+Machine-readable fields continue to include:
 
 - `RISK: LOW|MEDIUM|HIGH`
 - `AUTO_MERGE_ELIGIBLE: yes|no`
 - `HUMAN_REVIEW_REQUIRED: yes|no`
 - `PROTECTED_PATHS_TOUCHED: yes|no`
+- `OVERRIDE_REASON: ...` when applicable
 
 Additional advisory flags are reported for docs-only, dependency-only, and tests-only scope.
-When label conflicts are present, an explicit `OVERRIDE_REASON` field is emitted.
 
 ## Protected Paths
 
@@ -90,3 +103,14 @@ This preflight is advisory-only governance guidance.
 - It does **not** enable unrestricted autonomous merge behavior.
 
 Final merge authority remains human-supervised in HC:// and HC-TRUST-LAYER governance workflows.
+
+## Maintainer Read Order
+
+To keep governance preflight review fast and mobile-readable:
+
+1. Read `HUMAN_READABLE_SUMMARY` first for immediate triage.
+2. If `Protected paths touched` is `yes`, route to human-supervised validation and appropriate reviewers.
+3. If `Auto-merge eligible` is `no`, check `Override reason` for blocking governance context.
+4. Use `MACHINE_READABLE_SUMMARY` only for automation checks, logs, and parser-backed workflows.
+
+This preserves human-supervised validation while keeping HC:// governance status obvious at a glance.

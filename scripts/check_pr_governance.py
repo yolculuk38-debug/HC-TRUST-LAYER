@@ -165,7 +165,26 @@ def _as_yes_no(value: bool) -> str:
 
 
 def render_summary(summary: GovernanceSummary, changed_paths: list[str]) -> None:
+    protected_paths = [path for path in changed_paths if _matches_any(path, PROTECTED_PREFIXES)]
+
     print("HC-TRUST-LAYER governance preflight (advisory)")
+    print("HUMAN_READABLE_SUMMARY:")
+    print(f"- Risk level: {summary.risk.value}")
+    print(f"- Auto-merge eligible: {_as_yes_no(summary.auto_merge_eligible)}")
+    print(f"- Human review required: {_as_yes_no(summary.human_review_required)}")
+    print(f"- Protected paths touched: {_as_yes_no(summary.protected_paths_touched)}")
+    if protected_paths:
+        print("- Protected path list:")
+        for path in protected_paths:
+            print(f"  - {path}")
+    else:
+        print("- Protected path list: none")
+    if summary.override_reason:
+        print(f"- Override reason: {summary.override_reason}")
+    else:
+        print("- Override reason: none")
+
+    print("MACHINE_READABLE_SUMMARY:")
     print(f"CHANGED_PATH_COUNT: {len(changed_paths)}")
     print(f"DOCS_ONLY: {_as_yes_no(summary.docs_only)}")
     print(f"DEPENDENCY_ONLY: {_as_yes_no(summary.dependency_only)}")
