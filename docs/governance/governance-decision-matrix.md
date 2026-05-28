@@ -18,7 +18,8 @@ Manual-review requirements always override automation eligibility.
 
 | PR category | Risk level | Auto-merge eligibility | Human review requirement | Rationale |
 | --- | --- | --- | --- | --- |
-| Docs-only PRs | Low | Eligible when checks pass and no protected boundary is touched | Recommended (maintainer spot-check) | Documentation updates are generally low risk, but maintainers should confirm terminology, provenance clarity, and no hidden trust-kernel impact. |
+| Generic docs-only PRs | Low | Eligible when checks pass and no protected boundary is touched | Recommended (maintainer spot-check) | Non-governance documentation updates are generally low risk, but maintainers should confirm terminology, provenance clarity, and no hidden trust-kernel impact. |
+| Governance-policy documentation PRs (`docs/governance/**`, automation policy docs, governance routing docs) | Medium | Not eligible by default | Required (explicit human-supervised validation) | Governance-policy documentation can change review routing and governance interpretation, and must align with `docs/governance/pr-risk-label-taxonomy.md` medium-risk expectations. |
 | Tests-only PRs | Low to Medium | Eligible when scoped to non-behavioral test updates and checks pass | Required for scope confirmation | Test updates can indirectly change release confidence; reviewer confirms no runtime, schema, or policy behavior change is implied. |
 | Dependency updates | Medium | Conditionally eligible for patch-level, low-impact updates after checks pass | Required | Dependency drift can affect supply chain and transitive behavior; human-supervised validation confirms bounded risk and rollback readiness. |
 | Workflow changes | Medium to High | Not eligible by default | Required | CI/governance workflow edits can alter enforcement and audit trail expectations; maintainers must validate control integrity. |
