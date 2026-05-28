@@ -28,6 +28,7 @@ HC-TRUST-LAYER is an early-stage verification infrastructure that helps teams ev
 - [Architecture Overview](#architecture-overview)
 - [Repository Structure](#repository-structure)
 - [Contributing](#contributing)
+- [Supervised automation policy](docs/supervised_automation_policy.md)
 - [Security & Responsible Use](#security--responsible-use)
 - [IP / Brand / Idea Use Notice](#ip--brand--idea-use-notice)
 - [Historical Origin](#historical-origin)
