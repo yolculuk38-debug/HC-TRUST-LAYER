@@ -4,6 +4,7 @@ from hc_runtime.contracts.responses import (
     advisory_response,
     continuity_warning_response,
     degraded_runtime_response,
+    malformed_input_response,
     disputed_response,
     not_found_response,
     unresolved_response,
@@ -17,5 +18,6 @@ __all__ = [
     "unresolved_response",
     "continuity_warning_response",
     "degraded_runtime_response",
+    "malformed_input_response",
     "not_found_response",
 ]
