@@ -116,6 +116,7 @@ HC:// governance progression should remain staged and auditable:
 
 - `HC_CONSTITUTION.md`
 - `docs/governance/validator-ethics-and-conduct.md`
+- `docs/governance/branch-protection-enforcement-baseline.md`
 - `docs/federated-oversight-model.md`
 - `docs/multi-layer-consensus-model.md`
 - `docs/FOUNDATION_STATUS.md`
