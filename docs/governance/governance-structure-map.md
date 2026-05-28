@@ -119,6 +119,7 @@ HC:// governance progression should remain staged and auditable:
 - `docs/governance/branch-protection-enforcement-baseline.md`
 - `docs/governance/pr-risk-label-taxonomy.md`
 - `docs/governance/review-conversation-resolution.md`
+- `docs/governance/governance-escalation-and-freeze.md`
 - `docs/governance/maintainer-daily-checklist.md`
 - `docs/federated-oversight-model.md`
 - `docs/multi-layer-consensus-model.md`
