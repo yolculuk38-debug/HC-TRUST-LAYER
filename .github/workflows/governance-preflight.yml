@@ -1,0 +1,60 @@
+name: Governance Preflight
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  governance-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Run HC-TRUST-LAYER governance preflight
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          python scripts/check_pr_governance.py --base-ref "$BASE_SHA" --head-ref "$HEAD_SHA" | tee governance_preflight.log
+
+          echo "Governance summary:"
+          grep -E '^(RISK|AUTO_MERGE_ELIGIBLE|HUMAN_REVIEW_REQUIRED|PROTECTED_PATHS_TOUCHED):' governance_preflight.log
+
+          risk="$(awk -F': ' '/^RISK:/ {print $2}' governance_preflight.log)"
+          auto_merge="$(awk -F': ' '/^AUTO_MERGE_ELIGIBLE:/ {print $2}' governance_preflight.log)"
+          human_review="$(awk -F': ' '/^HUMAN_REVIEW_REQUIRED:/ {print $2}' governance_preflight.log)"
+
+          if [ "$risk" = "HIGH" ]; then
+            echo "HIGH risk PR: human review required; auto-merge not eligible."
+          elif [ "$risk" = "LOW" ]; then
+            echo "LOW risk PR: safe automation candidate (advisory only)."
+          else
+            echo "MEDIUM risk PR: human-supervised validation required."
+          fi
+
+          if [ "$human_review" = "yes" ]; then
+            echo "Human review required by governance preflight signal."
+          fi
+
+          if [ "$auto_merge" = "no" ]; then
+            echo "Auto-merge not eligible by governance preflight signal."
+          fi
+
+          echo "Advisory: governance preflight is control-layer only; merge authority remains human-supervised."
