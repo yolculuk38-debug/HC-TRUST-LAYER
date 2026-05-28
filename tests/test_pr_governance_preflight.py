@@ -10,6 +10,7 @@ sys.modules[SPEC.name] = MODULE
 SPEC.loader.exec_module(MODULE)
 
 RiskLevel = MODULE.RiskLevel
+render_summary = MODULE.render_summary
 summarize_governance = MODULE.summarize_governance
 
 
@@ -37,13 +38,24 @@ def test_tests_only_is_low_risk_and_auto_merge_eligible():
     assert summary.auto_merge_eligible is True
 
 
-def test_protected_path_is_high_risk_and_never_auto_merge_eligible():
-    summary = summarize_governance(["schema/record-v1.schema.json", "docs/index.md"])
+def test_protected_paths_are_high_risk_never_auto_merge_and_require_human_review():
+    high_risk_paths = [
+        "schema/record-v1.schema.json",
+        "validators/core_validator.py",
+        "signatures/signer.py",
+        "policy/routing.yaml",
+        "federation/sync.py",
+        ".github/workflows/ci.yml",
+        "src/hc_runtime/pipeline.py",
+    ]
 
-    assert summary.risk == RiskLevel.HIGH
-    assert summary.protected_paths_touched is True
-    assert summary.auto_merge_eligible is False
-    assert summary.human_review_required is True
+    for changed_path in high_risk_paths:
+        summary = summarize_governance([changed_path, "docs/index.md"])
+
+        assert summary.risk == RiskLevel.HIGH
+        assert summary.protected_paths_touched is True
+        assert summary.auto_merge_eligible is False
+        assert summary.human_review_required is True
 
 
 def test_mixed_non_protected_changes_are_medium_risk():
@@ -52,3 +64,16 @@ def test_mixed_non_protected_changes_are_medium_risk():
     assert summary.risk == RiskLevel.MEDIUM
     assert summary.auto_merge_eligible is False
     assert summary.human_review_required is True
+
+
+def test_rendered_output_includes_required_control_fields(capsys):
+    changed_paths = ["docs/verification-map.md"]
+    summary = summarize_governance(changed_paths)
+
+    render_summary(summary, changed_paths)
+    output = capsys.readouterr().out
+
+    assert "RISK:" in output
+    assert "AUTO_MERGE_ELIGIBLE:" in output
+    assert "HUMAN_REVIEW_REQUIRED:" in output
+    assert "PROTECTED_PATHS_TOUCHED:" in output
