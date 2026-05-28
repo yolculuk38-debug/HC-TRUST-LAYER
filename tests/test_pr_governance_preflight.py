@@ -12,6 +12,7 @@ SPEC.loader.exec_module(MODULE)
 RiskLevel = MODULE.RiskLevel
 render_summary = MODULE.render_summary
 summarize_governance = MODULE.summarize_governance
+apply_label_overrides = MODULE.apply_label_overrides
 
 
 def test_docs_only_is_low_risk_and_auto_merge_eligible():
@@ -77,3 +78,33 @@ def test_rendered_output_includes_required_control_fields(capsys):
     assert "AUTO_MERGE_ELIGIBLE:" in output
     assert "HUMAN_REVIEW_REQUIRED:" in output
     assert "PROTECTED_PATHS_TOUCHED:" in output
+
+
+def test_manual_review_overrides_auto_merge_label_conflict():
+    summary = summarize_governance(["docs/verification-map.md"])
+    result = apply_label_overrides(summary, {"manual-review", "auto-merge"})
+
+    assert result.auto_merge_eligible is False
+    assert result.human_review_required is True
+    assert result.override_reason is not None
+    assert "manual-review overrides auto-merge" in result.override_reason
+
+
+def test_risk_high_with_auto_merge_forces_human_review():
+    summary = summarize_governance(["docs/verification-map.md"])
+    result = apply_label_overrides(summary, {"risk-high", "auto-merge"})
+
+    assert result.auto_merge_eligible is False
+    assert result.human_review_required is True
+    assert result.override_reason is not None
+    assert "risk-high is not eligible for auto-merge" in result.override_reason
+
+
+def test_blocked_human_review_with_auto_merge_forces_human_review():
+    summary = summarize_governance(["docs/verification-map.md"])
+    result = apply_label_overrides(summary, {"blocked-human-review", "auto-merge"})
+
+    assert result.auto_merge_eligible is False
+    assert result.human_review_required is True
+    assert result.override_reason is not None
+    assert "blocked-human-review disallows auto-merge" in result.override_reason
