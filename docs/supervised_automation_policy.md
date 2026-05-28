@@ -59,6 +59,15 @@ Any PR touching the following areas is **not** eligible for safe auto-merge and 
 - runtime semantic changes (regardless of file path)
 - security- or secret-related changes (regardless of file path)
 
+## Protected Path Ownership Policy
+
+HC-TRUST-LAYER uses `CODEOWNERS` as a governance boundary for protected protocol/runtime/security areas.
+
+- Protected paths must include an explicit owner assignment.
+- Changes in protected paths require explicit human review and must not be treated as autonomous governance.
+- Low-risk docs/test/dependency patch changes outside protected paths may be considered safe automation candidates when all required checks pass.
+- Runtime, schema, validator, signing/security, policy, federation, and workflow paths remain manual-approval routes under human-supervised validation.
+
 ## Required Gates Before Any Safe Auto-Merge
 
 All gates below must pass for a PR to be eligible for safe auto-merge:

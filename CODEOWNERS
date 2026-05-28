@@ -1,7 +1,17 @@
-# HC:// TRUST LAYER code ownership
+# HC-TRUST-LAYER CODEOWNERS baseline
+# Default owner is the repository owner.
+* @yolculuk38-debug
 
-README.md @yolculuk38-debug
-docs/ @yolculuk38-debug
-schema/ @yolculuk38-debug
-src/ @yolculuk38-debug
-.github/workflows/ @yolculuk38-debug
+# Protected protocol/runtime/security boundaries.
+schema/** @yolculuk38-debug
+validators/** @yolculuk38-debug
+signatures/** @yolculuk38-debug
+policy/** @yolculuk38-debug
+federation/** @yolculuk38-debug
+.github/workflows/** @yolculuk38-debug
+src/hc_runtime/** @yolculuk38-debug
+
+# Governance and automation policy documentation.
+docs/governance/** @yolculuk38-debug
+docs/supervised_automation_policy.md @yolculuk38-debug
+docs/automation.md @yolculuk38-debug
