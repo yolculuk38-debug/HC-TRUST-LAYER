@@ -201,7 +201,8 @@ This scaffold is intentionally minimal and non-production. It does not mutate ca
 
 Runtime smoke test dependency note:
 
-- Runtime smoke tests expect local availability of `FastAPI`, `httpx`, `anyio`, and `pytest`.
+- Runtime smoke tests must install dependencies through the documented path: `pip install -r requirements.txt`.
+- Runtime smoke tests expect local availability of `FastAPI`, `httpx`, `anyio`, and `pytest` (provided by `requirements.txt`).
 - Expected command:
   - `PYTHONPATH=src pytest -q tests/test_hc_runtime_app.py tests/test_hc_runtime_pipeline.py tests/test_hc_runtime_response_contracts.py`
 
