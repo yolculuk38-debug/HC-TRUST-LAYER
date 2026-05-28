@@ -46,6 +46,7 @@ class GovernanceSummary:
     docs_only: bool
     dependency_only: bool
     tests_only: bool
+    override_reason: str | None
 
 
 def run_git_diff(base_ref: str, head_ref: str) -> list[str]:
@@ -90,6 +91,7 @@ def summarize_governance(changed_paths: list[str]) -> GovernanceSummary:
             docs_only=True,
             dependency_only=False,
             tests_only=False,
+            override_reason=None,
         )
 
     protected_paths_touched = any(_matches_any(path, PROTECTED_PREFIXES) for path in changed_paths)
@@ -117,6 +119,44 @@ def summarize_governance(changed_paths: list[str]) -> GovernanceSummary:
         docs_only=docs_only,
         dependency_only=dependency_only,
         tests_only=tests_only,
+        override_reason=None,
+    )
+
+
+def apply_label_overrides(summary: GovernanceSummary, labels: set[str]) -> GovernanceSummary:
+    normalized = {label.strip().lower() for label in labels if label.strip()}
+    if not normalized:
+        return summary
+
+    override_reason: str | None = None
+    if "manual-review" in normalized and "auto-merge" in normalized:
+        override_reason = (
+            "label-conflict: manual-review overrides auto-merge; "
+            "auto-merge cancelled and human-supervised validation required"
+        )
+    elif "risk-high" in normalized and "auto-merge" in normalized:
+        override_reason = (
+            "label-conflict: risk-high is not eligible for auto-merge; "
+            "human-supervised validation required"
+        )
+    elif "blocked-human-review" in normalized and "auto-merge" in normalized:
+        override_reason = (
+            "label-conflict: blocked-human-review disallows auto-merge; "
+            "human-supervised validation required"
+        )
+
+    if override_reason is None:
+        return summary
+
+    return GovernanceSummary(
+        risk=summary.risk,
+        auto_merge_eligible=False,
+        human_review_required=True,
+        protected_paths_touched=summary.protected_paths_touched,
+        docs_only=summary.docs_only,
+        dependency_only=summary.dependency_only,
+        tests_only=summary.tests_only,
+        override_reason=override_reason,
     )
 
 
@@ -134,6 +174,8 @@ def render_summary(summary: GovernanceSummary, changed_paths: list[str]) -> None
     print(f"AUTO_MERGE_ELIGIBLE: {_as_yes_no(summary.auto_merge_eligible)}")
     print(f"HUMAN_REVIEW_REQUIRED: {_as_yes_no(summary.human_review_required)}")
     print(f"PROTECTED_PATHS_TOUCHED: {_as_yes_no(summary.protected_paths_touched)}")
+    if summary.override_reason:
+        print(f"OVERRIDE_REASON: {summary.override_reason}")
 
 
 def main() -> int:
@@ -145,10 +187,17 @@ def main() -> int:
         nargs="*",
         help="Optional explicit file list; when provided, git diff is skipped.",
     )
+    parser.add_argument(
+        "--labels",
+        nargs="*",
+        default=[],
+        help="Optional PR labels used for advisory conflict handling.",
+    )
     args = parser.parse_args()
 
     changed_paths = args.files if args.files is not None else run_git_diff(args.base_ref, args.head_ref)
     summary = summarize_governance(changed_paths)
+    summary = apply_label_overrides(summary, set(args.labels))
     render_summary(summary, changed_paths)
     print(
         "ADVISORY: This preflight is a governance control-layer signal only; "

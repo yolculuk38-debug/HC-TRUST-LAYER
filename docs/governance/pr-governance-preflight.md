@@ -21,6 +21,7 @@ The script classifies changed paths into `LOW`, `MEDIUM`, or `HIGH` risk and pri
 - `PROTECTED_PATHS_TOUCHED: yes|no`
 
 Additional advisory flags are reported for docs-only, dependency-only, and tests-only scope.
+When label conflicts are present, an explicit `OVERRIDE_REASON` field is emitted.
 
 ## Protected Paths
 
@@ -56,6 +57,27 @@ and only when protected paths are not touched.
 ### MEDIUM risk
 
 All remaining non-protected mixed scopes are treated as `MEDIUM` and require human review.
+
+## Label Conflict Handling (Governance Override)
+
+The preflight accepts optional labels using:
+
+- `python scripts/check_pr_governance.py --labels <label1> <label2> ...`
+
+When conflicting labels are present, manual governance boundaries override auto-merge eligibility:
+
+- `manual-review` + `auto-merge`
+- `risk-high` + `auto-merge`
+- `blocked-human-review` + `auto-merge`
+
+Expected behavior for each conflict:
+
+- auto-merge must not proceed,
+- human-supervised validation is required,
+- workflow may cancel auto-merge safely,
+- preflight prints `OVERRIDE_REASON` with the governing explanation.
+
+Manual-review semantics always override auto-merge eligibility in this advisory governance layer.
 
 ## Authority and Safety Boundary
 
