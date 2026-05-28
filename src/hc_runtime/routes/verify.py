@@ -6,6 +6,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 
 from hc_runtime.contracts import advisory_response
+from hc_runtime.qr_spoof_protection import inspect_qr_spoof_protection
 from hc_runtime.state import DECISION_ENGINE, EVENT_STORE, FEDERATION_RELAY, PIPELINE, POLICY_ENGINE, QUEUE_STORE
 
 router = APIRouter()
@@ -19,21 +20,33 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
     QUEUE_STORE.enqueue_verification({"record_id": record_id, "qr_input": qr_input})
 
     pipeline_result = PIPELINE.run(record_id=record_id, qr_input=qr_input)
-    replay_warning = "replay" in qr_input.lower()
+    spoof_protection = inspect_qr_spoof_protection(record_id=record_id, qr_input=qr_input)
+    replay_warning = spoof_protection.replay_warning
     continuity_ok = "continuity-warning" not in qr_input.lower() and "continuity-warning" not in record_id.lower()
-    degraded_mode = "degraded" in qr_input.lower() or "degraded" in record_id.lower() or not continuity_ok
+    degraded_mode = (
+        "degraded" in qr_input.lower()
+        or "degraded" in record_id.lower()
+        or spoof_protection.stale_warning
+        or not continuity_ok
+    )
+    spoof_warnings_present = bool(spoof_protection.warnings)
 
     trust_state, warnings = DECISION_ENGINE.classify(
         record_id=record_id,
         qr_input=qr_input,
         schema_valid=pipeline_result["schema_result"]["valid"],
-        hash_verified=pipeline_result["hash_result"]["hash_verified"],
+        hash_verified=pipeline_result["hash_result"]["hash_verified"] and not spoof_warnings_present,
         continuity_ok=continuity_ok,
         replay_warning=replay_warning,
     )
 
     policy = POLICY_ENGINE.evaluate(trust_state=trust_state, replay_warning=replay_warning, degraded_mode=degraded_mode)
-    warnings = [*pipeline_result["trust_assignment"]["warnings"], *warnings, *policy["warnings"]]
+    warnings = [
+        *pipeline_result["trust_assignment"]["warnings"],
+        *spoof_protection.warnings,
+        *warnings,
+        *policy["warnings"],
+    ]
 
     EVENT_STORE.append_trust_transition(record_id=record_id, trust_state=trust_state.value, warnings=warnings)
     EVENT_STORE.append_continuity_checkpoint(record_id=record_id, continuity_ok=continuity_ok, warnings=warnings)
