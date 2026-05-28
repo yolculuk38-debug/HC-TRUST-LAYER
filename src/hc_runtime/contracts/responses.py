@@ -85,6 +85,22 @@ def degraded_runtime_response(record_id: str, warnings: list[str] | None = None)
     )
 
 
+def malformed_input_response(record_id: str | None = None, warnings: list[str] | None = None) -> dict[str, Any]:
+    return _build_response(
+        record_id=record_id,
+        status="MALFORMED_INPUT",
+        message=(
+            "Malformed HC:// validator input was rejected within advisory runtime boundaries. "
+            "Human-supervised validation is required before trust interpretation."
+        ),
+        warnings=warnings
+        or [
+            "Validator input was malformed, incomplete, or not processable as a public-safe QR verification request.",
+            "No hidden fallback behavior was applied; warning routing remains explicit.",
+        ],
+    )
+
+
 def not_found_response(record_id: str | None = None, warnings: list[str] | None = None) -> dict[str, Any]:
     return _build_response(
         record_id=record_id,

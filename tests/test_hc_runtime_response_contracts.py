@@ -11,6 +11,7 @@ from hc_runtime.contracts.responses import (
     advisory_response,
     continuity_warning_response,
     degraded_runtime_response,
+    malformed_input_response,
     disputed_response,
     not_found_response,
     unresolved_response,
@@ -101,6 +102,7 @@ def test_advisory_contract_messages_do_not_imply_forbidden_claims() -> None:
         continuity_warning_response("rec-e"),
         degraded_runtime_response("rec-f"),
         not_found_response("rec-g"),
+        malformed_input_response("rec-h"),
     ]
     forbidden_phrases = [
         "objective truth",
@@ -220,3 +222,138 @@ def test_runtime_response_builders_keep_warning_lists_normalized() -> None:
     assert degraded["warnings"] == ["degraded warning"]
     assert payload["public_safe"] is True
     assert degraded["public_safe"] is True
+
+
+def _assert_validator_runtime_contract(payload: dict, expected_record_id: str) -> None:
+    assert payload["record_id"] == expected_record_id
+    assert payload["advisory_only"] is True
+    assert payload["public_safe"] is True
+    assert payload["truth_guarantee"] is False
+    assert isinstance(payload["warnings"], list)
+    assert all(isinstance(warning, str) for warning in payload["warnings"])
+
+
+@pytest.mark.anyio
+async def test_validator_runtime_responses_are_consistent_for_qr_input_cases() -> None:
+    cases = [
+        ("empty-qr-input", "", "UNRESOLVED", True, False),
+        ("normal-qr-input", "hc://normal hash:ok", "ADVISORY", False, False),
+        ("invalid-hash-marker", "hc://normal sha256:not-a-validator-marker", "REVIEW_REQUIRED", True, False),
+        ("stale-replayed-payload", "hc://normal hash:ok stale replay", "REPLAY_WARNING", True, True),
+        ("degraded-validator-state", "hc://normal hash:ok degraded", "DEGRADED", True, False),
+    ]
+
+    transport = httpx.ASGITransport(app=create_app())
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as client:
+        for record_id, qr_input, trust_state, expects_warning, expects_replay in cases:
+            response = await client.post(f"/verify/{record_id}", json={"qr_input": qr_input})
+            payload = response.json()
+
+            assert response.status_code == 200
+            _assert_validator_runtime_contract(payload, record_id)
+            assert payload["trust_state"] == trust_state
+            assert payload["replay_warning"] is expects_replay
+            assert bool(payload["warnings"]) is expects_warning
+            if "degraded" in record_id or "degraded" in qr_input:
+                assert payload["degraded_runtime"] is True
+                assert payload["recovery_mode"] is True
+
+
+@pytest.mark.anyio
+async def test_malformed_and_missing_validator_payloads_return_public_safe_warning_contract() -> None:
+    cases = [
+        ("missing-payload-fields", {"unexpected": "field"}),
+        ("malformed-qr-input", {"qr_input": {"not": "a string"}}),
+    ]
+    expected_order = [
+        "status",
+        "advisory_only",
+        "public_safe",
+        "message",
+        "warnings",
+        "traceable",
+        "truth_guarantee",
+        "record_id",
+        "malformed_input",
+        "public_exposure",
+    ]
+
+    transport = httpx.ASGITransport(app=create_app())
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as client:
+        for record_id, request_json in cases:
+            response = await client.post(f"/verify/{record_id}", json=request_json)
+            payload = response.json()
+
+            assert response.status_code == 422
+            assert list(payload.keys()) == expected_order
+            _assert_validator_runtime_contract(payload, record_id)
+            assert payload["status"] == "MALFORMED_INPUT"
+            assert payload["malformed_input"] is True
+            assert payload["public_exposure"] == "restricted"
+            assert any("malformed" in warning.lower() for warning in payload["warnings"])
+            assert any("no hidden fallback" in warning.lower() for warning in payload["warnings"])
+
+
+@pytest.mark.anyio
+async def test_replay_degraded_and_escalation_visibility_remain_explicit() -> None:
+    record_id = "warning-escalation-visibility"
+
+    transport = httpx.ASGITransport(app=create_app())
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as client:
+        payload = (
+            await client.post(
+                f"/verify/{record_id}",
+                json={"qr_input": "hc://warning-escalation hash:ok replay degraded continuity-warning"},
+            )
+        ).json()
+        history = (await client.get(f"/verify/{record_id}/history")).json()
+        queues = (await client.get("/telemetry/queues")).json()
+
+    _assert_validator_runtime_contract(payload, record_id)
+    assert payload["replay_warning"] is True
+    assert payload["continuity_warning"] is True
+    assert payload["degraded_runtime"] is True
+    assert payload["recovery_mode"] is True
+    assert payload["public_exposure"] == "restricted"
+    assert any("replay" in warning.lower() for warning in payload["warnings"])
+    assert any("degraded" in warning.lower() for warning in payload["warnings"])
+    assert any("human-supervised validation" in warning.lower() for warning in payload["warnings"])
+    assert history["replay_warning_visible"] is True
+    assert any(item["reason"] == "replay_warning" for item in queues["escalation_queue"])
+    assert any(item["reason"] == "advisory_downgrade" for item in queues["escalation_queue"])
+
+
+@pytest.mark.anyio
+async def test_validator_output_keys_are_stable_across_normal_replayed_and_degraded_responses() -> None:
+    expected_order = [
+        "status",
+        "advisory_only",
+        "public_safe",
+        "message",
+        "warnings",
+        "traceable",
+        "truth_guarantee",
+        "record_id",
+        "trust_state",
+        "replay_warning",
+        "continuity_warning",
+        "degraded_runtime",
+        "recovery_mode",
+        "public_exposure",
+    ]
+    cases = [
+        ("stable-normal-output", "hc://stable hash:ok"),
+        ("stable-replayed-output", "hc://stable hash:ok replay"),
+        ("stable-degraded-output", "hc://stable hash:ok degraded"),
+    ]
+
+    transport = httpx.ASGITransport(app=create_app())
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as client:
+        payloads = [
+            (await client.post(f"/verify/{record_id}", json={"qr_input": qr_input})).json()
+            for record_id, qr_input in cases
+        ]
+
+    assert [list(payload.keys()) for payload in payloads] == [expected_order, expected_order, expected_order]
+    for payload, (record_id, _qr_input) in zip(payloads, cases, strict=True):
+        _assert_validator_runtime_contract(payload, record_id)
