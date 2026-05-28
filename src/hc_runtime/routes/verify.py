@@ -33,7 +33,7 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
     )
 
     policy = POLICY_ENGINE.evaluate(trust_state=trust_state, replay_warning=replay_warning, degraded_mode=degraded_mode)
-    warnings = [*warnings, *policy["warnings"]]
+    warnings = [*pipeline_result["trust_assignment"]["warnings"], *warnings, *policy["warnings"]]
 
     EVENT_STORE.append_trust_transition(record_id=record_id, trust_state=trust_state.value, warnings=warnings)
     EVENT_STORE.append_continuity_checkpoint(record_id=record_id, continuity_ok=continuity_ok, warnings=warnings)
