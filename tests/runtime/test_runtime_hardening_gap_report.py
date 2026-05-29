@@ -59,8 +59,10 @@ def test_advisory_public_safe_contract_language_is_present() -> None:
     assert "advisory_only=true" in combined
     assert "public_safe=true" in combined
     assert "truth_guarantee=false" in combined
-    assert "Runtime behavior change: none." in combined
+    assert "Runtime behavior change: public-safe redaction of secret-like runtime output only." in combined
     assert "Schema mutation: none." in combined
+    assert "telemetry-like payloads" in combined
+    assert "<redacted-token>" in combined
     assert "Workflow mutation: none." in combined
     assert "Human final authority" in combined
     assert "human-supervised validation" in combined

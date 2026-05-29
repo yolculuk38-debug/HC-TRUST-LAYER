@@ -5,7 +5,7 @@ Metadata:
 - advisory_only=true
 - public_safe=true
 - truth_guarantee=false
-- Runtime behavior change: none.
+- Runtime behavior change: public-safe redaction of secret-like runtime output only.
 - Schema mutation: none.
 - Workflow mutation: none.
 - Human final authority: required for prioritization, acceptance, and any security-sensitive follow-up.
@@ -45,7 +45,7 @@ The following findings are based on repository evidence available in the HC-TRUS
 | Runtime responses expose an advisory/public-safe contract. | `src/hc_runtime/contracts/responses.py` sets `advisory_only=True`, `public_safe=True`, and `truth_guarantee=False` in the shared response builder. | Good baseline, but every new runtime surface should preserve the same public-safe contract. | Verified in repo. |
 | Runtime app copy avoids production-readiness and truth-authority claims. | `src/hc_runtime/app.py` describes the reference runtime as advisory-only, not production-ready, and not a truth guarantee. | Public operator copy should continue to avoid unsupported production-security guarantees. | Verified in repo. |
 | Runtime verification routes keep human-supervised validation visible. | `src/hc_runtime/routes/verify.py` returns advisory payloads and warning text that routes unresolved interpretation to human-supervised validation. | This should remain visible when future hardening controls are added. | Verified in repo. |
-| Runtime tests already check public-safe advisory contract fields and redaction expectations. | `tests/runtime/` includes runtime contract and replay/continuity tests that assert `advisory_only`, `public_safe`, `truth_guarantee`, and no secret/token exposure in response serialization. | Existing tests reduce accidental drift but do not replace human review. | Verified in repo. |
+| Runtime tests check public-safe advisory contract fields and redaction expectations. | `tests/runtime/` includes runtime contract, replay/continuity, and secret-like input redaction tests that assert `advisory_only`, `public_safe`, `truth_guarantee`, stable response keys, warning redaction, and no raw secret-like material in telemetry-like payload serialization. | Existing tests reduce accidental drift but do not replace human review. | Verified in repo. |
 | Redis, Vault, JWT, ECC, and RSA are not implemented as runtime hardening controls in the current HC:// reference runtime. | Repository search found no runtime implementation references for these options. | Treat these as future options only unless a later PR adds implementation evidence and review coverage. | Future option only. |
 
 ## Advisory-only risk checklist
@@ -63,14 +63,28 @@ Use this checklist during review of runtime security hardening proposals. It is 
 
 ## Secret handling review checklist
 
-This checklist is for human reviewers and maintainers. It does not add automated secret scanning or autonomous blocking behavior.
+This checklist is for human reviewers and maintainers. It does not add automated secret scanning, secret storage, autonomous blocking behavior, or signing/security policy changes.
 
 - [ ] No private keys, access tokens, API keys, session cookies, credentials, or secret-like literals are added to repository files.
+- [ ] Runtime responses preserve `advisory_only=true`, `public_safe=true`, `truth_guarantee=false`, and an always-present `warnings` field.
+- [ ] Runtime response serialization preserves deterministic public keys while redacting or omitting raw secret-like input.
 - [ ] Runtime warnings and history responses do not echo raw secret-bearing input.
-- [ ] Logs, telemetry, queues, and audit-visible events redact or omit secret-like input before public exposure.
-- [ ] Example values are visibly fake and cannot be mistaken for live credentials.
+- [ ] Logs, telemetry-like payloads, queues, and audit-visible events redact or omit secret-like input before public exposure.
+- [ ] Public examples use placeholders such as `<redacted-token>`, `<redacted-api-key>`, or `<redacted-private-key>` instead of credential-shaped sample values.
 - [ ] Configuration guidance separates public-safe documentation from deployment-only secret material.
 - [ ] Any future secret-management implementation requires explicit human-supervised validation before merge.
+
+### Public-safe example guidance
+
+Use placeholder-only examples in runtime docs and tests intended for public review:
+
+```text
+hc://example-record hash:example <redacted-token>
+api_key=<redacted-api-key>
+private_key=<redacted-private-key>
+```
+
+Do not include credential-shaped sample values in documentation, warnings, telemetry-like payload examples, or public audit trail examples.
 
 ## Rate-limit and abuse-protection recommendations
 

@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from hc_runtime.redaction import redact_public_payload, redact_secret_like_text
+
 
 def _build_response(
     *,
@@ -16,14 +18,14 @@ def _build_response(
         "status": status,
         "advisory_only": True,
         "public_safe": True,
-        "message": message,
-        "warnings": warnings or [],
+        "message": redact_secret_like_text(message),
+        "warnings": redact_public_payload(warnings or []),
         "traceable": True,
         "truth_guarantee": False,
     }
 
     if record_id is not None:
-        response["record_id"] = record_id
+        response["record_id"] = redact_secret_like_text(record_id)
 
     return response
 
