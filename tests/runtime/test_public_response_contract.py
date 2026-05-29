@@ -56,6 +56,10 @@ def _structured_qr(record_id: str, **overrides: object) -> str:
     return _canonical_json(payload)
 
 
+def _response_roundtrip(payload: dict[str, Any]) -> dict[str, Any]:
+    return json.loads(json.dumps(payload, separators=(",", ":"), ensure_ascii=False))
+
+
 def _warning_text(payload: dict[str, Any]) -> str:
     return " ".join(str(warning).lower() for warning in payload["warnings"])
 
@@ -182,12 +186,15 @@ async def test_stable_output_keys_preserved_across_public_response_cases(client:
     ]
 
     payloads = [await _post(client, record_id, qr_input) for record_id, qr_input in cases]
+    roundtripped_payloads = [_response_roundtrip(payload) for payload in payloads]
 
-    assert [list(payload.keys()) for payload in payloads] == [list(QR_VERIFICATION_RESPONSE_KEYS)] * len(cases)
-    assert all(payload["advisory_only"] is True for payload in payloads)
-    assert all(payload["public_safe"] is True for payload in payloads)
-    assert all(payload["truth_guarantee"] is False for payload in payloads)
-    assert all(isinstance(payload["warnings"], list) for payload in payloads)
+    assert [list(payload.keys()) for payload in roundtripped_payloads] == [list(QR_VERIFICATION_RESPONSE_KEYS)] * len(cases)
+    for payload, (record_id, _qr_input) in zip(roundtripped_payloads, cases, strict=True):
+        _assert_public_contract(payload, record_id=record_id)
+        assert payload["advisory_only"] is True
+        assert payload["public_safe"] is True
+        assert payload["truth_guarantee"] is False
+        assert isinstance(payload["warnings"], list)
 
 
 def test_public_response_contract_documentation_lists_stable_runtime_keys() -> None:
