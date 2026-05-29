@@ -8,6 +8,8 @@
 
 The future architecture workspace separates long-term HC:// research ideas from active protocol, runtime, security, governance, and verification map documentation.
 
+For promotion from future-facing concepts into active issues, implementation plans, pull requests, reviews, merges, and releases, use the [Future to Active Promotion Workflow](../process/future-to-active-promotion.md).
+
 Use this directory to discuss possible directions without mixing them into active TODOs or implementation commitments. Existing `docs/drafts/` content remains in place and is not moved, deleted, or reclassified by this workspace.
 
 ## Status Vocabulary
