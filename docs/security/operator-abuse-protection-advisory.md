@@ -18,6 +18,8 @@ The runtime may expose advisory warnings and deterministic summary fields so ope
 
 ## Operator-side rate limiting guidance
 
+Detailed architecture and checklist coverage lives in `docs/security/rate-limiting-abuse-control.md`. Runtime warning contract details live in `docs/runtime/advisory-rate-limit-warning-contract.md`.
+
 Operators should treat operator-side rate limiting as an external control and apply any rate limiting outside the trust kernel at an ingress, proxy, or hosting-control layer they already supervise.
 
 Recommended review posture:
@@ -28,6 +30,7 @@ Recommended review posture:
 4. Treat degraded validator state as visible operational context; do not hide degraded states to preserve a cleaner result.
 5. Keep public warnings concise and avoid raw secrets, tokens, credentials, private keys, or request bodies.
 6. Preserve `advisory_only=true`, `public_safe=true`, `truth_guarantee=false`, and an always-present `warnings` field.
+7. Treat `rate_limit_recommended` as an advisory operator-review warning, not as a runtime block or denial.
 
 ## Boundary
 
