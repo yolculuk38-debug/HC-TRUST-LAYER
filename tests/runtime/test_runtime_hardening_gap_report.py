@@ -9,6 +9,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SECURITY_REPORT = REPO_ROOT / "docs/security/runtime-hardening-gap-report.md"
 RUNTIME_NOTES = REPO_ROOT / "docs/runtime/runtime-contract-risk-notes.md"
+ABUSE_ADVISORY = REPO_ROOT / "docs/security/operator-abuse-protection-advisory.md"
 
 PROTECTED_PREFIXES = (
     "schema/",
@@ -36,6 +37,7 @@ def _read(path: Path) -> str:
 def test_runtime_hardening_docs_exist() -> None:
     assert SECURITY_REPORT.exists()
     assert RUNTIME_NOTES.exists()
+    assert ABUSE_ADVISORY.exists()
 
 
 def test_gap_report_contains_required_checklist_sections() -> None:
@@ -109,7 +111,28 @@ def test_no_protected_governance_paths_changed_in_worktree() -> None:
 
 
 def test_no_secret_token_or_key_material_added_to_gap_docs() -> None:
-    combined = _read(SECURITY_REPORT) + "\n" + _read(RUNTIME_NOTES)
+    combined = _read(SECURITY_REPORT) + "\n" + _read(RUNTIME_NOTES) + "\n" + _read(ABUSE_ADVISORY)
 
     for pattern in SECRET_PATTERNS:
         assert pattern.search(combined) is None
+
+
+def test_operator_abuse_protection_advisory_preserves_non_enforcement_boundary() -> None:
+    text = _read(ABUSE_ADVISORY)
+
+    required_phrases = [
+        "advisory_only=true",
+        "public_safe=true",
+        "truth_guarantee=false",
+        "operator-side rate limiting",
+        "does not deny requests",
+        "implement Redis",
+        "implement JWT",
+        "implement Vault",
+        "human-supervised validation",
+    ]
+    for phrase in required_phrases:
+        assert phrase in text
+
+    assert "autonomous enforcement" in text
+    assert "raw secrets" in text

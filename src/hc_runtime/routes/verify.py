@@ -9,7 +9,7 @@ from hc_runtime.contracts import advisory_response
 from hc_runtime.decision_engine import TrustState
 from hc_runtime.qr_spoof_protection import QRRiskLevel, inspect_qr_spoof_protection
 from hc_runtime.redaction import redact_secret_like_text
-from hc_runtime.state import DECISION_ENGINE, EVENT_STORE, FEDERATION_RELAY, PIPELINE, POLICY_ENGINE, QUEUE_STORE
+from hc_runtime.state import ABUSE_SIGNAL_TRACKER, DECISION_ENGINE, EVENT_STORE, FEDERATION_RELAY, PIPELINE, POLICY_ENGINE, QUEUE_STORE
 
 router = APIRouter()
 
@@ -87,6 +87,16 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
         *warnings,
         *policy["warnings"],
     ]
+    abuse_signals = ABUSE_SIGNAL_TRACKER.inspect(
+        record_id=record_id,
+        schema_valid=pipeline_result["schema_result"]["valid"],
+        qr_risk_level=risk_level,
+        qr_risk_reasons=spoof_protection.risk_reasons,
+        qr_risk_group_keys=spoof_protection.risk_group_keys,
+        replay_warning=replay_warning,
+        degraded_mode=degraded_mode,
+    )
+    warnings.extend(abuse_signals.warnings)
     if human_review_recommended and not any("human-supervised validation" in warning.lower() for warning in warnings):
         warnings.append("Human-supervised validation is recommended for high-risk or incident-level QR spoof indicators.")
 
@@ -141,6 +151,7 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
     payload["qr_risk_reasons"] = spoof_protection.risk_reasons
     payload["human_review_recommended"] = human_review_recommended
     payload["escalation_queued"] = escalation_queued
+    abuse_signal_summary = abuse_signals.summary()
     payload["incident_summary"] = incident_summary
     payload["qr_scan_summary"] = {
         "warning_count": len(warnings),
@@ -148,6 +159,15 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
         "escalation_queued": escalation_queued,
         "human_review_recommended": human_review_recommended,
         "risk_level": risk_level.value,
+        "abuse_signal_level": abuse_signal_summary["signal_level"],
+        "abuse_signal_reasons": abuse_signal_summary["reasons"],
+        "abuse_pattern_counts": abuse_signal_summary["pattern_counts"],
+        "abuse_warnings": abuse_signal_summary["warnings"],
+        "advisory_only": abuse_signal_summary["advisory_only"],
+        "public_safe": abuse_signal_summary["public_safe"],
+        "truth_guarantee": abuse_signal_summary["truth_guarantee"],
+        "request_denied": abuse_signal_summary["request_denied"],
+        "human_final_authority": abuse_signal_summary["human_final_authority"],
     }
     return payload
 

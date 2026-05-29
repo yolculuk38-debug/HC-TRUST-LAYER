@@ -9,7 +9,7 @@ import httpx
 import pytest
 
 from hc_runtime.app import create_app
-from hc_runtime.state import EVENT_STORE, QUEUE_STORE
+from hc_runtime.state import ABUSE_SIGNAL_TRACKER, EVENT_STORE, QUEUE_STORE
 
 EXPECTED_QR_RESPONSE_KEYS = [
     "status",
@@ -71,6 +71,7 @@ def reset_runtime_state() -> None:
     QUEUE_STORE.verification_queue.clear()
     QUEUE_STORE.escalation_queue.clear()
     QUEUE_STORE.replay_warning_queue.clear()
+    ABUSE_SIGNAL_TRACKER.reset()
 
 
 @pytest.fixture()
@@ -96,6 +97,12 @@ def _assert_public_safe_advisory_contract(payload: dict[str, object], *, record_
     assert isinstance(payload["escalation_queued"], bool)
     assert isinstance(payload["incident_summary"], dict)
     assert isinstance(payload["qr_scan_summary"], dict)
+    assert payload["qr_scan_summary"]["advisory_only"] is True
+    assert payload["qr_scan_summary"]["public_safe"] is True
+    assert payload["qr_scan_summary"]["truth_guarantee"] is False
+    assert payload["qr_scan_summary"]["request_denied"] is False
+    assert payload["qr_scan_summary"]["human_final_authority"] is True
+    assert isinstance(payload["qr_scan_summary"]["abuse_warnings"], list)
 
 
 def _warning_text(payload: dict[str, object]) -> str:
@@ -310,6 +317,15 @@ async def test_summary_count_behavior_for_qr_scan_outcomes(client: httpx.AsyncCl
         "escalation_queued": False,
         "human_review_recommended": False,
         "risk_level": "MEDIUM",
+        "abuse_signal_level": "MEDIUM",
+        "abuse_signal_reasons": ["medium_qr_risk_visible"],
+        "abuse_pattern_counts": {},
+        "abuse_warnings": [],
+        "advisory_only": True,
+        "public_safe": True,
+        "truth_guarantee": False,
+        "request_denied": False,
+        "human_final_authority": True,
     }
     assert payload["qr_scan_summary"]["warning_count"] >= 2
     assert payload["qr_scan_summary"]["risk_reason_count"] >= 2
