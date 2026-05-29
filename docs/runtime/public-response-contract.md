@@ -74,6 +74,14 @@ Warnings for abuse, spoof, replay, malformed input, degraded runtime state, and 
 - Degraded states remain visible through `degraded_runtime`, `recovery_mode`, telemetry degraded fields, and warning text where applicable.
 - Replay, QR spoof, and abuse-signal warnings remain advisory-only and route to human-supervised validation instead of autonomous enforcement.
 
+## Rate-limit advisory warnings
+
+Rate-limit and abuse-control warnings are advisory runtime signals only. The public-safe warning code `rate_limit_recommended` may be documented or surfaced when repeated malformed validation attempts, repeated QR spoof inputs, replay-risk markers, or brute-force style probing indicate that operator-side mitigation should be considered.
+
+The warning does not deny requests, quarantine inputs, mutate schemas, change signing logic, weaken validators, add Redis, add database storage, add JWT authentication, add Vault secret access, or move enforcement into the trust kernel. Enforcement belongs to the operator/infrastructure layer and requires human-supervised validation.
+
+See `docs/runtime/advisory-rate-limit-warning-contract.md` and `docs/security/rate-limiting-abuse-control.md` for the advisory boundary.
+
 ## Integration-facing examples
 
 ### Normal validation response
