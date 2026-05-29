@@ -135,6 +135,10 @@ The `qr_scan_summary` example is abbreviated. Integrators should preserve unknow
 }
 ```
 
+## Persistence roundtrip audit
+
+For advisory write → read → re-verify review boundaries, see `docs/runtime/persistence-roundtrip-audit.md` and `docs/security/persistence-risk-checklist.md`. Runtime roundtrip audit documentation preserves `advisory_only=true`, `public_safe=true`, `truth_guarantee=false`, an always-present `warnings` list, visible degraded states, visible replay warnings, no hidden fallback behavior, and human-supervised validation as final authority. It does not add Redis, database storage, schema mutation, workflow mutation, governance mutation, or canonical artifact mutation.
+
 ## Non-goals
 
 This contract documentation does not implement Redis, JWT, Vault, signing changes, autonomous blocking, quarantine behavior, schema mutation, governance mutation, workflow mutation, or federation behavior changes.
