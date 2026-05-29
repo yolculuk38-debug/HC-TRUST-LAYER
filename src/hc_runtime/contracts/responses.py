@@ -6,6 +6,40 @@ from typing import Any
 
 from hc_runtime.redaction import redact_public_payload, redact_secret_like_text
 
+PUBLIC_RESPONSE_BASE_KEYS: tuple[str, ...] = (
+    "status",
+    "advisory_only",
+    "public_safe",
+    "message",
+    "warnings",
+    "traceable",
+    "truth_guarantee",
+)
+
+PUBLIC_RESPONSE_RECORD_KEYS: tuple[str, ...] = (*PUBLIC_RESPONSE_BASE_KEYS, "record_id")
+
+QR_VERIFICATION_RESPONSE_KEYS: tuple[str, ...] = (
+    *PUBLIC_RESPONSE_RECORD_KEYS,
+    "trust_state",
+    "replay_warning",
+    "continuity_warning",
+    "degraded_runtime",
+    "recovery_mode",
+    "public_exposure",
+    "qr_risk_level",
+    "qr_risk_reasons",
+    "human_review_recommended",
+    "escalation_queued",
+    "incident_summary",
+    "qr_scan_summary",
+)
+
+MALFORMED_INPUT_RESPONSE_KEYS: tuple[str, ...] = (
+    *PUBLIC_RESPONSE_RECORD_KEYS,
+    "malformed_input",
+    "public_exposure",
+)
+
 
 def _build_response(
     *,

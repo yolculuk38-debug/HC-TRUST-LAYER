@@ -8,6 +8,8 @@ import fastapi  # noqa: F401
 import httpx
 
 from hc_runtime.contracts.responses import (
+    MALFORMED_INPUT_RESPONSE_KEYS,
+    QR_VERIFICATION_RESPONSE_KEYS,
     advisory_response,
     continuity_warning_response,
     degraded_runtime_response,
@@ -178,22 +180,7 @@ async def test_verify_response_field_order_and_shape_are_stable_for_runtime_outp
     async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as client:
         payload = (await client.post("/verify/order-contract-record", json={"qr_input": "hc://demo hash:ok replay"})).json()
 
-    expected_order = [
-        "status",
-        "advisory_only",
-        "public_safe",
-        "message",
-        "warnings",
-        "traceable",
-        "truth_guarantee",
-        "record_id",
-        "trust_state",
-        "replay_warning",
-        "continuity_warning",
-        "degraded_runtime",
-        "recovery_mode",
-        "public_exposure",
-    ]
+    expected_order = list(QR_VERIFICATION_RESPONSE_KEYS)
     assert list(payload.keys()) == expected_order
     assert isinstance(payload["warnings"], list)
 
@@ -265,18 +252,7 @@ async def test_malformed_and_missing_validator_payloads_return_public_safe_warni
         ("missing-payload-fields", {"unexpected": "field"}),
         ("malformed-qr-input", {"qr_input": {"not": "a string"}}),
     ]
-    expected_order = [
-        "status",
-        "advisory_only",
-        "public_safe",
-        "message",
-        "warnings",
-        "traceable",
-        "truth_guarantee",
-        "record_id",
-        "malformed_input",
-        "public_exposure",
-    ]
+    expected_order = list(MALFORMED_INPUT_RESPONSE_KEYS)
 
     transport = httpx.ASGITransport(app=create_app())
     async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as client:
@@ -325,22 +301,7 @@ async def test_replay_degraded_and_escalation_visibility_remain_explicit() -> No
 
 @pytest.mark.anyio
 async def test_validator_output_keys_are_stable_across_normal_replayed_and_degraded_responses() -> None:
-    expected_order = [
-        "status",
-        "advisory_only",
-        "public_safe",
-        "message",
-        "warnings",
-        "traceable",
-        "truth_guarantee",
-        "record_id",
-        "trust_state",
-        "replay_warning",
-        "continuity_warning",
-        "degraded_runtime",
-        "recovery_mode",
-        "public_exposure",
-    ]
+    expected_order = list(QR_VERIFICATION_RESPONSE_KEYS)
     cases = [
         ("stable-normal-output", "hc://stable hash:ok"),
         ("stable-replayed-output", "hc://stable hash:ok replay"),

@@ -1,6 +1,10 @@
 """Public verification response contracts for the HC:// reference runtime."""
 
 from hc_runtime.contracts.responses import (
+    MALFORMED_INPUT_RESPONSE_KEYS,
+    PUBLIC_RESPONSE_BASE_KEYS,
+    PUBLIC_RESPONSE_RECORD_KEYS,
+    QR_VERIFICATION_RESPONSE_KEYS,
     advisory_response,
     continuity_warning_response,
     degraded_runtime_response,
@@ -12,6 +16,10 @@ from hc_runtime.contracts.responses import (
 )
 
 __all__ = [
+    "PUBLIC_RESPONSE_BASE_KEYS",
+    "PUBLIC_RESPONSE_RECORD_KEYS",
+    "QR_VERIFICATION_RESPONSE_KEYS",
+    "MALFORMED_INPUT_RESPONSE_KEYS",
     "advisory_response",
     "verified_placeholder_response",
     "disputed_response",
