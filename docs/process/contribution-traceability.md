@@ -120,6 +120,8 @@ Documentation references should:
 
 Future concepts become traceable implementation history when they move through the documented chain from future-facing documentation to issue scoping, PR implementation, review, merge, and release.
 
+Use the [Future to Active Promotion Workflow](future-to-active-promotion.md) for required stages and gates before future-facing concepts are treated as active work.
+
 The future workspace may hold concepts that are not yet implemented. A future concept becomes part of implementation history only when a linked issue and PR produce reviewed, merged changes. Until then, the concept remains advisory and should not be described as runtime behavior, validator behavior, schema behavior, governance enforcement, signing behavior, federation behavior, or release behavior.
 
 Future workspace references should make clear:
