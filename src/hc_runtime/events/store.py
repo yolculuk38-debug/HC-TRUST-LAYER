@@ -6,6 +6,8 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
 
+from hc_runtime.redaction import redact_public_payload, redact_secret_like_text
+
 
 @dataclass(slots=True)
 class RuntimeEventStore:
@@ -22,11 +24,11 @@ class RuntimeEventStore:
     ) -> dict[str, Any]:
         event = {
             "event_type": event_type,
-            "record_id": record_id,
+            "record_id": redact_secret_like_text(record_id),
             "occurred_at": datetime.now(tz=timezone.utc).isoformat(),
             "advisory_only": True,
             "public_safe": True,
-            "details": details or {},
+            "details": redact_public_payload(details or {}),
         }
         self._events.append(event)
         return event

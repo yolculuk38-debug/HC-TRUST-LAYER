@@ -10,6 +10,7 @@ from typing import Any, Mapping
 
 from hc_runtime.decision_engine import TrustState, TrustStateDecisionEngine
 from hc_runtime.events import RuntimeEventStore
+from hc_runtime.redaction import redact_public_payload, redact_secret_like_text
 
 
 class ValidatorPipeline:
@@ -181,13 +182,13 @@ class RuntimeQueueStore:
     replay_warning_queue: list[dict[str, Any]] = field(default_factory=list)
 
     def enqueue_verification(self, item: dict[str, Any]) -> None:
-        self.verification_queue.append(item)
+        self.verification_queue.append(redact_public_payload(item))
 
     def enqueue_escalation(self, item: dict[str, Any]) -> None:
-        self.escalation_queue.append(item)
+        self.escalation_queue.append(redact_public_payload(item))
 
     def enqueue_replay_warning(self, item: dict[str, Any]) -> None:
-        self.replay_warning_queue.append(item)
+        self.replay_warning_queue.append(redact_public_payload(item))
 
 
 @dataclass(slots=True)
@@ -232,7 +233,7 @@ class FederationRelay:
         if replay_warning:
             warnings.append("Federation warning propagation includes replay-warning visibility.")
         return {
-            "record_id": record_id,
+            "record_id": redact_secret_like_text(record_id),
             "relay_mode": "local-placeholder",
             "advisory_only": True,
             "warnings": warnings,

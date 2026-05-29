@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from hc_runtime.contracts import advisory_response
 from hc_runtime.decision_engine import TrustState
 from hc_runtime.qr_spoof_protection import QRRiskLevel, inspect_qr_spoof_protection
+from hc_runtime.redaction import redact_secret_like_text
 from hc_runtime.state import DECISION_ENGINE, EVENT_STORE, FEDERATION_RELAY, PIPELINE, POLICY_ENGINE, QUEUE_STORE
 
 router = APIRouter()
@@ -179,7 +180,7 @@ def verify_qr_get(record_id: str) -> dict[str, object]:
 def verify_history(record_id: str) -> dict[str, object]:
     events = EVENT_STORE.history(record_id)
     return {
-        "record_id": record_id,
+        "record_id": redact_secret_like_text(record_id),
         "advisory_only": True,
         "public_safe": True,
         "traceable": True,
