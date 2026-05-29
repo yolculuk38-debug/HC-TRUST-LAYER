@@ -6,7 +6,8 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 
 from hc_runtime.contracts import advisory_response
-from hc_runtime.qr_spoof_protection import inspect_qr_spoof_protection
+from hc_runtime.decision_engine import TrustState
+from hc_runtime.qr_spoof_protection import QRRiskLevel, inspect_qr_spoof_protection
 from hc_runtime.state import DECISION_ENGINE, EVENT_STORE, FEDERATION_RELAY, PIPELINE, POLICY_ENGINE, QUEUE_STORE
 
 router = APIRouter()
@@ -16,6 +17,19 @@ class VerifyRequest(BaseModel):
     qr_input: str
 
 
+def _incident_matches(group_keys: list[str]) -> int:
+    if not group_keys:
+        return 0
+    keys = set(group_keys)
+    return sum(
+        1
+        for item in QUEUE_STORE.escalation_queue
+        if item.get("source") == "qr-spoof-risk"
+        and item.get("risk_level") in {QRRiskLevel.HIGH.value, QRRiskLevel.INCIDENT.value}
+        and keys.intersection(set(item.get("risk_group_keys", [])))
+    )
+
+
 def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
     QUEUE_STORE.enqueue_verification({"record_id": record_id, "qr_input": qr_input})
 
@@ -23,40 +37,82 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
     spoof_protection = inspect_qr_spoof_protection(record_id=record_id, qr_input=qr_input)
     replay_warning = spoof_protection.replay_warning
     continuity_ok = "continuity-warning" not in qr_input.lower() and "continuity-warning" not in record_id.lower()
-    degraded_mode = (
-        "degraded" in qr_input.lower()
-        or "degraded" in record_id.lower()
-        or spoof_protection.stale_warning
-        or not continuity_ok
-    )
-    spoof_warnings_present = bool(spoof_protection.warnings)
+    degraded_mode = "degraded" in qr_input.lower() or "degraded" in record_id.lower() or not continuity_ok
+
+    risk_level = spoof_protection.risk_level
+    repeated_high_matches = _incident_matches(spoof_protection.risk_group_keys)
+    if risk_level is QRRiskLevel.HIGH and repeated_high_matches:
+        risk_level = QRRiskLevel.INCIDENT
+
+    high_or_incident = risk_level in {QRRiskLevel.HIGH, QRRiskLevel.INCIDENT}
+    structured_payload_checked = spoof_protection.structured_payload
+    hash_verified = pipeline_result["hash_result"]["hash_verified"] or structured_payload_checked
+    replay_for_decision = replay_warning and not spoof_protection.structured_payload
 
     trust_state, warnings = DECISION_ENGINE.classify(
         record_id=record_id,
         qr_input=qr_input,
         schema_valid=pipeline_result["schema_result"]["valid"],
-        hash_verified=pipeline_result["hash_result"]["hash_verified"] and not spoof_warnings_present,
+        hash_verified=hash_verified,
         continuity_ok=continuity_ok,
-        replay_warning=replay_warning,
+        replay_warning=replay_for_decision,
     )
+    if high_or_incident:
+        trust_state = TrustState.REVIEW_REQUIRED
 
-    policy = POLICY_ENGINE.evaluate(trust_state=trust_state, replay_warning=replay_warning, degraded_mode=degraded_mode)
+    policy = POLICY_ENGINE.evaluate(
+        trust_state=trust_state,
+        replay_warning=replay_for_decision,
+        degraded_mode=degraded_mode,
+    )
+    human_review_recommended = high_or_incident
+    escalation_queued = False
+    incident_summary = {
+        "active": risk_level is QRRiskLevel.INCIDENT,
+        "group_keys": spoof_protection.risk_group_keys,
+        "related_high_findings": repeated_high_matches + 1 if risk_level is QRRiskLevel.INCIDENT else 0,
+    }
+
+    pipeline_warnings = list(pipeline_result["trust_assignment"]["warnings"])
+    if spoof_protection.structured_payload:
+        pipeline_warnings = [
+            warning
+            for warning in pipeline_warnings
+            if "hash verification placeholder could not confirm qr input hash marker" not in warning.lower()
+        ]
     warnings = [
-        *pipeline_result["trust_assignment"]["warnings"],
+        *pipeline_warnings,
         *spoof_protection.warnings,
         *warnings,
         *policy["warnings"],
     ]
+    if human_review_recommended and not any("human-supervised validation" in warning.lower() for warning in warnings):
+        warnings.append("Human-supervised validation is recommended for high-risk or incident-level QR spoof indicators.")
 
     EVENT_STORE.append_trust_transition(record_id=record_id, trust_state=trust_state.value, warnings=warnings)
     EVENT_STORE.append_continuity_checkpoint(record_id=record_id, continuity_ok=continuity_ok, warnings=warnings)
 
     if replay_warning:
         QUEUE_STORE.enqueue_replay_warning({"record_id": record_id, "source": "qr-verification"})
-        QUEUE_STORE.enqueue_escalation({"record_id": record_id, "reason": "replay_warning"})
         EVENT_STORE.append_replay_warning(record_id=record_id, reason="Replay marker detected in advisory QR input.")
 
-    if policy["advisory_downgrade"]:
+    if high_or_incident:
+        escalation_queued = True
+        QUEUE_STORE.enqueue_escalation(
+            {
+                "record_id": record_id,
+                "reason": "qr_spoof_risk",
+                "source": "qr-spoof-risk",
+                "risk_level": risk_level.value,
+                "risk_reasons": spoof_protection.risk_reasons,
+                "risk_group_keys": spoof_protection.risk_group_keys,
+                "incident_summary": incident_summary,
+                "advisory_only": True,
+                "public_safe": True,
+                "truth_guarantee": False,
+            }
+        )
+    elif policy["advisory_downgrade"] and not spoof_protection.structured_payload:
         QUEUE_STORE.enqueue_escalation({"record_id": record_id, "reason": "advisory_downgrade"})
 
     if degraded_mode:
@@ -80,6 +136,18 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
     payload["degraded_runtime"] = degraded_mode
     payload["recovery_mode"] = degraded_mode
     payload["public_exposure"] = policy["public_exposure"]
+    payload["qr_risk_level"] = risk_level.value
+    payload["qr_risk_reasons"] = spoof_protection.risk_reasons
+    payload["human_review_recommended"] = human_review_recommended
+    payload["escalation_queued"] = escalation_queued
+    payload["incident_summary"] = incident_summary
+    payload["qr_scan_summary"] = {
+        "warning_count": len(warnings),
+        "risk_reason_count": len(spoof_protection.risk_reasons),
+        "escalation_queued": escalation_queued,
+        "human_review_recommended": human_review_recommended,
+        "risk_level": risk_level.value,
+    }
     return payload
 
 
