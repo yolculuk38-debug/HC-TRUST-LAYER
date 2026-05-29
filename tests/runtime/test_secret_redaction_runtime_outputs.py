@@ -36,7 +36,11 @@ MALFORMED_SECRET_LIKE_MARKER = "token=" + ("D" * 24) + " -----BEGIN " "PRIVATE K
 
 
 def _serialized(payload: Any) -> str:
-    return json.dumps(payload, sort_keys=True)
+    return json.dumps(payload)
+
+
+def _roundtrip_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    return json.loads(json.dumps(payload))
 
 
 def _assert_public_safe_contract(payload: dict[str, Any], *, record_id: str) -> None:
@@ -79,7 +83,7 @@ def test_secret_like_input_is_redacted_from_runtime_response_and_warning_text(
     _assert_markers_not_exposed(payload, [marker])
 
 
-def test_runtime_response_serialization_preserves_stable_public_safe_keys() -> None:
+def test_runtime_response_roundtrip_preserves_stable_public_safe_key_order() -> None:
     payload = advisory_response(
         record_id="stable-redaction-record",
         message="HC:// advisory runtime response remains deterministic.",
@@ -87,8 +91,11 @@ def test_runtime_response_serialization_preserves_stable_public_safe_keys() -> N
     )
 
     _assert_public_safe_contract(payload, record_id="stable-redaction-record")
-    assert payload["warnings"] == []
-    assert _serialized(payload) == _serialized(payload)
+    roundtripped = _roundtrip_payload(payload)
+
+    _assert_public_safe_contract(roundtripped, record_id="stable-redaction-record")
+    assert roundtripped["warnings"] == []
+    assert list(roundtripped.keys()) == EXPECTED_ADVISORY_RESPONSE_KEYS
 
 
 def test_secret_like_input_is_redacted_from_telemetry_like_runtime_payloads() -> None:
