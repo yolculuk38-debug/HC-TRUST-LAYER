@@ -5,7 +5,7 @@ from __future__ import annotations
 from fastapi import APIRouter
 from pydantic import BaseModel
 
-from hc_runtime.contracts import advisory_response
+from hc_runtime.contracts import QR_VERIFICATION_RESPONSE_KEYS, advisory_response
 from hc_runtime.decision_engine import TrustState
 from hc_runtime.qr_spoof_protection import QRRiskLevel, inspect_qr_spoof_protection
 from hc_runtime.redaction import redact_secret_like_text
@@ -29,6 +29,12 @@ def _incident_matches(group_keys: list[str]) -> int:
         and item.get("risk_level") in {QRRiskLevel.HIGH.value, QRRiskLevel.INCIDENT.value}
         and keys.intersection(set(item.get("risk_group_keys", [])))
     )
+
+
+def _canonical_qr_payload(payload: dict[str, object]) -> dict[str, object]:
+    """Return QR verification payloads in the public contract key order."""
+
+    return {key: payload[key] for key in QR_VERIFICATION_RESPONSE_KEYS}
 
 
 def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
@@ -188,7 +194,7 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
         "request_denied": abuse_signal_summary["request_denied"],
         "human_final_authority": abuse_signal_summary["human_final_authority"],
     }
-    return payload
+    return _canonical_qr_payload(payload)
 
 
 @router.get("/verify/{record_id}")
@@ -231,34 +237,4 @@ def verify_history(record_id: str) -> dict[str, object]:
         "replay_warning_visible": any(event["event_type"] == "replay_warning" for event in events),
         "trust_state_transitions": [e for e in events if e["event_type"] == "trust_state_transition"],
         "events": events,
-    }
-
-
-@router.post("/federation/review")
-def federation_review(payload: dict[str, object]) -> dict[str, object]:
-    record_id = str(payload.get("record_id", "unknown-record"))
-    replay_warning = bool(payload.get("replay_warning", False))
-    degraded_mode = bool(payload.get("degraded_mode", False))
-
-    relay = FEDERATION_RELAY.review(record_id=record_id, degraded_mode=degraded_mode, replay_warning=replay_warning)
-    EVENT_STORE.append_runtime_event(
-        event_type="federation_review_placeholder",
-        record_id=record_id,
-        details={"local_only": True, "networking": False, "relay": relay},
-    )
-
-    return {
-        "status": "ADVISORY",
-        "advisory_only": True,
-        "runtime_stage": "prototype",
-        "verification_mode": "advisory",
-        "public_safe": True,
-        "traceable": True,
-        "truth_guarantee": False,
-        "human_review_required": True,
-        "message": "Federation review placeholder accepted for human-supervised validation routing.",
-        "warnings": [
-            "Federation routing remains advisory in the HC:// reference runtime with no production-readiness or objective-truth guarantee."
-        ],
-        "relay": relay,
     }
