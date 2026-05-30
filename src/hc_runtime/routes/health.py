@@ -67,9 +67,6 @@ def telemetry_runtime() -> dict[str, object]:
 def telemetry_queues() -> dict[str, object]:
     degraded = bool(_degraded_runtime_events())
     payload = _telemetry_base(degraded=degraded, escalation_required=bool(QUEUE_STORE.escalation_queue))
-    payload["verification_queue_count"] = len(QUEUE_STORE.verification_queue)
-    payload["escalation_queue_count"] = len(QUEUE_STORE.escalation_queue)
-    payload["replay_warning_queue_count"] = len(QUEUE_STORE.replay_warning_queue)
     payload["verification_queue"] = list(QUEUE_STORE.verification_queue)
     payload["escalation_queue"] = list(QUEUE_STORE.escalation_queue)
     payload["replay_warning_queue"] = list(QUEUE_STORE.replay_warning_queue)
