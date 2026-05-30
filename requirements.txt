@@ -2,7 +2,7 @@
 jsonschema==4.17.3
 qrcode[pil]==7.4.2
 
-# API scaffold dependencies for the advisory-only HC:// reference runtime skeleton.
+# Runtime API test dependencies for the advisory-only HC:// reference runtime skeleton.
 anyio==4.9.0
 fastapi==0.115.14
 pydantic==2.11.7
