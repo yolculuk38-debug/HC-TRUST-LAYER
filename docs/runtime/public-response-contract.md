@@ -49,12 +49,16 @@ QR validation responses additionally preserve these keys:
 | `human_review_recommended` | boolean | Human-supervised validation recommendation signal. |
 | `escalation_queued` | boolean | Visibility that advisory escalation routing was queued locally. |
 | `incident_summary` | object | Public-safe incident grouping summary for repeated high-risk QR indicators. |
+| `canonical_lookup_status` | string | Public-safe canonical lookup result such as `not_configured`, `missing`, `found`, `verified`, `schema_invalid`, `hash_missing`, `hash_mismatch`, or `malformed`. |
+| `schema_valid` | boolean | Advisory schema-validation visibility for the QR/runtime path. |
+| `hash_verified` | boolean | Advisory SHA-256/hash-marker verification visibility for the QR/runtime path. |
 | `qr_scan_summary` | object | Public-safe QR and abuse-signal summary metadata. |
 
 Malformed request responses preserve the base route-scoped keys and add:
 
 | Key | Type | Contract |
 | --- | --- | --- |
+| `detail` | string | Public-safe validation error detail for malformed validator request payloads. |
 | `malformed_input` | boolean | Always `true` for malformed validator request payloads. |
 | `public_exposure` | string | Always `restricted` for malformed validator request payloads. |
 
@@ -120,7 +124,19 @@ See `docs/runtime/advisory-rate-limit-warning-contract.md` and `docs/security/ra
     "group_keys": [],
     "related_high_findings": 0
   },
+  "canonical_lookup_status": "not_configured",
+  "schema_valid": true,
+  "hash_verified": true,
   "qr_scan_summary": {
+    "warning_count": 0,
+    "risk_reason_count": 0,
+    "escalation_queued": false,
+    "human_review_recommended": false,
+    "risk_level": "LOW",
+    "abuse_signal_level": "LOW",
+    "abuse_signal_reasons": [],
+    "abuse_pattern_counts": {},
+    "abuse_warnings": [],
     "advisory_only": true,
     "public_safe": true,
     "truth_guarantee": false,
@@ -130,7 +146,7 @@ See `docs/runtime/advisory-rate-limit-warning-contract.md` and `docs/security/ra
 }
 ```
 
-The `qr_scan_summary` example is abbreviated. Integrators should preserve unknown public-safe subkeys and rely on the stable top-level keys above.
+The `qr_scan_summary` example is intentionally public-safe. Integrators should preserve unknown public-safe subkeys and rely on the stable top-level keys above.
 
 ### Malformed input response
 

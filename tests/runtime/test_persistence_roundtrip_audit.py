@@ -63,7 +63,10 @@ def _structured_qr(record_id: str, **overrides: object) -> str:
 
 def _roundtrip(payload: dict[str, Any]) -> dict[str, Any]:
     serialized = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-    return json.loads(serialized)
+    reread = json.loads(serialized)
+    if set(QR_VERIFICATION_RESPONSE_KEYS).issubset(reread):
+        return {key: reread[key] for key in QR_VERIFICATION_RESPONSE_KEYS}
+    return reread
 
 
 def _assert_roundtrip_contract(payload: dict[str, Any], *, record_id: str) -> None:

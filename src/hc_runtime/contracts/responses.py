@@ -42,6 +42,7 @@ QR_VERIFICATION_RESPONSE_KEYS: tuple[str, ...] = (
 
 MALFORMED_INPUT_RESPONSE_KEYS: tuple[str, ...] = (
     *PUBLIC_RESPONSE_RECORD_KEYS,
+    "detail",
     "malformed_input",
     "public_exposure",
 )

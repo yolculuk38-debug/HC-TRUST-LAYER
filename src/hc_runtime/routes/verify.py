@@ -6,6 +6,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 
 from hc_runtime.contracts import advisory_response
+from hc_runtime.contracts import QR_VERIFICATION_RESPONSE_KEYS
 from hc_runtime.decision_engine import TrustState
 from hc_runtime.qr_spoof_protection import QRRiskLevel, inspect_qr_spoof_protection
 from hc_runtime.redaction import redact_secret_like_text
@@ -29,6 +30,12 @@ def _incident_matches(group_keys: list[str]) -> int:
         and item.get("risk_level") in {QRRiskLevel.HIGH.value, QRRiskLevel.INCIDENT.value}
         and keys.intersection(set(item.get("risk_group_keys", [])))
     )
+
+
+def _canonical_qr_payload(payload: dict[str, object]) -> dict[str, object]:
+    """Return QR verification payloads in the public contract key order."""
+
+    return {key: payload[key] for key in QR_VERIFICATION_RESPONSE_KEYS}
 
 
 def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
@@ -104,7 +111,7 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
     ]
     abuse_signals = ABUSE_SIGNAL_TRACKER.inspect(
         record_id=record_id,
-        schema_valid=pipeline_result["schema_result"]["valid"],
+        schema_valid=schema_valid,
         qr_risk_level=risk_level,
         qr_risk_reasons=spoof_protection.risk_reasons,
         qr_risk_group_keys=spoof_protection.risk_group_keys,
@@ -120,6 +127,7 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
 
     if replay_warning:
         QUEUE_STORE.enqueue_replay_warning({"record_id": record_id, "source": "qr-verification"})
+        QUEUE_STORE.enqueue_escalation({"record_id": record_id, "reason": "replay_warning", "source": "qr-verification"})
         EVENT_STORE.append_replay_warning(record_id=record_id, reason="Replay marker detected in advisory QR input.")
 
     if high_or_incident:
@@ -188,7 +196,7 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
         "request_denied": abuse_signal_summary["request_denied"],
         "human_final_authority": abuse_signal_summary["human_final_authority"],
     }
-    return payload
+    return _canonical_qr_payload(payload)
 
 
 @router.get("/verify/{record_id}")
@@ -228,7 +236,8 @@ def verify_history(record_id: str) -> dict[str, object]:
         "truth_guarantee": False,
         "warnings": [],
         "human_review_required": False,
-        "replay_warning_visible": any(event["event_type"] == "replay_warning" for event in events),
+        "replay_warning_visible": any(event["event_type"] == "replay_warning" for event in events)
+        or bool(QUEUE_STORE.replay_warning_queue),
         "trust_state_transitions": [e for e in events if e["event_type"] == "trust_state_transition"],
         "events": events,
     }
@@ -247,6 +256,9 @@ def federation_review(payload: dict[str, object]) -> dict[str, object]:
         details={"local_only": True, "networking": False, "relay": relay},
     )
 
+    warnings = [
+        "Federation routing remains advisory in the HC:// reference runtime with no objective-truth guarantee."
+    ]
     return {
         "status": "ADVISORY",
         "advisory_only": True,
@@ -255,10 +267,8 @@ def federation_review(payload: dict[str, object]) -> dict[str, object]:
         "public_safe": True,
         "traceable": True,
         "truth_guarantee": False,
-        "human_review_required": True,
+        "human_review_required": bool(warnings),
         "message": "Federation review placeholder accepted for human-supervised validation routing.",
-        "warnings": [
-            "Federation routing remains advisory in the HC:// reference runtime with no production-readiness or objective-truth guarantee."
-        ],
+        "warnings": warnings,
         "relay": relay,
     }

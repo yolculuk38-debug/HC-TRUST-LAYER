@@ -12,6 +12,7 @@ from hc_runtime.routes.verify import router as verify_router
 def _public_safe_validation_error_response(request: Request) -> JSONResponse:
     record_id = request.path_params.get("record_id")
     payload = malformed_input_response(record_id=str(record_id) if record_id is not None else None)
+    payload["detail"] = "Request validation failed."
     payload["malformed_input"] = True
     payload["public_exposure"] = "restricted"
     return JSONResponse(status_code=422, content=payload)
