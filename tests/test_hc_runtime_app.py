@@ -552,9 +552,9 @@ async def test_telemetry_and_event_visibility_remain_internally_consistent(clien
 
     assert runtime_after["events_total"] >= runtime_before["events_total"] + len(history["events"])
     assert runtime_after["degraded_events"] >= runtime_before["degraded_events"] + 1
-    assert queues_after["verification_queue"] == queues_before["verification_queue"] + 1
-    assert queues_after["replay_warning_queue"] == queues_before["replay_warning_queue"] + 1
-    assert queues_after["escalation_queue"] >= queues_before["escalation_queue"] + 1
+    assert len(queues_after["verification_queue"]) == len(queues_before["verification_queue"]) + 1
+    assert len(queues_after["replay_warning_queue"]) == len(queues_before["replay_warning_queue"]) + 1
+    assert len(queues_after["escalation_queue"]) >= len(queues_before["escalation_queue"]) + 1
     assert isinstance(runtime_after["warnings"], list)
     assert isinstance(queues_after["warnings"], list)
 
