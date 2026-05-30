@@ -14,11 +14,14 @@ from hc_runtime.state import ABUSE_SIGNAL_TRACKER, EVENT_STORE, QUEUE_STORE
 EXPECTED_QR_RESPONSE_KEYS = [
     "status",
     "advisory_only",
+    "runtime_stage",
+    "verification_mode",
     "public_safe",
     "message",
     "warnings",
     "traceable",
     "truth_guarantee",
+    "human_review_required",
     "record_id",
     "trust_state",
     "replay_warning",
@@ -31,6 +34,9 @@ EXPECTED_QR_RESPONSE_KEYS = [
     "human_review_recommended",
     "escalation_queued",
     "incident_summary",
+    "canonical_lookup_status",
+    "schema_valid",
+    "hash_verified",
     "qr_scan_summary",
 ]
 
@@ -86,9 +92,12 @@ def _assert_public_safe_advisory_contract(payload: dict[str, object], *, record_
     assert payload["record_id"] == record_id
     assert payload["status"] == "ADVISORY"
     assert payload["advisory_only"] is True
+    assert payload["runtime_stage"] == "prototype"
+    assert payload["verification_mode"] == "advisory"
     assert payload["public_safe"] is True
     assert payload["traceable"] is True
     assert payload["truth_guarantee"] is False
+    assert payload["human_review_required"] is bool(payload["warnings"])
     assert isinstance(payload["warnings"], list)
     assert all(isinstance(warning, str) for warning in payload["warnings"])
     assert payload["qr_risk_level"] in {"LOW", "MEDIUM", "HIGH", "INCIDENT"}
@@ -96,6 +105,9 @@ def _assert_public_safe_advisory_contract(payload: dict[str, object], *, record_
     assert isinstance(payload["human_review_recommended"], bool)
     assert isinstance(payload["escalation_queued"], bool)
     assert isinstance(payload["incident_summary"], dict)
+    assert isinstance(payload["canonical_lookup_status"], str)
+    assert isinstance(payload["schema_valid"], bool)
+    assert isinstance(payload["hash_verified"], bool)
     assert isinstance(payload["qr_scan_summary"], dict)
     assert payload["qr_scan_summary"]["advisory_only"] is True
     assert payload["qr_scan_summary"]["public_safe"] is True

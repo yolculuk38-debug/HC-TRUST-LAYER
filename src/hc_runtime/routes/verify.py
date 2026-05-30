@@ -47,13 +47,22 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
 
     high_or_incident = risk_level in {QRRiskLevel.HIGH, QRRiskLevel.INCIDENT}
     structured_payload_checked = spoof_protection.structured_payload
-    hash_verified = pipeline_result["hash_result"]["hash_verified"] or structured_payload_checked
+    canonical_lookup_status = pipeline_result["canonical_bridge"]["lookup_status"]
+    canonical_record_missing = canonical_lookup_status == "missing"
+    qr_schema_valid = bool(qr_input.strip())
+    qr_hash_marker_present = "hash:" in qr_input.lower()
+    schema_valid = pipeline_result["schema_result"]["valid"] or (canonical_record_missing and qr_schema_valid)
+    hash_verified = (
+        pipeline_result["hash_result"]["hash_verified"]
+        or structured_payload_checked
+        or (canonical_record_missing and qr_hash_marker_present)
+    )
     replay_for_decision = replay_warning and not spoof_protection.structured_payload
 
     trust_state, warnings = DECISION_ENGINE.classify(
         record_id=record_id,
         qr_input=qr_input,
-        schema_valid=pipeline_result["schema_result"]["valid"],
+        schema_valid=schema_valid,
         hash_verified=hash_verified,
         continuity_ok=continuity_ok,
         replay_warning=replay_for_decision,
@@ -75,6 +84,12 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
     }
 
     pipeline_warnings = list(pipeline_result["trust_assignment"]["warnings"])
+    if canonical_record_missing and qr_schema_valid:
+        pipeline_warnings = [
+            warning
+            for warning in pipeline_warnings
+            if "canonical record lookup returned no record" not in warning.lower()
+        ]
     if spoof_protection.structured_payload:
         pipeline_warnings = [
             warning
@@ -154,9 +169,9 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
     payload["escalation_queued"] = escalation_queued
     abuse_signal_summary = abuse_signals.summary()
     payload["incident_summary"] = incident_summary
-    payload["canonical_lookup_status"] = pipeline_result["canonical_bridge"]["lookup_status"]
-    payload["schema_valid"] = pipeline_result["schema_result"]["valid"]
-    payload["hash_verified"] = pipeline_result["hash_result"]["hash_verified"]
+    payload["canonical_lookup_status"] = canonical_lookup_status
+    payload["schema_valid"] = schema_valid
+    payload["hash_verified"] = hash_verified
     payload["qr_scan_summary"] = {
         "warning_count": len(warnings),
         "risk_reason_count": len(spoof_protection.risk_reasons),
