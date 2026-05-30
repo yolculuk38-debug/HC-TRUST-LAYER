@@ -1,0 +1,9 @@
+# Test/runtime API dependencies for CI and local validation.
+# GitHub Actions installs the equivalent pyproject test extra with:
+# python -m pip install -e ".[test]"
+anyio
+fastapi
+httpx
+pydantic
+pytest
+uvicorn

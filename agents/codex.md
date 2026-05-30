@@ -29,3 +29,12 @@ Before proposing merge, run applicable checks:
 - JSON validity when JSON files change
 
 Codex must preserve audit trail continuity, canonical record boundaries, and provenance expectations across all scoped edits.
+
+
+## Dependency Installation Limits
+
+Codex sandboxes may be unable to install Python test packages because upstream package access can return `403 Forbidden` or similar network policy errors. Treat those local installation failures as environment limitations, not as repository validation failures.
+
+The repository source of truth for full runtime/API validation is GitHub Actions, where the test job installs the explicit test extra with `python -m pip install -e ".[test]"` and runs the complete runtime/API pytest scope, including `tests/runtime` and `tests/test_hc_runtime_response_contracts.py`.
+
+When package installation is unavailable locally, Codex should still run lightweight checks that do not require network access where possible and clearly report any skipped or blocked full-test validation.
