@@ -111,7 +111,7 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
     ]
     abuse_signals = ABUSE_SIGNAL_TRACKER.inspect(
         record_id=record_id,
-        schema_valid=pipeline_result["schema_result"]["valid"],
+        schema_valid=schema_valid,
         qr_risk_level=risk_level,
         qr_risk_reasons=spoof_protection.risk_reasons,
         qr_risk_group_keys=spoof_protection.risk_group_keys,
@@ -127,6 +127,7 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
 
     if replay_warning:
         QUEUE_STORE.enqueue_replay_warning({"record_id": record_id, "source": "qr-verification"})
+        QUEUE_STORE.enqueue_escalation({"record_id": record_id, "reason": "replay_warning", "source": "qr-verification"})
         EVENT_STORE.append_replay_warning(record_id=record_id, reason="Replay marker detected in advisory QR input.")
 
     if high_or_incident:
@@ -235,7 +236,8 @@ def verify_history(record_id: str) -> dict[str, object]:
         "truth_guarantee": False,
         "warnings": [],
         "human_review_required": False,
-        "replay_warning_visible": any(event["event_type"] == "replay_warning" for event in events),
+        "replay_warning_visible": any(event["event_type"] == "replay_warning" for event in events)
+        or bool(QUEUE_STORE.replay_warning_queue),
         "trust_state_transitions": [e for e in events if e["event_type"] == "trust_state_transition"],
         "events": events,
     }
