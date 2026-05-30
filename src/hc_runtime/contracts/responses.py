@@ -34,6 +34,9 @@ QR_VERIFICATION_RESPONSE_KEYS: tuple[str, ...] = (
     "human_review_recommended",
     "escalation_queued",
     "incident_summary",
+    "canonical_lookup_status",
+    "schema_valid",
+    "hash_verified",
     "qr_scan_summary",
 )
 

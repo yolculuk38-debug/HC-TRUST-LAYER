@@ -82,7 +82,14 @@ def test_validator_pipeline_consistency_for_input_variants() -> None:
 
     for record_id, qr_input, expected_schema_valid, expected_hash in cases:
         result = pipeline.run(record_id=record_id, qr_input=qr_input)
-        assert set(result.keys()) == {"record_id", "schema_result", "hash_result", "trust_assignment", "escalation"}
+        assert set(result.keys()) == {
+            "record_id",
+            "canonical_bridge",
+            "schema_result",
+            "hash_result",
+            "trust_assignment",
+            "escalation",
+        }
         assert result["schema_result"]["valid"] is expected_schema_valid
         assert result["hash_result"]["hash_verified"] is expected_hash
         assert isinstance(result["trust_assignment"]["warnings"], list)
@@ -261,7 +268,14 @@ def test_validator_pipeline_handles_malformed_advisory_inputs_with_normalized_sh
         qr_input = "" if value is None else str(value)
         result = pipeline.run(record_id="malformed-runtime-record", qr_input=qr_input)
 
-        assert set(result.keys()) == {"record_id", "schema_result", "hash_result", "trust_assignment", "escalation"}
+        assert set(result.keys()) == {
+            "record_id",
+            "canonical_bridge",
+            "schema_result",
+            "hash_result",
+            "trust_assignment",
+            "escalation",
+        }
         assert result["record_id"] == "malformed-runtime-record"
         assert isinstance(result["trust_assignment"]["warnings"], list)
         assert result["escalation"]["placeholder"] is True
