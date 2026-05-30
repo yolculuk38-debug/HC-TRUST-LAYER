@@ -30,6 +30,8 @@ def _assert_public_safe_contract(payload: dict, expected_status: str, expected_r
 
     assert payload["status"] == expected_status
     assert payload["advisory_only"] is True
+    assert payload["runtime_stage"] == "prototype"
+    assert payload["verification_mode"] == "advisory"
     assert payload["public_safe"] is True
     assert isinstance(payload["message"], str)
     assert isinstance(payload["warnings"], list)
@@ -79,6 +81,21 @@ def test_not_found_response_contract_shape_with_record_id() -> None:
     _assert_public_safe_contract(payload, "NOT_FOUND", "rec-404")
 
 
+def test_human_review_required_derives_from_warnings_or_escalation() -> None:
+    warning_payload = advisory_response("review-warning-record", "Warning path.", warnings=["public warning"])
+    escalation_payload = advisory_response(
+        "review-escalation-record",
+        "Escalation path.",
+        warnings=[],
+        escalation_required=True,
+    )
+    clear_payload = advisory_response("clear-record", "Clear advisory path.", warnings=[])
+
+    assert warning_payload["human_review_required"] is True
+    assert escalation_payload["human_review_required"] is True
+    assert clear_payload["human_review_required"] is False
+
+
 def test_verify_route_uses_advisory_response_contract_builder() -> None:
     verify_route = Path("src/hc_runtime/routes/verify.py").read_text(encoding="utf-8")
 
@@ -90,8 +107,11 @@ def test_verify_runtime_routes_preserve_advisory_contract_guarantees() -> None:
     verify_route = Path("src/hc_runtime/routes/verify.py").read_text(encoding="utf-8")
 
     assert '"advisory_only": True' in verify_route
+    assert '"runtime_stage": "prototype"' in verify_route
+    assert '"verification_mode": "advisory"' in verify_route
     assert '"public_safe": True' in verify_route
     assert '"truth_guarantee": False' in verify_route
+    assert '"human_review_required":' in verify_route
     assert '"warnings": [' in verify_route or '"warnings": []' in verify_route
 
 
@@ -118,8 +138,11 @@ def test_advisory_contract_messages_do_not_imply_forbidden_claims() -> None:
     for payload in payloads:
         message = payload["message"].lower()
         assert payload["advisory_only"] is True
+        assert payload["runtime_stage"] == "prototype"
+        assert payload["verification_mode"] == "advisory"
         assert payload["public_safe"] is True
         assert payload["truth_guarantee"] is False
+        assert payload["human_review_required"] is bool(payload["warnings"])
         assert isinstance(payload["warnings"], list)
         for forbidden in forbidden_phrases:
             assert forbidden not in message
@@ -131,10 +154,13 @@ async def test_telemetry_payload_shape_stability_regression() -> None:
         "status",
         "runtime_mode",
         "advisory_only",
+        "runtime_stage",
+        "verification_mode",
         "public_safe",
         "traceable",
         "truth_guarantee",
         "warnings",
+        "human_review_required",
         "degraded",
         "degraded_reasons",
     }
@@ -214,8 +240,11 @@ def test_runtime_response_builders_keep_warning_lists_normalized() -> None:
 def _assert_validator_runtime_contract(payload: dict, expected_record_id: str) -> None:
     assert payload["record_id"] == expected_record_id
     assert payload["advisory_only"] is True
+    assert payload["runtime_stage"] == "prototype"
+    assert payload["verification_mode"] == "advisory"
     assert payload["public_safe"] is True
     assert payload["truth_guarantee"] is False
+    assert payload["human_review_required"] is bool(payload["warnings"])
     assert isinstance(payload["warnings"], list)
     assert all(isinstance(warning, str) for warning in payload["warnings"])
 

@@ -35,9 +35,12 @@ async def test_health_endpoint_returns_advisory_runtime_status(client: httpx.Asy
     payload = response.json()
     assert payload["status"] == "ok"
     assert payload["advisory_only"] is True
+    assert payload["runtime_stage"] == "prototype"
+    assert payload["verification_mode"] == "advisory"
     assert payload["public_safe"] is True
     assert payload["traceable"] is True
     assert payload["truth_guarantee"] is False
+    assert payload["human_review_required"] is bool(payload["warnings"])
     assert isinstance(payload["warnings"], list)
 
 
@@ -50,9 +53,12 @@ async def test_verify_endpoint_returns_advisory_placeholder_contract(client: htt
     assert payload["record_id"] == "placeholder-record"
     assert payload["status"] == "ADVISORY"
     assert payload["advisory_only"] is True
+    assert payload["runtime_stage"] == "prototype"
+    assert payload["verification_mode"] == "advisory"
     assert payload["public_safe"] is True
     assert payload["traceable"] is True
     assert payload["truth_guarantee"] is False
+    assert payload["human_review_required"] is bool(payload["warnings"])
     assert isinstance(payload["warnings"], list)
     assert "no truth guarantee" in payload["message"].lower()
     assert "truth guarantee" in payload["message"].lower()
@@ -69,9 +75,12 @@ async def test_verify_qr_flow_runs_pipeline_decision_and_response_contract(clien
     assert payload["replay_warning"] is False
     assert payload["continuity_warning"] is False
     assert payload["advisory_only"] is True
+    assert payload["runtime_stage"] == "prototype"
+    assert payload["verification_mode"] == "advisory"
     assert payload["public_safe"] is True
     assert payload["traceable"] is True
     assert payload["truth_guarantee"] is False
+    assert payload["human_review_required"] is bool(payload["warnings"])
     assert isinstance(payload["warnings"], list)
 
 
@@ -87,6 +96,7 @@ async def test_qr_get_flow_runs_pipeline_and_public_safe_contract(client: httpx.
     assert payload["advisory_only"] is True
     assert payload["traceable"] is True
     assert payload["truth_guarantee"] is False
+    assert payload["human_review_required"] is bool(payload["warnings"])
     assert isinstance(payload["warnings"], list)
 
 
@@ -99,9 +109,12 @@ async def test_verify_history_endpoint_returns_public_safe_event_history(client:
     payload = response.json()
     assert payload["record_id"] == "history-record"
     assert payload["advisory_only"] is True
+    assert payload["runtime_stage"] == "prototype"
+    assert payload["verification_mode"] == "advisory"
     assert payload["public_safe"] is True
     assert payload["traceable"] is True
     assert payload["truth_guarantee"] is False
+    assert payload["human_review_required"] is bool(payload["warnings"])
     assert isinstance(payload["warnings"], list)
     assert isinstance(payload["events"], list)
     assert isinstance(payload["trust_state_transitions"], list)
@@ -159,9 +172,12 @@ async def test_federation_review_route_is_advisory_placeholder(client: httpx.Asy
     assert payload["status"] == "ADVISORY"
     assert payload["relay"]["relay_mode"] == "local-placeholder"
     assert payload["advisory_only"] is True
+    assert payload["runtime_stage"] == "prototype"
+    assert payload["verification_mode"] == "advisory"
     assert payload["public_safe"] is True
     assert payload["traceable"] is True
     assert payload["truth_guarantee"] is False
+    assert payload["human_review_required"] is bool(payload["warnings"])
     assert isinstance(payload["warnings"], list)
     assert "production" not in payload["message"].lower()
     assert "objective truth" not in payload["message"].lower()
@@ -177,10 +193,13 @@ async def test_telemetry_routes_return_advisory_operational_signals(client: http
         "status",
         "runtime_mode",
         "advisory_only",
+        "runtime_stage",
+        "verification_mode",
         "public_safe",
         "traceable",
         "truth_guarantee",
         "warnings",
+        "human_review_required",
     }
 
     for payload in (telemetry_health_payload, runtime_payload, queues_payload):
@@ -188,6 +207,8 @@ async def test_telemetry_routes_return_advisory_operational_signals(client: http
         assert payload["status"] == "ok"
         assert payload["runtime_mode"] == "prototype"
         assert payload["advisory_only"] is True
+        assert payload["runtime_stage"] == "prototype"
+        assert payload["verification_mode"] == "advisory"
         assert payload["public_safe"] is True
         assert payload["traceable"] is True
         assert payload["truth_guarantee"] is False
@@ -205,6 +226,8 @@ async def test_telemetry_endpoints_expose_consistent_advisory_metadata(client: h
     ]
     expected_metadata = {
         "advisory_only": True,
+        "runtime_stage": "prototype",
+        "verification_mode": "advisory",
         "public_safe": True,
         "traceable": True,
         "truth_guarantee": False,
@@ -213,7 +236,8 @@ async def test_telemetry_endpoints_expose_consistent_advisory_metadata(client: h
     for payload in telemetry_payloads:
         for key, expected in expected_metadata.items():
             assert key in payload
-            assert payload[key] is expected
+            assert payload[key] == expected
+        assert payload["human_review_required"] is bool(payload["warnings"])
         assert isinstance(payload["warnings"], list)
         assert all(isinstance(warning, str) for warning in payload["warnings"])
 
@@ -234,8 +258,11 @@ async def test_degraded_telemetry_keeps_runtime_state_visible_without_hidden_fal
             "Degraded runtime events are visible for advisory human-supervised validation."
         ]
         assert payload["advisory_only"] is True
+        assert payload["runtime_stage"] == "prototype"
+        assert payload["verification_mode"] == "advisory"
         assert payload["public_safe"] is True
         assert payload["truth_guarantee"] is False
+        assert payload["human_review_required"] is bool(payload["warnings"])
 
     assert runtime_payload["degraded_events"] == 1
     assert queues_payload["degraded_queue_handling"] is True
@@ -247,10 +274,13 @@ async def test_telemetry_response_key_order_is_deterministic(client: httpx.Async
         "status",
         "runtime_mode",
         "advisory_only",
+        "runtime_stage",
+        "verification_mode",
         "public_safe",
         "traceable",
         "truth_guarantee",
         "warnings",
+        "human_review_required",
         "degraded",
         "degraded_reasons",
     ]
@@ -277,9 +307,12 @@ async def test_degraded_runtime_recovery_behavior_is_public_safe(client: httpx.A
     assert payload["degraded_runtime"] is True
     assert payload["recovery_mode"] is True
     assert payload["advisory_only"] is True
+    assert payload["runtime_stage"] == "prototype"
+    assert payload["verification_mode"] == "advisory"
     assert payload["public_safe"] is True
     assert payload["traceable"] is True
     assert payload["truth_guarantee"] is False
+    assert payload["human_review_required"] is bool(payload["warnings"])
     assert isinstance(payload["warnings"], list)
 
 
@@ -377,9 +410,12 @@ async def test_identical_verification_inputs_are_deterministic_for_advisory_cont
     stable_keys = {
         "status",
         "advisory_only",
+        "runtime_stage",
+        "verification_mode",
         "public_safe",
         "traceable",
         "truth_guarantee",
+        "human_review_required",
         "trust_state",
         "replay_warning",
         "continuity_warning",
@@ -440,8 +476,11 @@ async def test_verify_accepts_oversized_advisory_input_placeholder_with_stable_c
     payload = response.json()
     assert payload["status"] == "ADVISORY"
     assert payload["advisory_only"] is True
+    assert payload["runtime_stage"] == "prototype"
+    assert payload["verification_mode"] == "advisory"
     assert payload["public_safe"] is True
     assert payload["truth_guarantee"] is False
+    assert payload["human_review_required"] is bool(payload["warnings"])
     assert isinstance(payload["warnings"], list)
 
 
@@ -560,12 +599,18 @@ async def test_degraded_recovery_path_preserves_traceable_advisory_metadata(clie
     assert payload["degraded_runtime"] is True
     assert payload["recovery_mode"] is True
     assert payload["advisory_only"] is True
+    assert payload["runtime_stage"] == "prototype"
+    assert payload["verification_mode"] == "advisory"
     assert payload["public_safe"] is True
     assert payload["truth_guarantee"] is False
+    assert payload["human_review_required"] is bool(payload["warnings"])
     assert isinstance(payload["warnings"], list)
 
     assert history["replay_warning_visible"] is True
     assert history["advisory_only"] is True
+    assert history["runtime_stage"] == "prototype"
+    assert history["verification_mode"] == "advisory"
     assert history["public_safe"] is True
     assert history["truth_guarantee"] is False
+    assert history["human_review_required"] is bool(history["warnings"])
     assert isinstance(history["warnings"], list)

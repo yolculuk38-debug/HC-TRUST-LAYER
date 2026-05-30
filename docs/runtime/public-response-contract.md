@@ -24,11 +24,14 @@ Verification response builders preserve these base keys in this order:
 | --- | --- | --- |
 | `status` | string | Runtime status label for the advisory response. |
 | `advisory_only` | boolean | Always `true`; runtime output is not autonomous final authority. |
+| `runtime_stage` | string | Always `prototype`; response metadata identifies the advisory runtime stage without production claims. |
+| `verification_mode` | string | Always `advisory`; response metadata identifies non-autonomous verification mode. |
 | `public_safe` | boolean | Always `true`; response fields are intended for public-safe integration use. |
 | `message` | string | Public-safe explanatory text with no secret-bearing values. |
 | `warnings` | list of strings | Always present, even when empty. |
 | `traceable` | boolean | Always `true` for public response builder output. |
 | `truth_guarantee` | boolean | Always `false`; no truth guarantee is asserted. |
+| `human_review_required` | boolean | Derived from `warnings` being present or advisory escalation being required. |
 | `record_id` | string, when route scoped | Public-safe record identifier for route-scoped responses. |
 
 QR validation responses additionally preserve these keys:
@@ -60,8 +63,11 @@ Malformed request responses preserve the base route-scoped keys and add:
 Runtime public responses must preserve:
 
 - `advisory_only=true`
+- `runtime_stage=prototype`
+- `verification_mode=advisory`
 - `public_safe=true`
 - `truth_guarantee=false`
+- `human_review_required` derived from warnings present or advisory escalation required
 - `warnings` always present as a list
 - human-supervised validation as final interpretation authority
 
@@ -90,11 +96,14 @@ See `docs/runtime/advisory-rate-limit-warning-contract.md` and `docs/security/ra
 {
   "status": "ADVISORY",
   "advisory_only": true,
+  "runtime_stage": "prototype",
+  "verification_mode": "advisory",
   "public_safe": true,
   "message": "Advisory HC:// runtime flow executed: request → validator pipeline → trust-state engine → event append → response contract → continuity history.",
   "warnings": [],
   "traceable": true,
   "truth_guarantee": false,
+  "human_review_required": false,
   "record_id": "normal-runtime-contract",
   "trust_state": "ADVISORY",
   "replay_warning": false,
@@ -129,6 +138,8 @@ The `qr_scan_summary` example is abbreviated. Integrators should preserve unknow
 {
   "status": "MALFORMED_INPUT",
   "advisory_only": true,
+  "runtime_stage": "prototype",
+  "verification_mode": "advisory",
   "public_safe": true,
   "message": "Malformed HC:// validator input was rejected within advisory runtime boundaries. Human-supervised validation is required before trust interpretation.",
   "warnings": [
@@ -137,6 +148,7 @@ The `qr_scan_summary` example is abbreviated. Integrators should preserve unknow
   ],
   "traceable": true,
   "truth_guarantee": false,
+  "human_review_required": true,
   "record_id": "malformed-runtime-contract",
   "malformed_input": true,
   "public_exposure": "restricted"
@@ -145,7 +157,7 @@ The `qr_scan_summary` example is abbreviated. Integrators should preserve unknow
 
 ## Persistence roundtrip audit
 
-For advisory write → read → re-verify review boundaries, see `docs/runtime/persistence-roundtrip-audit.md` and `docs/security/persistence-risk-checklist.md`. Runtime roundtrip audit documentation preserves `advisory_only=true`, `public_safe=true`, `truth_guarantee=false`, an always-present `warnings` list, visible degraded states, visible replay warnings, no hidden fallback behavior, and human-supervised validation as final authority. It does not add Redis, database storage, schema mutation, workflow mutation, governance mutation, or canonical artifact mutation.
+For advisory write → read → re-verify review boundaries, see `docs/runtime/persistence-roundtrip-audit.md` and `docs/security/persistence-risk-checklist.md`. Runtime roundtrip audit documentation preserves `advisory_only=true`, `runtime_stage=prototype`, `verification_mode=advisory`, `public_safe=true`, `truth_guarantee=false`, `human_review_required` derived from warnings or escalation, an always-present `warnings` list, visible degraded states, visible replay warnings, no hidden fallback behavior, and human-supervised validation as final authority. It does not add Redis, database storage, schema mutation, workflow mutation, governance mutation, or canonical artifact mutation.
 
 ## Configuration and secret boundary
 
