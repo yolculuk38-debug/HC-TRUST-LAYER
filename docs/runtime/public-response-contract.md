@@ -58,6 +58,7 @@ Malformed request responses preserve the base route-scoped keys and add:
 
 | Key | Type | Contract |
 | --- | --- | --- |
+| `detail` | string | Public-safe validation error detail for malformed validator request payloads. |
 | `malformed_input` | boolean | Always `true` for malformed validator request payloads. |
 | `public_exposure` | string | Always `restricted` for malformed validator request payloads. |
 
