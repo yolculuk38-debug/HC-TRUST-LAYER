@@ -28,5 +28,7 @@ test = [
   "anyio",
   "fastapi",
   "httpx",
+  "pydantic",
   "pytest",
+  "uvicorn",
 ]
