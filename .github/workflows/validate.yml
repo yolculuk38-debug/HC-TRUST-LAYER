@@ -88,13 +88,13 @@ jobs:
         run: python src/generate_explorer_index.py
 
       - name: Upload explorer index artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: explorer-index
           path: generated/explorer_index.json
 
       - name: Upload audit snapshot artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: audit-snapshot
           path: generated/audit_snapshot.json
