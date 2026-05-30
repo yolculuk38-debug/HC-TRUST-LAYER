@@ -140,6 +140,7 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
             "→ event append → response contract → continuity history."
         ),
         warnings=warnings,
+        escalation_required=escalation_queued,
     )
     payload["trust_state"] = trust_state.value
     payload["replay_warning"] = replay_warning
@@ -202,10 +203,13 @@ def verify_history(record_id: str) -> dict[str, object]:
     return {
         "record_id": redact_secret_like_text(record_id),
         "advisory_only": True,
+        "runtime_stage": "prototype",
+        "verification_mode": "advisory",
         "public_safe": True,
         "traceable": True,
         "truth_guarantee": False,
         "warnings": [],
+        "human_review_required": False,
         "replay_warning_visible": any(event["event_type"] == "replay_warning" for event in events),
         "trust_state_transitions": [e for e in events if e["event_type"] == "trust_state_transition"],
         "events": events,
@@ -228,9 +232,12 @@ def federation_review(payload: dict[str, object]) -> dict[str, object]:
     return {
         "status": "ADVISORY",
         "advisory_only": True,
+        "runtime_stage": "prototype",
+        "verification_mode": "advisory",
         "public_safe": True,
         "traceable": True,
         "truth_guarantee": False,
+        "human_review_required": True,
         "message": "Federation review placeholder accepted for human-supervised validation routing.",
         "warnings": [
             "Federation routing remains advisory in the HC:// reference runtime with no production-readiness or objective-truth guarantee."

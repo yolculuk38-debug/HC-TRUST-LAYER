@@ -14,11 +14,14 @@ from hc_runtime.runtime import RuntimeQueueStore
 EXPECTED_ADVISORY_RESPONSE_KEYS = [
     "status",
     "advisory_only",
+    "runtime_stage",
+    "verification_mode",
     "public_safe",
     "message",
     "warnings",
     "traceable",
     "truth_guarantee",
+    "human_review_required",
     "record_id",
 ]
 
@@ -47,8 +50,11 @@ def _assert_public_safe_contract(payload: dict[str, Any], *, record_id: str) -> 
     assert list(payload.keys()) == EXPECTED_ADVISORY_RESPONSE_KEYS
     assert payload["record_id"] == record_id
     assert payload["advisory_only"] is True
+    assert payload["runtime_stage"] == "prototype"
+    assert payload["verification_mode"] == "advisory"
     assert payload["public_safe"] is True
     assert payload["truth_guarantee"] is False
+    assert payload["human_review_required"] is bool(payload["warnings"])
     assert isinstance(payload["warnings"], list)
 
 

@@ -11,11 +11,14 @@ from hc_runtime.runtime import RuntimePolicyEngine, RuntimeQueueStore, Validator
 EXPECTED_RUNTIME_RESPONSE_KEYS = [
     "status",
     "advisory_only",
+    "runtime_stage",
+    "verification_mode",
     "public_safe",
     "message",
     "warnings",
     "traceable",
     "truth_guarantee",
+    "human_review_required",
     "record_id",
     "trust_state",
     "replay_warning",
@@ -28,10 +31,13 @@ EXPECTED_RUNTIME_RESPONSE_KEYS = [
 EXPECTED_HISTORY_KEYS = [
     "record_id",
     "advisory_only",
+    "runtime_stage",
+    "verification_mode",
     "public_safe",
     "traceable",
     "truth_guarantee",
     "warnings",
+    "human_review_required",
     "replay_warning_visible",
     "trust_state_transitions",
     "events",
@@ -41,10 +47,13 @@ EXPECTED_TELEMETRY_KEYS = [
     "status",
     "runtime_mode",
     "advisory_only",
+    "runtime_stage",
+    "verification_mode",
     "public_safe",
     "traceable",
     "truth_guarantee",
     "warnings",
+    "human_review_required",
     "degraded",
     "degraded_reasons",
     "events_total",
@@ -154,10 +163,13 @@ def _history_response(*, record_id: str, event_store: RuntimeEventStore) -> dict
     return {
         "record_id": record_id,
         "advisory_only": True,
+        "runtime_stage": "prototype",
+        "verification_mode": "advisory",
         "public_safe": True,
         "traceable": True,
         "truth_guarantee": False,
         "warnings": [],
+        "human_review_required": False,
         "replay_warning_visible": any(event["event_type"] == "replay_warning" for event in events),
         "trust_state_transitions": [event for event in events if event["event_type"] == "trust_state_transition"],
         "events": events,
@@ -171,10 +183,13 @@ def _telemetry_snapshot(*, event_store: RuntimeEventStore, queue_store: RuntimeQ
         "status": "degraded" if degraded else "ok",
         "runtime_mode": "prototype",
         "advisory_only": True,
+        "runtime_stage": "prototype",
+        "verification_mode": "advisory",
         "public_safe": True,
         "traceable": True,
         "truth_guarantee": False,
         "warnings": ["Degraded runtime events are visible for advisory human-supervised validation."] if degraded else [],
+        "human_review_required": degraded or bool(queue_store.escalation_queue),
         "degraded": degraded,
         "degraded_reasons": ["runtime_recovery_mode"] if degraded else [],
         "events_total": len(event_store._events),
@@ -191,9 +206,12 @@ def _assert_advisory_contract(payload: dict[str, object], *, record_id: str) -> 
     assert payload["record_id"] == record_id
     assert payload["status"] == "ADVISORY"
     assert payload["advisory_only"] is True
+    assert payload["runtime_stage"] == "prototype"
+    assert payload["verification_mode"] == "advisory"
     assert payload["public_safe"] is True
     assert payload["traceable"] is True
     assert payload["truth_guarantee"] is False
+    assert payload["human_review_required"] is bool(payload["warnings"])
     assert isinstance(payload["warnings"], list)
     assert "canonical_record" not in payload
     assert "generated_artifact" not in payload
@@ -203,18 +221,24 @@ def _assert_history_contract(history: dict[str, object], *, record_id: str) -> N
     assert list(history.keys()) == EXPECTED_HISTORY_KEYS
     assert history["record_id"] == record_id
     assert history["advisory_only"] is True
+    assert history["runtime_stage"] == "prototype"
+    assert history["verification_mode"] == "advisory"
     assert history["public_safe"] is True
     assert history["traceable"] is True
     assert history["truth_guarantee"] is False
+    assert history["human_review_required"] is bool(history["warnings"])
     assert isinstance(history["warnings"], list)
 
 
 def _assert_telemetry_contract(payload: dict[str, object]) -> None:
     assert list(payload.keys()) == EXPECTED_TELEMETRY_KEYS
     assert payload["advisory_only"] is True
+    assert payload["runtime_stage"] == "prototype"
+    assert payload["verification_mode"] == "advisory"
     assert payload["public_safe"] is True
     assert payload["traceable"] is True
     assert payload["truth_guarantee"] is False
+    assert payload["human_review_required"] is bool(payload["warnings"])
     assert isinstance(payload["warnings"], list)
 
 

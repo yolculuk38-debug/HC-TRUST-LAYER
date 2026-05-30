@@ -68,9 +68,12 @@ def _assert_public_contract(payload: dict[str, Any], *, record_id: str) -> None:
     assert list(payload.keys()) == list(QR_VERIFICATION_RESPONSE_KEYS)
     assert payload["record_id"] == record_id
     assert payload["advisory_only"] is True
+    assert payload["runtime_stage"] == "prototype"
+    assert payload["verification_mode"] == "advisory"
     assert payload["public_safe"] is True
     assert payload["traceable"] is True
     assert payload["truth_guarantee"] is False
+    assert payload["human_review_required"] is bool(payload["warnings"])
     assert isinstance(payload["warnings"], list)
     assert payload["qr_scan_summary"]["advisory_only"] is True
     assert payload["qr_scan_summary"]["public_safe"] is True
@@ -165,8 +168,11 @@ async def test_malformed_input_response_contract_preserves_public_safe_fields(cl
     assert payload["record_id"] == "malformed-runtime-contract"
     assert payload["status"] == "MALFORMED_INPUT"
     assert payload["advisory_only"] is True
+    assert payload["runtime_stage"] == "prototype"
+    assert payload["verification_mode"] == "advisory"
     assert payload["public_safe"] is True
     assert payload["truth_guarantee"] is False
+    assert payload["human_review_required"] is bool(payload["warnings"])
     assert isinstance(payload["warnings"], list)
     assert payload["malformed_input"] is True
     assert payload["public_exposure"] == "restricted"
@@ -205,7 +211,10 @@ def test_public_response_contract_documentation_lists_stable_runtime_keys() -> N
     for key in MALFORMED_INPUT_RESPONSE_KEYS:
         assert f"`{key}`" in document
     assert "`advisory_only=true`" in document
+    assert "`runtime_stage=prototype`" in document
+    assert "`verification_mode=advisory`" in document
     assert "`public_safe=true`" in document
     assert "`truth_guarantee=false`" in document
+    assert "`human_review_required`" in document
     assert "warnings" in document
     assert "autonomous blocking" in document

@@ -9,11 +9,14 @@ from hc_runtime.redaction import redact_public_payload, redact_secret_like_text
 PUBLIC_RESPONSE_BASE_KEYS: tuple[str, ...] = (
     "status",
     "advisory_only",
+    "runtime_stage",
+    "verification_mode",
     "public_safe",
     "message",
     "warnings",
     "traceable",
     "truth_guarantee",
+    "human_review_required",
 )
 
 PUBLIC_RESPONSE_RECORD_KEYS: tuple[str, ...] = (*PUBLIC_RESPONSE_BASE_KEYS, "record_id")
@@ -47,15 +50,20 @@ def _build_response(
     message: str,
     warnings: list[str] | None = None,
     record_id: str | None = None,
+    escalation_required: bool = False,
 ) -> dict[str, Any]:
+    public_warnings = redact_public_payload(warnings or [])
     response: dict[str, Any] = {
         "status": status,
         "advisory_only": True,
+        "runtime_stage": "prototype",
+        "verification_mode": "advisory",
         "public_safe": True,
         "message": redact_secret_like_text(message),
-        "warnings": redact_public_payload(warnings or []),
+        "warnings": public_warnings,
         "traceable": True,
         "truth_guarantee": False,
+        "human_review_required": bool(public_warnings) or escalation_required,
     }
 
     if record_id is not None:
@@ -64,12 +72,19 @@ def _build_response(
     return response
 
 
-def advisory_response(record_id: str, message: str, warnings: list[str] | None = None) -> dict[str, Any]:
+def advisory_response(
+    record_id: str,
+    message: str,
+    warnings: list[str] | None = None,
+    *,
+    escalation_required: bool = False,
+) -> dict[str, Any]:
     return _build_response(
         record_id=record_id,
         status="ADVISORY",
         message=message,
         warnings=warnings,
+        escalation_required=escalation_required,
     )
 
 

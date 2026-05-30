@@ -13,11 +13,14 @@ from hc_runtime.runtime import RuntimePolicyEngine, RuntimeQueueStore, Validator
 EXPECTED_RUNTIME_RESPONSE_KEYS = [
     "status",
     "advisory_only",
+    "runtime_stage",
+    "verification_mode",
     "public_safe",
     "message",
     "warnings",
     "traceable",
     "truth_guarantee",
+    "human_review_required",
     "record_id",
     "trust_state",
     "replay_warning",
@@ -30,10 +33,13 @@ EXPECTED_RUNTIME_RESPONSE_KEYS = [
 EXPECTED_HISTORY_KEYS = {
     "record_id",
     "advisory_only",
+    "runtime_stage",
+    "verification_mode",
     "public_safe",
     "traceable",
     "truth_guarantee",
     "warnings",
+    "human_review_required",
     "replay_warning_visible",
     "trust_state_transitions",
     "events",
@@ -111,10 +117,13 @@ def _history_response(*, record_id: str, event_store: RuntimeEventStore) -> dict
     return {
         "record_id": record_id,
         "advisory_only": True,
+        "runtime_stage": "prototype",
+        "verification_mode": "advisory",
         "public_safe": True,
         "traceable": True,
         "truth_guarantee": False,
         "warnings": [],
+        "human_review_required": False,
         "replay_warning_visible": any(event["event_type"] == "replay_warning" for event in events),
         "trust_state_transitions": [e for e in events if e["event_type"] == "trust_state_transition"],
         "events": events,
@@ -126,9 +135,12 @@ def _assert_advisory_runtime_contract(payload: dict[str, object], *, record_id: 
     assert payload["record_id"] == record_id
     assert payload["status"] == "ADVISORY"
     assert payload["advisory_only"] is True
+    assert payload["runtime_stage"] == "prototype"
+    assert payload["verification_mode"] == "advisory"
     assert payload["public_safe"] is True
     assert payload["traceable"] is True
     assert payload["truth_guarantee"] is False
+    assert payload["human_review_required"] is bool(payload["warnings"])
     assert isinstance(payload["warnings"], list)
     assert "canonical_record" not in payload
     assert "generated_artifact" not in payload
@@ -170,6 +182,8 @@ def test_stale_replayed_input_keeps_warning_visible_without_authority_escalation
     assert payload["trust_state"] == TrustState.REPLAY_WARNING.value
     assert payload["truth_guarantee"] is False
     assert payload["advisory_only"] is True
+    assert payload["runtime_stage"] == "prototype"
+    assert payload["verification_mode"] == "advisory"
     assert payload["public_safe"] is True
     assert all("objective truth" not in warning.lower() for warning in payload["warnings"])
     assert all("autonomous" not in warning.lower() for warning in payload["warnings"])
@@ -184,6 +198,8 @@ def test_missing_event_history_returns_stable_empty_public_safe_shape() -> None:
     assert set(history.keys()) == EXPECTED_HISTORY_KEYS
     assert history["record_id"] == record_id
     assert history["advisory_only"] is True
+    assert history["runtime_stage"] == "prototype"
+    assert history["verification_mode"] == "advisory"
     assert history["public_safe"] is True
     assert history["traceable"] is True
     assert history["truth_guarantee"] is False
