@@ -154,6 +154,9 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
     payload["escalation_queued"] = escalation_queued
     abuse_signal_summary = abuse_signals.summary()
     payload["incident_summary"] = incident_summary
+    payload["canonical_lookup_status"] = pipeline_result["canonical_bridge"]["lookup_status"]
+    payload["schema_valid"] = pipeline_result["schema_result"]["valid"]
+    payload["hash_verified"] = pipeline_result["hash_result"]["hash_verified"]
     payload["qr_scan_summary"] = {
         "warning_count": len(warnings),
         "risk_reason_count": len(spoof_protection.risk_reasons),

@@ -137,6 +137,14 @@ Public verification response contracts define externally consumable, public-safe
 
 Public responses should remain understandable, mobile-readable, and explicit that outcomes are advisory and subject to human-supervised validation.
 
+The advisory QR verification response also exposes canonical record lookup diagnostics when the runtime bridge is active:
+
+- `canonical_lookup_status`: one of `found`, `missing`, `malformed`, `schema_invalid`, `hash_missing`, `hash_mismatch`, or `verified`.
+- `schema_valid`: public-safe boolean indicating whether the advisory runtime bridge accepted the loaded record shape for the requested record id.
+- `hash_verified`: public-safe boolean indicating whether the loaded record `content_hash` matched deterministic SHA-256 evaluation.
+
+These fields are diagnostics only. They do not approve trust, do not mutate canonical records, do not change trust-state policy, and do not replace human-supervised validation.
+
 ### 5.6 Observability and telemetry contracts
 
 Observability/telemetry contracts standardize runtime signal exchange for health, anomaly, and coordination visibility:

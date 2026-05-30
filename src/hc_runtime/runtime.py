@@ -8,6 +8,7 @@ import json
 from dataclasses import dataclass, field
 from typing import Any, Mapping
 
+from hc_runtime.canonical_record_loader import MALFORMED_RECORD, CanonicalRecordLoader
 from hc_runtime.decision_engine import TrustState, TrustStateDecisionEngine
 from hc_runtime.events import RuntimeEventStore
 from hc_runtime.redaction import redact_public_payload, redact_secret_like_text
@@ -16,8 +17,14 @@ from hc_runtime.redaction import redact_public_payload, redact_secret_like_text
 class ValidatorPipeline:
     """Validator runtime pipeline hooks for advisory-only verification flow."""
 
-    def __init__(self, *, canonical_records: Mapping[str, object] | None = None) -> None:
+    def __init__(
+        self,
+        *,
+        canonical_records: Mapping[str, object] | None = None,
+        canonical_loader: CanonicalRecordLoader | None = None,
+    ) -> None:
         self._canonical_records = canonical_records
+        self._canonical_loader = canonical_loader
 
     def run(self, *, record_id: str, qr_input: str) -> dict[str, Any]:
         bridge_result = self._canonical_bridge_hook(record_id=record_id)
@@ -44,7 +51,7 @@ class ValidatorPipeline:
         result: dict[str, Any] = {
             "checked": True,
             "placeholder": True,
-            "lookup_performed": self._canonical_records is not None,
+            "lookup_performed": self._canonical_records is not None or self._canonical_loader is not None,
             "found": False,
             "record_id_match": False,
             "malformed": False,
@@ -55,11 +62,14 @@ class ValidatorPipeline:
             "warnings": warnings,
         }
 
-        if self._canonical_records is None:
+        if self._canonical_records is None and self._canonical_loader is None:
             warnings.append("Canonical record lookup is not configured for this advisory runtime boundary.")
             return result
 
-        canonical_record = self._canonical_records.get(record_id)
+        if self._canonical_loader is not None:
+            canonical_record = self._canonical_loader.get(record_id)
+        else:
+            canonical_record = self._canonical_records.get(record_id)
         if canonical_record is None:
             result["lookup_status"] = "missing"
             warnings.append("Canonical record lookup returned no record for this HC:// runtime request.")
@@ -67,7 +77,7 @@ class ValidatorPipeline:
 
         result["found"] = True
         result["lookup_status"] = "found"
-        if not isinstance(canonical_record, dict):
+        if canonical_record is MALFORMED_RECORD or not isinstance(canonical_record, dict):
             result["malformed"] = True
             result["lookup_status"] = "malformed"
             warnings.append("Canonical record is malformed and cannot be schema-validated in the advisory runtime.")
