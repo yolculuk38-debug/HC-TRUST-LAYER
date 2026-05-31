@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HC:// Public Verification Explorer MVP</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f7f9fc;
+      --panel: #ffffff;
+      --text: #172033;
+      --muted: #5f6b7a;
+      --border: #d8dee9;
+      --accent: #275ea8;
+      --accent-strong: #163f78;
+      --warning-bg: #fff7df;
+      --warning-border: #f1c75b;
+      --warning-text: #533f00;
+      --code-bg: #eef2f7;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #101622;
+        --panel: #182234;
+        --text: #eef3fb;
+        --muted: #b5c0cf;
+        --border: #334258;
+        --accent: #8ab4f8;
+        --accent-strong: #b9d3ff;
+        --warning-bg: #342a10;
+        --warning-border: #8b6a16;
+        --warning-text: #ffe29a;
+        --code-bg: #223049;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    main {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    header,
+    section,
+    article {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      margin: 0 0 1rem;
+      padding: 1rem;
+      box-shadow: 0 10px 30px rgba(18, 28, 45, 0.06);
+    }
+
+    h1,
+    h2,
+    h3 {
+      line-height: 1.2;
+      margin: 0 0 0.75rem;
+    }
+
+    h1 {
+      font-size: clamp(1.6rem, 6vw, 2.6rem);
+    }
+
+    p {
+      margin: 0 0 0.75rem;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .notice {
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+      border-radius: 12px;
+      padding: 0.85rem;
+    }
+
+    .flags {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 0.6rem;
+      margin: 1rem 0 0;
+    }
+
+    .flag,
+    .pill {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.45rem 0.7rem;
+      background: color-mix(in srgb, var(--panel) 85%, var(--accent) 15%);
+      overflow-wrap: anywhere;
+    }
+
+    form {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    label {
+      font-weight: 650;
+    }
+
+    input,
+    select,
+    button {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.7rem;
+      background: var(--panel);
+      color: var(--text);
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    button.secondary {
+      background: transparent;
+      color: var(--accent-strong);
+    }
+
+    .form-row {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    @media (min-width: 760px) {
+      .form-row {
+        grid-template-columns: 180px 1fr 140px 140px;
+        align-items: end;
+      }
+    }
+
+    dl {
+      display: grid;
+      grid-template-columns: minmax(130px, 0.35fr) 1fr;
+      gap: 0.4rem 0.75rem;
+      margin: 0.75rem 0 0;
+    }
+
+    dt {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    dd {
+      margin: 0;
+      overflow-wrap: anywhere;
+    }
+
+    code,
+    pre {
+      background: var(--code-bg);
+      border-radius: 8px;
+    }
+
+    code {
+      padding: 0.1rem 0.3rem;
+    }
+
+    pre {
+      overflow: auto;
+      padding: 0.75rem;
+      white-space: pre-wrap;
+    }
+
+    .status-line {
+      min-height: 1.5rem;
+      color: var(--muted);
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="muted">HC-TRUST-LAYER / HC://</p>
+      <h1>Public Verification Explorer MVP</h1>
+      <p>
+        This read-only public verification screen searches generated explorer index data for record identifiers and content hashes.
+        It does not write records, alter runtime behavior, change schemas, modify validators, or make governance decisions.
+      </p>
+      <div class="notice" role="note">
+        <strong>Advisory-only notice:</strong> HC:// explorer output is a navigation and review aid for provenance and audit trail review.
+        QR or explorer result is not absolute truth proof. Human-supervised validation remains the final authority.
+      </div>
+      <div class="flags" aria-label="advisory flags">
+        <div class="flag"><code>advisory_only=true</code></div>
+        <div class="flag"><code>truth_guarantee=false</code></div>
+        <div class="flag"><code>human_final_authority=true</code></div>
+      </div>
+    </header>
+
+    <section aria-labelledby="search-heading">
+      <h2 id="search-heading">Search verification index</h2>
+      <p class="muted">
+        The explorer attempts to read <code>generated/explorer_index.json</code> first when available, then local static fallback paths.
+        Generated explorer data is not a canonical record.
+      </p>
+      <form id="search-form" autocomplete="off">
+        <div class="form-row">
+          <div>
+            <label for="search-type">Search by</label>
+            <select id="search-type" name="search-type">
+              <option value="record_id">record_id</option>
+              <option value="content_hash">content_hash</option>
+            </select>
+          </div>
+          <div>
+            <label for="search-query">Value</label>
+            <input id="search-query" name="search-query" type="search" placeholder="Enter exact record_id or content_hash" inputmode="search">
+          </div>
+          <button type="submit">Search</button>
+          <button class="secondary" type="button" id="reset-button">Reset</button>
+        </div>
+      </form>
+      <p id="index-status" class="status-line" aria-live="polite">Loading explorer index...</p>
+    </section>
+
+    <section aria-labelledby="results-heading">
+      <h2 id="results-heading">Results</h2>
+      <p id="result-summary" class="muted">No query submitted.</p>
+      <div id="results" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var ADVISORY_FLAGS = Object.freeze({
+        advisory_only: true,
+        truth_guarantee: false,
+        human_final_authority: true
+      });
+
+      var INDEX_PATHS = Object.freeze([
+        "../../generated/explorer_index.json",
+        "../generated/explorer_index.json",
+        "./explorer_index.json",
+        "../../records/explorer_index.json"
+      ]);
+
+      var state = {
+        entries: [],
+        loadedFrom: "",
+        loadError: ""
+      };
+
+      var searchForm = document.getElementById("search-form");
+      var searchType = document.getElementById("search-type");
+      var searchQuery = document.getElementById("search-query");
+      var resetButton = document.getElementById("reset-button");
+      var indexStatus = document.getElementById("index-status");
+      var resultSummary = document.getElementById("result-summary");
+      var results = document.getElementById("results");
+
+      function normalizeValue(value) {
+        if (value === null || value === undefined) {
+          return "";
+        }
+        return String(value).trim();
+      }
+
+      function stableString(value) {
+        if (value === null || value === undefined) {
+          return "";
+        }
+        if (typeof value === "object") {
+          try {
+            return JSON.stringify(value, Object.keys(value).sort());
+          } catch (error) {
+            return String(value);
+          }
+        }
+        return String(value);
+      }
+
+      function flattenIndex(data) {
+        var entries = [];
+        var seen = Object.create(null);
+
+        function addEntry(item, sectionName) {
+          if (!item || typeof item !== "object" || Array.isArray(item)) {
+            return;
+          }
+          var entry = Object.assign({ index_section: sectionName }, item, ADVISORY_FLAGS);
+          var key = [
+            normalizeValue(entry.record_id),
+            normalizeValue(entry.content_hash),
+            normalizeValue(entry.source),
+            sectionName,
+            entries.length
+          ].join("|");
+          if (!seen[key]) {
+            seen[key] = true;
+            entries.push(entry);
+          }
+        }
+
+        if (Array.isArray(data)) {
+          data.forEach(function (item) {
+            addEntry(item, "root");
+          });
+        } else if (data && typeof data === "object") {
+          Object.keys(data).sort().forEach(function (sectionName) {
+            var section = data[sectionName];
+            if (Array.isArray(section)) {
+              section.forEach(function (item) {
+                addEntry(item, sectionName);
+              });
+            } else if (section && typeof section === "object") {
+              Object.keys(section).sort().forEach(function (key) {
+                var value = section[key];
+                if (value && typeof value === "object") {
+                  addEntry(Object.assign({ lookup_key: key }, value), sectionName);
+                }
+              });
+            }
+          });
+        }
+
+        return entries.sort(function (a, b) {
+          var left = [a.record_id, a.content_hash, a.source, a.index_section].map(stableString).join("|");
+          var right = [b.record_id, b.content_hash, b.source, b.index_section].map(stableString).join("|");
+          return left.localeCompare(right);
+        });
+      }
+
+      function fetchJson(path) {
+        return fetch(path, { cache: "no-store" }).then(function (response) {
+          if (!response.ok) {
+            throw new Error("HTTP " + response.status);
+          }
+          return response.json();
+        });
+      }
+
+      function loadIndex(paths) {
+        var remaining = paths.slice();
+
+        function tryNext(lastError) {
+          if (!remaining.length) {
+            throw lastError || new Error("No explorer index path could be loaded.");
+          }
+          var path = remaining.shift();
+          return fetchJson(path).then(function (data) {
+            var entries = flattenIndex(data);
+            state.entries = entries;
+            state.loadedFrom = path;
+            state.loadError = "";
+            indexStatus.textContent = "Loaded " + entries.length + " index entr" + (entries.length === 1 ? "y" : "ies") + " from " + path + ".";
+            if (!entries.length) {
+              resultSummary.textContent = "Explorer index loaded, but it contains no searchable entries.";
+            }
+          }).catch(function (error) {
+            return tryNext(error);
+          });
+        }
+
+        return tryNext();
+      }
+
+      function renderEmpty(message) {
+        results.innerHTML = "";
+        resultSummary.textContent = message;
+      }
+
+      function renderEntry(entry) {
+        var article = document.createElement("article");
+        var title = document.createElement("h3");
+        title.textContent = normalizeValue(entry.record_id) || normalizeValue(entry.content_hash) || "Explorer index entry";
+        article.appendChild(title);
+
+        var description = document.createElement("p");
+        description.className = "muted";
+        description.textContent = "Read-only advisory explorer entry. Generated index data is not a canonical record.";
+        article.appendChild(description);
+
+        var fields = [
+          "record_id",
+          "content_hash",
+          "content_hash_prefix",
+          "status",
+          "verification_status",
+          "verification",
+          "title",
+          "created_at",
+          "updated_at",
+          "source",
+          "source_file",
+          "index_section",
+          "advisory_only",
+          "truth_guarantee",
+          "human_final_authority"
+        ];
+
+        Object.keys(entry).sort().forEach(function (key) {
+          var lower = key.toLowerCase();
+          if ((lower.indexOf("status") !== -1 || lower.indexOf("verification") !== -1) && fields.indexOf(key) === -1) {
+            fields.push(key);
+          }
+        });
+
+        var list = document.createElement("dl");
+        fields.forEach(function (key) {
+          if (!Object.prototype.hasOwnProperty.call(entry, key)) {
+            return;
+          }
+          var dt = document.createElement("dt");
+          var dd = document.createElement("dd");
+          dt.textContent = key;
+          dd.textContent = stableString(entry[key]);
+          list.appendChild(dt);
+          list.appendChild(dd);
+        });
+        article.appendChild(list);
+        return article;
+      }
+
+      function runSearch() {
+        var type = searchType.value;
+        var query = normalizeValue(searchQuery.value);
+
+        if (state.loadError) {
+          renderEmpty(state.loadError);
+          return;
+        }
+        if (!query) {
+          renderEmpty("Enter a record_id or content_hash to search the read-only explorer index.");
+          return;
+        }
+
+        var matches = state.entries.filter(function (entry) {
+          if (type === "content_hash") {
+            return [entry.content_hash, entry.content_hash_prefix].some(function (value) {
+              return normalizeValue(value).toLowerCase() === query.toLowerCase();
+            });
+          }
+          return normalizeValue(entry[type]).toLowerCase() === query.toLowerCase();
+        });
+
+        results.innerHTML = "";
+        resultSummary.textContent = matches.length + " result" + (matches.length === 1 ? "" : "s") + " for " + type + "=" + query + ".";
+        if (!matches.length) {
+          var empty = document.createElement("p");
+          empty.className = "muted";
+          empty.textContent = "No matching generated explorer index entry was found. Absence from this index is not a trust-kernel decision.";
+          results.appendChild(empty);
+          return;
+        }
+        matches.forEach(function (entry) {
+          results.appendChild(renderEntry(entry));
+        });
+      }
+
+      searchForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        runSearch();
+      });
+
+      resetButton.addEventListener("click", function () {
+        searchQuery.value = "";
+        searchType.value = "record_id";
+        results.innerHTML = "";
+        resultSummary.textContent = state.entries.length ? "No query submitted." : "No searchable entries are loaded.";
+        searchQuery.focus();
+      });
+
+      loadIndex(INDEX_PATHS).catch(function () {
+        state.entries = [];
+        state.loadedFrom = "";
+        state.loadError = "Explorer index unavailable or malformed. Place generated/explorer_index.json beside a static server path and reload.";
+        indexStatus.textContent = state.loadError;
+        renderEmpty("No searchable entries are loaded.");
+      });
+    }());
+  </script>
+</body>
+</html>
