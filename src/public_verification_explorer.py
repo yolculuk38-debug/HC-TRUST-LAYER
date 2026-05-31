@@ -38,6 +38,14 @@ def load_explorer_index(index_path: Path | str = DEFAULT_EXPLORER_INDEX) -> dict
     return data
 
 
+def _witness_count(entry: dict[str, Any], witness_information: list[Any]) -> int:
+    """Return explicit witness_count values without treating zero as missing."""
+
+    if "witness_count" in entry and entry["witness_count"] is not None:
+        return int(entry["witness_count"])
+    return len(witness_information)
+
+
 def normalize_record(entry: dict[str, Any]) -> dict[str, Any]:
     """Return the public read-only shape used by the Explorer MVP."""
 
@@ -55,7 +63,7 @@ def normalize_record(entry: dict[str, Any]) -> dict[str, Any]:
         "verification_status": str(entry.get("verification_status") or entry.get("status") or "unavailable").strip(),
         "timestamp": str(entry.get("timestamp") or "").strip(),
         "content_hash": content_hash.strip(),
-        "witness_count": int(entry.get("witness_count") or len(witness_information) or 0),
+        "witness_count": _witness_count(entry, witness_information),
         "source_path": str(entry.get("source_path") or entry.get("source_file") or "").strip(),
         "metadata": deepcopy(entry.get("metadata") if isinstance(entry.get("metadata"), dict) else {}),
         "verification_history": deepcopy(verification_history),
