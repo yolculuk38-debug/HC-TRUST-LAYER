@@ -325,8 +325,8 @@
       <p class="muted">HC-TRUST-LAYER / HC://</p>
       <h1>Public Verification Explorer MVP</h1>
       <p>
-        This read-only public verification screen filters generated explorer index data by record identifiers, status or trust_state, source paths, and hash text.
-        It does not write records, alter runtime behavior, change schemas, modify validators, or make governance decisions.
+        This read-only public verification screen uses generated/explorer_index.json to search HC:// records by Record ID or Content Hash and display verification metadata.
+        It does not write records, alter runtime behavior, change schemas, modify validators, calculate trust scoring, or make governance decisions.
       </p>
       <div class="notice" role="note">
         <strong>Advisory-only notice:</strong> HC:// explorer output is a navigation and review aid for provenance and audit trail review.
@@ -336,6 +336,7 @@
         <div class="flag"><code>advisory_only=true</code></div>
         <div class="flag"><code>truth_guarantee=false</code></div>
         <div class="flag"><code>human_final_authority=true</code></div>
+        <div class="flag"><code>read_only=true</code></div>
       </div>
     </header>
 
@@ -343,23 +344,21 @@
       <h2 id="search-heading">Search verification index</h2>
       <p class="muted">
         The explorer attempts to read <code>generated/explorer_index.json</code> first when available, then local static fallback paths.
-        Generated explorer data is not a canonical record.
+        Generated explorer data is not a canonical record. It remains advisory-only, read-only, and human-supervised.
       </p>
       <form id="search-form" autocomplete="off">
         <div class="form-row">
           <div>
             <label for="search-type">Search by</label>
             <select id="search-type" name="search-type">
-              <option value="all">all supported fields</option>
+              <option value="all">record_id or content hash</option>
               <option value="record_id">record_id</option>
-              <option value="status_trust_state">status / trust_state</option>
-              <option value="source_path">source path</option>
-              <option value="hash_text">hash text</option>
+              <option value="hash_text">content hash</option>
             </select>
           </div>
           <div>
             <label for="search-query">Value</label>
-            <input id="search-query" name="search-query" type="search" placeholder="Filter by record_id, status, trust_state, source, or hash" inputmode="search">
+            <input id="search-query" name="search-query" type="search" placeholder="Search by Record ID or Content Hash" inputmode="search">
           </div>
           <button type="submit">Apply filter</button>
           <button class="secondary" type="button" id="reset-button">Reset</button>
@@ -377,7 +376,7 @@
     <section class="detail-panel" aria-labelledby="detail-heading">
       <h2 id="detail-heading">Selected verification result detail</h2>
       <div class="notice prominent-notice" role="note" aria-label="Advisory-only non-canonical detail notice">
-        <strong>Advisory-only / non-canonical detail:</strong> This read-only panel displays generated explorer index fields for review.
+        <strong>Advisory-only / non-canonical detail:</strong> This read-only detail page displays generated explorer index metadata, verification history, witness information, and archive status for review.
         It is not a canonical record, does not provide absolute truth verification, and human-supervised validation remains the final authority.
       </div>
       <div id="detail" aria-live="polite"></div>
@@ -391,7 +390,8 @@
       var ADVISORY_FLAGS = Object.freeze({
         advisory_only: true,
         truth_guarantee: false,
-        human_final_authority: true
+        human_final_authority: true,
+        read_only: true
       });
 
       var INDEX_PATHS = Object.freeze([
@@ -649,8 +649,6 @@
           ]).concat(collectValuesByKeyText(entry, ["hash", "digest", "checksum"]));
         }
         return filterValues(entry, "record_id")
-          .concat(filterValues(entry, "status_trust_state"))
-          .concat(filterValues(entry, "source_path"))
           .concat(filterValues(entry, "hash_text"));
       }
 
@@ -665,7 +663,7 @@
           return "hash text";
         }
         if (type === "all") {
-          return "all supported fields";
+          return "record_id or content hash";
         }
         return type;
       }
@@ -756,6 +754,7 @@
         addBadge(badges, "advisory_only", entry.advisory_only);
         addBadge(badges, "truth_guarantee", entry.truth_guarantee, { warning: entry.truth_guarantee === false });
         addBadge(badges, "human_final_authority", entry.human_final_authority);
+        addBadge(badges, "read_only", entry.read_only);
         addBadge(badges, "status", entry.status);
         addBadge(badges, "verification_status", entry.verification_status);
         addBadge(badges, "trust_state", entry.trust_state);
@@ -792,10 +791,15 @@
           grid.appendChild(block);
         }
 
-        addBlock("Record identity", [
+        addBlock("Record metadata", [
           ["record_id", fieldValue(entry, ["record_id", "id"]), function (text) { return createCopyButton("record_id", text); }],
+          ["verification_status", entry.verification_status],
+          ["timestamp", entry.timestamp],
           ["content_hash", fieldValue(entry, ["content_hash", "hash"]), function (text) { return createCopyButton("content_hash", text); }],
           ["content_hash_prefix", entry.content_hash_prefix],
+          ["witness_count", entry.witness_count],
+          ["source_path", fieldValue(entry, ["source_path", "source_file"])],
+          ["archive_status", entry.archive_status],
           ["index_section", entry.index_section]
         ], false);
 
@@ -805,7 +809,31 @@
           ["verification", entry.verification],
           ["advisory_only", entry.advisory_only],
           ["truth_guarantee", entry.truth_guarantee],
-          ["human_final_authority", entry.human_final_authority]
+          ["human_final_authority", entry.human_final_authority],
+          ["read_only", entry.read_only]
+        ], false);
+
+        addBlock("Full record metadata", [
+          ["metadata", entry.metadata],
+          ["author", fieldValue(entry.metadata || {}, ["author"])],
+          ["record_type", fieldValue(entry.metadata || {}, ["record_type"])],
+          ["title", fieldValue(entry.metadata || {}, ["title"])],
+          ["created_at", fieldValue(entry.metadata || {}, ["created_at"])]
+        ], true);
+
+        addBlock("Verification history", [
+          ["verification_history", entry.verification_history]
+        ], true);
+
+        addBlock("Witness information", [
+          ["witness_count", entry.witness_count],
+          ["witness_information", entry.witness_information],
+          ["witness_type", entry.witness_type]
+        ], false);
+
+        addBlock("Archive status", [
+          ["archive_status", entry.archive_status],
+          ["archive_ref", fieldValue(entry.metadata || {}, ["archive_ref"])]
         ], false);
 
         addBlock("Provenance and source", [
@@ -877,12 +905,14 @@
         article.appendChild(createStateBadges(entry));
 
         appendField(list, "record_id", fieldValue(entry, ["record_id", "id"]));
+        appendField(list, "verification_status", entry.verification_status);
+        appendField(list, "timestamp", entry.timestamp);
         appendField(list, "content_hash", fieldValue(entry, ["content_hash", "hash"]));
+        appendField(list, "witness_count", entry.witness_count);
+        appendField(list, "source_path", fieldValue(entry, ["source_path", "source_file"]));
         appendField(list, "status", entry.status);
         appendField(list, "trust_state", entry.trust_state);
-        appendField(list, "verification_status", entry.verification_status);
         appendField(list, "source", entry.source);
-        appendField(list, "source_path", entry.source_path);
         appendField(list, "index_section", entry.index_section);
         article.appendChild(list);
 
@@ -908,7 +938,7 @@
         }
         if (!query) {
           state.hasActiveFilter = false;
-          renderEmpty("Enter a value to filter by record_id, status / trust_state, source path, or hash text.");
+          renderEmpty("Enter a value to search by Record ID or Content Hash.");
           return;
         }
 
@@ -923,7 +953,7 @@
         if (!matches.length) {
           var empty = document.createElement("p");
           empty.className = "muted";
-          empty.textContent = "No matching generated explorer index entry was found. Try a different record_id, status / trust_state, source path, or hash text. Absence from this index is not a trust-kernel decision.";
+          empty.textContent = "No matching generated explorer index entry was found. Try a different Record ID or Content Hash. Absence from this index is not a trust-kernel decision.";
           results.appendChild(empty);
           renderDetailEmpty("No verification result is selected.");
           return;
