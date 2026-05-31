@@ -193,6 +193,55 @@
       color: var(--muted);
     }
 
+    .results-grid {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .result-card {
+      margin: 0;
+      box-shadow: none;
+    }
+
+    .result-card h3 {
+      overflow-wrap: anywhere;
+    }
+
+    .detail-panel {
+      border-color: color-mix(in srgb, var(--border) 65%, var(--accent) 35%);
+    }
+
+    .detail-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .detail-block {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.85rem;
+      min-width: 0;
+    }
+
+    .detail-block h3 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .raw-preview {
+      max-height: 24rem;
+    }
+
+    @media (min-width: 760px) {
+      .detail-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .detail-block.full-width {
+        grid-column: 1 / -1;
+      }
+    }
+
     .hidden {
       display: none;
     }
@@ -247,7 +296,16 @@
     <section aria-labelledby="results-heading">
       <h2 id="results-heading">Results</h2>
       <p id="result-summary" class="muted">No query submitted.</p>
-      <div id="results" aria-live="polite"></div>
+      <div id="results" class="results-grid" aria-live="polite"></div>
+    </section>
+
+    <section class="detail-panel" aria-labelledby="detail-heading">
+      <h2 id="detail-heading">Selected verification result detail</h2>
+      <div class="notice" role="note">
+        <strong>Advisory-only detail:</strong> This read-only panel displays generated explorer index fields for review.
+        It is non-canonical, does not provide absolute truth verification, and does not replace human-supervised validation.
+      </div>
+      <div id="detail" aria-live="polite"></div>
     </section>
   </main>
 
@@ -271,7 +329,8 @@
       var state = {
         entries: [],
         loadedFrom: "",
-        loadError: ""
+        loadError: "",
+        selectedEntry: null
       };
 
       var searchForm = document.getElementById("search-form");
@@ -281,6 +340,7 @@
       var indexStatus = document.getElementById("index-status");
       var resultSummary = document.getElementById("result-summary");
       var results = document.getElementById("results");
+      var detail = document.getElementById("detail");
 
       function normalizeValue(value) {
         if (value === null || value === undefined) {
@@ -289,18 +349,39 @@
         return String(value).trim();
       }
 
+      function sortForPreview(value) {
+        if (Array.isArray(value)) {
+          return value.map(sortForPreview);
+        }
+        if (value && typeof value === "object") {
+          return Object.keys(value).sort().reduce(function (sorted, key) {
+            sorted[key] = sortForPreview(value[key]);
+            return sorted;
+          }, {});
+        }
+        return value;
+      }
+
       function stableString(value) {
         if (value === null || value === undefined) {
           return "";
         }
         if (typeof value === "object") {
           try {
-            return JSON.stringify(value, Object.keys(value).sort());
+            return JSON.stringify(sortForPreview(value));
           } catch (error) {
             return String(value);
           }
         }
         return String(value);
+      }
+
+      function previewJson(value) {
+        try {
+          return JSON.stringify(sortForPreview(value), null, 2);
+        } catch (error) {
+          return stableString(value);
+        }
       }
 
       function flattenIndex(data) {
@@ -391,57 +472,156 @@
       function renderEmpty(message) {
         results.innerHTML = "";
         resultSummary.textContent = message;
+        state.selectedEntry = null;
+        renderDetailEmpty("No verification result is selected.");
+      }
+
+      function appendField(list, label, value) {
+        if (value === "" || value === null || value === undefined) {
+          return;
+        }
+        var dt = document.createElement("dt");
+        var dd = document.createElement("dd");
+        dt.textContent = label;
+        dd.textContent = stableString(value);
+        list.appendChild(dt);
+        list.appendChild(dd);
+      }
+
+      function fieldValue(entry, keys) {
+        for (var index = 0; index < keys.length; index += 1) {
+          if (Object.prototype.hasOwnProperty.call(entry, keys[index])) {
+            return entry[keys[index]];
+          }
+        }
+        return "";
+      }
+
+      function renderDetailEmpty(message) {
+        detail.innerHTML = "";
+        var empty = document.createElement("p");
+        empty.className = "muted";
+        empty.textContent = message;
+        detail.appendChild(empty);
+      }
+
+      function renderDetail(entry) {
+        detail.innerHTML = "";
+
+        var grid = document.createElement("div");
+        grid.className = "detail-grid";
+
+        function addBlock(titleText, rows, fullWidth) {
+          var block = document.createElement("div");
+          block.className = "detail-block" + (fullWidth ? " full-width" : "");
+          var title = document.createElement("h3");
+          var list = document.createElement("dl");
+          title.textContent = titleText;
+          block.appendChild(title);
+          rows.forEach(function (row) {
+            appendField(list, row[0], row[1]);
+          });
+          if (!list.children.length) {
+            var unavailable = document.createElement("p");
+            unavailable.className = "muted";
+            unavailable.textContent = "Not present in the generated explorer index entry.";
+            block.appendChild(unavailable);
+          } else {
+            block.appendChild(list);
+          }
+          grid.appendChild(block);
+        }
+
+        addBlock("Record identity", [
+          ["record_id", fieldValue(entry, ["record_id", "id"])],
+          ["content_hash", fieldValue(entry, ["content_hash", "hash"])],
+          ["content_hash_prefix", entry.content_hash_prefix],
+          ["index_section", entry.index_section]
+        ], false);
+
+        addBlock("Verification status", [
+          ["status", entry.status],
+          ["verification_status", entry.verification_status],
+          ["verification", entry.verification],
+          ["advisory_only", entry.advisory_only],
+          ["truth_guarantee", entry.truth_guarantee],
+          ["human_final_authority", entry.human_final_authority]
+        ], false);
+
+        addBlock("Provenance and source", [
+          ["source", entry.source],
+          ["source_file", entry.source_file],
+          ["provenance", entry.provenance],
+          ["created_at", entry.created_at],
+          ["updated_at", entry.updated_at],
+          ["title", entry.title],
+          ["lookup_key", entry.lookup_key]
+        ], true);
+
+        var dynamicRows = [];
+        Object.keys(entry).sort().forEach(function (key) {
+          var lower = key.toLowerCase();
+          if ((lower.indexOf("status") !== -1 || lower.indexOf("verification") !== -1 || lower.indexOf("provenance") !== -1 || lower.indexOf("source") !== -1) && [
+            "status",
+            "verification_status",
+            "verification",
+            "source",
+            "source_file",
+            "provenance"
+          ].indexOf(key) === -1) {
+            dynamicRows.push([key, entry[key]]);
+          }
+        });
+        addBlock("Additional verification fields", dynamicRows, true);
+
+        var rawBlock = document.createElement("div");
+        rawBlock.className = "detail-block full-width";
+        var rawTitle = document.createElement("h3");
+        var rawPreview = document.createElement("pre");
+        rawPreview.className = "raw-preview";
+        rawTitle.textContent = "Raw generated index entry preview";
+        rawPreview.textContent = previewJson(entry);
+        rawBlock.appendChild(rawTitle);
+        rawBlock.appendChild(rawPreview);
+        grid.appendChild(rawBlock);
+
+        detail.appendChild(grid);
+      }
+
+      function selectEntry(entry) {
+        state.selectedEntry = entry;
+        renderDetail(entry);
       }
 
       function renderEntry(entry) {
         var article = document.createElement("article");
         var title = document.createElement("h3");
+        var description = document.createElement("p");
+        var list = document.createElement("dl");
+        var button = document.createElement("button");
+
+        article.className = "result-card";
         title.textContent = normalizeValue(entry.record_id) || normalizeValue(entry.content_hash) || "Explorer index entry";
         article.appendChild(title);
 
-        var description = document.createElement("p");
         description.className = "muted";
-        description.textContent = "Read-only advisory explorer entry. Generated index data is not a canonical record.";
+        description.textContent = "Read-only advisory explorer result. Select it to inspect non-canonical generated index details.";
         article.appendChild(description);
 
-        var fields = [
-          "record_id",
-          "content_hash",
-          "content_hash_prefix",
-          "status",
-          "verification_status",
-          "verification",
-          "title",
-          "created_at",
-          "updated_at",
-          "source",
-          "source_file",
-          "index_section",
-          "advisory_only",
-          "truth_guarantee",
-          "human_final_authority"
-        ];
-
-        Object.keys(entry).sort().forEach(function (key) {
-          var lower = key.toLowerCase();
-          if ((lower.indexOf("status") !== -1 || lower.indexOf("verification") !== -1) && fields.indexOf(key) === -1) {
-            fields.push(key);
-          }
-        });
-
-        var list = document.createElement("dl");
-        fields.forEach(function (key) {
-          if (!Object.prototype.hasOwnProperty.call(entry, key)) {
-            return;
-          }
-          var dt = document.createElement("dt");
-          var dd = document.createElement("dd");
-          dt.textContent = key;
-          dd.textContent = stableString(entry[key]);
-          list.appendChild(dt);
-          list.appendChild(dd);
-        });
+        appendField(list, "record_id", fieldValue(entry, ["record_id", "id"]));
+        appendField(list, "content_hash", fieldValue(entry, ["content_hash", "hash"]));
+        appendField(list, "status", entry.status);
+        appendField(list, "verification_status", entry.verification_status);
+        appendField(list, "source", entry.source);
+        appendField(list, "index_section", entry.index_section);
         article.appendChild(list);
+
+        button.type = "button";
+        button.textContent = "View detail";
+        button.addEventListener("click", function () {
+          selectEntry(entry);
+        });
+        article.appendChild(button);
         return article;
       }
 
@@ -464,21 +644,26 @@
               return normalizeValue(value).toLowerCase() === query.toLowerCase();
             });
           }
-          return normalizeValue(entry[type]).toLowerCase() === query.toLowerCase();
+          return [entry.record_id, entry.id].some(function (value) {
+            return normalizeValue(value).toLowerCase() === query.toLowerCase();
+          });
         });
 
         results.innerHTML = "";
         resultSummary.textContent = matches.length + " result" + (matches.length === 1 ? "" : "s") + " for " + type + "=" + query + ".";
+        state.selectedEntry = null;
         if (!matches.length) {
           var empty = document.createElement("p");
           empty.className = "muted";
           empty.textContent = "No matching generated explorer index entry was found. Absence from this index is not a trust-kernel decision.";
           results.appendChild(empty);
+          renderDetailEmpty("No verification result is selected.");
           return;
         }
         matches.forEach(function (entry) {
           results.appendChild(renderEntry(entry));
         });
+        selectEntry(matches[0]);
       }
 
       searchForm.addEventListener("submit", function (event) {
@@ -490,9 +675,13 @@
         searchQuery.value = "";
         searchType.value = "record_id";
         results.innerHTML = "";
+        state.selectedEntry = null;
         resultSummary.textContent = state.entries.length ? "No query submitted." : "No searchable entries are loaded.";
+        renderDetailEmpty("No verification result is selected.");
         searchQuery.focus();
       });
+
+      renderDetailEmpty("No verification result is selected.");
 
       loadIndex(INDEX_PATHS).catch(function () {
         state.entries = [];
