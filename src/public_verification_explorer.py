@@ -44,6 +44,15 @@ def _list_or_empty(value: Any) -> list[Any]:
     return value if isinstance(value, list) else []
 
 
+def _first_list(*values: Any) -> list[Any]:
+    """Return the first list value without treating an explicit empty list as missing."""
+
+    for value in values:
+        if isinstance(value, list):
+            return value
+    return []
+
+
 def _witness_count(entry: dict[str, Any], witness_information: list[Any]) -> int:
     """Return explicit witness_count values without treating zero as missing."""
 
@@ -56,10 +65,10 @@ def normalize_record(entry: dict[str, Any]) -> dict[str, Any]:
     """Return the public read-only shape used by the Explorer MVP."""
 
     content_hash = str(entry.get("content_hash") or entry.get("hash") or "")
-    witness_information = _list_or_empty(
-        entry.get("witness_information") or entry.get("witnesses") or []
+    witness_information = _first_list(
+        entry.get("witness_information"), entry.get("witnesses")
     )
-    verification_history = _list_or_empty(entry.get("verification_history") or [])
+    verification_history = _list_or_empty(entry.get("verification_history"))
 
     return {
         **ADVISORY_BOUNDARY,
