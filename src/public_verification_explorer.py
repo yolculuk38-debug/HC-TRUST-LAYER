@@ -38,6 +38,12 @@ def load_explorer_index(index_path: Path | str = DEFAULT_EXPLORER_INDEX) -> dict
     return data
 
 
+def _list_or_empty(value: Any) -> list[Any]:
+    """Return list values used for public detail rendering, or an empty list."""
+
+    return value if isinstance(value, list) else []
+
+
 def _witness_count(entry: dict[str, Any], witness_information: list[Any]) -> int:
     """Return explicit witness_count values without treating zero as missing."""
 
@@ -50,12 +56,10 @@ def normalize_record(entry: dict[str, Any]) -> dict[str, Any]:
     """Return the public read-only shape used by the Explorer MVP."""
 
     content_hash = str(entry.get("content_hash") or entry.get("hash") or "")
-    witness_information = entry.get("witness_information") or entry.get("witnesses") or []
-    if not isinstance(witness_information, list):
-        witness_information = []
-    verification_history = entry.get("verification_history") or []
-    if not isinstance(verification_history, list):
-        verification_history = []
+    witness_information = _list_or_empty(
+        entry.get("witness_information") or entry.get("witnesses") or []
+    )
+    verification_history = _list_or_empty(entry.get("verification_history") or [])
 
     return {
         **ADVISORY_BOUNDARY,
