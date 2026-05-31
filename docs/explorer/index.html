@@ -158,7 +158,7 @@
 
     @media (min-width: 760px) {
       .form-row {
-        grid-template-columns: 180px 1fr 140px 140px;
+        grid-template-columns: minmax(180px, 0.4fr) minmax(240px, 1fr) 140px 140px;
         align-items: end;
       }
     }
@@ -293,7 +293,7 @@
       <p class="muted">HC-TRUST-LAYER / HC://</p>
       <h1>Public Verification Explorer MVP</h1>
       <p>
-        This read-only public verification screen searches generated explorer index data for record identifiers and content hashes.
+        This read-only public verification screen filters generated explorer index data by record identifiers, status or trust_state, source paths, and hash text.
         It does not write records, alter runtime behavior, change schemas, modify validators, or make governance decisions.
       </p>
       <div class="notice" role="note">
@@ -318,15 +318,18 @@
           <div>
             <label for="search-type">Search by</label>
             <select id="search-type" name="search-type">
+              <option value="all">all supported fields</option>
               <option value="record_id">record_id</option>
-              <option value="content_hash">content_hash</option>
+              <option value="status_trust_state">status / trust_state</option>
+              <option value="source_path">source path</option>
+              <option value="hash_text">hash text</option>
             </select>
           </div>
           <div>
             <label for="search-query">Value</label>
-            <input id="search-query" name="search-query" type="search" placeholder="Enter exact record_id or content_hash" inputmode="search">
+            <input id="search-query" name="search-query" type="search" placeholder="Filter by record_id, status, trust_state, source, or hash" inputmode="search">
           </div>
-          <button type="submit">Search</button>
+          <button type="submit">Apply filter</button>
           <button class="secondary" type="button" id="reset-button">Reset</button>
         </div>
       </form>
@@ -370,7 +373,8 @@
         entries: [],
         loadedFrom: "",
         loadError: "",
-        selectedEntry: null
+        selectedEntry: null,
+        hasActiveFilter: false
       };
 
       var searchForm = document.getElementById("search-form");
@@ -500,6 +504,8 @@
             indexStatus.textContent = "Loaded " + entries.length + " index entr" + (entries.length === 1 ? "y" : "ies") + " from " + path + ".";
             if (!entries.length) {
               resultSummary.textContent = "Explorer index loaded, but it contains no searchable entries.";
+            } else if (state.hasActiveFilter) {
+              runSearch();
             }
           }).catch(function (error) {
             return tryNext(error);
@@ -547,6 +553,89 @@
           }
         }
         return "";
+      }
+
+      function collectValuesByKeys(entry, keys) {
+        return keys.reduce(function (values, key) {
+          var value = fieldValue(entry, [key]);
+          if (value !== "" && value !== null && value !== undefined) {
+            values.push(value);
+          }
+          return values;
+        }, []);
+      }
+
+      function collectValuesByKeyText(entry, fragments) {
+        return Object.keys(entry).reduce(function (values, key) {
+          var normalizedKey = key.toLowerCase();
+          var matchesKey = fragments.some(function (fragment) {
+            return normalizedKey.indexOf(fragment) !== -1;
+          });
+          if (matchesKey) {
+            values.push(entry[key]);
+          }
+          return values;
+        }, []);
+      }
+
+      function searchableText(values) {
+        return values.map(stableString).join(" ").toLowerCase();
+      }
+
+      function filterValues(entry, type) {
+        if (type === "record_id") {
+          return collectValuesByKeys(entry, ["record_id", "id", "lookup_key"]);
+        }
+        if (type === "status_trust_state") {
+          return collectValuesByKeys(entry, [
+            "status",
+            "trust_state",
+            "verification_status",
+            "verification",
+            "decision",
+            "state"
+          ]).concat(collectValuesByKeyText(entry, ["status", "trust_state"]));
+        }
+        if (type === "source_path") {
+          return collectValuesByKeys(entry, [
+            "source",
+            "source_file",
+            "source_path",
+            "path",
+            "file",
+            "record_path"
+          ]).concat(collectValuesByKeyText(entry, ["source", "path"]));
+        }
+        if (type === "hash_text") {
+          return collectValuesByKeys(entry, [
+            "content_hash",
+            "content_hash_prefix",
+            "hash",
+            "hash_text",
+            "digest",
+            "checksum"
+          ]).concat(collectValuesByKeyText(entry, ["hash", "digest", "checksum"]));
+        }
+        return filterValues(entry, "record_id")
+          .concat(filterValues(entry, "status_trust_state"))
+          .concat(filterValues(entry, "source_path"))
+          .concat(filterValues(entry, "hash_text"));
+      }
+
+      function searchLabel(type) {
+        if (type === "status_trust_state") {
+          return "status / trust_state";
+        }
+        if (type === "source_path") {
+          return "source path";
+        }
+        if (type === "hash_text") {
+          return "hash text";
+        }
+        if (type === "all") {
+          return "all supported fields";
+        }
+        return type;
       }
 
       function renderDetailEmpty(message) {
@@ -719,8 +808,10 @@
         appendField(list, "record_id", fieldValue(entry, ["record_id", "id"]));
         appendField(list, "content_hash", fieldValue(entry, ["content_hash", "hash"]));
         appendField(list, "status", entry.status);
+        appendField(list, "trust_state", entry.trust_state);
         appendField(list, "verification_status", entry.verification_status);
         appendField(list, "source", entry.source);
+        appendField(list, "source_path", entry.source_path);
         appendField(list, "index_section", entry.index_section);
         article.appendChild(list);
 
@@ -737,34 +828,31 @@
       function runSearch() {
         var type = searchType.value;
         var query = normalizeValue(searchQuery.value);
+        var normalizedQuery = query.toLowerCase();
 
         if (state.loadError) {
+          state.hasActiveFilter = false;
           renderEmpty(state.loadError);
           return;
         }
         if (!query) {
-          renderEmpty("Enter a record_id or content_hash to search the read-only explorer index.");
+          state.hasActiveFilter = false;
+          renderEmpty("Enter a value to filter by record_id, status / trust_state, source path, or hash text.");
           return;
         }
 
         var matches = state.entries.filter(function (entry) {
-          if (type === "content_hash") {
-            return [entry.content_hash, entry.content_hash_prefix].some(function (value) {
-              return normalizeValue(value).toLowerCase() === query.toLowerCase();
-            });
-          }
-          return [entry.record_id, entry.id].some(function (value) {
-            return normalizeValue(value).toLowerCase() === query.toLowerCase();
-          });
+          return searchableText(filterValues(entry, type)).indexOf(normalizedQuery) !== -1;
         });
 
         results.innerHTML = "";
-        resultSummary.textContent = matches.length + " result" + (matches.length === 1 ? "" : "s") + " for " + type + "=" + query + ".";
+        state.hasActiveFilter = true;
+        resultSummary.textContent = matches.length + " result" + (matches.length === 1 ? "" : "s") + " for " + searchLabel(type) + " containing \"" + query + "\".";
         state.selectedEntry = null;
         if (!matches.length) {
           var empty = document.createElement("p");
           empty.className = "muted";
-          empty.textContent = "No matching generated explorer index entry was found. Absence from this index is not a trust-kernel decision.";
+          empty.textContent = "No matching generated explorer index entry was found. Try a different record_id, status / trust_state, source path, or hash text. Absence from this index is not a trust-kernel decision.";
           results.appendChild(empty);
           renderDetailEmpty("No verification result is selected.");
           return;
@@ -780,11 +868,15 @@
         runSearch();
       });
 
+      searchQuery.addEventListener("input", runSearch);
+      searchType.addEventListener("change", runSearch);
+
       resetButton.addEventListener("click", function () {
         searchQuery.value = "";
-        searchType.value = "record_id";
+        searchType.value = "all";
         results.innerHTML = "";
         state.selectedEntry = null;
+        state.hasActiveFilter = false;
         resultSummary.textContent = state.entries.length ? "No query submitted." : "No searchable entries are loaded.";
         renderDetailEmpty("No verification result is selected.");
         searchQuery.focus();
