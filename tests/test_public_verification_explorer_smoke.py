@@ -56,8 +56,8 @@ def test_public_verification_explorer_keeps_generated_indexes_non_canonical() ->
 def test_public_verification_explorer_mvp_detail_sections_are_available() -> None:
     html = _explorer_html()
 
-    for section in ("Record metadata", "Full record metadata", "Verification history", "Witness information", "Archive status"):
+    for section in ("Verification Summary", "Record Metadata", "Hash Information", "Witness Information", "Verification history", "Archive status"):
         assert section in html
 
-    for field in ("timestamp", "content_hash", "witness_count", "source_path", "archive_status"):
+    for field in ("timestamp", "content_hash", "qr_reference", "witness_count", "source_path", "archive_status"):
         assert f'appendField(list, "{field}"' in html or f'["{field}"' in html

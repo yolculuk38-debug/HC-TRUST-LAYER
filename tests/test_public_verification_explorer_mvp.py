@@ -3,8 +3,10 @@ from pathlib import Path
 
 from public_verification_explorer import (
     ADVISORY_BOUNDARY,
+    build_record_detail_response,
     list_records,
     lookup_record,
+    render_record_detail_html,
     search_records,
 )
 
@@ -61,6 +63,7 @@ def test_explorer_index_exposes_required_mvp_fields() -> None:
             "verification_status",
             "timestamp",
             "content_hash",
+            "qr_reference",
             "witness_count",
             "source_path",
             "metadata",
@@ -69,3 +72,41 @@ def test_explorer_index_exposes_required_mvp_fields() -> None:
             "archive_status",
         ):
             assert field in record
+
+
+def test_record_detail_response_supports_explorer_record_route() -> None:
+    response = build_record_detail_response(_index(), "HC-2026-0000-0002")
+
+    assert response["found"] is True
+    assert response["route"] == "/explorer/record/HC-2026-0000-0002"
+    assert response["alternate_route"] == "/record/HC-2026-0000-0002"
+    assert response["verification_summary"]["verification_status"] == "draft"
+    assert response["record_metadata"]["source_path"] == "records/pending/HC-2026-0002.json"
+
+
+def test_record_detail_response_returns_structured_missing_error() -> None:
+    response = build_record_detail_response(_index(), "HC-MISSING-2099-0001")
+
+    assert response["found"] is False
+    assert response["route"] == "/explorer/record/HC-MISSING-2099-0001"
+    assert response["error"] == {
+        "code": "record_not_found",
+        "human_message": "No generated explorer detail is available for this Record ID.",
+    }
+    assert "Record detail is unavailable" in response["message"]
+
+
+def test_record_detail_html_renders_hash_field() -> None:
+    html = render_record_detail_html(_index(), "HC-EXAMPLE-2026-0001")
+
+    assert "Hash Information" in html
+    assert "740f84dec83cce227ff4b6fb4280b088834dda8a632fa6c20250c829b80188dc" in html
+
+
+def test_record_detail_html_renders_witness_metadata() -> None:
+    html = render_record_detail_html(_index(), "HC-EXAMPLE-2026-0001")
+
+    assert "Witness Information" in html
+    assert "Witness count" in html
+    assert "ChatGPT" in html
+    assert "Claude" in html

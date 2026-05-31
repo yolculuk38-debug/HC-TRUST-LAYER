@@ -534,7 +534,10 @@
             state.loadedFrom = path;
             state.loadError = "";
             indexStatus.textContent = "Loaded " + entries.length + " index entr" + (entries.length === 1 ? "y" : "ies") + " from " + path + ".";
-            if (!entries.length) {
+            var routeRecordId = recordIdFromRoute();
+            if (routeRecordId) {
+              selectRecordId(routeRecordId);
+            } else if (!entries.length) {
               resultSummary.textContent = "Explorer index loaded, but it contains no searchable entries.";
             } else if (state.hasActiveFilter) {
               runSearch();
@@ -668,6 +671,79 @@
         return type;
       }
 
+      function recordIdFromRoute() {
+        var params = new URLSearchParams(window.location.search);
+        var queryRecord = params.get("record_id") || params.get("record");
+        if (queryRecord) {
+          return normalizeValue(queryRecord);
+        }
+
+        var match = window.location.pathname.match(/(?:\/explorer\/record|\/record)\/([^/?#]+)/);
+        if (match && match[1]) {
+          return decodeURIComponent(match[1]);
+        }
+        return "";
+      }
+
+      function structuredMissingRecord(recordId) {
+        return {
+          found: false,
+          record_id: recordId,
+          route: "/explorer/record/" + recordId,
+          alternate_route: "/record/" + recordId,
+          message: "Record detail is unavailable because the Record ID was not found in generated/explorer_index.json.",
+          error: {
+            code: "record_not_found",
+            human_message: "No generated explorer detail is available for this Record ID."
+          },
+          advisory_only: true,
+          read_only: true,
+          human_supervised: true
+        };
+      }
+
+      function renderMissingRecord(recordId) {
+        detail.innerHTML = "";
+        var payload = structuredMissingRecord(recordId);
+        var block = document.createElement("div");
+        var title = document.createElement("h3");
+        var message = document.createElement("p");
+        var preview = document.createElement("pre");
+        block.className = "detail-block full-width";
+        title.textContent = "Record not found";
+        message.textContent = payload.message + " Absence from this generated explorer index is not a trust-kernel decision.";
+        preview.textContent = previewJson(payload);
+        block.appendChild(title);
+        block.appendChild(message);
+        block.appendChild(preview);
+        detail.appendChild(block);
+      }
+
+      function selectRecordId(recordId) {
+        var normalizedId = normalizeValue(recordId);
+        if (!normalizedId) {
+          return false;
+        }
+        var match = state.entries.find(function (entry) {
+          return normalizeValue(fieldValue(entry, ["record_id", "id"])) === normalizedId;
+        });
+        if (!match) {
+          searchQuery.value = normalizedId;
+          searchType.value = "record_id";
+          results.innerHTML = "";
+          resultSummary.textContent = "No generated explorer index entry was found for Record ID " + normalizedId + ".";
+          renderMissingRecord(normalizedId);
+          return false;
+        }
+        searchQuery.value = normalizedId;
+        searchType.value = "record_id";
+        results.innerHTML = "";
+        results.appendChild(renderEntry(match));
+        resultSummary.textContent = "1 record detail result for " + normalizedId + ".";
+        selectEntry(match);
+        return true;
+      }
+
       function renderDetailEmpty(message) {
         detail.innerHTML = "";
         var empty = document.createElement("p");
@@ -791,29 +867,18 @@
           grid.appendChild(block);
         }
 
-        addBlock("Record metadata", [
+        addBlock("Verification Summary", [
           ["record_id", fieldValue(entry, ["record_id", "id"]), function (text) { return createCopyButton("record_id", text); }],
           ["verification_status", entry.verification_status],
           ["timestamp", entry.timestamp],
-          ["content_hash", fieldValue(entry, ["content_hash", "hash"]), function (text) { return createCopyButton("content_hash", text); }],
-          ["content_hash_prefix", entry.content_hash_prefix],
-          ["witness_count", entry.witness_count],
-          ["source_path", fieldValue(entry, ["source_path", "source_file"])],
-          ["archive_status", entry.archive_status],
-          ["index_section", entry.index_section]
-        ], false);
-
-        addBlock("Verification status", [
-          ["status", entry.status],
-          ["verification_status", entry.verification_status],
-          ["verification", entry.verification],
           ["advisory_only", entry.advisory_only],
-          ["truth_guarantee", entry.truth_guarantee],
-          ["human_final_authority", entry.human_final_authority],
-          ["read_only", entry.read_only]
+          ["read_only", entry.read_only],
+          ["human_final_authority", entry.human_final_authority]
         ], false);
 
-        addBlock("Full record metadata", [
+        addBlock("Record Metadata", [
+          ["source_path", fieldValue(entry, ["source_path", "source_file"])],
+          ["qr_reference", fieldValue(entry, ["qr_reference", "qr_url", "qr"])],
           ["metadata", entry.metadata],
           ["author", fieldValue(entry.metadata || {}, ["author"])],
           ["record_type", fieldValue(entry.metadata || {}, ["record_type"])],
@@ -821,15 +886,23 @@
           ["created_at", fieldValue(entry.metadata || {}, ["created_at"])]
         ], true);
 
-        addBlock("Verification history", [
-          ["verification_history", entry.verification_history]
-        ], true);
+        addBlock("Hash Information", [
+          ["content_hash", fieldValue(entry, ["content_hash", "hash"]), function (text) { return createCopyButton("content_hash", text); }],
+          ["content_hash_prefix", entry.content_hash_prefix]
+        ], false);
 
-        addBlock("Witness information", [
+        addBlock("Witness Information", [
           ["witness_count", entry.witness_count],
           ["witness_information", entry.witness_information],
           ["witness_type", entry.witness_type]
         ], false);
+
+        addBlock("Verification history", [
+          ["verification_history", entry.verification_history],
+          ["status", entry.status],
+          ["verification", entry.verification],
+          ["truth_guarantee", entry.truth_guarantee]
+        ], true);
 
         addBlock("Archive status", [
           ["archive_status", entry.archive_status],
@@ -908,6 +981,7 @@
         appendField(list, "verification_status", entry.verification_status);
         appendField(list, "timestamp", entry.timestamp);
         appendField(list, "content_hash", fieldValue(entry, ["content_hash", "hash"]));
+        appendField(list, "qr_reference", fieldValue(entry, ["qr_reference", "qr_url", "qr"]));
         appendField(list, "witness_count", entry.witness_count);
         appendField(list, "source_path", fieldValue(entry, ["source_path", "source_file"]));
         appendField(list, "status", entry.status);
