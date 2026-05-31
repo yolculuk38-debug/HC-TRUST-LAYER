@@ -92,6 +92,14 @@
       padding: 0.85rem;
     }
 
+    .prominent-notice {
+      border-width: 2px;
+      border-left-width: 8px;
+      font-size: 1.02rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
     .flags {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
@@ -169,7 +177,39 @@
 
     dd {
       margin: 0;
+      min-width: 0;
       overflow-wrap: anywhere;
+    }
+
+    .field-value,
+    .hash-value {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .field-with-action {
+      align-items: start;
+      display: grid;
+      gap: 0.5rem;
+      min-width: 0;
+    }
+
+    .copy-button {
+      justify-self: start;
+      min-height: 36px;
+      padding: 0.45rem 0.65rem;
+      width: auto;
+    }
+
+    .detail-action-status {
+      margin-top: 0.75rem;
+    }
+
+    @media (min-width: 560px) {
+      .field-with-action {
+        grid-template-columns: minmax(0, 1fr) auto;
+      }
     }
 
     code,
@@ -301,9 +341,9 @@
 
     <section class="detail-panel" aria-labelledby="detail-heading">
       <h2 id="detail-heading">Selected verification result detail</h2>
-      <div class="notice" role="note">
-        <strong>Advisory-only detail:</strong> This read-only panel displays generated explorer index fields for review.
-        It is non-canonical, does not provide absolute truth verification, and does not replace human-supervised validation.
+      <div class="notice prominent-notice" role="note" aria-label="Advisory-only non-canonical detail notice">
+        <strong>Advisory-only / non-canonical detail:</strong> This read-only panel displays generated explorer index fields for review.
+        It is not a canonical record, does not provide absolute truth verification, and human-supervised validation remains the final authority.
       </div>
       <div id="detail" aria-live="polite"></div>
     </section>
@@ -476,14 +516,26 @@
         renderDetailEmpty("No verification result is selected.");
       }
 
-      function appendField(list, label, value) {
+      function appendField(list, label, value, action) {
         if (value === "" || value === null || value === undefined) {
           return;
         }
         var dt = document.createElement("dt");
         var dd = document.createElement("dd");
+        var valueText = stableString(value);
+        var valueNode = document.createElement("span");
+        valueNode.className = label.indexOf("hash") !== -1 ? "hash-value" : "field-value";
+        valueNode.textContent = valueText;
         dt.textContent = label;
-        dd.textContent = stableString(value);
+        if (action) {
+          var wrapper = document.createElement("div");
+          wrapper.className = "field-with-action";
+          wrapper.appendChild(valueNode);
+          wrapper.appendChild(action(valueText));
+          dd.appendChild(wrapper);
+        } else {
+          dd.appendChild(valueNode);
+        }
         list.appendChild(dt);
         list.appendChild(dd);
       }
@@ -505,6 +557,55 @@
         detail.appendChild(empty);
       }
 
+      function setDetailActionStatus(message) {
+        var status = document.getElementById("detail-action-status");
+        if (status) {
+          status.textContent = message;
+        }
+      }
+
+      function copyWithFallback(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          return navigator.clipboard.writeText(text);
+        }
+        return new Promise(function (resolve, reject) {
+          var textArea = document.createElement("textarea");
+          textArea.value = text;
+          textArea.setAttribute("readonly", "readonly");
+          textArea.style.position = "fixed";
+          textArea.style.left = "-9999px";
+          document.body.appendChild(textArea);
+          textArea.select();
+          try {
+            if (document.execCommand("copy")) {
+              resolve();
+            } else {
+              reject(new Error("Copy command was not available."));
+            }
+          } catch (error) {
+            reject(error);
+          } finally {
+            document.body.removeChild(textArea);
+          }
+        });
+      }
+
+      function createCopyButton(label, text) {
+        var button = document.createElement("button");
+        button.className = "secondary copy-button";
+        button.type = "button";
+        button.textContent = "Copy";
+        button.setAttribute("aria-label", "Copy " + label + " to clipboard");
+        button.addEventListener("click", function () {
+          copyWithFallback(text).then(function () {
+            setDetailActionStatus(label + " copied to clipboard.");
+          }).catch(function () {
+            setDetailActionStatus("Unable to copy " + label + ". Select and copy the value manually.");
+          });
+        });
+        return button;
+      }
+
       function renderDetail(entry) {
         detail.innerHTML = "";
 
@@ -519,7 +620,7 @@
           title.textContent = titleText;
           block.appendChild(title);
           rows.forEach(function (row) {
-            appendField(list, row[0], row[1]);
+            appendField(list, row[0], row[1], row[2]);
           });
           if (!list.children.length) {
             var unavailable = document.createElement("p");
@@ -533,8 +634,8 @@
         }
 
         addBlock("Record identity", [
-          ["record_id", fieldValue(entry, ["record_id", "id"])],
-          ["content_hash", fieldValue(entry, ["content_hash", "hash"])],
+          ["record_id", fieldValue(entry, ["record_id", "id"]), function (text) { return createCopyButton("record_id", text); }],
+          ["content_hash", fieldValue(entry, ["content_hash", "hash"]), function (text) { return createCopyButton("content_hash", text); }],
           ["content_hash_prefix", entry.content_hash_prefix],
           ["index_section", entry.index_section]
         ], false);
@@ -585,7 +686,14 @@
         rawBlock.appendChild(rawPreview);
         grid.appendChild(rawBlock);
 
+        var actionStatus = document.createElement("p");
+        actionStatus.className = "muted detail-action-status";
+        actionStatus.id = "detail-action-status";
+        actionStatus.setAttribute("aria-live", "polite");
+        actionStatus.textContent = "Detail actions are advisory-only and do not modify records.";
+
         detail.appendChild(grid);
+        detail.appendChild(actionStatus);
       }
 
       function selectEntry(entry) {
@@ -618,6 +726,7 @@
 
         button.type = "button";
         button.textContent = "View detail";
+        button.setAttribute("aria-label", "View advisory detail for " + title.textContent);
         button.addEventListener("click", function () {
           selectEntry(entry);
         });
