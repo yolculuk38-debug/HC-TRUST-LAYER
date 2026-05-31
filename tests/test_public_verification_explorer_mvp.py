@@ -106,3 +106,30 @@ def test_explorer_detail_derives_content_hash_prefix_without_losing_detail_field
     assert record["verification_history"] == [{"status": "draft"}]
     assert record["witness_information"] == []
     assert record["archive_status"] == "pending_archive"
+
+
+def test_explorer_lookup_detail_preserves_merged_record_detail_fields() -> None:
+    response = lookup_record(
+        {
+            "records": [
+                {
+                    "record_id": "HC-MERGED-DETAIL",
+                    "content_hash": "1234567890abcdef",
+                    "qr_reference": "HC://qr/HC-MERGED-DETAIL",
+                    "witness_count": 0,
+                    "witness_information": ["reviewer-a"],
+                    "verification_history": [{"status": "reviewed"}],
+                    "archive_status": "pending_archive",
+                }
+            ]
+        },
+        "HC-MERGED-DETAIL",
+    )
+
+    assert response["found"] is True
+    record = response["record"]
+    assert record["qr_reference"] == "HC://qr/HC-MERGED-DETAIL"
+    assert record["witness_count"] == 0
+    assert record["verification_history"] == [{"status": "reviewed"}]
+    assert record["witness_information"] == ["reviewer-a"]
+    assert record["archive_status"] == "pending_archive"
