@@ -84,6 +84,18 @@ def test_explorer_detail_preserves_explicit_zero_witness_count() -> None:
     assert record["witness_count"] == 0
 
 
+def test_explorer_detail_preserves_explicit_empty_witness_information() -> None:
+    record = normalize_record({
+        "record_id": "HC-EMPTY-WITNESS-INFORMATION",
+        "witness_count": 0,
+        "witness_information": [],
+        "witnesses": ["fallback-reviewer"],
+    })
+
+    assert record["witness_count"] == 0
+    assert record["witness_information"] == []
+
+
 def test_explorer_detail_preserves_qr_reference() -> None:
     record = normalize_record({
         "record_id": "HC-QR-REFERENCE",
