@@ -1,22 +1,72 @@
 {
   "generated_by": "src/generate_explorer_index.py",
   "advisory_only": true,
+  "read_only": true,
+  "human_supervised": true,
   "records": [
     {
       "record_id": "HC-2026-0000-0002",
       "verification_status": "draft",
       "timestamp": "2026-05-12T09:45:00Z",
-      "author": "Fatih",
+      "content_hash": "7fdd78c9832ea1545921e60cf3b8524e0118dce7db242fbb54aefed8381fe0a3",
       "content_hash_prefix": "7fdd78c9832e",
-      "source_file": "records/pending/HC-2026-0002.json"
+      "witness_count": 4,
+      "witness_information": [
+        "ChatGPT",
+        "Claude",
+        "Grok",
+        "Meta AI"
+      ],
+      "witness_type": "multi",
+      "source_path": "records/pending/HC-2026-0002.json",
+      "source_file": "records/pending/HC-2026-0002.json",
+      "archive_status": "pending_archive",
+      "verification_history": [
+        {
+          "status": "draft",
+          "timestamp": "2026-05-12T09:45:00Z",
+          "note": "Derived from generated explorer index metadata; advisory-only."
+        }
+      ],
+      "metadata": {
+        "author": "Fatih",
+        "record_type": "ai_witness",
+        "source": "Humanity Chain",
+        "title": "Multi AI Witness Record",
+        "created_at": "2026-05-14T10:30:00Z",
+        "archive_ref": "pending_archive"
+      }
     },
     {
       "record_id": "HC-EXAMPLE-2026-0001",
       "verification_status": "draft",
       "timestamp": "2026-05-12T10:00:00Z",
-      "author": "Fatih",
+      "content_hash": "740f84dec83cce227ff4b6fb4280b088834dda8a632fa6c20250c829b80188dc",
       "content_hash_prefix": "740f84dec83c",
-      "source_file": "records/pending/HC-EXAMPLE-2026-0001.json"
+      "witness_count": 2,
+      "witness_information": [
+        "ChatGPT",
+        "Claude"
+      ],
+      "witness_type": "ai",
+      "source_path": "records/pending/HC-EXAMPLE-2026-0001.json",
+      "source_file": "records/pending/HC-EXAMPLE-2026-0001.json",
+      "archive_status": "pending_archive",
+      "verification_history": [
+        {
+          "status": "draft",
+          "timestamp": "2026-05-12T10:00:00Z",
+          "note": "Derived from generated explorer index metadata; advisory-only."
+        }
+      ],
+      "metadata": {
+        "author": "Fatih",
+        "record_type": "ai_witness",
+        "source": "Humanity Chain",
+        "title": "Example AI Witness Record",
+        "created_at": "2026-05-14T10:35:00Z",
+        "archive_ref": "pending_archive"
+      }
     }
   ]
 }
