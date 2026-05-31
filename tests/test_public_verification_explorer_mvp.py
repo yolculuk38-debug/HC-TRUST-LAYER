@@ -62,8 +62,10 @@ def test_explorer_index_exposes_required_mvp_fields() -> None:
             "verification_status",
             "timestamp",
             "content_hash",
+            "content_hash_prefix",
             "witness_count",
             "source_path",
+            "qr_reference",
             "metadata",
             "verification_history",
             "witness_information",
@@ -80,3 +82,27 @@ def test_explorer_detail_preserves_explicit_zero_witness_count() -> None:
     })
 
     assert record["witness_count"] == 0
+
+
+def test_explorer_detail_preserves_qr_reference() -> None:
+    record = normalize_record({
+        "record_id": "HC-QR-REFERENCE",
+        "qr_reference": "HC://qr/HC-QR-REFERENCE",
+    })
+
+    assert record["qr_reference"] == "HC://qr/HC-QR-REFERENCE"
+
+
+def test_explorer_detail_derives_content_hash_prefix_without_losing_detail_fields() -> None:
+    record = normalize_record({
+        "record_id": "HC-HASH-PREFIX",
+        "content_hash": "abcdef1234567890",
+        "verification_history": [{"status": "draft"}],
+        "witness_information": [],
+        "archive_status": "pending_archive",
+    })
+
+    assert record["content_hash_prefix"] == "abcdef123456"
+    assert record["verification_history"] == [{"status": "draft"}]
+    assert record["witness_information"] == []
+    assert record["archive_status"] == "pending_archive"
