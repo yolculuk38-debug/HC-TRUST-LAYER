@@ -71,6 +71,18 @@ def _encoded_qr(record_id: str, **overrides: object) -> str:
     return _canonical_json(_structured_qr_payload(record_id, **overrides))
 
 
+def _payload_with_current_hash(payload: dict[str, object], *, uppercase_payload_hash: bool = False) -> dict[str, object]:
+    payload = dict(payload)
+    payload["payload_hash"] = _sha256_text(_canonical_json({key: value for key, value in payload.items() if key != "payload_hash"}))
+    if uppercase_payload_hash:
+        payload["payload_hash"] = str(payload["payload_hash"]).upper()
+    return payload
+
+
+def _encoded_payload(payload: dict[str, object], *, uppercase_payload_hash: bool = False) -> str:
+    return _canonical_json(_payload_with_current_hash(payload, uppercase_payload_hash=uppercase_payload_hash))
+
+
 @pytest.fixture(autouse=True)
 def reset_runtime_state() -> None:
     EVENT_STORE._events.clear()
@@ -131,6 +143,159 @@ async def _post_qr(client: httpx.AsyncClient, record_id: str, qr_input: str) -> 
 
 def _assert_review_only_for_high_or_incident(payload: dict[str, object]) -> None:
     assert payload["human_review_recommended"] is (payload["qr_risk_level"] in {"HIGH", "INCIDENT"})
+
+
+def _assert_contract_stability_with_visible_warnings(payload: dict[str, object]) -> None:
+    assert list(payload.keys()) == EXPECTED_QR_RESPONSE_KEYS
+    assert payload["advisory_only"] is True
+    assert payload["public_safe"] is True
+    assert payload["truth_guarantee"] is False
+    assert payload["qr_scan_summary"]["advisory_only"] is True
+    assert payload["qr_scan_summary"]["public_safe"] is True
+    assert payload["qr_scan_summary"]["truth_guarantee"] is False
+    assert payload["qr_scan_summary"]["human_final_authority"] is True
+    assert payload["warnings"]
+    assert payload["qr_scan_summary"]["warning_count"] == len(payload["warnings"])
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize(
+    ("record_id", "qr_input"),
+    [
+        ("malformed-json-payload", "{not-json"),
+        ("partially-corrupted-payload", '{"record_id":"partially-corrupted-payload","verification_url":'),
+        ("truncated-payload", _encoded_qr("truncated-payload")[:80]),
+    ],
+)
+async def test_malformed_structured_payloads_preserve_public_safe_contract(
+    client: httpx.AsyncClient,
+    record_id: str,
+    qr_input: str,
+) -> None:
+    payload = await _post_qr(client, record_id, qr_input)
+
+    assert payload["qr_risk_level"] == "LOW"
+    assert payload["qr_risk_reasons"] == []
+    assert payload["human_review_recommended"] is False
+    assert payload["escalation_queued"] is False
+    assert "hash marker could not be confirmed" in _warning_text(payload)
+    _assert_contract_stability_with_visible_warnings(payload)
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize(
+    ("record_id", "qr_input"),
+    [
+        ("array-payload-type", '[{"record_id":"array-payload-type"}]'),
+        ("string-payload-type", '"record_id:string-payload-type"'),
+        ("numeric-payload-type", "12345"),
+    ],
+)
+async def test_invalid_payload_types_remain_advisory_without_qr_spoof_escalation(
+    client: httpx.AsyncClient,
+    record_id: str,
+    qr_input: str,
+) -> None:
+    payload = await _post_qr(client, record_id, qr_input)
+
+    assert payload["qr_risk_level"] == "LOW"
+    assert payload["qr_risk_reasons"] == []
+    assert payload["human_review_recommended"] is False
+    assert payload["escalation_queued"] is False
+    assert "hash marker could not be confirmed" in _warning_text(payload)
+    _assert_contract_stability_with_visible_warnings(payload)
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize(
+    ("record_id", "verification_url", "expected_reason", "expected_warning"),
+    [
+        ("empty-verification-url", "", "verification_url_missing", "verification_url is missing"),
+        ("whitespace-verification-url", "   ", "verification_url_missing", "verification_url is missing"),
+        ("malformed-verification-url", "not a url", "non_canonical_scheme", "verification_url scheme"),
+    ],
+)
+async def test_verification_url_edge_cases_are_visible_high_risk_advisory_findings(
+    client: httpx.AsyncClient,
+    record_id: str,
+    verification_url: str,
+    expected_reason: str,
+    expected_warning: str,
+) -> None:
+    payload = await _post_qr(client, record_id, _encoded_qr(record_id, verification_url=verification_url))
+
+    assert payload["trust_state"] == "REVIEW_REQUIRED"
+    assert payload["qr_risk_level"] == "HIGH"
+    assert expected_reason in payload["qr_risk_reasons"]
+    assert expected_warning in _warning_text(payload)
+    assert payload["human_review_recommended"] is True
+    assert payload["escalation_queued"] is True
+    assert QUEUE_STORE.escalation_queue[-1]["advisory_only"] is True
+    assert QUEUE_STORE.escalation_queue[-1]["public_safe"] is True
+    assert QUEUE_STORE.escalation_queue[-1]["truth_guarantee"] is False
+    _assert_contract_stability_with_visible_warnings(payload)
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize(
+    ("record_id", "missing_field", "expected_reason", "expected_warning"),
+    [
+        ("missing-record-id-spoof-domain", "record_id", "record_id_missing", "missing record_id"),
+        ("missing-payload-hash-spoof-domain", "payload_hash", "payload_hash_missing", "payload_hash is missing"),
+        ("missing-content-hash-spoof-domain", "content_hash", "content_hash_missing", "content_hash is missing"),
+    ],
+)
+async def test_combined_missing_payload_fields_with_spoof_domain_remain_visible(
+    client: httpx.AsyncClient,
+    record_id: str,
+    missing_field: str,
+    expected_reason: str,
+    expected_warning: str,
+) -> None:
+    payload_data = _structured_qr_payload(record_id, verification_url=f"https://spoof.example/verify/{record_id}")
+    payload_data.pop(missing_field)
+    qr_input = _canonical_json(payload_data) if missing_field == "payload_hash" else _encoded_payload(payload_data)
+
+    payload = await _post_qr(client, record_id, qr_input)
+
+    assert payload["trust_state"] == "REVIEW_REQUIRED"
+    assert payload["qr_risk_level"] == "HIGH"
+    assert "non_canonical_domain" in payload["qr_risk_reasons"]
+    assert expected_reason in payload["qr_risk_reasons"]
+    assert "non-canonical qr verification_url domain" in _warning_text(payload)
+    assert expected_warning in _warning_text(payload)
+    assert payload["human_review_recommended"] is True
+    assert payload["escalation_queued"] is True
+    _assert_contract_stability_with_visible_warnings(payload)
+
+
+@pytest.mark.anyio
+async def test_hash_case_differences_do_not_escalate_trust_or_change_deterministic_comparison(
+    client: httpx.AsyncClient,
+) -> None:
+    lower_record_id = "hash-case-lower-record"
+    upper_record_id = "hash-case-upper-record"
+    lower_payload = _structured_qr_payload(lower_record_id)
+    upper_payload = _structured_qr_payload(upper_record_id)
+    upper_payload["content_hash"] = str(upper_payload["content_hash"]).upper()
+
+    lower = await _post_qr(client, lower_record_id, _encoded_payload(lower_payload))
+    upper = await _post_qr(client, upper_record_id, _encoded_payload(upper_payload, uppercase_payload_hash=True))
+
+    assert lower["qr_risk_level"] == upper["qr_risk_level"] == "LOW"
+    assert lower["qr_risk_reasons"] == upper["qr_risk_reasons"] == []
+    assert lower["warnings"] == upper["warnings"] == []
+    assert lower["trust_state"] == upper["trust_state"] == "ADVISORY"
+    assert lower["hash_verified"] is True
+    assert upper["hash_verified"] is True
+    assert lower["human_review_recommended"] is False
+    assert upper["human_review_recommended"] is False
+    assert lower["escalation_queued"] is False
+    assert upper["escalation_queued"] is False
+    assert QUEUE_STORE.escalation_queue == []
+    assert list(lower.keys()) == list(upper.keys()) == EXPECTED_QR_RESPONSE_KEYS
+    assert lower["qr_scan_summary"]["human_final_authority"] is True
+    assert upper["qr_scan_summary"]["human_final_authority"] is True
 
 
 @pytest.mark.anyio
