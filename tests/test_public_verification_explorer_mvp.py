@@ -6,6 +6,7 @@ from public_verification_explorer import (
     list_records,
     lookup_record,
     normalize_record,
+    render_search_results,
     search_records,
 )
 
@@ -24,11 +25,60 @@ def test_explorer_search_by_record_id() -> None:
 
 
 def test_explorer_search_by_hash() -> None:
-    matches = search_records(_index(), "740f84dec83c", search_by="hash")
+    matches = search_records(_index(), "740f84dec83c", search_by="content_hash")
 
     assert len(matches) == 1
     assert matches[0]["content_hash"].startswith("740f84dec83c")
     assert matches[0]["witness_count"] == 2
+
+
+def test_explorer_search_by_content_hash_legacy_alias() -> None:
+    matches = search_records(_index(), "740f84dec83c", search_by="hash")
+
+    assert len(matches) == 1
+    assert matches[0]["content_hash"].startswith("740f84dec83c")
+
+
+def test_explorer_search_by_status() -> None:
+    matches = search_records(_index(), "draft", search_by="verification_status")
+
+    assert len(matches) == 2
+    assert {match["verification_status"] for match in matches} == {"draft"}
+
+
+def test_explorer_search_by_source_path() -> None:
+    matches = search_records(
+        _index(), "records/pending/HC-2026-0002.json", search_by="source_path"
+    )
+
+    assert len(matches) == 1
+    assert matches[0]["record_id"] == "HC-2026-0000-0002"
+
+
+def test_explorer_search_no_results() -> None:
+    assert (
+        search_records(_index(), "HC-NOT-IN-GENERATED-INDEX", search_by="record_id")
+        == []
+    )
+
+
+def test_explorer_search_results_render_as_human_readable_text() -> None:
+    text = render_search_results(
+        search_records(_index(), "HC-EXAMPLE-2026-0001", search_by="record_id")
+    )
+
+    assert "HC:// Public Verification Explorer search results" in text
+    assert "Advisory-only, read-only generated index view." in text
+    assert "record_id: HC-EXAMPLE-2026-0001" in text
+    assert "verification_status: draft" in text
+    assert "source_path: records/pending/HC-EXAMPLE-2026-0001.json" in text
+
+
+def test_explorer_empty_search_results_render_boundary_note() -> None:
+    text = render_search_results([])
+
+    assert "No matching generated explorer index entry was found." in text
+    assert "Absence from this index is not a trust-kernel decision." in text
 
 
 def test_explorer_record_lookup_returns_detail_payload() -> None:

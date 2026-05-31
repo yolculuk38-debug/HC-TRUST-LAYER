@@ -26,9 +26,13 @@ def test_public_verification_explorer_filter_options_are_available() -> None:
         assert f'<option value="{option}">' in html
         assert f'if (type === "{option}")' in html
 
-    assert '<option value="all">record_id or content hash</option>' in html
+    assert '<option value="all">record_id, content hash, status, or source path</option>' in html
+    assert '<option value="status_trust_state">verification_status</option>' in html
+    assert '<option value="source_path">source_path</option>' in html
     assert 'return filterValues(entry, "record_id")' in html
     assert '.concat(filterValues(entry, "hash_text"))' in html
+    assert '.concat(filterValues(entry, "status_trust_state"))' in html
+    assert '.concat(filterValues(entry, "source_path"))' in html
 
 
 def test_public_verification_explorer_exposes_verification_status_badge_logic() -> None:
