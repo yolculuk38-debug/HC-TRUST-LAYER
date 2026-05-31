@@ -108,12 +108,44 @@
     }
 
     .flag,
-    .pill {
+    .pill,
+    .state-badge {
       border: 1px solid var(--border);
       border-radius: 999px;
       padding: 0.45rem 0.7rem;
       background: color-mix(in srgb, var(--panel) 85%, var(--accent) 15%);
       overflow-wrap: anywhere;
+    }
+
+    .state-badges {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin: 0.65rem 0;
+    }
+
+    .state-badge {
+      color: var(--text);
+      display: inline-flex;
+      font-size: 0.82rem;
+      font-weight: 700;
+      line-height: 1.2;
+      max-width: 100%;
+      padding: 0.35rem 0.55rem;
+    }
+
+    .state-badge.warning {
+      background: var(--warning-bg);
+      border-color: var(--warning-border);
+      color: var(--warning-text);
+    }
+
+    @media (max-width: 420px) {
+      .state-badge {
+        border-radius: 10px;
+        width: 100%;
+      }
     }
 
     form {
@@ -695,8 +727,45 @@
         return button;
       }
 
+      function badgeValue(value) {
+        if (value === true) {
+          return "true";
+        }
+        if (value === false) {
+          return "false";
+        }
+        return stableString(value);
+      }
+
+      function addBadge(badges, label, value, options) {
+        var normalized = badgeValue(value);
+        if (normalized === "" || normalized === null || normalized === undefined) {
+          return;
+        }
+        var badge = document.createElement("span");
+        badge.className = "state-badge" + (options && options.warning ? " warning" : "");
+        badge.textContent = label + "=" + normalized;
+        badge.setAttribute("aria-label", label + " is " + normalized);
+        badges.appendChild(badge);
+      }
+
+      function createStateBadges(entry) {
+        var badges = document.createElement("div");
+        badges.className = "state-badges";
+        badges.setAttribute("aria-label", "result state badges");
+        addBadge(badges, "advisory_only", entry.advisory_only);
+        addBadge(badges, "truth_guarantee", entry.truth_guarantee, { warning: entry.truth_guarantee === false });
+        addBadge(badges, "human_final_authority", entry.human_final_authority);
+        addBadge(badges, "status", entry.status);
+        addBadge(badges, "trust_state", entry.trust_state);
+        addBadge(badges, "index", "non-canonical generated", { warning: true });
+        return badges;
+      }
+
       function renderDetail(entry) {
         detail.innerHTML = "";
+
+        detail.appendChild(createStateBadges(entry));
 
         var grid = document.createElement("div");
         grid.className = "detail-grid";
@@ -804,6 +873,7 @@
         description.className = "muted";
         description.textContent = "Read-only advisory explorer result. Select it to inspect non-canonical generated index details.";
         article.appendChild(description);
+        article.appendChild(createStateBadges(entry));
 
         appendField(list, "record_id", fieldValue(entry, ["record_id", "id"]));
         appendField(list, "content_hash", fieldValue(entry, ["content_hash", "hash"]));
