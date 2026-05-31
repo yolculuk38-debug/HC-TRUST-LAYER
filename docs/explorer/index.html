@@ -325,7 +325,7 @@
       <p class="muted">HC-TRUST-LAYER / HC://</p>
       <h1>Public Verification Explorer MVP</h1>
       <p>
-        This read-only public verification screen uses generated/explorer_index.json to search HC:// records by Record ID or Content Hash and display verification metadata.
+        This read-only public verification screen uses generated/explorer_index.json to search HC:// records by Record ID, Content Hash, Verification Status, or Source Path and display verification metadata.
         It does not write records, alter runtime behavior, change schemas, modify validators, calculate trust scoring, or make governance decisions.
       </p>
       <div class="notice" role="note">
@@ -351,14 +351,16 @@
           <div>
             <label for="search-type">Search by</label>
             <select id="search-type" name="search-type">
-              <option value="all">record_id or content hash</option>
+              <option value="all">record_id, content hash, status, or source path</option>
               <option value="record_id">record_id</option>
               <option value="hash_text">content hash</option>
+              <option value="status_trust_state">verification_status</option>
+              <option value="source_path">source_path</option>
             </select>
           </div>
           <div>
             <label for="search-query">Value</label>
-            <input id="search-query" name="search-query" type="search" placeholder="Search by Record ID or Content Hash" inputmode="search">
+            <input id="search-query" name="search-query" type="search" placeholder="Search by Record ID, hash, status, or path" inputmode="search">
           </div>
           <button type="submit">Apply filter</button>
           <button class="secondary" type="button" id="reset-button">Reset</button>
@@ -661,7 +663,9 @@
           ]).concat(collectValuesByKeyText(entry, ["hash", "digest", "checksum"]));
         }
         return filterValues(entry, "record_id")
-          .concat(filterValues(entry, "hash_text"));
+          .concat(filterValues(entry, "hash_text"))
+          .concat(filterValues(entry, "status_trust_state"))
+          .concat(filterValues(entry, "source_path"));
       }
 
       function searchLabel(type) {
@@ -675,7 +679,7 @@
           return "hash text";
         }
         if (type === "all") {
-          return "record_id or content hash";
+          return "record_id, content hash, status, or source path";
         }
         return type;
       }
@@ -950,7 +954,7 @@
         }
         if (!query) {
           state.hasActiveFilter = false;
-          renderEmpty("Enter a value to search by Record ID or Content Hash.");
+          renderEmpty("Enter a value to search by Record ID, Content Hash, Verification Status, or Source Path.");
           return;
         }
 
@@ -965,7 +969,7 @@
         if (!matches.length) {
           var empty = document.createElement("p");
           empty.className = "muted";
-          empty.textContent = "No matching generated explorer index entry was found. Try a different Record ID or Content Hash. Absence from this index is not a trust-kernel decision.";
+          empty.textContent = "No matching generated explorer index entry was found. Try a different Record ID, Content Hash, Verification Status, or Source Path. Absence from this index is not a trust-kernel decision.";
           results.appendChild(empty);
           renderDetailEmpty("No verification result is selected.");
           return;

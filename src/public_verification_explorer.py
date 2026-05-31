@@ -107,23 +107,65 @@ def list_records(index: dict[str, Any]) -> list[dict[str, Any]]:
     ]
 
 
+SEARCH_FIELD_ALIASES = {
+    "record_id": "record_id",
+    "content_hash": "content_hash",
+    "hash": "content_hash",
+    "verification_status": "verification_status",
+    "status": "verification_status",
+    "source_path": "source_path",
+}
+
+
 def search_records(
     index: dict[str, Any], query: str, *, search_by: str = "record_id"
 ) -> list[dict[str, Any]]:
-    """Search by record ID or content hash within the generated explorer index."""
+    """Search generated Explorer records without changing canonical records.
+
+    Supported search fields are record_id, content_hash, verification_status,
+    and source_path. The legacy ``hash`` and ``status`` aliases remain accepted
+    for compatibility with the first Explorer MVP helper tests.
+    """
 
     normalized_query = (query or "").strip().lower()
     if not normalized_query:
         return []
-    if search_by not in {"record_id", "hash"}:
-        raise ValueError("Explorer search supports record_id or hash only.")
 
-    field = "record_id" if search_by == "record_id" else "content_hash"
+    field = SEARCH_FIELD_ALIASES.get((search_by or "").strip())
+    if field is None:
+        supported = ", ".join(sorted(SEARCH_FIELD_ALIASES))
+        raise ValueError(f"Explorer search supports these fields only: {supported}.")
+
     return [
         record
         for record in list_records(index)
         if normalized_query in str(record.get(field, "")).lower()
     ]
+
+
+def render_search_results(records: list[dict[str, Any]]) -> str:
+    """Render advisory search matches as simple human-readable text."""
+
+    if not records:
+        return (
+            "No matching generated explorer index entry was found. "
+            "Absence from this index is not a trust-kernel decision."
+        )
+
+    lines = [
+        "HC:// Public Verification Explorer search results",
+        "Advisory-only, read-only generated index view.",
+    ]
+    for position, record in enumerate(records, start=1):
+        lines.extend(
+            [
+                f"{position}. record_id: {record.get('record_id', '')}",
+                f"   content_hash: {record.get('content_hash', '')}",
+                f"   verification_status: {record.get('verification_status', '')}",
+                f"   source_path: {record.get('source_path', '')}",
+            ]
+        )
+    return "\n".join(lines)
 
 
 def lookup_record(index: dict[str, Any], record_id: str) -> dict[str, Any]:
@@ -145,9 +187,11 @@ def lookup_record(index: dict[str, Any], record_id: str) -> dict[str, Any]:
 __all__ = [
     "ADVISORY_BOUNDARY",
     "DEFAULT_EXPLORER_INDEX",
+    "SEARCH_FIELD_ALIASES",
     "list_records",
     "load_explorer_index",
     "lookup_record",
     "normalize_record",
+    "render_search_results",
     "search_records",
 ]
