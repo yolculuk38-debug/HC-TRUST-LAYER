@@ -4,9 +4,11 @@ from __future__ import annotations
 
 from copy import deepcopy
 
+from hc_runtime.abuse_signals import AdvisoryAbuseSignalTracker
 from hc_runtime.contracts.responses import advisory_response
 from hc_runtime.decision_engine import TrustState, TrustStateDecisionEngine
 from hc_runtime.events import RuntimeEventStore
+from hc_runtime.qr_spoof_protection import QRRiskLevel
 from hc_runtime.runtime import RuntimePolicyEngine, RuntimeQueueStore, ValidatorPipeline
 
 
@@ -28,6 +30,19 @@ EXPECTED_RUNTIME_RESPONSE_KEYS = [
     "degraded_runtime",
     "recovery_mode",
     "public_exposure",
+]
+
+
+EXPECTED_ABUSE_SIGNAL_KEYS = [
+    "advisory_only",
+    "public_safe",
+    "truth_guarantee",
+    "request_denied",
+    "human_final_authority",
+    "signal_level",
+    "reasons",
+    "pattern_counts",
+    "warnings",
 ]
 
 EXPECTED_HISTORY_KEYS = {
@@ -318,3 +333,46 @@ def test_replay_markers_are_deterministic_and_do_not_expose_secret_input_text() 
     assert first["public_safe"] is True
     _assert_no_secret_or_token_exposure(first)
     _assert_no_secret_or_token_exposure(public_history)
+
+
+def test_replay_pattern_visibility_keeps_human_final_authority_explicit() -> None:
+    tracker = AdvisoryAbuseSignalTracker()
+
+    first = tracker.inspect(
+        record_id="replay-pattern-family-001",
+        schema_valid=True,
+        qr_risk_level=QRRiskLevel.LOW,
+        qr_risk_reasons=[],
+        qr_risk_group_keys=[],
+        replay_warning=True,
+        degraded_mode=False,
+    ).summary()
+    second = tracker.inspect(
+        record_id="replay-pattern-family-002",
+        schema_valid=True,
+        qr_risk_level=QRRiskLevel.LOW,
+        qr_risk_reasons=[],
+        qr_risk_group_keys=[],
+        replay_warning=True,
+        degraded_mode=False,
+    ).summary()
+
+    assert list(first.keys()) == EXPECTED_ABUSE_SIGNAL_KEYS
+    assert list(second.keys()) == EXPECTED_ABUSE_SIGNAL_KEYS
+    assert first["advisory_only"] is True
+    assert second["advisory_only"] is True
+    assert first["public_safe"] is True
+    assert second["public_safe"] is True
+    assert first["truth_guarantee"] is False
+    assert second["truth_guarantee"] is False
+    assert first["human_final_authority"] is True
+    assert second["human_final_authority"] is True
+    assert first["request_denied"] is False
+    assert second["request_denied"] is False
+    assert first["warnings"] == []
+    assert second["warnings"] == [
+        "Repeated replay marker pattern observed; advisory warning only, no autonomous blocking applied."
+    ]
+    assert second["reasons"] == ["repeated_replay_marker"]
+    assert second["pattern_counts"] == {"replay_marker": 2}
+    assert second["signal_level"] == "HIGH"
