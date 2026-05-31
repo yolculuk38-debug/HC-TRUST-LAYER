@@ -25,7 +25,9 @@ ADVISORY_BOUNDARY = {
 }
 
 
-def load_explorer_index(index_path: Path | str = DEFAULT_EXPLORER_INDEX) -> dict[str, Any]:
+def load_explorer_index(
+    index_path: Path | str = DEFAULT_EXPLORER_INDEX,
+) -> dict[str, Any]:
     """Load generated explorer index data from disk."""
 
     path = Path(index_path)
@@ -73,14 +75,22 @@ def normalize_record(entry: dict[str, Any]) -> dict[str, Any]:
     return {
         **ADVISORY_BOUNDARY,
         "record_id": str(entry.get("record_id") or entry.get("id") or "").strip(),
-        "verification_status": str(entry.get("verification_status") or entry.get("status") or "unavailable").strip(),
+        "verification_status": str(
+            entry.get("verification_status") or entry.get("status") or "unavailable"
+        ).strip(),
         "timestamp": str(entry.get("timestamp") or "").strip(),
         "content_hash": content_hash.strip(),
-        "content_hash_prefix": str(entry.get("content_hash_prefix") or content_hash[:12]).strip(),
+        "content_hash_prefix": str(
+            entry.get("content_hash_prefix") or content_hash[:12]
+        ).strip(),
         "witness_count": _witness_count(entry, witness_information),
-        "source_path": str(entry.get("source_path") or entry.get("source_file") or "").strip(),
+        "source_path": str(
+            entry.get("source_path") or entry.get("source_file") or ""
+        ).strip(),
         "qr_reference": str(entry.get("qr_reference") or "").strip(),
-        "metadata": deepcopy(entry.get("metadata") if isinstance(entry.get("metadata"), dict) else {}),
+        "metadata": deepcopy(
+            entry.get("metadata") if isinstance(entry.get("metadata"), dict) else {}
+        ),
         "verification_history": deepcopy(verification_history),
         "witness_information": deepcopy(witness_information),
         "archive_status": str(entry.get("archive_status") or "not_specified").strip(),
@@ -90,10 +100,16 @@ def normalize_record(entry: dict[str, Any]) -> dict[str, Any]:
 def list_records(index: dict[str, Any]) -> list[dict[str, Any]]:
     """List normalized explorer records without changing the source index."""
 
-    return [normalize_record(entry) for entry in index.get("records", []) if isinstance(entry, dict)]
+    return [
+        normalize_record(entry)
+        for entry in index.get("records", [])
+        if isinstance(entry, dict)
+    ]
 
 
-def search_records(index: dict[str, Any], query: str, *, search_by: str = "record_id") -> list[dict[str, Any]]:
+def search_records(
+    index: dict[str, Any], query: str, *, search_by: str = "record_id"
+) -> list[dict[str, Any]]:
     """Search by record ID or content hash within the generated explorer index."""
 
     normalized_query = (query or "").strip().lower()
