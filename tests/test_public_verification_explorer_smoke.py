@@ -61,3 +61,12 @@ def test_public_verification_explorer_mvp_detail_sections_are_available() -> Non
 
     for field in ("timestamp", "content_hash", "witness_count", "source_path", "archive_status"):
         assert f'appendField(list, "{field}"' in html or f'["{field}"' in html
+
+
+def test_public_verification_explorer_detail_renders_zero_witness_count() -> None:
+    html = _explorer_html()
+
+    assert 'function hasFieldValue(value)' in html
+    assert 'return value !== "" && value !== null && value !== undefined;' in html
+    assert 'displayLabel + ": " + valueText' in html
+    assert '["witness_count", entry.witness_count]' in html

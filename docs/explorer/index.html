@@ -554,17 +554,29 @@
         renderDetailEmpty("No verification result is selected.");
       }
 
+      function hasFieldValue(value) {
+        return value !== "" && value !== null && value !== undefined;
+      }
+
+      function fieldDisplayLabel(label) {
+        return String(label).split("_").filter(Boolean).map(function (part) {
+          return part.charAt(0).toUpperCase() + part.slice(1);
+        }).join(" ");
+      }
+
       function appendField(list, label, value, action) {
-        if (value === "" || value === null || value === undefined) {
+        if (!hasFieldValue(value)) {
           return;
         }
         var dt = document.createElement("dt");
         var dd = document.createElement("dd");
         var valueText = stableString(value);
+        var displayLabel = fieldDisplayLabel(label);
         var valueNode = document.createElement("span");
         valueNode.className = label.indexOf("hash") !== -1 ? "hash-value" : "field-value";
         valueNode.textContent = valueText;
         dt.textContent = label;
+        dd.setAttribute("aria-label", displayLabel + ": " + valueText);
         if (action) {
           var wrapper = document.createElement("div");
           wrapper.className = "field-with-action";
@@ -590,7 +602,7 @@
       function collectValuesByKeys(entry, keys) {
         return keys.reduce(function (values, key) {
           var value = fieldValue(entry, [key]);
-          if (value !== "" && value !== null && value !== undefined) {
+          if (hasFieldValue(value)) {
             values.push(value);
           }
           return values;

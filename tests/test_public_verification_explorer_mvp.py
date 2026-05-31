@@ -5,6 +5,7 @@ from public_verification_explorer import (
     ADVISORY_BOUNDARY,
     list_records,
     lookup_record,
+    normalize_record,
     search_records,
 )
 
@@ -69,3 +70,13 @@ def test_explorer_index_exposes_required_mvp_fields() -> None:
             "archive_status",
         ):
             assert field in record
+
+
+def test_explorer_detail_preserves_explicit_zero_witness_count() -> None:
+    record = normalize_record({
+        "record_id": "HC-ZERO-WITNESS",
+        "witness_count": 0,
+        "witness_information": ["reviewer-a", "reviewer-b"],
+    })
+
+    assert record["witness_count"] == 0
