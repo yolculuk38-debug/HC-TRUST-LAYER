@@ -83,6 +83,14 @@ The runtime response contract, API schema helper, and verification API documenta
 
 Compatibility review should compare these surfaces before changing response fields. A field appearing in one surface does not automatically mean it is guaranteed by the others.
 
+## Rate-limit advisory warnings
+
+HC:// public runtime responses may include advisory abuse-control warnings such as `rate_limit_recommended` when reviewed runtime logic surfaces repeated malformed inputs, QR spoof patterns, replay-risk markers, or similar operator-visible signals. The `warnings` always present as a list contract remains advisory-only and public-safe; an empty list is valid when no warning is present.
+
+A `rate_limit_recommended` warning does not deny requests, quarantine inputs, mutate schemas, weaken validators, or change runtime behavior by itself. Enforcement belongs to the operator/infrastructure layer through separately reviewed controls, not autonomous HC:// runtime enforcement.
+
+This documentation note does not add Redis, add database storage, add JWT authentication, or add Vault secret access. Those remain out-of-scope operator or infrastructure choices that require separate review before implementation.
+
 ## Not Yet Guaranteed
 
 Current runtime responses do not guarantee:
