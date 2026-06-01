@@ -1,74 +1,92 @@
 # Branch Protection Enforcement Baseline
 
-This document records the protected-branch enforcement model identified during governance review for HC-TRUST-LAYER and HC://. It is documentation only and does not change workflows, repository settings, schemas, validators, runtime behavior, policy interpretation, signing semantics, federation behavior, or canonical records.
+This document records the protected-branch enforcement model identified during governance review for HC-TRUST-LAYER and HC://. It is documentation only and does not change workflows, repository settings, schemas, validators, runtime behavior, policy interpretation, signing semantics, federation behavior, canonical records, or trust-kernel enforcement logic.
 
-## 1. Branch protection goals
+## 1. Current enforcement gap
 
-Protected branches should preserve a reviewable audit trail by requiring pull request review, required status checks, and human-supervised validation before merge. The baseline supports these goals:
+The Trust Kernel Enforcement Gap Review identified that current protected-path coverage is narrower than the full trust-kernel review surface.
 
-- prevent unsupervised direct changes to protected branches;
-- keep trust-kernel-adjacent changes visible to maintainers;
-- preserve canonical record, verification map, and protocol graph review boundaries;
-- keep CI and governance guardrails intact before merge; and
-- maintain human-controlled merge authority for consequential changes.
+Current protected paths cover:
 
-## 2. Recommended required status checks
-
-The following checks are recommended as required protected-branch status checks when configured in repository CI:
-
-- `terminology`
-- `docs-drift`
-- `canonical-artifacts`
-- `automation-gate`
-- `governance-preflight`
-- `verification-package-schema`
-
-`validate.yml` is scope-dependent. It should be required for changes in the paths or file types covered by that workflow, but this document does not expand its trigger scope or require it for unrelated documentation-only changes.
-
-## 3. Advisory checks
-
-The following checks provide advisory signal for review, routing, or repair guidance and should not replace required human review:
-
-- `policy-evaluation`
-- `pr-scope-guard`
-- `terminology-autofix-suggest`
-
-Advisory checks may help reviewers identify policy, scope, or terminology issues, but they do not grant autonomous governance finality.
-
-## 4. Review requirements
-
-Protected branches should require pull request review before merge. Review should confirm that the change scope is accurate, required checks have reported, and trust-kernel-impacting changes receive explicit human-supervised validation.
-
-Stale approvals should be dismissed after material updates when the diff changes review assumptions, protected paths, or canonical record boundaries.
-
-## 5. Auto-merge restrictions
-
-Auto-merge must remain bounded and human-supervised. It is not appropriate when a pull request:
-
-- touches protected paths;
-- changes runtime verification behavior, schemas, validators, signing, federation, or policy evaluation;
-- has failing, missing, or skipped required checks;
-- has unresolved reviewer concerns; or
-- expands beyond a small, auditable scope.
-
-Documentation-only changes may be considered low risk only when required checks pass and reviewers confirm that no protected branch, trust kernel, or canonical record boundary is affected.
-
-## 6. Protected paths
-
-The following paths should be treated as protected review surfaces for branch protection and merge routing:
-
-- `.github/workflows/**`
 - `schema/**`
 - `validators/**`
 - `signatures/**`
 - `policy/**`
 - `federation/**`
+- `.github/workflows/**`
 - `src/hc_runtime/**`
 
-Changes touching these paths require explicit maintainer review and are not eligible for unattended auto-merge.
+Trust-critical surfaces also include:
 
-## 7. Human-controlled merge authority
+- `records/**`
+- `src/hc_trust/**`
+- `src/validator.py`
+- `src/verify_hashes.py`
+- `scripts/check_pr_governance.py`
+- `scripts/check_canonical_artifacts.py`
+- `scripts/check_verification_package_schema.py`
+- `scripts/evaluate_policy.py`
+- `CODEOWNERS`
+- `protocol-graph.json`
+- `verification-map.json`
+- `trust-kernel-index.json`
+- `docs/canonical-record-boundary.md`
+- `docs/trust-kernel-index.md`
+- `docs/protocol-graph-index.md`
+- `docs/verification-map-index.md`
 
-Maintainers retain final merge authority for protected branches. CI status, automation labels, and advisory checks inform review, but they do not replace human-supervised validation or reviewer judgment.
+This gap is a routing and review-boundary issue. It does not by itself establish new enforcement behavior.
 
-This baseline preserves HC-TRUST-LAYER governance boundaries without making production-readiness claims or adding new repository rules beyond the documented governance review model.
+## 2. Expanded protected-path recommendation
+
+Expanded trust-kernel paths should be documented and reviewed in tiers before any enforcement change.
+
+### Tier 1: canonical / hard protected
+
+Tier 1 paths should be treated as canonical or hard protected because they can affect canonical record boundaries, schemas, validators, signing, policy evaluation, federation, CI guardrails, or machine-readable trust-kernel routing:
+
+- `schema/**`
+- `validators/**`
+- `signatures/**`
+- `policy/**`
+- `federation/**`
+- `.github/workflows/**`
+- `records/**`
+- `CODEOWNERS`
+- `protocol-graph.json`
+- `verification-map.json`
+- `trust-kernel-index.json`
+
+### Tier 2: trust-kernel documentation protected
+
+Tier 2 paths should require protected documentation review because they define or index trust-kernel boundaries, verification map routing, protocol graph routing, or canonical record boundary expectations:
+
+- `docs/canonical-record-boundary.md`
+- `docs/trust-kernel-index.md`
+- `docs/protocol-graph-index.md`
+- `docs/verification-map-index.md`
+
+### Tier 3: implementation pattern review
+
+Tier 3 paths should require implementation-pattern review because they can influence verification behavior, hash checking, governance preflight, canonical artifact checks, verification package schema checks, policy evaluation, or trust-kernel runtime assumptions:
+
+- `src/hc_runtime/**`
+- `src/hc_trust/**`
+- `src/validator.py`
+- `src/verify_hashes.py`
+- `scripts/check_pr_governance.py`
+- `scripts/check_canonical_artifacts.py`
+- `scripts/check_verification_package_schema.py`
+- `scripts/evaluate_policy.py`
+
+## 3. Auto-merge restriction
+
+Expanded trust-kernel paths should not be eligible for unattended auto-merge. Automation labels, status checks, and advisory risk signals may support review, but they must not replace maintainer judgment for changes that touch expanded trust-kernel paths.
+
+## 4. Human review routing
+
+Changes touching expanded trust-kernel paths should require human-supervised validation before merge. Review should confirm the affected tier, expected trust-kernel impact, required checks, and whether reviewer escalation is needed for canonical record, verification map, protocol graph, policy, federation, signing, schema, validator, or runtime boundaries.
+
+## 5. Future implementation note
+
+This PR is documentation-only and does not enforce the expanded protected-path model. Enforcement changes to `CODEOWNERS`, `scripts/check_pr_governance.py`, PR risk labeler behavior, or workflows must be proposed in separate PRs with explicit human-supervised validation.
