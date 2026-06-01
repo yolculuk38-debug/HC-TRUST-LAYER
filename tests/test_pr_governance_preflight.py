@@ -59,6 +59,43 @@ def test_protected_paths_are_high_risk_never_auto_merge_and_require_human_review
         assert summary.human_review_required is True
 
 
+def test_tier_1_protected_paths_are_high_risk_never_auto_merge_and_require_human_review():
+    tier_1_paths = [
+        "records/example.json",
+        "CODEOWNERS",
+        "protocol-graph.json",
+        "verification-map.json",
+        "trust-kernel-index.json",
+    ]
+
+    for changed_path in tier_1_paths:
+        summary = summarize_governance([changed_path])
+
+        assert summary.risk == RiskLevel.HIGH
+        assert summary.protected_paths_touched is True
+        assert summary.auto_merge_eligible is False
+        assert summary.human_review_required is True
+
+
+def test_tier_1_exact_protected_files_do_not_overmatch_similarly_named_files():
+    similarly_named_paths = [
+        "CODEOWNERS.extra",
+        "docs/CODEOWNERS",
+        "protocol-graph.json.bak",
+        "docs/protocol-graph.json",
+        "verification-map.json.bak",
+        "docs/verification-map.json",
+        "trust-kernel-index.json.bak",
+        "docs/trust-kernel-index.json",
+    ]
+
+    for changed_path in similarly_named_paths:
+        summary = summarize_governance([changed_path])
+
+        assert summary.risk != RiskLevel.HIGH
+        assert summary.protected_paths_touched is False
+
+
 def test_mixed_non_protected_changes_are_medium_risk():
     summary = summarize_governance(["src/trust_engine.py", "docs/index.md"])
 

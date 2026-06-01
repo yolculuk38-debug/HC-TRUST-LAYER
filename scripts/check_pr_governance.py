@@ -16,6 +16,13 @@ PROTECTED_PREFIXES: tuple[str, ...] = (
     "federation/",
     ".github/workflows/",
     "src/hc_runtime/",
+    "records/",
+)
+PROTECTED_FILES: tuple[str, ...] = (
+    "CODEOWNERS",
+    "protocol-graph.json",
+    "verification-map.json",
+    "trust-kernel-index.json",
 )
 
 DOC_PREFIXES: tuple[str, ...] = ("docs/",)
@@ -69,6 +76,10 @@ def _matches_any(path: str, prefixes: tuple[str, ...]) -> bool:
     return any(_is_in_prefix(path, prefix) for prefix in prefixes)
 
 
+def is_protected_path(path: str) -> bool:
+    return path in PROTECTED_FILES or _matches_any(path, PROTECTED_PREFIXES)
+
+
 def is_doc_path(path: str) -> bool:
     return path in DOC_FILES or _matches_any(path, DOC_PREFIXES)
 
@@ -94,7 +105,7 @@ def summarize_governance(changed_paths: list[str]) -> GovernanceSummary:
             override_reason=None,
         )
 
-    protected_paths_touched = any(_matches_any(path, PROTECTED_PREFIXES) for path in changed_paths)
+    protected_paths_touched = any(is_protected_path(path) for path in changed_paths)
     docs_only = all(is_doc_path(path) for path in changed_paths)
     dependency_only = all(is_dependency_path(path) for path in changed_paths)
     tests_only = all(is_test_path(path) for path in changed_paths)
@@ -165,7 +176,7 @@ def _as_yes_no(value: bool) -> str:
 
 
 def render_summary(summary: GovernanceSummary, changed_paths: list[str]) -> None:
-    protected_paths = [path for path in changed_paths if _matches_any(path, PROTECTED_PREFIXES)]
+    protected_paths = [path for path in changed_paths if is_protected_path(path)]
 
     print("HC-TRUST-LAYER governance preflight (advisory)")
     print("HUMAN_READABLE_SUMMARY:")
