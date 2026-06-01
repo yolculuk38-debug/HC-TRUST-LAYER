@@ -1,141 +1,74 @@
-# HC-TRUST-LAYER Governance Enforcement Baseline
+# Branch Protection Enforcement Baseline
 
-This document defines repository-management enforcement guidance for HC:// in HC-TRUST-LAYER while preserving advisory-only runtime semantics and human-supervised control.
+This document records the protected-branch enforcement model identified during governance review for HC-TRUST-LAYER and HC://. It is documentation only and does not change workflows, repository settings, schemas, validators, runtime behavior, policy interpretation, signing semantics, federation behavior, or canonical records.
 
-## Scope and non-goals
+## 1. Branch protection goals
 
-This baseline is governance and process guidance for protected-branch operation.
+Protected branches should preserve a reviewable audit trail by requiring pull request review, required status checks, and human-supervised validation before merge. The baseline supports these goals:
 
-Non-goals:
+- prevent unsupervised direct changes to protected branches;
+- keep trust-kernel-adjacent changes visible to maintainers;
+- preserve canonical record, verification map, and protocol graph review boundaries;
+- keep CI and governance guardrails intact before merge; and
+- maintain human-controlled merge authority for consequential changes.
 
-- no canonical schema updates
-- no validator behavior changes
-- no signing or security workflow changes
-- no runtime semantic changes
-- no unrestricted autonomous merge behavior
-- no production-readiness or autonomous-authority claims
+## 2. Recommended required status checks
 
-## Branch protection baseline
+The following checks are recommended as required protected-branch status checks when configured in repository CI:
 
-Protected branches should enforce:
+- `terminology`
+- `docs-drift`
+- `canonical-artifacts`
+- `automation-gate`
+- `governance-preflight`
+- `verification-package-schema`
 
-- required pull request review before merge
-- required status checks before merge
-- blocking of direct pushes except maintainers with emergency procedures
-- dismissal of stale approvals after material updates
-- linear, auditable merge history where feasible
+`validate.yml` is scope-dependent. It should be required for changes in the paths or file types covered by that workflow, but this document does not expand its trigger scope or require it for unrelated documentation-only changes.
 
-This baseline preserves human-supervised validation for consequential changes and keeps merge authority human-controlled.
+## 3. Advisory checks
 
-## Required status checks for protected branches
+The following checks provide advisory signal for review, routing, or repair guidance and should not replace required human review:
 
-Protected branches should require the following checks when available in CI:
+- `policy-evaluation`
+- `pr-scope-guard`
+- `terminology-autofix-suggest`
 
-- runtime tests
-- terminology guard (`python scripts/check_terminology.py`)
-- docs drift guard (`python scripts/check_docs_drift.py`)
-- canonical artifact guard (`python scripts/check_canonical_artifacts.py`)
-- CodeQL/security checks (if configured)
+Advisory checks may help reviewers identify policy, scope, or terminology issues, but they do not grant autonomous governance finality.
 
-A pull request is not merge-eligible when required checks are skipped, missing, or failing.
+## 4. Review requirements
 
-## Required human review boundaries for protected paths
+Protected branches should require pull request review before merge. Review should confirm that the change scope is accurate, required checks have reported, and trust-kernel-impacting changes receive explicit human-supervised validation.
 
-Changes touching the following paths require explicit human-supervised review and are not low-risk auto-merge eligible:
+Stale approvals should be dismissed after material updates when the diff changes review assumptions, protected paths, or canonical record boundaries.
 
+## 5. Auto-merge restrictions
+
+Auto-merge must remain bounded and human-supervised. It is not appropriate when a pull request:
+
+- touches protected paths;
+- changes runtime verification behavior, schemas, validators, signing, federation, or policy evaluation;
+- has failing, missing, or skipped required checks;
+- has unresolved reviewer concerns; or
+- expands beyond a small, auditable scope.
+
+Documentation-only changes may be considered low risk only when required checks pass and reviewers confirm that no protected branch, trust kernel, or canonical record boundary is affected.
+
+## 6. Protected paths
+
+The following paths should be treated as protected review surfaces for branch protection and merge routing:
+
+- `.github/workflows/**`
 - `schema/**`
 - `validators/**`
 - `signatures/**`
 - `policy/**`
 - `federation/**`
-- `.github/workflows/**`
 - `src/hc_runtime/**`
 
-Repository CODEOWNERS boundaries should align with these protected paths so review routing remains explicit and auditable.
+Changes touching these paths require explicit maintainer review and are not eligible for unattended auto-merge.
 
-## Low-risk auto-merge eligibility (bounded)
+## 7. Human-controlled merge authority
 
-Auto-merge may be considered only when all required checks pass and the pull request is clearly low-risk, including:
+Maintainers retain final merge authority for protected branches. CI status, automation labels, and advisory checks inform review, but they do not replace human-supervised validation or reviewer judgment.
 
-- docs-only changes
-- dependency patch updates with no trust-kernel behavior impact
-- test-only hardening that does not alter runtime semantics
-- non-semantic governance documentation updates
-
-Even in low-risk cases, auto-merge remains supervised automation under repository policy, not unrestricted autonomous governance.
-
-## Auto-merge blocking rules
-
-Auto-merge must be blocked when any of the following applies:
-
-- required checks are skipped
-- required checks fail
-- runtime semantics are modified
-- validator, schema, signing/security, policy, or federation surfaces are changed
-- diff scope is large, scattered, or insufficiently auditable
-
-When blocked, merge authority remains with maintainers through explicit human-supervised approval.
-
-## PR risk classification guidance
-
-### LOW
-
-Typical signals:
-
-- docs-only or non-semantic governance updates
-- small, focused dependency patch updates
-- test-only hardening with no runtime semantic impact
-
-Expected handling:
-
-- required checks pass
-- at least one human reviewer confirms low-risk scope
-
-### MEDIUM
-
-Typical signals:
-
-- multi-file operational updates without protected-path modifications
-- moderate implementation or refactor scope with bounded trust-kernel exposure
-
-Expected handling:
-
-- required checks pass
-- expanded reviewer attention on provenance and audit trail continuity
-- optional escalation when trust-kernel adjacency is unclear
-
-### HIGH
-
-Typical signals:
-
-- touches protected paths or trust-kernel-adjacent boundaries
-- affects policy interpretation, validator behavior, runtime semantics, or security-sensitive controls
-- includes large/scattered change sets with elevated audit complexity
-
-Expected handling:
-
-- required checks pass
-- explicit multi-reviewer human-supervised validation
-- no autonomous merge pathway
-
-## Minimal maintainer workflow
-
-1. AI-assisted contributors generate pull requests with scoped, auditable changes.
-2. CI validates required checks and reports results.
-3. Human reviewers supervise scope, risk, and policy alignment.
-4. Maintainers retain human-controlled merge authority.
-
-This workflow keeps AI output advisory and preserves human-supervised validation for consequential decisions.
-
-## Governance linkage map
-
-Apply this baseline together with:
-
-- supervised automation policy: `docs/supervised_automation_policy.md`
-- CODEOWNERS review boundaries: `CODEOWNERS`
-- runtime stabilization audit note: `docs/runtime-stabilization-post-audit-note.md`
-- local runtime runbook: `docs/local_runtime_runbook.md`
-
-## Implementation note
-
-This document is governance guidance only. It does not change canonical records, schemas, validators, signing semantics, federation behavior, policy evaluator semantics, or runtime behavior.
+This baseline preserves HC-TRUST-LAYER governance boundaries without making production-readiness claims or adding new repository rules beyond the documented governance review model.
