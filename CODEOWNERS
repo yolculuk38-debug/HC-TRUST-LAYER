@@ -8,8 +8,13 @@ validators/** @yolculuk38-debug
 signatures/** @yolculuk38-debug
 policy/** @yolculuk38-debug
 federation/** @yolculuk38-debug
+records/** @yolculuk38-debug
 .github/workflows/** @yolculuk38-debug
 src/hc_runtime/** @yolculuk38-debug
+CODEOWNERS @yolculuk38-debug
+protocol-graph.json @yolculuk38-debug
+verification-map.json @yolculuk38-debug
+trust-kernel-index.json @yolculuk38-debug
 
 # Governance and automation policy documentation.
 docs/governance/** @yolculuk38-debug
