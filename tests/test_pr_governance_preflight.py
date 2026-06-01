@@ -48,6 +48,11 @@ def test_protected_paths_are_high_risk_never_auto_merge_and_require_human_review
         "federation/sync.py",
         ".github/workflows/ci.yml",
         "src/hc_runtime/pipeline.py",
+        "records/example.json",
+        "CODEOWNERS",
+        "protocol-graph.json",
+        "verification-map.json",
+        "trust-kernel-index.json",
     ]
 
     for changed_path in high_risk_paths:
@@ -57,6 +62,54 @@ def test_protected_paths_are_high_risk_never_auto_merge_and_require_human_review
         assert summary.protected_paths_touched is True
         assert summary.auto_merge_eligible is False
         assert summary.human_review_required is True
+
+
+def test_tier_1_protected_paths_report_required_governance_controls(capsys):
+    protected_paths = [
+        "records/example.json",
+        "CODEOWNERS",
+        "protocol-graph.json",
+        "verification-map.json",
+        "trust-kernel-index.json",
+    ]
+
+    for changed_path in protected_paths:
+        summary = summarize_governance([changed_path])
+
+        assert summary.risk == RiskLevel.HIGH
+        assert summary.protected_paths_touched is True
+        assert summary.human_review_required is True
+        assert summary.auto_merge_eligible is False
+
+        render_summary(summary, [changed_path])
+        output = capsys.readouterr().out
+
+        assert "RISK: HIGH" in output
+        assert "PROTECTED_PATHS_TOUCHED: yes" in output
+        assert "HUMAN_REVIEW_REQUIRED: yes" in output
+        assert "AUTO_MERGE_ELIGIBLE: no" in output
+        assert f"  - {changed_path}" in output
+
+
+def test_tier_1_exact_protected_files_do_not_overmatch_similar_paths():
+    non_matching_paths = [
+        "CODEOWNERS.extra",
+        "docs/CODEOWNERS",
+        "protocol-graph.json.bak",
+        "docs/protocol-graph.json",
+        "verification-map.json.bak",
+        "docs/verification-map.json",
+        "trust-kernel-index.json.bak",
+        "docs/trust-kernel-index.json",
+    ]
+
+    for changed_path in non_matching_paths:
+        summary = summarize_governance([changed_path])
+
+        assert summary.risk != RiskLevel.HIGH
+        assert summary.protected_paths_touched is False
+        assert summary.auto_merge_eligible is (changed_path.startswith("docs/"))
+        assert summary.human_review_required is (not changed_path.startswith("docs/"))
 
 
 def test_mixed_non_protected_changes_are_medium_risk():
