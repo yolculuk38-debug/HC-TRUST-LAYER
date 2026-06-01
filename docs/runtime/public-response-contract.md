@@ -1,184 +1,115 @@
 # Runtime Public Response Contract
 
-This document defines the public response contract for HC:// reference runtime integration surfaces. It is a documentation and test-locking aid only; it does not mutate schema contracts, workflows, governance, signing logic, security policy, federation behavior, or validator semantics.
+This document records the current public response contract boundaries for HC:// reference runtime review before any runtime or API changes. It is documentation only and does not change runtime code, schemas, validators, workflows, examples, tests, signing logic, federation logic, policy files, or canonical records.
 
-## Scope
+## Current Runtime Contract
 
-Applies to public-safe runtime responses under:
+The implemented runtime response contract is the current source of truth for public runtime behavior. This note describes that implementation; it does not create a broader API promise.
 
-- `GET /health`
-- `GET /verify/{record_id}`
-- `POST /verify/{record_id}`
-- `GET /qr/{record_id}`
-- `GET /verify/{record_id}/history`
-- runtime telemetry endpoints
-- advisory federation review placeholders
-
-The `POST /verify/{record_id}` QR validation flow is the primary integration-facing response shape covered here. Health, telemetry, history, and federation placeholder responses share the public-safe safety flags and warning-list behavior but may expose endpoint-specific fields.
-
-## Stable public keys
-
-Verification response builders preserve these base keys in this order:
-
-| Key | Type | Contract |
-| --- | --- | --- |
-| `status` | string | Runtime status label for the advisory response. |
-| `advisory_only` | boolean | Always `true`; runtime output is not autonomous final authority. |
-| `runtime_stage` | string | Always `prototype`; response metadata identifies the advisory runtime stage without production claims. |
-| `verification_mode` | string | Always `advisory`; response metadata identifies non-autonomous verification mode. |
-| `public_safe` | boolean | Always `true`; response fields are intended for public-safe integration use. |
-| `message` | string | Public-safe explanatory text with no secret-bearing values. |
-| `warnings` | list of strings | Always present, even when empty. |
-| `traceable` | boolean | Always `true` for public response builder output. |
-| `truth_guarantee` | boolean | Always `false`; no truth guarantee is asserted. |
-| `human_review_required` | boolean | Derived from `warnings` being present or advisory escalation being required. |
-| `record_id` | string, when route scoped | Public-safe record identifier for route-scoped responses. |
-
-QR validation responses additionally preserve these keys:
-
-| Key | Type | Contract |
-| --- | --- | --- |
-| `trust_state` | string | Advisory trust-state label from the runtime decision path. |
-| `replay_warning` | boolean | Replay marker visibility; warning only, not blocking. |
-| `continuity_warning` | boolean | Continuity warning visibility for human-supervised validation. |
-| `degraded_runtime` | boolean | Degraded state visibility; never hidden by fallback behavior. |
-| `recovery_mode` | boolean | Visible recovery-mode indicator when degraded runtime behavior is detected. |
-| `public_exposure` | string | Public exposure classification such as `standard` or `restricted`. |
-| `qr_risk_level` | string | Advisory QR risk label: `LOW`, `MEDIUM`, `HIGH`, or `INCIDENT`. |
-| `qr_risk_reasons` | list of strings | Public-safe QR spoof risk reasons. |
-| `human_review_recommended` | boolean | Human-supervised validation recommendation signal. |
-| `escalation_queued` | boolean | Visibility that advisory escalation routing was queued locally. |
-| `incident_summary` | object | Public-safe incident grouping summary for repeated high-risk QR indicators. |
-| `canonical_lookup_status` | string | Public-safe canonical lookup result such as `not_configured`, `missing`, `found`, `verified`, `schema_invalid`, `hash_missing`, `hash_mismatch`, or `malformed`. |
-| `schema_valid` | boolean | Advisory schema-validation visibility for the QR/runtime path. |
-| `hash_verified` | boolean | Advisory SHA-256/hash-marker verification visibility for the QR/runtime path. |
-| `qr_scan_summary` | object | Public-safe QR and abuse-signal summary metadata. |
-
-Malformed request responses preserve the base route-scoped keys and add:
-
-| Key | Type | Contract |
-| --- | --- | --- |
-| `detail` | string | Public-safe validation error detail for malformed validator request payloads. |
-| `malformed_input` | boolean | Always `true` for malformed validator request payloads. |
-| `public_exposure` | string | Always `restricted` for malformed validator request payloads. |
-
-## Advisory semantics
-
-Runtime public responses must preserve:
+Current public runtime responses are advisory-only and public-safe:
 
 - `advisory_only=true`
 - `runtime_stage=prototype`
 - `verification_mode=advisory`
 - `public_safe=true`
 - `truth_guarantee=false`
-- `human_review_required` derived from warnings present or advisory escalation required
-- `warnings` always present as a list
-- human-supervised validation as final interpretation authority
+- `human_review_required` remains visible when warnings or escalation paths require review.
+- `warnings` is present as a list, including when empty.
 
-Warnings for abuse, spoof, replay, malformed input, degraded runtime state, and continuity concerns are advisory visibility signals. They do not create autonomous blocking, quarantine, signing changes, security-policy changes, workflow changes, governance changes, or schema mutation.
+The human-supervised validation model remains the final interpretation boundary. Runtime output can support review, provenance inspection, and audit trail navigation, but it does not provide autonomous merge authority or a truth guarantee.
 
-## Warning behavior
+## Endpoint Differences
 
-- Empty warning sets are represented as `warnings: []`.
-- Warning strings must remain public-safe and must not echo secrets, tokens, private keys, or raw credential-like material.
-- Degraded states remain visible through `degraded_runtime`, `recovery_mode`, telemetry degraded fields, and warning text where applicable.
-- Replay, QR spoof, and abuse-signal warnings remain advisory-only and route to human-supervised validation instead of autonomous enforcement.
+### `GET /verify/{record_id}`
 
-## Rate-limit advisory warnings
+`GET /verify/{record_id}` returns a lightweight advisory placeholder response for a route-scoped record lookup. It uses the public response builder and includes the base public-safe fields such as:
 
-Rate-limit and abuse-control warnings are advisory runtime signals only. The public-safe warning code `rate_limit_recommended` may be documented or surfaced when repeated malformed validation attempts, repeated QR spoof inputs, replay-risk markers, or brute-force style probing indicate that operator-side mitigation should be considered.
+- `status`
+- `advisory_only`
+- `runtime_stage`
+- `verification_mode`
+- `public_safe`
+- `message`
+- `warnings`
+- `traceable`
+- `truth_guarantee`
+- `human_review_required`
+- `record_id`
 
-The warning does not deny requests, quarantine inputs, mutate schemas, change signing logic, weaken validators, add Redis, add database storage, add JWT authentication, add Vault secret access, or move enforcement into the trust kernel. Enforcement belongs to the operator/infrastructure layer and requires human-supervised validation.
+This shape is intentionally narrow because the GET route does not run the QR validation flow.
 
-See `docs/runtime/advisory-rate-limit-warning-contract.md` and `docs/security/rate-limiting-abuse-control.md` for the advisory boundary.
+### `POST /verify/{record_id}`
 
-## Integration-facing examples
+`POST /verify/{record_id}` runs the QR validation path and returns the ordered QR verification response shape. In addition to the base route-scoped keys, current runtime tests protect these response keys:
 
-### Normal validation response
+- `trust_state`
+- `replay_warning`
+- `continuity_warning`
+- `degraded_runtime`
+- `recovery_mode`
+- `public_exposure`
+- `qr_risk_level`
+- `qr_risk_reasons`
+- `human_review_recommended`
+- `escalation_queued`
+- `incident_summary`
+- `canonical_lookup_status`
+- `schema_valid`
+- `hash_verified`
+- `qr_scan_summary`
 
-```json
-{
-  "status": "ADVISORY",
-  "advisory_only": true,
-  "runtime_stage": "prototype",
-  "verification_mode": "advisory",
-  "public_safe": true,
-  "message": "Advisory HC:// runtime flow executed: request → validator pipeline → trust-state engine → event append → response contract → continuity history.",
-  "warnings": [],
-  "traceable": true,
-  "truth_guarantee": false,
-  "human_review_required": false,
-  "record_id": "normal-runtime-contract",
-  "trust_state": "ADVISORY",
-  "replay_warning": false,
-  "continuity_warning": false,
-  "degraded_runtime": false,
-  "recovery_mode": false,
-  "public_exposure": "standard",
-  "qr_risk_level": "LOW",
-  "qr_risk_reasons": [],
-  "human_review_recommended": false,
-  "escalation_queued": false,
-  "incident_summary": {
-    "active": false,
-    "group_keys": [],
-    "related_high_findings": 0
-  },
-  "canonical_lookup_status": "not_configured",
-  "schema_valid": true,
-  "hash_verified": true,
-  "qr_scan_summary": {
-    "warning_count": 0,
-    "risk_reason_count": 0,
-    "escalation_queued": false,
-    "human_review_recommended": false,
-    "risk_level": "LOW",
-    "abuse_signal_level": "LOW",
-    "abuse_signal_reasons": [],
-    "abuse_pattern_counts": {},
-    "abuse_warnings": [],
-    "advisory_only": true,
-    "public_safe": true,
-    "truth_guarantee": false,
-    "request_denied": false,
-    "human_final_authority": true
-  }
-}
-```
+Malformed POST payload handling has a separate public-safe response shape that preserves the base route-scoped keys and adds:
 
-The `qr_scan_summary` example is intentionally public-safe. Integrators should preserve unknown public-safe subkeys and rely on the stable top-level keys above.
+- `detail`
+- `malformed_input`
+- `public_exposure`
 
-### Malformed input response
+### Why the Shapes Differ
 
-```json
-{
-  "status": "MALFORMED_INPUT",
-  "advisory_only": true,
-  "runtime_stage": "prototype",
-  "verification_mode": "advisory",
-  "public_safe": true,
-  "message": "Malformed HC:// validator input was rejected within advisory runtime boundaries. Human-supervised validation is required before trust interpretation.",
-  "warnings": [
-    "Validator input was malformed, incomplete, or not processable as a public-safe QR verification request.",
-    "No hidden fallback behavior was applied; warning routing remains explicit."
-  ],
-  "traceable": true,
-  "truth_guarantee": false,
-  "human_review_required": true,
-  "record_id": "malformed-runtime-contract",
-  "malformed_input": true,
-  "public_exposure": "restricted"
-}
-```
+The GET and POST routes intentionally return different response shapes because they represent different runtime paths:
 
-## Persistence roundtrip audit
+- GET is a minimal advisory lookup placeholder.
+- POST is an advisory QR verification flow with validation, trust-state classification, replay visibility, degraded-runtime visibility, QR risk visibility, and human review signals.
 
-For advisory write → read → re-verify review boundaries, see `docs/runtime/persistence-roundtrip-audit.md` and `docs/security/persistence-risk-checklist.md`. Runtime roundtrip audit documentation preserves `advisory_only=true`, `runtime_stage=prototype`, `verification_mode=advisory`, `public_safe=true`, `truth_guarantee=false`, `human_review_required` derived from warnings or escalation, an always-present `warnings` list, visible degraded states, visible replay warnings, no hidden fallback behavior, and human-supervised validation as final authority. It does not add Redis, database storage, schema mutation, workflow mutation, governance mutation, or canonical artifact mutation.
+The difference is intentional and should not be treated as schema drift by itself.
 
-## Configuration and secret boundary
+## Compatibility Notes
 
-Public HC:// runtime responses must keep public verification data separate from runtime configuration, signing material, and operational secrets. Secret boundary architecture guidance lives in `docs/security/secret-boundary-architecture.md`; the operator configuration checklist lives in `docs/runtime/configuration-boundary-checklist.md`. These references are advisory documentation only and do not add secret storage, Vault, Redis, JWT, schema changes, workflow changes, signing changes, or runtime behavior changes.
+The runtime response contract, API schema helper, and verification API documentation are related but not identical:
 
-## Non-goals
+- The runtime response contract describes implemented public-safe runtime route output.
+- The API schema helper describes an API-ready verification payload helper that includes an `api_version` field.
+- Verification API documentation describes intended public API surfaces and may include route or model guidance that is broader than the current runtime implementation.
 
-This contract documentation does not implement Redis, JWT, Vault, signing changes, autonomous blocking, quarantine behavior, schema mutation, governance mutation, workflow mutation, or federation behavior changes.
+Compatibility review should compare these surfaces before changing response fields. A field appearing in one surface does not automatically mean it is guaranteed by the others.
+
+## Not Yet Guaranteed
+
+Current runtime responses do not guarantee:
+
+- authentication
+- authorization
+- rate limiting
+- durable persistence
+- an API version field in runtime responses
+- a generic exception response contract
+- machine-readable warning codes
+
+Warnings are public-safe advisory text. They should not be interpreted as stable machine-readable codes unless a future reviewed change explicitly adds that contract.
+
+## Stability Notes
+
+Current tests protect the base public response keys, the QR verification response keys, malformed input response keys, and the safety flags listed above. They also verify stable key order for QR verification responses and public-safe malformed-input behavior.
+
+Compatibility should be reviewed before adding, removing, renaming, reordering, or changing the meaning of public response fields. Changes that affect trust-kernel boundaries, schema contracts, validator logic, policy interpretation, signing semantics, federation behavior, or canonical records require separate review and human-supervised validation.
+
+## Safety Notes
+
+Public runtime responses must continue to reinforce:
+
+- `advisory_only=true`
+- `public_safe=true`
+- `truth_guarantee=false`
+- merge authority remains human-controlled
+
+These responses are review aids only. They do not provide production-readiness claims, autonomous blocking, autonomous governance finality, cryptographic guarantees, or policy guarantees beyond what is implemented and validated in this repository.
