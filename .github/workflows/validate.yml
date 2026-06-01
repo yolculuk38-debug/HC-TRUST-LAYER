@@ -10,6 +10,7 @@ on:
       - 'tests/**'
       - 'pyproject.toml'
       - 'requirements-test.txt'
+      - 'requirements.txt'
       - '.github/workflows/validate.yml'
   pull_request:
     paths:
@@ -19,6 +20,7 @@ on:
       - 'tests/**'
       - 'pyproject.toml'
       - 'requirements-test.txt'
+      - 'requirements.txt'
       - '.github/workflows/validate.yml'
 
 permissions:
@@ -34,7 +36,7 @@ jobs:
   validate:
     # Bound workflow runtime to reduce abuse/DoS risk from stalled jobs.
     timeout-minutes: 20
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout repository
@@ -108,7 +110,7 @@ jobs:
   runtime-api-tests:
     # Bound workflow runtime to reduce abuse/DoS risk from stalled jobs.
     timeout-minutes: 20
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout repository
