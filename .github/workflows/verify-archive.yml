@@ -19,7 +19,7 @@ jobs:
   verify-archive:
     # Bound workflow runtime to reduce abuse/DoS risk from stalled jobs.
     timeout-minutes: 20
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout repository
