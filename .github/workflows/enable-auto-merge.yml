@@ -27,7 +27,7 @@ jobs:
     # Bound workflow runtime to reduce abuse/DoS risk from stalled jobs.
     timeout-minutes: 20
     if: github.event.pull_request.draft == false
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Enable auto-merge when labeled

@@ -4,10 +4,19 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
 
+permissions:
+  contents: read
+
+concurrency:
+  # Cancel superseded runs on the same ref to prevent duplicate advisory checks.
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   pr-scope-guard:
     name: Advisory PR scope boundary guard
-    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
