@@ -8,6 +8,7 @@ import json
 import sys
 import hashlib
 from pathlib import Path
+from typing import Optional
 from jsonschema import validate, ValidationError
 
 # Test Results
@@ -26,17 +27,68 @@ def test_result(name, status, message=""):
 
 
 
-def should_skip_path(path: Path) -> bool:
-    """Skip generated indexes, explorer artifacts, manifests, and cache/export files."""
+CANONICAL_EXAMPLE_RECORDS = {
+    "ai_witness_example.json",
+    "human_witness_example.json",
+    "multi_model_example.json",
+}
+
+EXAMPLE_SKIP_REASONS = {
+    "api_response_example.json": "API response example",
+    "verify_gateway_response_example.json": "API response example",
+    "trust_score_example.json": "trust score output",
+    "demo_record.json": "legacy/demo record",
+    "verification_result_example.json": "verification result example",
+}
+
+
+def is_under(path: Path, directory: Path) -> bool:
+    """Return whether path is inside directory without requiring the path to exist."""
+    try:
+        path.relative_to(directory)
+        return True
+    except ValueError:
+        return False
+
+
+def example_record_skip_reason(path: Path) -> Optional[str]:
+    """Return why an examples/ JSON file is outside record-v1 canonical record scope."""
+    examples_dir = Path("examples")
+    verification_packages_dir = examples_dir / "verification-packages"
+
+    if not is_under(path, examples_dir):
+        return None
+
+    if is_under(path, verification_packages_dir):
+        return "verification package example"
+
+    if path.parent == examples_dir and path.name.lower() in CANONICAL_EXAMPLE_RECORDS:
+        return None
+
+    return EXAMPLE_SKIP_REASONS.get(path.name.lower(), "non-canonical example JSON")
+
+
+def schema_skip_reason(path: Path) -> Optional[str]:
+    """Return why a JSON file should not be validated against record-v1.schema.json."""
     p = str(path).lower()
     name = path.name.lower()
+
+    reason = example_record_skip_reason(path)
+    if reason:
+        return reason
+
     if "explorer" in p or name.endswith("index.json"):
-        return True
+        return "generated/index artifact"
     if "manifest" in name:
-        return True
+        return "manifest artifact"
     if "cache" in p or "export" in p:
-        return True
-    return False
+        return "cache/export artifact"
+    return None
+
+
+def should_validate_schema_path(path: Path) -> bool:
+    """Return whether record-v1.schema.json applies to this JSON file."""
+    return path.suffix.lower() == ".json" and schema_skip_reason(path) is None
 
 
 def collect_record_paths(base_dirs):
@@ -92,14 +144,15 @@ print("="*60 + "\n")
 
 record_directories = ["examples", "records", "records/verified", "records/archive", "witness", "halkalar"]
 record_paths = collect_record_paths(record_directories)
-json_record_paths = [path for path in record_paths if path.suffix.lower() == ".json"]
+json_record_paths = [path for path in record_paths if should_validate_schema_path(path)]
 
 for path in record_paths:
-    if should_skip_path(path):
-        test_result(f"SKIP {path}", True, "Skipped generated/artifact file")
-        continue
     if path.suffix.lower() == ".json":
-        test_result(f"DISCOVER {path}", True, "JSON candidate")
+        reason = schema_skip_reason(path)
+        if reason:
+            test_result(f"SKIP {path}", True, f"Skipped {reason}; record-v1 canonical record schema not applicable")
+        else:
+            test_result(f"DISCOVER {path}", True, "JSON canonical record candidate")
     else:
         test_result(f"SKIP {path}", True, "Non-JSON file")
 
@@ -112,8 +165,14 @@ print("TEST 3: Repository Records JSON Schema Validation")
 print("="*60 + "\n")
 
 for path in record_paths:
-    if should_skip_path(path) or path.suffix.lower() != ".json":
+    if path.suffix.lower() != ".json":
         continue
+
+    reason = schema_skip_reason(path)
+    if reason:
+        test_result(f"SKIP SCHEMA {path}", True, f"Skipped {reason}; record-v1 canonical record schema not applicable")
+        continue
+
     try:
         with open(path, 'r') as f:
             record = json.load(f)
@@ -133,18 +192,21 @@ print("\n" + "="*60)
 print("TEST 4: Hash Tool Simulation")
 print("="*60 + "\n")
 
-try:
-# Test SHA256 calculation on the first discovered JSON file
-    test_file = str(json_record_paths[0])
-    with open(test_file, 'rb') as f:
-        file_hash = hashlib.sha256(f.read()).hexdigest()
-    
-    if len(file_hash) == 64 and all(c in '0123456789abcdef' for c in file_hash):
-        test_result("SHA256 Generation", True, f"Hash: {file_hash[:16]}...")
-    else:
-        test_result("SHA256 Generation", False, "Invalid hash format")
-except Exception as e:
-    test_result("SHA256 Generation", False, str(e))
+if not json_record_paths:
+    test_result("SHA256 Generation", False, "No canonical record JSON files discovered for hash simulation")
+else:
+    try:
+        # Test SHA256 calculation on the first discovered JSON file
+        test_file = str(json_record_paths[0])
+        with open(test_file, 'rb') as f:
+            file_hash = hashlib.sha256(f.read()).hexdigest()
+
+        if len(file_hash) == 64 and all(c in '0123456789abcdef' for c in file_hash):
+            test_result("SHA256 Generation", True, f"Hash: {file_hash[:16]}...")
+        else:
+            test_result("SHA256 Generation", False, "Invalid hash format")
+    except Exception as e:
+        test_result("SHA256 Generation", False, str(e))
 
 # ==============================================================================
 # TEST 5: Content Hash Format in Records
