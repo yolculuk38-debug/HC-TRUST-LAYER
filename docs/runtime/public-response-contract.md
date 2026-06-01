@@ -83,6 +83,12 @@ The runtime response contract, API schema helper, and verification API documenta
 
 Compatibility review should compare these surfaces before changing response fields. A field appearing in one surface does not automatically mean it is guaranteed by the others.
 
+## Rate-limit advisory warnings
+
+Rate-limit warnings are advisory only. When emitted, the advisory warning code `rate_limit_recommended` indicates that operator or infrastructure rate-limit review may be appropriate, while preserving `warnings` always present as a list. It does not deny requests, quarantine records, or perform autonomous enforcement.
+
+Enforcement belongs to the operator/infrastructure layer and requires separate review and human-supervised validation. This documentation does not add Redis, add database storage, add JWT authentication, add Vault secret access, add other security-control implementation, mutate schemas, weaken validators, change runtime behavior, or modify workflows, governance, policy routing, federation, signing, or canonical record handling.
+
 ## Not Yet Guaranteed
 
 Current runtime responses do not guarantee:
