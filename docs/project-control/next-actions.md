@@ -2,6 +2,32 @@
 
 This file lists safe, advisory next work for HC-TRUST-LAYER. Each item is REPORT ONLY unless the Founder or an authorized reviewer explicitly changes the mode.
 
+## Operator Status Card
+
+| Field | Status |
+| --- | --- |
+| Current phase | Phase 2 — Trust Kernel Enforcement |
+| Active focus | Follow the five REPORT ONLY items below in priority order. |
+| Next up | Start with PR risk labeler Tier-1 sync review, then safe auto-merge Tier-1 restriction review. |
+| Blocked / parked work | Any workflow, runtime, schema, validator, record, policy, federation, signing, trust-kernel index, or governance-enforcement change remains out of scope for this next-actions list. |
+| Do-not-repeat references | Cross-check `docs/project-control/project-state.md` and `docs/project-control/task-ledger.md` before proposing work related to #545 through #551. |
+| Protected-path reminder | Treat protected paths as read-only in REPORT ONLY mode unless explicit authorization changes the mode. |
+| Source-of-truth priority | Markdown project-control docs and repository evidence outrank `hc_context`, chat memory, and advisory summaries. |
+
+## Shift-change read order
+
+Before taking the next action, read:
+
+1. `AGENTS.md`
+2. `HC_BOOTSTRAP.md`
+3. `docs/project-control/project-state.md`
+4. `docs/project-control/agent-operating-model.md`
+5. `docs/project-control/task-ledger.md`
+6. `docs/project-control/next-actions.md`
+7. `docs/project-control/shift-change-checklist.md`
+
+If `hc_context` files are useful for orientation, read them after the markdown project-control docs and treat them as advisory only.
+
 ## 1. PR risk labeler Tier-1 sync review
 
 - Priority order: 1
@@ -41,3 +67,7 @@ This file lists safe, advisory next work for HC-TRUST-LAYER. Each item is REPORT
 - Risk: Machine-readable project memory adjacency; do not create schema, validator, protocol graph, verification map, trust-kernel index, or canonical record changes in this mode.
 - Allowed inspection scope: Repository documentation, project-control files, machine-readable index documentation, verification map documentation, protocol graph documentation, and agent context references.
 - Why it is next: A future TREX-like `hc_context` JSON proposal can support cross-checking, task barcodes, and shift handoff summaries, but it must remain a proposal until reviewed through human-supervised validation.
+
+## Stale-context guidance
+
+Markdown project-control docs are authoritative for active focus, priority order, protected-path boundaries, and safe handoff state. The `hc_context` directory is advisory and should be used only after reading the markdown control files. When `hc_context`, chat memory, or an external summary appears stale or inconsistent, report the mismatch and cite the repository evidence instead of resolving the conflict automatically.
