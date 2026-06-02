@@ -44,13 +44,13 @@ jobs:
           has_label() {
             local needle="$1"
             LABELS_CSV="$LABELS" python - "$needle" <<'PY'
-import os
-import sys
+          import os
+          import sys
 
-needle = sys.argv[1]
-labels = [label.strip() for label in os.environ.get("LABELS_CSV", "").split(",") if label.strip()]
-raise SystemExit(0 if needle in labels else 1)
-PY
+          needle = sys.argv[1]
+          labels = [label.strip() for label in os.environ.get("LABELS_CSV", "").split(",") if label.strip()]
+          raise SystemExit(0 if needle in labels else 1)
+          PY
           }
 
           disable_auto_merge() {
