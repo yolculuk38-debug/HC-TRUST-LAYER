@@ -1,0 +1,125 @@
+{
+  "context_version": "0.2",
+  "id": "agent_rules",
+  "advisory_only": true,
+  "purpose": "Advisory HC Context Layer role and capability memory for future agents, HC Guide Bot, and HC Control Bot.",
+  "authority_boundary": "These rules summarize repository evidence and do not override AGENTS.md, CODEOWNERS, governance scripts, CI, protected indexes, or human review.",
+  "roles": [
+    "founder",
+    "chatgpt",
+    "codex",
+    "copilot",
+    "future_hc_guide_bot",
+    "future_hc_control_bot",
+    "external_contributor",
+    "external_ai_agent"
+  ],
+  "authority_levels": [
+    {
+      "level": 0,
+      "label": "report only",
+      "description": "Inspect repository evidence and produce findings without changing files."
+    },
+    {
+      "level": 1,
+      "label": "docs only",
+      "description": "Make documentation or metadata changes outside protected paths when requested and validated."
+    },
+    {
+      "level": 2,
+      "label": "tests only",
+      "description": "Add or update tests without changing runtime behavior, schemas, validators, policy, federation, signing, records, workflows, or protected indexes."
+    },
+    {
+      "level": 3,
+      "label": "low-risk implementation",
+      "description": "Make bounded implementation changes outside protected surfaces with relevant checks and clear review notes."
+    },
+    {
+      "level": 4,
+      "label": "protected path PR allowed, merge blocked",
+      "description": "Prepare changes touching protected surfaces only when explicitly requested; merge remains blocked until required human-supervised validation."
+    },
+    {
+      "level": 5,
+      "label": "human approval required",
+      "description": "Human reviewer approval is required before trust-kernel-impacting, policy-sensitive, signing, schema, validator, federation, record, workflow, or governance-control changes can proceed."
+    }
+  ],
+  "required_check_in": [
+    "Identify the requested mode and risk level before changing files.",
+    "Confirm whether the task touches protected paths or canonical record boundaries.",
+    "List repository evidence used for the proposed action.",
+    "Surface uncertainty rather than inferring unsupported guarantees."
+  ],
+  "required_checkout": [
+    "Summarize changed files and unchanged protected surfaces.",
+    "Run applicable repository checks or report why they could not run.",
+    "Record human-supervised validation needs for any trust-kernel-impacting change.",
+    "Avoid claims of production readiness, truth finality, security guarantees, forensic certainty, or autonomous governance."
+  ],
+  "capability_rules": {
+    "founder": {
+      "suggested_authority_level": 5,
+      "notes": "May provide explicit direction and human-supervised validation. Repository evidence and CI still apply."
+    },
+    "chatgpt": {
+      "suggested_authority_level": 1,
+      "notes": "Prefer advisory analysis, documentation-first clarification, and review-ready summaries."
+    },
+    "codex": {
+      "suggested_authority_level": 3,
+      "notes": "May prepare bounded changes when requested; must preserve guardrails and run applicable checks."
+    },
+    "copilot": {
+      "suggested_authority_level": 3,
+      "notes": "May assist with bounded edits subject to repository checks and reviewer oversight."
+    },
+    "future_hc_guide_bot": {
+      "suggested_authority_level": 0,
+      "notes": "Should guide users to repository evidence and avoid authoritative enforcement claims."
+    },
+    "future_hc_control_bot": {
+      "suggested_authority_level": 0,
+      "notes": "Should prepare reports and bounded operator guidance unless explicit approved automation exists in repository evidence."
+    },
+    "external_contributor": {
+      "suggested_authority_level": 1,
+      "notes": "Should start with docs-only or issue-backed proposals and request review for protected areas."
+    },
+    "external_ai_agent": {
+      "suggested_authority_level": 0,
+      "notes": "Should report findings and avoid changing protected surfaces without explicit task scope and human review."
+    }
+  },
+  "human_supervised_validation_boundaries": [
+    "runtime verification behavior",
+    "schema contracts",
+    "validator logic",
+    "signing and trust anchor semantics",
+    "federation behavior",
+    "policy evaluator behavior",
+    "canonical record identity or provenance continuity",
+    "workflow or governance guardrail changes",
+    "trust-kernel index, protocol graph, or verification map changes"
+  ],
+  "source_files": [
+    "AGENTS.md",
+    "GOVERNANCE.md",
+    "CODEOWNERS",
+    "scripts/check_pr_governance.py",
+    "docs/trust-review-workflow.md",
+    "docs/trust-impact-analysis.md",
+    "docs/trust-pr-engine.md",
+    "docs/verification-proposal-model.md",
+    "agents/README.md",
+    "agents/chatgpt.md",
+    "agents/codex.md",
+    "agents/workflow.md",
+    "agents/task-template.md"
+  ],
+  "staleness_policy": {
+    "status": "stale_if_conflicting",
+    "rule": "If this JSON conflicts with markdown docs, CODEOWNERS, governance scripts, protected indexes, CI, or human review, treat this JSON as stale and report the mismatch."
+  }
+}
