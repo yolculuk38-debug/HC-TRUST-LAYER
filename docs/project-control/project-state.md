@@ -1,8 +1,6 @@
 # Project State
 
-This file is the shift handoff summary for HC-TRUST-LAYER. Every agent must read this file before proposing work.
-
-Repository state is the source of truth. This file is advisory and must be cross-checked against current repository evidence before action.
+This file is the repository-native shift handoff summary for HC-TRUST-LAYER. Every agent must read this file before proposing work.
 
 ## Current phase
 
@@ -10,7 +8,7 @@ Phase 2 — Trust Kernel Enforcement
 
 ## Repository status
 
-HC-TRUST-LAYER is advisory-only, early-stage trust infrastructure for HC:// verification and provenance work. Do not claim production readiness, truth finality, security guarantees, or autonomous governance.
+HC-TRUST-LAYER is advisory-only, early-stage trust infrastructure. Repository evidence, merged files, checks, and human review decisions are the source of truth for current state.
 
 ## Last known completed governance sequence
 
@@ -25,8 +23,6 @@ HC-TRUST-LAYER is advisory-only, early-stage trust infrastructure for HC:// veri
 
 - #549 conflicted governance preflight PR
 
-Do not repeat, revive, or reuse #549 without explicit human-supervised validation and fresh repository evidence.
-
 ## Current focus
 
 - PR risk labeler Tier-1 review
@@ -35,6 +31,6 @@ Do not repeat, revive, or reuse #549 without explicit human-supervised validatio
 - GitHub Project Board and label taxonomy
 - `hc_context` machine-readable state proposal
 
-## Agent rule
+## Operating rule
 
-Every agent must read this file before proposing work. If repository evidence is incomplete, stale, or conflicting, stop and report the uncertainty instead of inferring project state from chat memory.
+Every agent must read this file before proposing work. Do not rely on chat memory alone, and do not repeat merged, superseded, abandoned, or closed work.

@@ -1,31 +1,29 @@
 # Task Ledger
 
-This file is the shift ledger for HC-TRUST-LAYER operating continuity. It records known work orders, operators, production batches, task barcodes, evidence, risk, notes, and next action.
+This shift ledger is an advisory repository-state record for HC-TRUST-LAYER work orders, task barcodes, evidence, and do-not-repeat notes. Use it to cross-check PR records, commit history, changed files, checks, and human-supervised validation notes before proposing related work.
 
-Repository state remains the source of truth. This ledger is advisory and must be cross-checked against current issues, PRs, commits, changed files, checks, and review decisions.
-
-## Shift ledger
+## Shift-ledger table
 
 | Task ID | Status | Operator / Agent | Tool / Machine | PR / Commit Barcode | Risk | Evidence | Notes | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| #545 | Completed | Human-supervised contributor / agent operator | GitHub PR and CI checks | PR #545; commit hash to be cross-checked in repository history | Trust-kernel governance alignment | PR reference, changed files, checks, review decision, repository history | Verification package alignment completed in the last known governance sequence. | Do not repeat; reference only when reviewing related verification package work. |
-| #546 | Completed | Human-supervised contributor / agent operator | GitHub PR and CI checks | PR #546; commit hash to be cross-checked in repository history | Runtime public response contract | PR reference, changed files, checks, review decision, repository history | Runtime public response contract completed in the last known governance sequence. | Do not repeat; cross-check before any runtime-sensitive proposal. |
-| #547 | Completed | Human-supervised contributor / agent operator | GitHub PR and CI checks | PR #547; commit hash to be cross-checked in repository history | Trust-kernel protected paths | PR reference, changed files, checks, review decision, repository history | Expanded trust-kernel protected paths completed in the last known governance sequence. | Do not repeat; use as protected path boundary context. |
-| #548 | Completed | Human-supervised contributor / agent operator | GitHub PR and CI checks | PR #548; commit hash to be cross-checked in repository history | CODEOWNERS Tier-1 alignment | PR reference, changed files, checks, review decision, repository history | CODEOWNERS Tier-1 alignment completed in the last known governance sequence. | Do not repeat; cross-check before ownership or review routing work. |
-| #549 | Closed / conflicted / do-not-reuse | Human-supervised contributor / agent operator | GitHub PR and CI checks | PR #549; no reusable task barcode without fresh validation | Governance preflight conflict | Closed PR reference, conflict state, review outcome, repository history | Conflicted governance preflight PR. Marked closed and do-not-reuse. | Do not revive or reuse without explicit human-supervised validation. |
-| #550 | Completed | Human-supervised contributor / agent operator | GitHub PR and CI checks | PR #550; commit hash to be cross-checked in repository history | Advisory documentation correction | PR reference, changed files, checks, review decision, repository history | Rate-limit advisory docs fix completed in the last known governance sequence. | Do not repeat; preserve advisory-only wording. |
-| #551 | Merged / completed | Human-supervised contributor / agent operator | GitHub PR and CI checks | PR #551; commit hash to be cross-checked in repository history | Governance preflight Tier-1 sync | PR reference, changed files, checks, review decision, repository history | Merged governance preflight Tier-1 sync completed in the last known governance sequence. | Use as current governance preflight baseline; do not repeat. |
+| #545 | Completed | Repository operators / reviewers | GitHub PR and checks | #545 / commit hash in repository history | Governance alignment | PR record, changed files, checks, review notes | Verification package alignment is part of the completed governance sequence. | Do not repeat; cross-check before related work. |
+| #546 | Completed | Repository operators / reviewers | GitHub PR and checks | #546 / commit hash in repository history | Runtime public response contract | PR record, changed files, checks, review notes | Runtime public response contract is part of the completed governance sequence. | Do not repeat; inspect repository evidence first. |
+| #547 | Completed | Repository operators / reviewers | GitHub PR and checks | #547 / commit hash in repository history | Trust-kernel protected paths | PR record, changed files, checks, review notes | Expanded trust-kernel protected paths are part of the completed governance sequence. | Do not repeat; preserve protected path boundaries. |
+| #548 | Completed | Repository operators / reviewers | GitHub PR and checks | #548 / commit hash in repository history | CODEOWNERS Tier-1 alignment | PR record, changed files, checks, review notes | CODEOWNERS Tier-1 alignment is part of the completed governance sequence. | Do not repeat; future CODEOWNERS work needs explicit authorization. |
+| #549 | Closed / conflicted / do-not-reuse | Repository operators / reviewers | GitHub PR and checks | #549 / closed PR reference | Governance preflight conflict | Closed PR record and review notes | Conflicted governance preflight PR; closed and marked do-not-reuse. | Do not reuse; use #551 as the active merged reference. |
+| #550 | Completed | Repository operators / reviewers | GitHub PR and checks | #550 / commit hash in repository history | Rate-limit advisory documentation | PR record, changed files, checks, review notes | Rate-limit advisory docs fix is part of the completed governance sequence. | Do not repeat; preserve advisory-only language. |
+| #551 | Merged governance preflight Tier-1 sync | Repository operators / reviewers | GitHub PR and checks | #551 / commit hash in repository history | Governance preflight Tier-1 sync | PR record, changed files, checks, review notes | Current merged governance preflight Tier-1 sync reference. | Use as the active reference for related review. |
 
 ## Evidence bundle rule
 
-A task is not considered complete unless evidence exists across more than one layer, such as:
+A task is not complete from a single signal. Completion should be cross-checked across more than one evidence layer, such as:
 
-- Task or issue reference.
-- PR number.
-- Commit hash as task barcode.
-- Changed files.
-- Checks run.
-- Review or human decision.
-- Ledger update when applicable.
+- task or issue reference;
+- PR number;
+- commit hash;
+- changed files;
+- checks run;
+- review or human-supervised validation notes;
+- ledger update when applicable.
 
-When evidence is missing or conflicting, mark the task as uncertain and stop before making trust-kernel-sensitive claims or changes.
+If an evidence layer is missing or inconsistent, keep the result advisory, report the gap, and avoid claiming completion.
