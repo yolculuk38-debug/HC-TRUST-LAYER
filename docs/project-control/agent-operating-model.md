@@ -1,74 +1,61 @@
 # Agent Operating Model
 
-This file defines advisory role boundaries for HC-TRUST-LAYER contributors, ChatGPT, Codex, Copilot, future autonomous agents, the future HC Guide Bot, the future HC Control Bot, and external AI agents.
-
-The operating model is documentation only. It does not create autonomous governance, merge authority, runtime behavior, security guarantees, or production-readiness claims.
-
-## Agent check-in
-
-Before work begins, an operator must declare:
-
-- Role, such as Founder, ChatGPT, Codex, Copilot, future HC Guide Bot, future HC Control Bot, external contributor, or external AI agent.
-- Requested scope and allowed files.
-- Authority level.
-- Protected path boundaries that must not be changed.
-- Expected evidence bundle.
-- Whether human-supervised validation is required before merge or further action.
-
-If the operator cannot inspect the necessary repository evidence, the operator must stop and report the gap.
-
-## Agent checkout
-
-Before handoff, an operator must report:
-
-- Work performed.
-- Files changed or inspected.
-- PR, issue, or commit task barcode when available.
-- Checks run and results.
-- Evidence bundle status.
-- Risks, uncertainties, and reviewer decisions needed.
-- Do-not-repeat rules discovered during the task.
+This file defines advisory role boundaries for humans, ChatGPT, Codex, Copilot, future HC Guide Bot, future HC Control Bot, and external contributors or external AI agents working in HC-TRUST-LAYER.
 
 ## Roles
 
 ### Founder
 
-The Founder acts as the primary human supervisor and direction setter for project priorities, protected boundary decisions, and human-supervised validation. Founder decisions should be recorded through repository evidence whenever possible.
+- Provides project direction, priority calls, and supervisor decisions.
+- Approves or rejects trust-kernel-sensitive changes through human-supervised validation.
+- Resolves ambiguity when repository evidence and proposed work are incomplete.
 
 ### ChatGPT
 
-ChatGPT may assist with planning, review, documentation drafting, cross-checking, and advisory analysis. ChatGPT must not claim repository state it cannot inspect and must preserve advisory-only semantics.
+- Provides planning, design review, documentation drafting, and advisory analysis.
+- Should cite repository evidence when making project-state claims.
+- Must not claim authority to inspect or modify files outside the active repository context.
 
 ### Codex
 
-Codex may inspect repository files, prepare bounded patches, run checks, produce commits, and prepare PR descriptions within assigned scope. Codex must not work outside allowed files and must not autonomously merge trust-critical changes.
+- Performs repository-local inspection, documentation edits, scoped implementation when authorized, checks, commits, and PR preparation.
+- Must declare scope, avoid protected paths unless explicitly authorized, and preserve repository guardrails.
+- Must stop and report when requested work exceeds allowed scope or repository evidence is incomplete.
 
 ### Copilot
 
-Copilot may assist with in-editor suggestions, drafting, and implementation support under human supervision. Copilot output requires review against repository evidence and protected path boundaries.
+- Assists with local authoring and code or documentation suggestions inside the contributor's environment.
+- Suggestions remain advisory until reviewed, tested, and committed by an authorized operator.
+- Must not be treated as a source of truth over repository evidence.
 
 ### Future HC Guide Bot
 
-The future HC Guide Bot is a shift guide and onboarding assistant. Its expected role is to help operators find project state, task history, next actions, terminology, and evidence requirements. It must remain advisory unless explicitly changed by validated repository governance.
+- Acts as a shift guide and onboarding assistant.
+- May summarize project state, suggest next safe work, and route operators to relevant files.
+- Must preserve advisory-only semantics and avoid autonomous governance claims.
 
 ### Future HC Control Bot
 
-The future HC Control Bot is a risk and control officer. Its expected role is to flag protected path boundaries, missing evidence, do-not-repeat conflicts, and human-supervised validation requirements. It must not autonomously approve or merge trust-critical changes.
+- Acts as a risk/control officer.
+- May flag protected path boundaries, missing evidence bundles, stale task barcodes, and review requirements.
+- Must not autonomously approve or merge trust-critical changes.
 
 ### External contributors / external AI agents
 
-External contributors and external AI agents must follow repository instructions, declare scope, preserve terminology, respect protected path boundaries, and provide evidence for claims. They must not assume authority from chat context or external memory.
+- Must follow `AGENTS.md`, this operating model, protected path boundaries, and repository checks.
+- Must declare role, scope, and intended file changes before work.
+- Must treat repository state as authoritative and report uncertainty instead of inferring unsupported guarantees.
 
 ## Authority levels
 
-| Level | Name | Meaning |
+| Level | Name | Allowed activity |
 | --- | --- | --- |
-| Level 0 | Report only | Inspect and report findings. No file changes. |
-| Level 1 | Docs only | Modify documentation within explicitly allowed scope. No code, workflow, schema, record, validator, policy, signing, federation, or trust-kernel index changes. |
-| Level 2 | Tests only | Modify or add tests within explicitly allowed scope. No runtime behavior changes. |
-| Level 3 | Low-risk implementation | Make bounded implementation changes outside protected path boundaries, with relevant tests and review. |
-| Level 4 | Protected path PR allowed, merge blocked | Prepare a PR touching protected path boundaries only when explicitly authorized. Merge remains blocked pending human-supervised validation. |
-| Level 5 | Human approval required | Work cannot proceed, or cannot merge, without explicit human approval and repository-recorded validation. |
+| Level 0 | Report only | Inspect and report findings; no file changes. |
+| Level 1 | Docs only | Create or edit documentation within allowed scope. |
+| Level 2 | Tests only | Create or edit tests within allowed scope; no runtime behavior changes. |
+| Level 3 | Low-risk implementation | Make low-risk implementation changes outside protected paths when explicitly authorized. |
+| Level 4 | Protected path PR allowed, merge blocked | Prepare protected path changes only when explicitly authorized; merge remains blocked pending human-supervised validation. |
+| Level 5 | Human approval required | Human supervisor decision required before proceeding or merging. |
 
 ## Capability rules
 
@@ -77,11 +64,11 @@ External contributors and external AI agents must follow repository instructions
 - Agents must stop and report if repository evidence is incomplete.
 - Agents must not work outside allowed files.
 - Agents must not autonomously merge trust-critical changes.
-- Agents must cross-check task history before repeating prior work.
-- Agents must preserve advisory-only semantics unless repository evidence explicitly says otherwise.
+- Agents must keep agent check-in and agent checkout records concise, evidence-based, and tied to task barcodes when available.
+- Agents must preserve do-not-repeat rules by checking the task ledger and project state before proposing repeated work.
 
-## Protected and trust-critical boundaries
+## Human-supervised validation boundaries
 
 Trust-kernel, schema, workflow, records, signing, federation, policy, runtime-sensitive, and governance-enforcement changes require human-supervised validation.
 
-No agent may autonomously merge trust-critical changes.
+No agent may autonomously merge trust-critical changes. Agent recommendations, bot reports, and automation outputs are advisory unless validated by repository-defined checks and human review.
