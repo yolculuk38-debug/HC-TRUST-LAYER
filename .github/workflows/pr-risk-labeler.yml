@@ -39,9 +39,15 @@ jobs:
           git diff --name-only "$BASE_SHA" "$HEAD_SHA" > changed_files.txt
           cat changed_files.txt
 
-          if grep -Eq '^(\.github/workflows/|deploy/|keys/|secrets/)' changed_files.txt; then
+          if grep -Eq '^(schema/|validators/|signatures/|policy/|federation/|records/|\.github/workflows/|src/hc_runtime/|deploy/|keys/|secrets/)' changed_files.txt; then
             gh pr edit "$PR_URL" --add-label manual-review --remove-label auto-merge || true
             echo "High risk path detected. manual-review applied."
+            exit 0
+          fi
+
+          if grep -Eq '^(CODEOWNERS|protocol-graph\.json|verification-map\.json|trust-kernel-index\.json)$' changed_files.txt; then
+            gh pr edit "$PR_URL" --add-label manual-review --remove-label auto-merge || true
+            echo "High risk protected file detected. manual-review applied."
             exit 0
           fi
 
