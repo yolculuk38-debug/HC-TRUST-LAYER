@@ -1,0 +1,160 @@
+{
+  "context_version": "0.2",
+  "id": "next_tasks",
+  "advisory_only": true,
+  "purpose": "Advisory HC Context Layer queue for report-only near-term review tasks.",
+  "authority_boundary": "This JSON is not a project management authority and does not override issues, PRs, project boards, markdown docs, CODEOWNERS, governance scripts, CI, or human review.",
+  "ordered_tasks": [
+    {
+      "id": "pr_risk_labeler_tier_1_sync_review",
+      "title": "PR risk labeler Tier-1 sync review",
+      "priority_order": 1,
+      "mode": "REPORT ONLY",
+      "risk": "LOW",
+      "allowed_inspection_scope": [
+        "AGENTS.md",
+        "CODEOWNERS",
+        "scripts/check_pr_governance.py",
+        "docs/trust-pr-engine.md",
+        "docs/trust-impact-analysis.md",
+        "open PR metadata when available"
+      ],
+      "forbidden_changes": [
+        "runtime code",
+        "schemas",
+        "validators",
+        "workflows",
+        "CODEOWNERS",
+        "records",
+        "policy files",
+        "federation files",
+        "trust-kernel index files",
+        "protocol-graph.json",
+        "verification-map.json",
+        "scripts",
+        "tests",
+        "docs/project-control files",
+        "HC_BOOTSTRAP.md"
+      ],
+      "why_next": "Tier-1 risk labeling should be reviewed against existing governance evidence before any implementation or automation change."
+    },
+    {
+      "id": "safe_auto_merge_tier_1_restriction_review",
+      "title": "safe auto-merge Tier-1 restriction review",
+      "priority_order": 2,
+      "mode": "REPORT ONLY",
+      "risk": "LOW",
+      "allowed_inspection_scope": [
+        "AGENTS.md",
+        "CODEOWNERS",
+        "scripts/check_pr_governance.py",
+        "docs/trust-review-workflow.md",
+        "docs/trust-pr-engine.md",
+        "open PR metadata when available"
+      ],
+      "forbidden_changes": [
+        "runtime code",
+        "schemas",
+        "validators",
+        "workflows",
+        "CODEOWNERS",
+        "records",
+        "policy files",
+        "federation files",
+        "trust-kernel index files",
+        "protocol-graph.json",
+        "verification-map.json",
+        "scripts",
+        "tests",
+        "docs/project-control files",
+        "HC_BOOTSTRAP.md"
+      ],
+      "why_next": "Safe auto-merge restrictions need evidence-based review before any repository automation or merge-policy proposal."
+    },
+    {
+      "id": "hc_guide_bot_design_review",
+      "title": "HC Guide Bot design review",
+      "priority_order": 3,
+      "mode": "REPORT ONLY",
+      "risk": "LOW",
+      "allowed_inspection_scope": [
+        "AGENTS.md",
+        "agents/README.md",
+        "agents/chatgpt.md",
+        "agents/codex.md",
+        "agents/workflow.md",
+        "docs/verification-proposal-model.md",
+        "docs/trust-review-workflow.md"
+      ],
+      "forbidden_changes": [
+        "runtime code",
+        "schemas",
+        "validators",
+        "workflows",
+        "CODEOWNERS",
+        "records",
+        "policy files",
+        "federation files",
+        "trust-kernel index files",
+        "protocol-graph.json",
+        "verification-map.json",
+        "scripts",
+        "tests",
+        "docs/project-control files",
+        "HC_BOOTSTRAP.md"
+      ],
+      "why_next": "HC Guide Bot should remain advisory and evidence-linked before future tooling proposals are considered."
+    },
+    {
+      "id": "github_project_board_and_label_taxonomy_plan",
+      "title": "GitHub Project Board and label taxonomy plan",
+      "priority_order": 4,
+      "mode": "REPORT ONLY",
+      "risk": "LOW",
+      "allowed_inspection_scope": [
+        "AGENTS.md",
+        "GOVERNANCE.md",
+        "docs/trust-impact-analysis.md",
+        "docs/trust-review-workflow.md",
+        "issue and label metadata when available"
+      ],
+      "forbidden_changes": [
+        "runtime code",
+        "schemas",
+        "validators",
+        "workflows",
+        "CODEOWNERS",
+        "records",
+        "policy files",
+        "federation files",
+        "trust-kernel index files",
+        "protocol-graph.json",
+        "verification-map.json",
+        "scripts",
+        "tests",
+        "docs/project-control files",
+        "HC_BOOTSTRAP.md"
+      ],
+      "why_next": "Project board and label taxonomy planning should align future review routing without changing enforcement surfaces."
+    }
+  ],
+  "source_files": [
+    "AGENTS.md",
+    "GOVERNANCE.md",
+    "CODEOWNERS",
+    "scripts/check_pr_governance.py",
+    "docs/trust-pr-engine.md",
+    "docs/trust-impact-analysis.md",
+    "docs/verification-proposal-model.md",
+    "docs/trust-review-workflow.md",
+    "agents/README.md",
+    "agents/chatgpt.md",
+    "agents/codex.md",
+    "agents/workflow.md"
+  ],
+  "staleness_policy": {
+    "status": "stale_if_conflicting_or_completed",
+    "rule": "If issues, PRs, project boards, markdown docs, CODEOWNERS, governance scripts, protected indexes, CI, or human review contradict or complete these tasks, treat this JSON as stale and report the mismatch.",
+    "refresh_expectation": "Refresh this advisory queue through a small docs/metadata PR after comparing against repository evidence."
+  }
+}

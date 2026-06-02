@@ -1,0 +1,51 @@
+{
+  "context_version": "0.2",
+  "id": "evidence_rules",
+  "advisory_only": true,
+  "purpose": "Advisory HC Context Layer evidence expectations for task completion reporting.",
+  "authority_boundary": "This JSON summarizes evidence expectations and does not override markdown docs, CODEOWNERS, governance scripts, CI, protected indexes, records, or human review.",
+  "completion_requires_multiple_signals": true,
+  "evidence_layers": [
+    "task_or_issue_reference",
+    "pr_record",
+    "commit_hash",
+    "changed_files",
+    "checks_run",
+    "review_or_human_supervised_validation_notes",
+    "task_ledger_update",
+    "human_supervised_validation_outcome"
+  ],
+  "task_barcode_fields": [
+    "pr_number",
+    "commit_hash"
+  ],
+  "do_not_repeat_rules": [
+    "Do not repeat a closed task without checking issue, PR, and commit evidence first.",
+    "Do not reuse identifiers marked closed_do_not_reuse in advisory project state.",
+    "Do not mark a task complete from a single signal when multiple evidence layers are expected.",
+    "Do not infer production readiness, truth finality, security guarantees, forensic certainty, or autonomous governance from advisory context files.",
+    "Do not treat this JSON as enforcement authority over repository docs, CODEOWNERS, governance scripts, protected indexes, CI, records, or human review."
+  ],
+  "missing_evidence_policy": {
+    "status": "incomplete_or_unknown",
+    "rule": "If required evidence is missing, report the gap and avoid completion claims.",
+    "review_expectation": "Human-supervised validation notes are required for trust-kernel-impacting changes before merge or completion claims.",
+    "conflict_rule": "If this JSON conflicts with markdown docs, CODEOWNERS, governance scripts, protected indexes, CI, records, or human review, treat this JSON as stale and report the mismatch."
+  },
+  "source_files": [
+    "AGENTS.md",
+    "GOVERNANCE.md",
+    "CODEOWNERS",
+    "docs/trust-impact-analysis.md",
+    "docs/trust-review-workflow.md",
+    "docs/verification-proposal-model.md",
+    "docs/idea-to-pr-pipeline.md",
+    "records/README.md",
+    "scripts/check_pr_governance.py",
+    "scripts/check_canonical_artifacts.py"
+  ],
+  "staleness_policy": {
+    "status": "stale_if_conflicting",
+    "rule": "Repository evidence, CI, protected indexes, records, and human review take priority over this advisory JSON."
+  }
+}

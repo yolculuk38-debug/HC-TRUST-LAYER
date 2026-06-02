@@ -1,0 +1,63 @@
+{
+  "context_version": "0.2",
+  "id": "project_state",
+  "advisory_only": true,
+  "purpose": "Advisory machine-readable HC Context Layer project memory for future agents, HC Guide Bot, and HC Control Bot.",
+  "authority_boundary": "This JSON is advisory only and is not an authority layer over markdown docs, CODEOWNERS, governance scripts, protected indexes, CI, or human review.",
+  "source_priority": [
+    "human-supervised validation and reviewer decisions",
+    "repository governance documents and markdown source files",
+    "CODEOWNERS and governance scripts",
+    "CI checks and repository-defined validation outputs",
+    "machine-readable trust-kernel, protocol graph, and verification map indexes",
+    "advisory hc_context JSON files"
+  ],
+  "current_phase": "Phase 2 — Trust Kernel Enforcement",
+  "repository_status": "advisory-only, early-stage trust infrastructure",
+  "last_known_completed_governance_sequence": [
+    "#545",
+    "#546",
+    "#547",
+    "#548",
+    "#550",
+    "#551",
+    "#552"
+  ],
+  "closed_do_not_reuse": [
+    "#549"
+  ],
+  "current_focus": [
+    "PR risk labeler Tier-1 review",
+    "safe auto-merge Tier-1 review",
+    "HC Guide Bot design",
+    "GitHub Project Board and label taxonomy"
+  ],
+  "source_files": [
+    "AGENTS.md",
+    "GOVERNANCE.md",
+    "CODEOWNERS",
+    "protocol-graph.json",
+    "verification-map.json",
+    "trust-kernel-index.json",
+    "docs/verification-map.md",
+    "docs/protocol-graph-index.md",
+    "docs/verification-map-index.md",
+    "docs/trust-kernel-index.md",
+    "scripts/check_pr_governance.py",
+    "scripts/check_terminology.py",
+    "scripts/check_docs_drift.py",
+    "scripts/check_canonical_artifacts.py"
+  ],
+  "staleness_policy": {
+    "status": "stale_if_conflicting",
+    "rule": "If this JSON conflicts with markdown docs, CODEOWNERS, governance scripts, protected indexes, CI, or human review, treat this JSON as stale and report the mismatch.",
+    "refresh_expectation": "Refresh this advisory file only through a small, reviewable docs/metadata PR after comparing against repository evidence."
+  },
+  "forbidden_claims": [
+    "production readiness",
+    "truth finality",
+    "security guarantees",
+    "forensic certainty",
+    "autonomous governance"
+  ]
+}

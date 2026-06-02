@@ -1,0 +1,59 @@
+{
+  "context_version": "0.2",
+  "id": "protected_surfaces",
+  "advisory_only": true,
+  "purpose": "Advisory HC Context Layer summary of protected surfaces for review routing.",
+  "authority_boundary": "This JSON does not enforce protection and does not override CODEOWNERS, governance scripts, CI, protected indexes, or human review.",
+  "protected_prefixes": [
+    "schema/",
+    "validators/",
+    "signatures/",
+    "policy/",
+    "federation/",
+    "records/",
+    ".github/workflows/",
+    "src/hc_runtime/"
+  ],
+  "protected_files": [
+    "CODEOWNERS",
+    "protocol-graph.json",
+    "verification-map.json",
+    "trust-kernel-index.json"
+  ],
+  "risk_routing": [
+    {
+      "condition": "protected_path_touched",
+      "risk": "HIGH",
+      "human_review_required": true,
+      "auto_merge_eligible": false,
+      "notes": "Protected path changes require explicit review routing and human-supervised validation where applicable."
+    },
+    {
+      "condition": "docs_only_outside_protected_paths",
+      "risk": "LOW",
+      "human_review_required": false,
+      "auto_merge_eligible": true,
+      "notes": "Eligibility is advisory and still subject to repository checks, branch protection, CI, and reviewer requirements."
+    },
+    {
+      "condition": "other_changes",
+      "risk": "MEDIUM",
+      "human_review_required": true,
+      "auto_merge_eligible": false,
+      "notes": "Non-doc or ambiguous changes should be reviewed before merge."
+    }
+  ],
+  "required_validation": [
+    "Run terminology guard when documentation or metadata changes are made.",
+    "Run docs drift guard when documentation or metadata changes are made.",
+    "Run canonical artifact guard when repository metadata changes are made.",
+    "Run relevant test subsets when touched scope requires.",
+    "Report any check that cannot run and do not imply success."
+  ],
+  "source_files": [
+    "CODEOWNERS",
+    "scripts/check_pr_governance.py",
+    "AGENTS.md"
+  ],
+  "conflict_policy": "If this JSON conflicts with CODEOWNERS or scripts/check_pr_governance.py, treat JSON as stale and report mismatch."
+}
