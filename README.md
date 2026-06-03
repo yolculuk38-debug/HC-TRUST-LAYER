@@ -20,6 +20,7 @@ HC-TRUST-LAYER is an early-stage verification infrastructure that helps teams ev
 
 - [MVP Snapshot](#mvp-snapshot)
 - [Contributor Start Here](docs/contributor-start-here.md)
+- [Issue Workflow Guide](docs/issue-workflow.md)
 - [Demo & Verification Viewer](#demo--verification-viewer)
 - [Try local verification preview](#try-local-verification-preview-entry-point)
 - [Public trial quickstart](docs/public_trial_quickstart.md)
@@ -165,7 +166,7 @@ This architecture emphasizes transparent review flow, auditable boundaries, and 
 
 ## Contributing
 
-Contributions are welcome for documentation quality, onboarding clarity, viewer usability, and verification workflow improvements.
+Contributions are welcome for documentation quality, onboarding clarity, viewer usability, and verification workflow improvements. For issue routing, duplicate checks, evidence expectations, and security-sensitive report handling, see the [Issue Workflow Guide](docs/issue-workflow.md).
 
 Before opening a PR:
 
