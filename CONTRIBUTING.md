@@ -2,7 +2,7 @@
 
 Thank you for contributing to Humanity Chain.
 
-First-time contributors should start with the [Contributor Start Here guide](docs/contributor-start-here.md). Before opening a public issue, review the [Issue Workflow Guide](docs/issue-workflow.md).
+First-time contributors should start with the [Contributor Start Here guide](docs/contributor-start-here.md). Before opening a public issue, review the [Issue Workflow Guide](docs/issue-workflow.md). Before opening a pull request, review the [PR Workflow Guide](docs/pr-workflow.md).
 
 This project focuses on transparent archival systems, verification workflows, and documented human-AI interaction research.
 
