@@ -224,22 +224,9 @@ Triage decisions are workflow management decisions. They are not approval to mer
 
 ## 16. Labels and Status Meanings
 
-Labels help route work, but they do not grant authority.
+Labels help route work, but they do not grant authority. Use the [`Label Taxonomy Guide`](label-taxonomy.md) for the standard advisory meaning of type, status, area, sensitivity, priority, validation, and governance labels.
 
-Common label meanings may include:
-
-- `type:bug`: report of a defect or unexpected behavior
-- `type:workflow`: workflow, process, or area-tracking issue
-- `type:research`: exploratory or research-only idea
-- `status:research-only`: not represented as an implemented capability
-- `area:docs-governance`: documentation or governance clarity
-- `area:record-core`: canonical record or record-layer routing
-- `area:trust-protocol`: trust protocol, verification map, protocol graph, or trust kernel routing
-- `area:public-verification`: public verification or viewer-facing review flow
-- `area:federation`: federation or interoperability routing
-- `area:security`: non-sensitive security hardening routing
-
-Issue labels are not merge authority. Repository-defined checks, maintainer review, and human-supervised validation requirements still apply.
+Issue labels are not approval authority, merge authority, security validation, or production-readiness validation. Repository-defined checks, maintainer review, and human-supervised validation requirements still apply.
 
 ## 17. What Not To Claim
 

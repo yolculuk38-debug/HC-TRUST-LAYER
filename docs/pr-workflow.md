@@ -264,6 +264,7 @@ When in doubt, preserve the current behavior, document the uncertainty, and ask 
 - [`CONTRIBUTING.md`](../CONTRIBUTING.md) — contribution expectations and merge policy.
 - [`docs/contributor-start-here.md`](contributor-start-here.md) — beginner contributor orientation.
 - [`docs/issue-workflow.md`](issue-workflow.md) — issue routing, duplicate checks, and private reporting guidance.
+- [`docs/label-taxonomy.md`](label-taxonomy.md) — advisory label meanings for issue and PR triage.
 - [`docs/pr-scope-boundaries.md`](pr-scope-boundaries.md) — advisory PR scope and protected-surface guidance.
 - [`docs/verification-map.md`](verification-map.md) — verification map orientation.
 - [`docs/protocol-graph-index.md`](protocol-graph-index.md) — protocol graph navigation aid.

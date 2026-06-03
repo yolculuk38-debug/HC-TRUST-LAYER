@@ -97,30 +97,9 @@ If an issue spans multiple categories, choose the label that reflects the next m
 
 ## 8. Label Classification
 
-Use labels to communicate triage state, not approval. Labels are not merge authority.
+Use labels to communicate triage state, not approval. Labels are not merge authority. The [`Label Taxonomy Guide`](label-taxonomy.md) is the standard advisory reference for type, status, area, sensitivity, priority, validation, and governance labels.
 
-### Type
-
-- `type:bug` — alleged defect or regression requiring evidence review
-- `type:docs` — documentation, navigation, wording, examples, or non-behavioral clarification
-- `type:research` — exploratory proposal or future capability discussion
-- `type:governance` — review process, authority boundary, validation, or policy-adjacent workflow discussion
-- `type:question` — explanation request without a confirmed change request
-
-### Status
-
-- `status:needs-triage` — item has not completed initial maintainer classification
-- `status:needs-info` — more evidence, reproduction detail, or scope clarification is required
-- `status:accepted` — maintainers agree the item is in scope for work or review; this is not merge approval
-- `status:deferred` — item is in scope but not ready for current work
-- `status:duplicate` — item overlaps an existing issue, PR, or documented decision
-- `status:closed-no-action` — item is closed without repository change
-
-### Sensitivity
-
-- `sensitivity:public-safe` — public discussion is acceptable and no sensitive surface is apparent
-- `sensitivity:security-sensitive` — public detail may expose misuse, vulnerability, operational risk, or sensitive security context
-- `sensitivity:trust-kernel-sensitive` — item may affect trust-kernel behavior, interpretation, canonical record continuity, provenance, audit trail continuity, policy routing, validation semantics, or protected review boundaries
+Labels should be applied from repository evidence and updated when evidence changes. They do not replace required checks, reviewer approval, security review, production-readiness validation, or human-supervised validation for sensitive trust-kernel-impacting work.
 
 ## 9. Trust-Kernel-Sensitive Assessment
 
@@ -270,6 +249,7 @@ Use bounded language such as "documents," "supports review," "routes for review,
 - [Contributor Start Here](contributor-start-here.md)
 - [Issue Workflow Guide](issue-workflow.md)
 - [PR Workflow Guide](pr-workflow.md)
+- [Label Taxonomy Guide](label-taxonomy.md)
 - [Trust Review Workflow](trust-review-workflow.md)
 - [Trust Impact Analysis](trust-impact-analysis.md)
 - [Verification Map](verification-map.md)
