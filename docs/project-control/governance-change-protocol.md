@@ -208,21 +208,36 @@ This protocol does not perform human-supervised validation. It only describes wh
 
 Every governance proposal should include a protected-surface assessment.
 
-The assessment should state whether the proposal affects:
+The assessment should state whether the proposal affects protected path prefixes, protected individual files, or adjacent advisory surfaces.
+
+Protected path prefixes to assess include:
 
 - `.github/workflows/**` workflow behavior;
-- `src/**` runtime behavior;
+- `src/**` runtime behavior, including `src/hc_runtime/**`;
 - `schema/**` schema contracts;
 - `validators/**` validator logic;
 - `records/**` canonical record or provenance continuity;
+- `canonical/**` canonical boundary material when present;
 - `policy/**` policy evaluator behavior or interpretation;
 - `federation/**` federation behavior;
-- `signatures/**` signing or trust anchor semantics;
-- trust-kernel indexes or trust-kernel review routing;
-- `hc_context/**` advisory agent context;
-- `agents/**` agent workspace behavior.
+- `signatures/**` signing or trust anchor semantics.
 
-If the proposal changes only governance documentation, the assessment should say so directly and confirm that no protected path was modified.
+Protected individual files to assess include:
+
+- `CODEOWNERS`;
+- `protocol-graph.json`;
+- `verification-map.json`;
+- `trust-kernel-index.json`.
+
+Adjacent advisory surfaces to assess include:
+
+- trust-kernel index documentation or trust-kernel review routing references;
+- `hc_context/**` advisory agent context, including `hc_context/protected_surfaces.json`;
+- `agents/**` agent workspace behavior;
+- `AGENTS.md` repository-wide contributor and agent rules;
+- `HC_BOOTSTRAP.md` bootstrap and handoff expectations.
+
+If the proposal changes only governance documentation, the assessment should say so directly and confirm that no protected path prefix or protected individual file was modified.
 
 ## 12. Governance Roles and Responsibilities
 
