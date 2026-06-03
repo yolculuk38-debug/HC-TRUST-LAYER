@@ -50,8 +50,9 @@ Use `docs/project-control/shift-change-checklist.md` for the full operator hando
 1. Read the project-control files in the documented order before proposing work.
 2. Reconcile current state against repository evidence, changed files, recent commits or PRs, checks, and task-ledger notes.
 3. Check in with role, scope, intended files, protected-path assessment, expected checks, and any evidence gaps.
-4. Check out with changed files, commit or PR references when available, checks run, unresolved gaps, and next safe action.
-5. Attach an evidence bundle that includes task reference, changed files, checks, review notes when available, and stale-context observations.
+4. Use `docs/project-control/active-work-registry.md` only as an advisory shift-level coordination snapshot when active, blocked, parked, or checkout status needs to be recorded.
+5. Check out with changed files, commit or PR references when available, checks run, unresolved gaps, and next safe action.
+6. Attach an evidence bundle that includes task reference, changed files, checks, review notes when available, and stale-context observations.
 
 ## Stale-context guidance
 
