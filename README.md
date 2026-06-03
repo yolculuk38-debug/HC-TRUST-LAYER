@@ -166,7 +166,7 @@ This architecture emphasizes transparent review flow, auditable boundaries, and 
 
 ## Contributing
 
-Contributions are welcome for documentation quality, onboarding clarity, viewer usability, and verification workflow improvements. For issue routing, duplicate checks, evidence expectations, and security-sensitive report handling, see the [Issue Workflow Guide](docs/issue-workflow.md).
+Contributions are welcome for documentation quality, onboarding clarity, viewer usability, and verification workflow improvements. For issue routing, duplicate checks, evidence expectations, and security-sensitive report handling, see the [Issue Workflow Guide](docs/issue-workflow.md). For pull request preparation, validation, protected paths, and review expectations, see the [PR Workflow Guide](docs/pr-workflow.md).
 
 Before opening a PR:
 
