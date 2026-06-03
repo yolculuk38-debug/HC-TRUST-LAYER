@@ -2,7 +2,7 @@
 
 Thank you for contributing to Humanity Chain.
 
-First-time contributors should start with the [Contributor Start Here guide](docs/contributor-start-here.md). Before opening a public issue, review the [Issue Workflow Guide](docs/issue-workflow.md). Before opening a pull request, review the [PR Workflow Guide](docs/pr-workflow.md). Maintainers should use the [Maintainer Triage Guide](docs/maintainer-triage.md) when classifying issues and PRs.
+First-time contributors should start with the [Contributor Start Here guide](docs/contributor-start-here.md). For public-facing governance expectations, review the [Community Governance Summary](docs/community-governance.md). Before opening a public issue, review the [Issue Workflow Guide](docs/issue-workflow.md). Before opening a pull request, review the [PR Workflow Guide](docs/pr-workflow.md). Maintainers should use the [Maintainer Triage Guide](docs/maintainer-triage.md) when classifying issues and PRs.
 
 This project focuses on transparent archival systems, verification workflows, and documented human-AI interaction research.
 
