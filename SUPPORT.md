@@ -3,7 +3,7 @@
 Thank you for using HC-TRUST-LAYER.
 
 ## How to ask questions
-Public support questions may use GitHub Discussions or public GitHub Issues in this repository. For usage questions, implementation guidance, or contribution help, include:
+Public support questions may use GitHub Discussions or public GitHub Issues in this repository. Before opening an issue, review the [Issue Workflow Guide](docs/issue-workflow.md) for template selection, duplicate prevention, and evidence expectations. For usage questions, implementation guidance, or contribution help, include:
 - What you are trying to achieve.
 - What files, records, or commands are involved.
 - What you expected and what happened instead.
