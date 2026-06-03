@@ -57,8 +57,9 @@ Before claiming a task is complete, collect and report at least:
 4. `docs/project-control/agent-operating-model.md`
 5. `docs/project-control/task-ledger.md`
 6. `docs/project-control/next-actions.md`
-7. `docs/project-control/shift-change-checklist.md`
-8. `hc_context` files only after markdown project-control docs, and only as advisory agent context.
+7. `docs/project-control/active-work-registry.md`
+8. `docs/project-control/shift-change-checklist.md`
+9. `hc_context` files only after markdown project-control docs, and only as advisory agent context.
 
 ## Relationship Map
 
@@ -67,6 +68,7 @@ Before claiming a task is complete, collect and report at least:
 - `docs/project-control/project-state.md`: current phase, active focus, parked work, protected-path reminder, and source-of-truth priority.
 - `docs/project-control/task-ledger.md`: task history, completed or closed PR references, task barcodes, and do-not-repeat notes.
 - `docs/project-control/next-actions.md`: priority-ordered safe next work; current entries remain REPORT ONLY unless explicitly authorized otherwise.
+- `docs/project-control/active-work-registry.md`: advisory shift-level coordination snapshot; it does not replace Project State, Task Ledger, or Next Actions.
 - `hc_context`: advisory machine-readable agent context that may lag behind markdown docs, merged files, checks, PR records, or human review decisions.
 - HC Guide Bot: future advisory orientation assistant that should summarize repository evidence, surface gaps, and avoid approval, merge, governance-enforcement, security-validation, or truth-finality claims.
 

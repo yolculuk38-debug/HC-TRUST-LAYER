@@ -24,7 +24,8 @@ Read these files before proposing or continuing work:
 4. `docs/project-control/agent-operating-model.md`
 5. `docs/project-control/task-ledger.md`
 6. `docs/project-control/next-actions.md`
-7. `docs/project-control/shift-change-checklist.md`
+7. `docs/project-control/active-work-registry.md`
+8. `docs/project-control/shift-change-checklist.md`
 
 After the markdown control files, optional advisory context may include `hc_context/project_state.json`, `hc_context/agent_rules.json`, `hc_context/protected_surfaces.json`, `hc_context/next_tasks.json`, and `hc_context/evidence_rules.json`.
 
@@ -32,7 +33,7 @@ After the markdown control files, optional advisory context may include `hc_cont
 
 At shift start:
 
-1. Compare the current branch, changed files, and recent commits or PR references against the project-state and task-ledger notes.
+1. Compare the current branch, changed files, and recent commits or PR references against the project-state, active-work registry, and task-ledger notes.
 2. Confirm whether the requested mode is REPORT ONLY, docs-only, tests-only, implementation, or protected-path work.
 3. Identify protected-path adjacency before making changes.
 4. Check whether any task appears merged, closed, superseded, abandoned, or already parked.
@@ -48,7 +49,7 @@ A shift check-in should state:
 - current phase and active focus being served;
 - source files read for orientation;
 - checks expected for the touched scope;
-- known blockers, parked work, or stale-context mismatches.
+- known blockers, parked work, active-work registry updates, or stale-context mismatches.
 
 ## Checkout requirements
 
@@ -58,7 +59,7 @@ A shift checkout should state:
 - commit hash and PR reference when available;
 - checks run and whether each passed, failed, or could not run;
 - remaining gaps, risks, or reviewer decisions needed;
-- next safe action and any do-not-repeat notes;
+- next safe action, active-work registry status, and any do-not-repeat notes;
 - confirmation that protected paths were not modified, unless explicitly authorized.
 
 ## Evidence bundle reminders

@@ -24,9 +24,10 @@ Before taking the next action, read:
 4. `docs/project-control/agent-operating-model.md`
 5. `docs/project-control/task-ledger.md`
 6. `docs/project-control/next-actions.md`
-7. `docs/project-control/shift-change-checklist.md`
+7. `docs/project-control/active-work-registry.md`
+8. `docs/project-control/shift-change-checklist.md`
 
-If `hc_context` files are useful for orientation, read them after the markdown project-control docs and treat them as advisory only.
+Use `docs/project-control/active-work-registry.md` only for advisory shift-level coordination; this file remains the priority queue source. If `hc_context` files are useful for orientation, read them after the markdown project-control docs and treat them as advisory only.
 
 ## 1. PR risk labeler Tier-1 sync review
 
