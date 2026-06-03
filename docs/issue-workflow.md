@@ -8,7 +8,7 @@
 
 ## 1. Purpose
 
-This guide helps contributors decide how to raise questions, reports, and proposals for HC-TRUST-LAYER without overstating authority or exposing sensitive information.
+This guide helps contributors decide whether to open a public GitHub Issue, use private vulnerability reporting, choose an issue template, or continue checking existing repository evidence before posting. It supports HC-TRUST-LAYER contributors without overstating authority or exposing sensitive information.
 
 Use it before opening a public GitHub Issue. Repository evidence is authoritative. Public issues are not validation. Issue triage is not approval. Issue labels are not merge authority. Human-supervised validation remains required for sensitive trust-kernel-impacting work.
 
@@ -57,7 +57,7 @@ Use the template that best matches the primary concern:
 | Federation or interoperability proposal | Federation |
 | Non-sensitive security hardening idea without exploit details | Security Hardening |
 
-If no template fits, review the related documents first and choose the closest available template. Blank issues are disabled, so the selected template should explain why the issue belongs there.
+If no template fits, review the related documents first and choose the closest available template. Blank issues are disabled; the selected template should explain why the issue belongs there and what repository evidence supports the request.
 
 ## 5. Bug Reports
 
@@ -226,7 +226,7 @@ Triage decisions are workflow management decisions. They are not approval to mer
 
 Labels help route work, but they do not grant authority.
 
-Common label meanings include:
+Common label meanings may include:
 
 - `type:bug`: report of a defect or unexpected behavior
 - `type:workflow`: workflow, process, or area-tracking issue
