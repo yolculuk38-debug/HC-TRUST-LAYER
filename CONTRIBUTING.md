@@ -2,6 +2,8 @@
 
 Thank you for contributing to Humanity Chain.
 
+First-time contributors should start with the [Contributor Start Here guide](docs/contributor-start-here.md).
+
 This project focuses on transparent archival systems, verification workflows, and documented human-AI interaction research.
 
 ---
