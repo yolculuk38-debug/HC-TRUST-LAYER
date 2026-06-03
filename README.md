@@ -20,6 +20,7 @@ HC-TRUST-LAYER is an early-stage verification infrastructure that helps teams ev
 
 - [MVP Snapshot](#mvp-snapshot)
 - [Contributor Start Here](docs/contributor-start-here.md)
+- [Community Governance Summary](docs/community-governance.md)
 - [Issue Workflow Guide](docs/issue-workflow.md)
 - [Maintainer Triage Guide](docs/maintainer-triage.md)
 - [Demo & Verification Viewer](#demo--verification-viewer)

@@ -216,6 +216,7 @@ When in doubt, stop before editing and ask for maintainer guidance.
 
 - `README.md`
 - `CONTRIBUTING.md`
+- `docs/community-governance.md`
 - `SECURITY.md`
 - `docs/limitations-and-risks.md`
 - `docs/verification-map.md`
