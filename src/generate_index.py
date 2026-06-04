@@ -8,7 +8,7 @@ OUTPUT_FILE = Path("docs/index.md")
 def generate_index():
     lines = []
 
-    lines.append("# Humanity Chain Archive Index\n")
+    lines.append("# HC-TRUST-LAYER Archive Index\n")
     lines.append("Automatically generated archive index.\n")
 
     if not RECORDS_DIR.exists():
