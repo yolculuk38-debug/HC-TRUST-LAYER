@@ -1,6 +1,6 @@
 # HC-TRUST-LAYER - Record Automation
 
-This document explains how to use the automated record creation, normalization, validation, hash generation, and QR code generation tools.
+This document explains how to use the automated record creation, normalization, validation, hash generation, and QR code generation tools. QR generation in v0.1.0 is advisory-only and does not provide a hosted general public verifier for arbitrary records.
 
 ## Overview
 
@@ -137,20 +137,32 @@ a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a7b8c9d0e1f
 
 ### 6. Generate QR Code
 
-Generate QR code for a record's verification URL:
+Generate a QR code from a record ID, content hash, and archive reference:
 
 ```bash
 python src/qr.py \
-  --record-id HC-CHATGPT-2026-0001 \
-  --url https://verify.hc-trust-layer.example.com/verify/HC-CHATGPT-2026-0001
+  HC-CHATGPT-2026-0001 \
+  a1b2c3d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789abcdef \
+  pending_archive
 ```
 
-This creates `qr/HC-CHATGPT-2026-0001.png`
+This creates `qr/HC-CHATGPT-2026-0001.png`. For the first-flow demo record only, the QR URL points to `docs/verify.html`; for non-demo records, generated `/verify/{record_id}` routes are advisory/navigation placeholders unless separately deployed and validated. v0.1.0 does not provide a hosted general public verifier for arbitrary records. Existing QR artifacts should not be treated as active v0.1.0 evidence unless decoded or regenerated after PR #592.
 
 **Output:**
+```text
+✅ Secure QR oluşturuldu: qr/HC-CHATGPT-2026-0001.png
+🔗 URL: https://<host>/verify/HC-CHATGPT-2026-0001?record=HC-CHATGPT-2026-0001&hash=...&ref=pending_archive&sig=...
 ```
-✓ QR code generated: qr/HC-CHATGPT-2026-0001.png
-```
+
+### QR Public Verifier Boundary
+
+- `docs/verify.html` is a first-flow/demo static QR verification page only.
+- `docs/verify.html` does not verify arbitrary records.
+- v0.1.0 does not provide a hosted general public verifier for arbitrary records.
+- Non-demo `/verify/{record_id}` QR routes are advisory/navigation placeholders unless separately deployed and validated.
+- Existing QR artifacts should not be treated as active v0.1.0 evidence unless decoded or regenerated after PR #592.
+- Public QR verification remains advisory-only and human-supervised.
+- Do not claim production readiness, security certification, truth finality, forensic certainty, or live public verifier guarantees from QR output.
 
 ## Workflow
 
@@ -170,7 +182,7 @@ python src/validator.py
 python src/hash.py --file records/pending/HC-2026-0001.json
 
 # 5. Generate QR
-python src/qr.py --record-id HC-2026-0001 --url https://example.com/verify/HC-2026-0001
+python src/qr.py HC-2026-0001 <content_hash> pending_archive
 
 # 6. Commit
 git add records/pending/ qr/
@@ -347,7 +359,8 @@ python src/hash.py --text "<text>"
 python src/hash.py --file <filepath>
 
 # Generate QR code
-python src/qr.py --record-id <id> --url <url> [--output <path>]
+python src/qr.py <record_id> <content_hash> <archive_ref>
+python src/qr.py --batch
 
 # Run tests
 pytest tests/ -v
@@ -423,10 +436,8 @@ exit $?
 
 ```bash
 #!/bin/bash
-# Generate QR codes for all verified records
-for file in records/verified/*.json; do
-  record_id=$(jq -r '.record_id' "$file")
-  url="https://example.com/verify/$record_id"
-  python src/qr.py --record-id "$record_id" --url "$url"
-done
+# Generate QR codes for records marked verified.
+# Non-demo /verify/{record_id} routes remain advisory/navigation placeholders
+# unless separately deployed and validated.
+python src/qr.py --batch
 ```
