@@ -146,7 +146,7 @@ This workflow does not:
 - guarantee correctness
 - replace human review
 - replace automated validation
-- make HC-TRUST-LAYER a social AI club
+- make HC-TRUST-LAYER an informal AI coordination club
 
 ## Terminology and Boundary Guardrails
 

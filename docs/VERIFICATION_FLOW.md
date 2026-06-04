@@ -107,6 +107,6 @@ Examples:
 
 ## Experimental Structure
 
-HC-TRUST-LAYER is an experimental protocol system.
+HC-TRUST-LAYER is an early-stage HC:// verification workflow.
 
 Verification standards and workflows may evolve over time.

@@ -69,4 +69,4 @@ These systems are experimental and may produce errors or uncertainty.
 
 ## Status
 
-Experimental protocol policy draft.
+Advisory HC:// content policy baseline.
