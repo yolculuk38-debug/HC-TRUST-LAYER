@@ -101,6 +101,7 @@ def evaluate_consensus(
         "threshold": threshold,
         "hash_conflict": hash_conflict,
         "verdict_counts": dict(verdict_counts),
+        "consensus_reached": False,
     }
 
     if hash_conflict:
@@ -108,7 +109,12 @@ def evaluate_consensus(
         return result
 
     if top_verdict == "PASS" and agreement_ratio >= threshold:
-        result.update({"status": ConsensusStatus.CONSENSUS_REACHED.value, "trusted": True, "reason": "PASS consensus reached"})
+        result.update({
+            "status": ConsensusStatus.CONSENSUS_REACHED.value,
+            "trusted": True,
+            "consensus_reached": True,
+            "reason": "PASS consensus reached",
+        })
         return result
 
     if agreement_ratio >= threshold:
