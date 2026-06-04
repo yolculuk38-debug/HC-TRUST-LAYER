@@ -4,7 +4,8 @@ from __future__ import annotations
 
 TRUSTED_PREFIXES = {
     "hc://",
-    "https://hc-trust-layer.org/verify/",
+    "https://github.com/yolculuk38-debug/hc-trust-layer/",
+    "https://yolculuk38-debug.github.io/hc-trust-layer/",
 }
 
 

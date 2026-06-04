@@ -299,6 +299,27 @@ async def test_hash_case_differences_do_not_escalate_trust_or_change_determinist
 
 
 @pytest.mark.anyio
+async def test_legacy_insanlik_zinciri_path_on_allowed_domain_is_high_risk(client: httpx.AsyncClient) -> None:
+    record_id = "legacy-insanlik-zinciri-path"
+
+    payload = await _post_qr(
+        client,
+        record_id,
+        _encoded_qr(record_id, verification_url="https://github.com/yolculuk38-debug/Insanlik-Zinciri"),
+    )
+
+    assert payload["trust_state"] == "REVIEW_REQUIRED"
+    assert payload["qr_risk_level"] == "HIGH"
+    assert "non_canonical_path" in payload["qr_risk_reasons"]
+    assert "non-canonical qr verification_url path" in _warning_text(payload)
+    assert payload["human_review_recommended"] is True
+    assert payload["escalation_queued"] is True
+    assert QUEUE_STORE.escalation_queue[-1]["advisory_only"] is True
+    assert QUEUE_STORE.escalation_queue[-1]["public_safe"] is True
+    assert QUEUE_STORE.escalation_queue[-1]["truth_guarantee"] is False
+
+
+@pytest.mark.anyio
 async def test_canonical_qr_returns_low_risk_automatic_advisory_result(client: httpx.AsyncClient) -> None:
     record_id = "canonical-qr-spoof-record"
 

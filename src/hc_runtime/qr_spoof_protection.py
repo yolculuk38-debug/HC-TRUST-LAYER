@@ -10,7 +10,7 @@ from typing import Any
 from urllib.parse import urlparse
 
 TRUSTED_QR_DOMAINS = {"github.com", "yolculuk38-debug.github.io"}
-TRUSTED_PATH_HINTS = ("HC-TRUST-LAYER", "Insanlik-Zinciri", "records", "verify", "docs")
+TRUSTED_PATH_HINTS = ("HC-TRUST-LAYER", "records", "verify", "docs")
 CURRENT_QR_VERSION = "v1"
 
 
