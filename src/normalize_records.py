@@ -1,4 +1,4 @@
-"""Normalize Humanity Chain JSON records with explicit safe-write controls."""
+"""Normalize HC:// JSON records with explicit safe-write controls."""
 
 from __future__ import annotations
 
