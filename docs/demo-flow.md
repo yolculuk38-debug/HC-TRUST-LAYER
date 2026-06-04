@@ -21,7 +21,7 @@ PYTHONPATH=src python src/hash.py examples/demo_record.json
 Example output:
 
 ```text
-SHA256: 9c169042065246d3b963163cfe8ffe876ffce57fa8759e402281d036f0f9cffc
+SHA256: ae83383b191d02970eb3df834c56b15e7a688fcd63f782d3408aaefd60b7b56a
 ```
 
 ## 3) QR (text-only demo)
@@ -29,14 +29,14 @@ SHA256: 9c169042065246d3b963163cfe8ffe876ffce57fa8759e402281d036f0f9cffc
 Generate a QR artifact from record id + hash + archive reference. `docs/verify.html` is a first-flow/demo static QR verification page only; it does not verify arbitrary records.
 
 ```bash
-PYTHONPATH=src python src/qr.py HC-DEMO2026-0001 9c169042065246d3b963163cfe8ffe876ffce57fa8759e402281d036f0f9cffc https://github.com/owner/repo/blob/main/examples/demo_record.json
+PYTHONPATH=src python src/qr.py HC-DEMO2026-0001 ae83383b191d02970eb3df834c56b15e7a688fcd63f782d3408aaefd60b7b56a https://github.com/owner/repo/blob/main/examples/demo_record.json
 ```
 
 Example output:
 
 ```text
 ✅ Secure QR oluşturuldu: qr/HC-DEMO2026-0001.png
-🔗 URL: https://<owner>.github.io/HC-TRUST-LAYER/docs/verify.html?record=HC-DEMO2026-0001&hash=9c169042065246d3b963163cfe8ffe876ffce57fa8759e402281d036f0f9cffc&ref=https%3A%2F%2Fgithub.com%2Fowner%2Frepo%2Fblob%2Fmain%2Fexamples%2Fdemo_record.json&sig=...
+🔗 URL: https://<owner>.github.io/HC-TRUST-LAYER/docs/verify.html?record=HC-DEMO2026-0001&hash=ae83383b191d02970eb3df834c56b15e7a688fcd63f782d3408aaefd60b7b56a&ref=https%3A%2F%2Fgithub.com%2Fowner%2Frepo%2Fblob%2Fmain%2Fexamples%2Fdemo_record.json&sig=...
 ```
 
 > Do not commit generated QR image files (`*.png`, `*.jpg`, etc.). Keep demo evidence text-only. Existing QR artifacts should not be treated as active v0.1.0 evidence unless decoded or regenerated after PR #592.
