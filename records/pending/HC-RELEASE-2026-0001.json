@@ -1,12 +1,15 @@
 {
   "record_id": "HC-RELEASE-2026-0001",
   "id": "HC-RELEASE-2026-0001",
-  "record_type": "release_evidence",
+  "record_type": "protocol_note",
+  "witness_type": "human",
   "project": "HC-TRUST-LAYER",
   "release_version": "v0.1.0",
   "title": "Initial v0.1.0 canonical release evidence record",
-  "created_at": null,
+  "created_at": "2026-06-04T16:24:43Z",
   "author": "not_recorded",
+  "content": "Initial v0.1.0 canonical release evidence record.",
+  "content_hash": "3f1bd647e8dd8100329dc92a9cf45c8c42a6ce7922337cd324d6e9577a329d17",
   "archive_ref": "pending_archive",
   "status": "pending",
   "lifecycle_status": "pending",
@@ -20,7 +23,6 @@
   "validation_results": "pending",
   "signatures": "not_recorded",
   "hashes": null,
-  "content_hash": "not_recorded",
   "limitations": {
     "status": "pending",
     "source_paths": [
