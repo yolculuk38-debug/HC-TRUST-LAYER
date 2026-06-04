@@ -142,7 +142,7 @@ Generate QR code for a record's verification URL:
 ```bash
 python src/qr.py \
   --record-id HC-CHATGPT-2026-0001 \
-  --url https://humanity-chain.example.com/verify/HC-CHATGPT-2026-0001
+  --url https://verify.hc-trust-layer.example.com/verify/HC-CHATGPT-2026-0001
 ```
 
 This creates `qr/HC-CHATGPT-2026-0001.png`

@@ -1,6 +1,6 @@
-# Contributing to Humanity Chain
+# Contributing to HC-TRUST-LAYER
 
-Thank you for contributing to Humanity Chain.
+Thank you for contributing to HC-TRUST-LAYER.
 
 First-time contributors should start with the [Contributor Start Here guide](docs/contributor-start-here.md). For public-facing governance expectations, review the [Community Governance Summary](docs/community-governance.md). Before opening a public issue, review the [Issue Workflow Guide](docs/issue-workflow.md). Before opening a pull request, review the [PR Workflow Guide](docs/pr-workflow.md). Maintainers should use the [Maintainer Triage Guide](docs/maintainer-triage.md) when classifying issues and PRs.
 
@@ -58,7 +58,7 @@ Records may include:
 
 ## Conduct
 
-Contributors are expected to follow the Humanity Chain Code of Conduct.
+Contributors are expected to follow the HC-TRUST-LAYER Code of Conduct.
 
 Respectful, evidence-based, and transparent collaboration is required.
 
@@ -66,7 +66,7 @@ Respectful, evidence-based, and transparent collaboration is required.
 
 ## Experimental Status
 
-Humanity Chain is an experimental research protocol.
+HC:// is an experimental research protocol surface.
 
 Structures, workflows, and standards may evolve over time.
 
@@ -74,7 +74,7 @@ Structures, workflows, and standards may evolve over time.
 
 ## Pull Request Merge Policy (Security-First)
 
-Humanity Chain uses a **security-first default** for pull requests:
+HC-TRUST-LAYER uses a **security-first default** for pull requests:
 
 - PRs are treated as **manual-review required** unless they are clearly documentation-only.
 - PRs that touch code, schemas, automation/workflows, source, or tooling paths are labeled `manual-review` and must be reviewed by a maintainer before merge.
