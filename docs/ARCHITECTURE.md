@@ -107,6 +107,6 @@ Basic workflow example:
 
 ## Experimental Status
 
-HC-TRUST-LAYER is an experimental protocol design.
+HC-TRUST-LAYER is an early-stage HC:// architecture baseline.
 
 Architecture, workflows, and verification standards may evolve over time.
