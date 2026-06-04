@@ -1,4 +1,4 @@
-from src.hc_trust.evidence_weight import calculate_evidence_weight
+from hc_trust.evidence_weight import calculate_evidence_weight
 
 
 def test_verified_hash_weight():
