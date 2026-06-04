@@ -13,7 +13,7 @@ This document provides the first realistic HC:// media verification showcase flo
 
 ## Showcase scenario
 
-An image titled `city-council-briefing-photo.jpg` is submitted for verification with a public HC:// QR route on a media card.
+An image titled `city-council-briefing-photo.jpg` is submitted for advisory review with a public HC:// QR navigation route on a media card.
 
 ### Verification references (example)
 
@@ -21,7 +21,7 @@ An image titled `city-council-briefing-photo.jpg` is submitted for verification 
 - **Canonical record path:** `records/canonical-media-demo/HC-MEDIA2026-IMG-0001.json` (illustrative reference)
 - **Original registration timestamp:** `2026-05-14T18:22:09Z`
 - **Declared media hash (SHA-256):** `4f4a9d878bf3ef8dd8763ab6be6f3f0901c5e5f63076f0a2f882f266d8a36a11`
-- **HC:// QR verification route:** `https://<owner>.github.io/HC-TRUST-LAYER/docs/verify.html?record=HC-MEDIA2026-IMG-0001&hash=4f4a9d878bf3ef8dd8763ab6be6f3f0901c5e5f63076f0a2f882f266d8a36a11`
+- **HC:// QR navigation route:** `https://<owner>.github.io/HC-TRUST-LAYER/verify/HC-MEDIA2026-IMG-0001?record=HC-MEDIA2026-IMG-0001&hash=4f4a9d878bf3ef8dd8763ab6be6f3f0901c5e5f63076f0a2f882f266d8a36a11&ref=media_showcase&sig=...` (advisory placeholder unless separately deployed and validated)
 - **Explorer continuity artifact (non-canonical):** `generated/media_showcase_explorer_index.json`
 - **Audit continuity artifact (non-canonical):** `generated/media_showcase_audit_snapshot.json`
 
@@ -31,14 +31,15 @@ An image titled `city-council-briefing-photo.jpg` is submitted for verification 
    - A submitter registers image metadata and fingerprint under canonical record `HC-MEDIA2026-IMG-0001` with timestamp `2026-05-14T18:22:09Z`.
    - Record linkage is retained for verification map and protocol graph navigation.
 
-2. **QR verification route**
+2. **QR navigation route**
    - A viewer scans the HC:// QR route on the image card.
-   - The static verification page loads `record` and `hash` query values for advisory comparison.
+   - For media and other non-demo records, the `/verify/{record_id}` route is an advisory/navigation placeholder unless separately deployed and validated.
+   - `docs/verify.html` is limited to the first-flow/demo static QR verification page and does not verify arbitrary records.
 
 3. **Hash continuity check**
-   - The verification view compares the presented image fingerprint to the hash in the canonical record context.
-   - If bytes match: integrity state renders as match for declared scope.
-   - If bytes differ or inputs are incomplete: integrity state renders as modified/unknown.
+   - A separately validated review flow may compare the presented image fingerprint to the hash in the canonical record context.
+   - If bytes match: integrity state may be documented as a match for the declared scope.
+   - If bytes differ or inputs are incomplete: integrity state should remain modified/unknown.
 
 4. **Explorer continuity check**
    - The non-canonical explorer continuity artifact is inspected for matching `record_id` and `record_hash`.
@@ -49,14 +50,14 @@ An image titled `city-council-briefing-photo.jpg` is submitted for verification 
    - Continuity gaps are surfaced as advisory review signals.
 
 6. **Verification signal rendering**
-   - The page renders text-first status outputs for integrity, provenance continuity, advisory posture, and human review requirement.
+   - Any page or report renders text-first status outputs for integrity, provenance continuity, advisory posture, and human review requirement only after the relevant route or review flow is separately deployed and validated.
 
 ## Example verification states (rendered)
 
-For this showcase run, the view can render:
+For this illustrative showcase, a separately validated review view could render:
 
 - **Original registration timestamp:** `2026-05-14T18:22:09Z`
-- **Integrity verification state:** `HC VERIFIED` (hash match for declared scope)
+- **Integrity verification state:** `HC VERIFIED` (illustrative hash match for declared scope; not active v0.1.0 evidence from `docs/verify.html`)
 - **Provenance continuity state:** `HC PROVENANCE` (continuity references present and inspectable)
 - **Advisory verification state:** `HC PARTIAL` (one continuity source temporarily unavailable)
 - **Human-review-required state:** `HC REVIEW` (human-supervised validation required before consequential use)
@@ -99,10 +100,13 @@ For this showcase run, the view can render:
 
 ## Rendering and implementation notes
 
-- Static-site compatible (no runtime backend required).
+- Static-site compatible examples are possible, but v0.1.0 does not provide a hosted general public verifier for arbitrary records.
 - Mobile-friendly, text-first layout prioritized.
 - Advisories remain visible in both matched and partial states.
 - This showcase does not change canonical schema, validators, policy evaluation, or trust-kernel behavior.
+- Existing QR artifacts should not be treated as active v0.1.0 evidence unless decoded or regenerated after PR #592.
+- Public QR verification remains advisory-only and human-supervised.
+- Do not claim production readiness, security certification, truth finality, forensic certainty, or live public verifier guarantees.
 
 ## Related references
 
