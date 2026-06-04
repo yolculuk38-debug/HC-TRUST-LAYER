@@ -9,7 +9,8 @@ This project follows **Semantic Versioning**.
 ## Releases
 
 - **v0.1.0** - Initial protected protocol infrastructure and release-candidate documentation baseline.
-  - Release notes: [`docs/v0.1.0-release-notes.md`](docs/v0.1.0-release-notes.md)
+  - Release checklist: [`docs/project-control/v0.1.0-release-checklist.md`](project-control/v0.1.0-release-checklist.md)
+  - Release notes: [`docs/v0.1.0-release-notes.md`](v0.1.0-release-notes.md)
 
 
 ## Release Automation Planning
