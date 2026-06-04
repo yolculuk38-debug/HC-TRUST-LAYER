@@ -60,3 +60,43 @@ def test_valid_json_payload_input():
     payload = build_payload()
     result = verify_qr_payload(json.dumps(payload))
     assert result["status"] == QRStatus.VERIFIED.value
+
+
+def test_legacy_insanlik_zinciri_path_on_allowed_domain_is_not_safe():
+    for url in [
+        "https://github.com/yolculuk38-debug/Insanlik-Zinciri",
+        "https://github.com/yolculuk38-debug/Insanlik-Zinciri/blob/main/records/HC-QR-2026-0001.json",
+    ]:
+        payload = build_payload()
+        payload["verification_url"] = url
+
+        result = verify_qr_payload(payload)
+
+        assert result["status"] == QRStatus.UNSAFE_URL.value
+        assert result["trusted"] is False
+
+
+def test_github_hc_trust_layer_records_path_remains_safe():
+    payload = build_payload()
+    payload["verification_url"] = (
+        "https://github.com/yolculuk38-debug/HC-TRUST-LAYER/blob/main/records/HC-QR-2026-0001.json"
+    )
+
+    result = verify_qr_payload(payload)
+
+    assert result["status"] == QRStatus.VERIFIED.value
+    assert result["trusted"] is True
+
+
+def test_github_and_pages_repository_backed_qr_urls_remain_safe():
+    for url in [
+        SAFE_URL,
+        "https://yolculuk38-debug.github.io/HC-TRUST-LAYER/verify/HC-QR-2026-0001",
+    ]:
+        payload = build_payload()
+        payload["verification_url"] = url
+
+        result = verify_qr_payload(payload)
+
+        assert result["status"] == QRStatus.VERIFIED.value
+        assert result["trusted"] is True

@@ -10,8 +10,8 @@ from typing import Any
 
 QR_SECURITY_VERSION = "HC-QR-SECURITY-V1"
 ALLOWED_QR_DOMAINS = {
-    "hc-trust.local",
-    "verify.humanitychain.org",
+    "github.com",
+    "yolculuk38-debug.github.io",
 }
 
 
