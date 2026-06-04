@@ -52,9 +52,11 @@ A later archive migration PR should use the following safe order:
 
 ## Archive Path Decision
 
-Use `records/archived/` as the preferred target unless maintainers intentionally update tooling to support `records/archive/`.
+PR #602 resolves the archive target path decision in `docs/governance/archive-target-path-decision.md`. Use `records/archived/` as the approved target path for future historical record archival.
 
-The archive path choice must match generator and audit tooling before records are moved. Maintainers should resolve the path decision before any migration PR changes record locations or path-sensitive references.
+`records/archive/` remains legacy/current repository material and is not the approved target for future historical record migration unless maintainers intentionally approve a later compatibility or tooling change. Existing references should be reviewed by intent before any cleanup; do not silently normalize `records/archive/` and `records/archived/`.
+
+The archive path choice must match generator and audit tooling before records are moved. Maintainers should apply the documented decision before any migration PR changes record locations or path-sensitive references.
 
 ## Non-Goals
 
