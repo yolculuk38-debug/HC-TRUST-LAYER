@@ -1,155 +1,100 @@
-# AGENTS.md — HC-TRUST-LAYER Contributor and Agent Guide
+# HC Operating Layer
 
-## Project Identity
+HC-TRUST-LAYER onboarding guide for human contributors, ChatGPT, Codex, Copilot, Claude, Gemini, future autonomous agents, and other review participants working on HC:// verification infrastructure.
 
-HC-TRUST-LAYER is the canonical repository for the HC:// verification infrastructure.
+## Project Mission
 
-HC:// is a verification and provenance protocol surface focused on integrity, reproducibility, and transparent review boundaries.
+HC-TRUST-LAYER is an open verification protocol and provenance infrastructure for HC:// records, review boundaries, and evidence-preserving workflows.
 
-## Terminology Baseline
+The repository defines a trust layer for record-based verification work. It organizes schemas, records, documentation, scripts, runtime code, and governance references so contributors can inspect provenance, preserve audit trails, and support human-supervised validation.
 
-Use and preserve these terms consistently:
+HC-TRUST-LAYER is not a substitute for reviewer judgment. Governance remains human-supervised, and agent output is advisory until validated through repository-defined checks and reviewer oversight.
 
-- HC-TRUST-LAYER
-- HC://
-- verification map
-- trust kernel
-- protocol graph
-- agent context
-- provenance
-- audit trail
-- canonical record
-- human-supervised validation
+## Repository Map
 
-## Core Rule
+- `schema/`: Schema definitions and record-shape references. Treat these as canonical record boundary material.
+- `records/`: Record examples and provenance-bearing artifacts. Preserve existing evidence and auditability.
+- `docs/`: Architecture, governance, verification map, protocol graph, trust kernel, and operating-layer documentation.
+- `scripts/`: Repository checks, validation helpers, report generators, and bounded maintenance utilities.
+- `src/`: Runtime and library implementation surfaces for HC-TRUST-LAYER tooling.
+- `.github/`: CI, workflow, governance, and review automation configuration.
 
-The repository is the source of truth for architecture, policy baselines, implementation status, and verification documentation.
+## Trust Kernel
 
-Do not override repository evidence with external assumptions.
+The trust kernel includes protected areas that affect record identity, provenance continuity, policy interpretation, signing expectations, federation behavior, validation semantics, or governance controls.
 
-## Human-Supervised Validation
+Protected areas include:
 
-All non-trivial trust-kernel-impacting changes require explicit human-supervised validation.
+- `schema/**`
+- `policy/**`
+- `federation/**`
+- `signing/**`
+- trust-kernel artifacts
+- protected governance paths
 
-Agent output is advisory unless validated through repository-defined checks and reviewer oversight.
+Changes to trust-critical components require additional review, explicit justification, and human-supervised validation before merge. Do not infer production guarantees from draft, advisory, or experimental material.
 
-## Agent Behavior Rules
+## Contributor Rules
 
-- Prefer documentation-first clarification before behavior changes.
-- Preserve canonical terminology and boundary semantics.
-- Surface uncertainty instead of inferring unsupported production guarantees.
-- Route cross-domain changes to the proper reviewers.
-- Keep change scope minimal and auditable.
+Contributors MUST:
 
-## Safe Task Boundaries
+- preserve evidence
+- avoid inventing facts
+- preserve auditability
+- keep changes minimal
+- prefer documentation before architecture changes
 
-Safe tasks include:
+Contributors MUST NOT:
 
-- documentation improvements
-- navigation aids
-- reference linking and map maintenance
-- non-behavioral clarification of trust-kernel boundaries
+- fabricate hashes
+- fabricate signatures
+- fabricate approvals
+- bypass governance controls
+- modify protected paths without justification
 
-Escalate before changing:
+## Agent Rules
 
-- runtime verification behavior
-- schema contracts
-- validator logic
-- signing and trust anchor semantics
-- federation behavior
-- policy evaluator behavior
+Agents should:
 
-## Forbidden Claims
+- inspect existing files first
+- follow repository conventions
+- avoid speculative implementation
+- report uncertainty explicitly
+- prefer REPORT ONLY investigations before major changes
 
-Do not claim any of the following unless implemented and validated in-repo:
+Agents must preserve HC:// and HC-TRUST-LAYER terminology, keep work scoped and reviewable, and avoid claims of autonomous governance finality, forensic certainty, live federation guarantees, or production readiness unless those claims are implemented and validated in-repo.
 
-- production readiness
-- live federation guarantees
-- complete dispute automation
-- autonomous governance finality
-- cryptographic or policy guarantees not backed by tests/docs
+## Current Development Phase
 
-## Required Checks Before PR
+Current development is focused on:
 
-Run applicable guards and checks before proposing merge:
+- v0.1.0 stabilization
+- governance hardening
+- validation reliability
+- documentation maturity
+- operating layer development
 
-- terminology guard
-- docs drift guard
-- canonical artifact guard
-- relevant test subsets when touched scope requires
+This phase prioritizes clear review boundaries, reliable checks, concise documentation, and human-supervised validation over uncontrolled automation or architecture expansion.
 
-If a check cannot run, document the reason and do not imply success.
+## Preferred Workflow
 
-## Canonical Record Boundaries
+1. Investigate
+2. Report
+3. Review
+4. Implement
+5. Validate
+6. Merge
 
-Treat canonical record surfaces as high-sensitivity boundaries:
+For non-trivial or trust-kernel-adjacent work, begin with a report that identifies affected files, uncertainty, expected impact, and required validation before implementation.
 
-- schema definitions
-- deterministic serialization assumptions
-- hash-linked artifacts
-- record identity and provenance continuity
+## Future Direction
 
-Any direct or indirect boundary impact requires explicit reviewer escalation.
+Future HC-TRUST-LAYER work may include:
 
-## Policy Evaluator Expectations
+- Public Explorer
+- Verification API
+- Federation
+- Trust scoring research
+- Release evidence lifecycle
 
-Changes that affect policy interpretation or routing must:
-
-- identify affected policy rules
-- declare expected decision-path differences
-- preserve audit trail continuity
-- receive human-supervised validation prior to merge
-
-## Workflow Safety Rules
-
-- Keep CI and governance guardrails intact unless intentionally updated with approval.
-- Do not bypass terminology/docs/canonical artifact controls.
-- Do not merge trust-kernel-impacting changes without explicit impact checklist coverage.
-- Prefer reversible, well-scoped changes with clear provenance in commit history.
-
-## Machine-readable Protocol Graph Index
-
-- `protocol-graph.json`
-- `docs/protocol-graph-index.md`
-
-Use these as advisory navigation aids alongside the verification map and protocol graph documentation.
-
-## Machine-readable Verification Map Index
-
-- `verification-map.json`
-- `docs/verification-map-index.md`
-
-Use these as advisory navigation aids alongside `docs/verification-map.md` and protocol graph documentation.
-
-## Machine-readable Trust Kernel Index
-
-- `trust-kernel-index.json`
-- `docs/trust-kernel-index.md`
-
-Use these as advisory navigation aids that connect protocol graph and verification map machine-readable indexes for trust-kernel review routing.
-
-## Protocol Graph Integrity and Anti-Spoofing References
-
-- `docs/protocol-graph-integrity.md`
-- `docs/anti-spoofing-foundations.md`
-- `docs/trusted-relationship-model.md`
-- `docs/trust-workflow-model.md`
-- `docs/idea-to-pr-pipeline.md`
-
-
-## Agent Workspace References
-
-- `agents/README.md`
-- `agents/chatgpt.md`
-- `agents/codex.md`
-- `agents/workflow.md`
-- `agents/task-template.md`
-- `docs/trust-pr-engine.md`
-- `docs/trust-impact-analysis.md`
-- `docs/verification-proposal-model.md`
-- `docs/trust-review-workflow.md`
-
-- `docs/core-stabilization-plan.md`
-- `docs/mvp-priority-roadmap.md`
-- `docs/trust-ux-principles.md`
-- `docs/architecture-consolidation.md`
+Future work should remain evidence-preserving, audit-friendly, human-reviewable, and aligned with HC:// verification map, protocol graph, provenance, and canonical record boundaries.
