@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 import qrcode
 
-BASE_URL = "https://yolculuk38-debug.github.io/Insanlik-Zinciri"
+BASE_URL = "https://yolculuk38-debug.github.io/HC-TRUST-LAYER/docs/verify.html"
 
 
 def generate_signature(record_id, content_hash, archive_ref):
@@ -16,7 +16,7 @@ def generate_qr(record_id, content_hash, archive_ref, output_dir="qr"):
     Path(output_dir).mkdir(exist_ok=True)
     signature = generate_signature(record_id, content_hash, archive_ref)
     verification_url = (
-        f"{BASE_URL}/?record={record_id}&hash={content_hash}&ref={archive_ref}&sig={signature}"
+        f"{BASE_URL}?record={record_id}&hash={content_hash}&ref={archive_ref}&sig={signature}"
     )
     qr = qrcode.QRCode(version=1, box_size=10, border=5)
     qr.add_data(verification_url)
