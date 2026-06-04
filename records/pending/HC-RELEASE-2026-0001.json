@@ -1,0 +1,60 @@
+{
+  "record_id": "HC-RELEASE-2026-0001",
+  "id": "HC-RELEASE-2026-0001",
+  "record_type": "release_evidence",
+  "project": "HC-TRUST-LAYER",
+  "release_version": "v0.1.0",
+  "title": "Initial v0.1.0 canonical release evidence record",
+  "created_at": null,
+  "author": "not_recorded",
+  "archive_ref": "pending_archive",
+  "status": "pending",
+  "lifecycle_status": "pending",
+  "verification_status": "draft",
+  "human_supervised_validation": "pending",
+  "release_notes_path": "docs/v0.1.0-release-notes.md",
+  "release_checklist_path": "docs/project-control/v0.1.0-release-checklist.md",
+  "release_candidate_commit": null,
+  "tag": "pending",
+  "reviewer_evidence": "not_recorded",
+  "validation_results": "pending",
+  "signatures": "not_recorded",
+  "hashes": null,
+  "content_hash": "not_recorded",
+  "limitations": {
+    "status": "pending",
+    "source_paths": [
+      "docs/v0.1.0-release-notes.md",
+      "docs/project-control/v0.1.0-release-checklist.md"
+    ],
+    "items": [
+      "v0.1.0 is early-stage advisory HC:// verification infrastructure.",
+      "HC:// verifies integrity and provenance signals, not objective truth.",
+      "Witness and trust scoring remain experimental.",
+      "No production readiness or security certification is provided.",
+      "docs/verify.html is a first-flow/demo static QR verification page only and does not verify arbitrary records.",
+      "v0.1.0 does not provide a hosted general public verifier for arbitrary records.",
+      "Non-demo /verify/{record_id} QR routes are advisory/navigation placeholders unless separately deployed and validated.",
+      "Existing QR artifacts should not be treated as active v0.1.0 evidence unless decoded or regenerated after PR #592.",
+      "Public QR verification remains advisory-only and subject to human-supervised validation.",
+      "Final trust scoring semantics, final validator semantics, live federation guarantees, complete dispute automation, autonomous governance, truth finality, forensic certainty, security certification, and production readiness are non-goals for v0.1.0."
+    ]
+  },
+  "related_records": {
+    "status": "pending",
+    "items": [
+      {
+        "record_id": "HC-TEST-2026-0001",
+        "path": "records/verified/HC-TEST-2026-0001.md"
+      },
+      {
+        "record_id": "HC-CHATGPT-2026-0001",
+        "path": "records/verified/HC-CHATGPT-2026-0001.md"
+      },
+      {
+        "record_id": "HC-CHATGPT-2026-0002",
+        "path": "records/verified/HC-CHATGPT-2026-0002.md"
+      }
+    ]
+  }
+}
