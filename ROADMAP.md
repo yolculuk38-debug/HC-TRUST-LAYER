@@ -1,4 +1,4 @@
-# Humanity Chain Roadmap
+# HC-TRUST-LAYER Roadmap
 
 ## Strategic Sequence
 
@@ -34,4 +34,4 @@
 
 ## Direction
 
-Humanity Chain advances in a deliberate order: stabilize the core, standardize protocol behavior, open public verification, scale federation, enable integrations, and then expand a durable ecosystem.
+HC-TRUST-LAYER advances in a deliberate order: stabilize the core, standardize protocol behavior, open public verification, scale federation, enable integrations, and then expand a durable ecosystem.
