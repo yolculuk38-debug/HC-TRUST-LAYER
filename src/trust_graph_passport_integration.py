@@ -44,6 +44,7 @@ def build_graph_trust_passport(
         provenance_summary={
             "verified": graph_validation.get("status") == "VALID",
             "review_flags": graph_validation.get("review_flags", []),
+            "risk_flags": sorted(set(risk_flags)),
             "edge_count": graph.get("edge_count", 0),
         },
     )
