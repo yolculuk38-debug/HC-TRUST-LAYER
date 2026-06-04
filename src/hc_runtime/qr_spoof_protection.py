@@ -10,7 +10,8 @@ from typing import Any
 from urllib.parse import urlparse
 
 TRUSTED_QR_DOMAINS = {"github.com", "yolculuk38-debug.github.io"}
-TRUSTED_PATH_HINTS = ("HC-TRUST-LAYER", "records", "verify", "docs")
+TRUSTED_REPOSITORY_PATH = "HC-TRUST-LAYER"
+TRUSTED_PATH_HINTS = ("records", "verify", "docs")
 CURRENT_QR_VERSION = "v1"
 
 
@@ -94,7 +95,9 @@ def _url_warning(verification_url: object, signals: _RiskSignals) -> str | None:
     if parsed.netloc not in TRUSTED_QR_DOMAINS:
         signals.add_high("non_canonical_domain", f"domain:{parsed.netloc or 'missing'}")
         return "Non-canonical QR verification_url domain detected; HC:// runtime did not silently trust it."
-    if not any(hint in parsed.path for hint in TRUSTED_PATH_HINTS):
+    has_trusted_repository_path = TRUSTED_REPOSITORY_PATH in parsed.path
+    has_trusted_path_hint = any(hint in parsed.path for hint in TRUSTED_PATH_HINTS)
+    if not has_trusted_repository_path or not has_trusted_path_hint:
         signals.add_high("non_canonical_path", f"path:{parsed.path or 'missing'}")
         return "Non-canonical QR verification_url path detected; HC:// runtime did not silently trust it."
     return None

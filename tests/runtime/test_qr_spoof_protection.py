@@ -299,14 +299,20 @@ async def test_hash_case_differences_do_not_escalate_trust_or_change_determinist
 
 
 @pytest.mark.anyio
-async def test_legacy_insanlik_zinciri_path_on_allowed_domain_is_high_risk(client: httpx.AsyncClient) -> None:
+@pytest.mark.parametrize(
+    "verification_url",
+    [
+        "https://github.com/yolculuk38-debug/Insanlik-Zinciri",
+        "https://github.com/yolculuk38-debug/Insanlik-Zinciri/blob/main/records/legacy-insanlik-zinciri-path.json",
+    ],
+)
+async def test_legacy_insanlik_zinciri_path_on_allowed_domain_is_high_risk(
+    client: httpx.AsyncClient,
+    verification_url: str,
+) -> None:
     record_id = "legacy-insanlik-zinciri-path"
 
-    payload = await _post_qr(
-        client,
-        record_id,
-        _encoded_qr(record_id, verification_url="https://github.com/yolculuk38-debug/Insanlik-Zinciri"),
-    )
+    payload = await _post_qr(client, record_id, _encoded_qr(record_id, verification_url=verification_url))
 
     assert payload["trust_state"] == "REVIEW_REQUIRED"
     assert payload["qr_risk_level"] == "HIGH"
@@ -317,6 +323,29 @@ async def test_legacy_insanlik_zinciri_path_on_allowed_domain_is_high_risk(clien
     assert QUEUE_STORE.escalation_queue[-1]["advisory_only"] is True
     assert QUEUE_STORE.escalation_queue[-1]["public_safe"] is True
     assert QUEUE_STORE.escalation_queue[-1]["truth_guarantee"] is False
+
+
+@pytest.mark.anyio
+async def test_github_hc_trust_layer_records_path_remains_low_risk(client: httpx.AsyncClient) -> None:
+    record_id = "canonical-hc-trust-layer-records-path"
+
+    payload = await _post_qr(
+        client,
+        record_id,
+        _encoded_qr(
+            record_id,
+            verification_url=(
+                "https://github.com/yolculuk38-debug/HC-TRUST-LAYER/blob/main/records/"
+                f"{record_id}.json"
+            ),
+        ),
+    )
+
+    assert payload["trust_state"] == "ADVISORY"
+    assert payload["qr_risk_level"] == "LOW"
+    assert payload["qr_risk_reasons"] == []
+    assert payload["human_review_recommended"] is False
+    assert payload["escalation_queued"] is False
 
 
 @pytest.mark.anyio

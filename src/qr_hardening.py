@@ -15,7 +15,8 @@ from urllib.parse import urlparse
 
 
 TRUSTED_QR_DOMAINS = {"github.com", "yolculuk38-debug.github.io"}
-TRUSTED_PATH_HINTS = ("HC-TRUST-LAYER", "records", "verify", "docs")
+TRUSTED_REPOSITORY_PATH = "HC-TRUST-LAYER"
+TRUSTED_PATH_HINTS = ("records", "verify", "docs")
 SHA256_RE = re.compile(r"^[a-fA-F0-9]{64}$")
 
 
@@ -64,7 +65,9 @@ def _safe_verification_url(url: str) -> tuple[bool, str | None]:
         return False, "verification_url must use https"
     if parsed.netloc not in TRUSTED_QR_DOMAINS:
         return False, f"untrusted verification_url domain: {parsed.netloc}"
-    if not any(hint in parsed.path for hint in TRUSTED_PATH_HINTS):
+    has_trusted_repository_path = TRUSTED_REPOSITORY_PATH in parsed.path
+    has_trusted_path_hint = any(hint in parsed.path for hint in TRUSTED_PATH_HINTS)
+    if not has_trusted_repository_path or not has_trusted_path_hint:
         return False, "verification_url path does not match HC verification paths"
     return True, None
 
