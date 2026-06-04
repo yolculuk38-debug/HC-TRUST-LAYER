@@ -36,14 +36,14 @@ def validate_public_proof(proof: dict[str, Any]) -> dict[str, Any]:
     ]
 
     for field in required_fields:
-        if not proof.get(field):
+        if field not in proof or proof[field] is None:
             reasons.append(f"missing_{field}")
 
     revision_chain = proof.get("revision_chain", {})
     if revision_chain.get("broken"):
         reasons.append("broken_revision_chain")
 
-    if not proof.get("content_hash_valid", False):
+    if proof.get("content_hash_valid") is False:
         reasons.append("invalid_content_hash")
 
     witnesses = proof.get("witnesses", []) or []
