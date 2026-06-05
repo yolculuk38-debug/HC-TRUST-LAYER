@@ -6,42 +6,40 @@ This file is the repository-native shift handoff summary for HC-TRUST-LAYER. Eve
 
 | Field | Status |
 | --- | --- |
-| Current phase | Phase 2 — Trust Kernel Enforcement |
-| Active focus | PR risk labeler Tier-1 review; safe auto-merge Tier-1 review; HC Guide Bot design; GitHub Project Board and label taxonomy; `hc_context` machine-readable state proposal |
-| Next up | Follow `docs/project-control/next-actions.md` in priority order and keep listed items REPORT ONLY unless authorized otherwise. |
+| Current phase | Post-runtime stabilization / operating-layer refinement |
+| Active focus | Navigation / current-state synchronization; public validator / explorer planning. |
+| Next up | Prefer docs-only navigation/index refresh or public validator / explorer planning. Avoid repeating telemetry, replay, or runtime review unless new evidence appears. |
 | Blocked / parked work | Workflow, runtime, schema, validator, record, policy, federation, signing, trust-kernel index, and governance-enforcement changes are parked unless explicitly authorized and validated. |
-| Do-not-repeat references | Treat #545, #546, #547, #548, #550, and #551 as completed references; do not reuse #549 because it is closed and conflicted. |
-| Protected-path reminder | Do not modify `schema/**`, `validators/**`, `federation/**`, `signatures/**`, `canonical/**`, `policy/**`, `.github/workflows/**`, `records/**`, or trust-kernel indexes unless explicitly requested. |
+| Do-not-repeat references | Treat #628, #629, #630, and #631 as recent completed review references for the current stabilization sequence. |
+| Protected-path reminder | Do not modify `schema/**`, `validators/**`, `federation/**`, `signatures/**`, `canonical/**`, `policy/**`, `.github/workflows/**`, `records/**`, or trust-kernel indexes unless explicitly requested and approved. |
 | Source-of-truth priority | Repository markdown docs, merged files, checks, PR evidence, and human review decisions outrank chat memory and advisory machine-readable context. |
 
 ## Current phase
 
-Phase 2 — Trust Kernel Enforcement
+Post-runtime stabilization / operating-layer refinement.
 
 ## Repository status
 
-HC-TRUST-LAYER is advisory-only, early-stage trust infrastructure. Repository evidence, merged files, checks, and human review decisions are the source of truth for current state.
+HC-TRUST-LAYER is advisory-only, early-stage trust infrastructure. Repository evidence, merged files, checks, and human review decisions are the source of truth for current state. AI agents and automation are advisory only; human reviewers retain final authority, especially for trust-kernel-adjacent or protected-path work.
 
-## Last known completed governance sequence
+## Last known completed stabilization sequence
 
-- #545 verification package alignment
-- #546 runtime public response contract
-- #547 expanded trust-kernel protected paths
-- #548 CODEOWNERS Tier-1 alignment
-- #550 rate-limit advisory docs fix
-- #551 governance preflight Tier-1 sync
-
-## Closed / do not reuse
-
-- #549 conflicted governance preflight PR
+- #628 telemetry contract review: TELEMETRY CONTRACT SUFFICIENT
+- #629 replay / continuity edge-case coverage: merged
+- #630 runtime stabilization review: RUNTIME CONDITIONALLY STABILIZED
+- #631 HC Operating Layer review: OPERATING LAYER CONDITIONALLY SUFFICIENT
 
 ## Current focus
 
-- PR risk labeler Tier-1 review
-- safe auto-merge Tier-1 review
-- HC Guide Bot design
-- GitHub Project Board and label taxonomy
-- `hc_context` machine-readable state proposal
+- Keep onboarding and navigation documents synchronized with the current project state.
+- Plan public validator / explorer work without making runtime, validator, schema, federation, signing, policy, workflow, record, hash, QR, generated artifact, or governance-rule changes.
+- Avoid repeating telemetry contract, replay / continuity, or runtime stabilization review unless new repository evidence appears.
+
+## Next safe task
+
+The next safe task is a small documentation-only navigation/index synchronization or a report-only public validator / explorer planning pass. Protected paths still require explicit approval and human-supervised validation before modification.
+
+Recommended decision language after the navigation refresh is complete: **NAVIGATION REFRESH COMPLETE**.
 
 ## Shift-change checklist
 
