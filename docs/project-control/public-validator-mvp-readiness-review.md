@@ -6,7 +6,7 @@
 
 ## Executive Summary
 
-A new user can reach a verification result today, but the shortest path is not yet a single polished Public Validator MVP journey. The repository already contains the main ingredients for a narrow, public-safe, advisory validator path: README orientation, START_HERE onboarding, the Mini Public Validator Demo, runtime `GET /verify/{record_id}` and `POST /verify/{record_id}` routes, CLI package verification helpers, public validator proof helpers, public validator API payload helpers, schema references, example records/packages, hash helpers, and tests that preserve advisory-only response flags.
+A new user can reach a verification result today, but the shortest path is not yet a single polished Public Validator MVP journey. The repository already contains the main ingredients for a narrow, public-safe, advisory validator path: README orientation, START_HERE onboarding, the Mini Public Validator Demo, runtime `GET /verify/{record_id}` and `POST /verify/{record_id}` routes, CLI package verification helpers, public validator proof helpers, public validator API payload helpers, schema references, example records/packages, hash helpers, and runtime response tests that preserve runtime advisory/public-safe response flags. The helper/API response surfaces still need explicit MVP contract alignment before they can be treated as sufficient public validator result shapes.
 
 The shortest current path is:
 
@@ -23,7 +23,7 @@ That path is usable for reviewers and contributors, but it is still fragmented f
 
 Final decision: **PUBLIC VALIDATOR MVP CONDITIONALLY READY**.
 
-The condition is documentation and product-boundary clarity, not a request to modify runtime, validators, schemas, hashes, records, signing, federation, policy, workflows, QR artifacts, or generated artifacts in this PR. The next step should be #638, a documentation-only Public Validator MVP specification that reuses existing local-only pieces and preserves `advisory_only`, `public_safe`, `truth_guarantee=false`, `human_review_required`, and human final authority.
+The condition is documentation and product-boundary clarity, not a request to modify runtime, validators, schemas, hashes, records, signing, federation, policy, workflows, QR artifacts, or generated artifacts in this PR. The next step should be #638, a documentation-only Public Validator MVP specification that reuses existing local-only pieces and either requires the MVP result shape to include `advisory_only=true`, `public_safe=true`, `truth_guarantee=false`, and `human_review_required=true`, or documents that existing helper/API responses are not yet sufficient for the full public MVP contract. Human final authority must remain preserved.
 
 ## Existing Verification Capabilities
 
@@ -57,7 +57,7 @@ This is enough for a narrow MVP to explain and display hash-related signals, esp
 
 ### Advisory response capability
 
-Advisory response capability is already present and test-covered. Current runtime/public response expectations preserve:
+Advisory response capability is already present and test-covered for the runtime response contracts. Current runtime response expectations preserve:
 
 - `advisory_only=true`
 - `public_safe=true`
@@ -66,13 +66,15 @@ Advisory response capability is already present and test-covered. Current runtim
 - visible `human_review_required` behavior when warnings or escalation conditions apply
 - prototype/advisory runtime stage language
 
-This is a strong foundation for a Public Validator MVP because the MVP can reuse response semantics instead of creating a new authority model.
+This is a strong foundation for a Public Validator MVP because the MVP can reuse runtime response semantics instead of creating a new authority model. This claim is limited to runtime response contracts; it does not yet apply to every public validator helper/API response shape.
 
 ### Public-safe response capability
 
 The runtime public response contract explicitly distinguishes public-safe advisory output from production API guarantees. It documents current `GET /verify/{record_id}` and `POST /verify/{record_id}` differences and states that response fields are protected by tests but do not imply authentication, authorization, rate limiting, durable persistence, generic exception handling, or stable machine-readable warning codes.
 
 A Public Validator MVP should keep this boundary visible on every user-facing result page or example output.
+
+Public Validator helper/API gap: `src/public_verification_response.py::build_public_verification_response` and `src/public_validator_api.py::build_validator_api_response` can emit `VERIFIED` or `trusted` response shapes without also emitting `advisory_only`, `public_safe`, `truth_guarantee`, or `human_review_required`. Their current tests focus on status/trusted/portable behavior rather than the full runtime advisory/public-safe posture. Therefore those helper/API responses should be treated as reusable adjacent surfaces, not as sufficient full public MVP contract outputs until #638 resolves the result-shape boundary.
 
 ### Human-review capability
 
@@ -144,7 +146,7 @@ Verifier-related surfaces already exist in multiple areas:
 - `src/hc_trust` for CLI/API/trust helper logic;
 - root-level `src/public_validator.py` and `src/public_validator_api.py` for public proof/API helper shapes;
 - `src/verification_cli.py` for local package verification and provenance scan commands;
-- `src/public_verification_response.py` for stable public response shaping;
+- `src/public_verification_response.py` for stable public response shaping, with the current limitation that it does not emit the full advisory/public-safe posture fields;
 - tests under `tests/` and `tests/runtime/` that exercise these surfaces.
 
 The MVP should reuse these surfaces in a narrow path instead of adding a new backend or broad architecture.
@@ -171,7 +173,7 @@ A user can currently verify or inspect:
 - whether a proof object reports a valid or invalid content-hash signal through the public validator helper;
 - whether QR-like runtime input produces advisory `schema_valid`, `hash_verified`, replay, continuity, degraded, QR-risk, and human-review signals;
 - whether an API-like response shape matches expected experimental fields;
-- whether public response flags preserve advisory-only and public-safe semantics;
+- whether runtime response flags preserve advisory-only and public-safe semantics;
 - whether examples and docs describe a record-to-result pathway.
 
 ### What a user cannot verify today
@@ -284,9 +286,9 @@ The following can be reused:
 - Runtime public response contract.
 - Runtime advisory `GET /verify/{record_id}` and QR-oriented `POST /verify/{record_id}` surfaces.
 - Runtime history and telemetry visibility for review contexts.
-- Public-safe response builders and tests.
-- Public validator proof helper.
-- Public validator API payload helper.
+- Runtime public-safe response builders and response-contract tests.
+- Public validator proof helper, as an adjacent reusable surface that still needs MVP result-shape alignment.
+- Public validator API payload helper, as an adjacent reusable surface that still needs MVP result-shape alignment.
 - CLI package verification and provenance scan helper.
 - Schema references for records, verification results, verification packages, and signatures.
 - Example records/packages/API responses for public-safe explanation.
@@ -302,6 +304,7 @@ The repository is missing:
 - one official first-click local command or endpoint path;
 - a public-safe status taxonomy aligned across demo/runtime/helper surfaces;
 - a single result shape that maps demo fields to runtime/helper output fields;
+- explicit handling of the Public Validator helper/API response gap where helper outputs can be `VERIFIED` or `trusted` without `advisory_only`, `public_safe`, `truth_guarantee`, or `human_review_required`;
 - explicit guidance on when `human_review_required` must be true;
 - a new-user walkthrough that starts at a record and ends at a result in one page;
 - a boundary table explaining which checks are real, partial, unknown, or not run;
@@ -350,7 +353,7 @@ Public validator UX can invite arbitrary inputs, malformed payloads, repeated pr
 
 Risk level: **Medium for response-shape confusion; Low for this report-only PR.**
 
-There are multiple response surfaces: runtime route responses, `hc_trust` API helpers, public validator proof responses, public validator API payloads, CLI results, and static demo result shapes. A future MVP spec must choose and document one public-facing result shape without silently redefining existing contracts. Any future field changes should be separately reviewed and tested.
+There are multiple response surfaces: runtime route responses, `hc_trust` API helpers, public validator proof responses, public validator API payloads, CLI results, and static demo result shapes. Runtime response contracts preserve the full advisory/public-safe posture fields, but current Public Validator helper/API responses do not necessarily emit those fields. A future MVP spec must choose and document one public-facing result shape without silently redefining existing contracts. Any future field changes should be separately reviewed and tested.
 
 ### Governance and trust-kernel risks
 
@@ -362,7 +365,7 @@ Schema, signing, federation, policy, records, generated artifacts, hashes, workf
 
 Decision: **PUBLIC VALIDATOR MVP CONDITIONALLY READY**.
 
-HC-TRUST-LAYER is ready to move from documentation/runtime hardening into a visible Public Validator MVP planning phase, provided the next step is documentation-only and tightly scoped. The repository already has enough advisory runtime, helper, schema, hash-signal, example, and public-safe response capability to define the smallest possible user journey. It is not ready for a hosted production validator, new backend, schema mutation, signing/federation expansion, or authoritative trust product claims.
+HC-TRUST-LAYER is ready to move from documentation/runtime hardening into a visible Public Validator MVP planning phase, provided the next step is documentation-only and tightly scoped. The repository already has enough advisory runtime, helper, schema, hash-signal, example, and public-safe response material to define the smallest possible user journey. However, the full advisory/public-safe posture is currently preserved by runtime response contracts, not by every reusable Public Validator helper/API response. It is not ready for a hosted production validator, new backend, schema mutation, signing/federation expansion, or authoritative trust product claims.
 
 The acceptable MVP posture is:
 
@@ -387,7 +390,8 @@ Recommended scope for #638:
 4. Define one public-safe result shape.
 5. Map existing reusable components to MVP responsibilities.
 6. Define `VERIFIED`, `NEEDS_REVIEW` / `REVIEW_REQUIRED`, `INVALID`, `UNKNOWN`, and `NOT_RUN` language carefully.
-7. Preserve `advisory_only`, `public_safe`, `truth_guarantee=false`, `human_review_required`, and human final authority.
-8. Defer backend, schema, validator, runtime, tests, signing, federation, policy, workflow, record, hash, QR, generated-artifact, and governance-rule changes.
+7. Either require the MVP public validator result shape to include `advisory_only=true`, `public_safe=true`, `truth_guarantee=false`, and `human_review_required=true`, or document that existing helper/API responses are not yet sufficient for the full public MVP contract.
+8. Preserve human final authority.
+9. Defer backend, schema, validator, runtime, tests, signing, federation, policy, workflow, record, hash, QR, generated-artifact, and governance-rule changes.
 
 Do not implement the MVP in #638. Keep it small, scoped, mobile-readable, local-first, and reversible.
