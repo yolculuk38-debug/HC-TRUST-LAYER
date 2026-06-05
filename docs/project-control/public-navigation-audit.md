@@ -189,9 +189,9 @@ Recommended minimal fix plan:
 1. Update `docs/index.md` so it cannot be mistaken for the current canonical public entry point.
 2. Add a clear active-entry notice near the top of `docs/index.md` pointing to:
    - `../README.md` or the repository README `What Works Today` section,
-   - `docs/START_HERE.md`,
-   - `docs/demo/mini-public-validator-demo.md`,
-   - `docs/project-control/project-state.md`.
+   - `START_HERE.md`,
+   - `demo/mini-public-validator-demo.md`,
+   - `project-control/project-state.md`.
 3. Replace or remove broken `docs/index.md` links:
    - `protocol.md` should route to the current active protocol reference or be explicitly labeled archived if retained.
    - `witnesses.md` should route to the current witness/provenance reference or be explicitly labeled archived if retained.
