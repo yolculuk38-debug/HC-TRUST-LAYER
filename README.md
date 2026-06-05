@@ -19,6 +19,9 @@ HC-TRUST-LAYER is an early-stage verification infrastructure that helps teams ev
 ## Quick Navigation
 
 - [MVP Snapshot](#mvp-snapshot)
+- [Start Here navigation guide](docs/START_HERE.md)
+- [Current project state](docs/project-control/project-state.md)
+- [Next safe actions](docs/project-control/next-actions.md)
 - [Contributor Start Here](docs/contributor-start-here.md)
 - [Community Governance Summary](docs/community-governance.md)
 - [Issue Workflow Guide](docs/issue-workflow.md)
@@ -40,11 +43,12 @@ HC-TRUST-LAYER is an early-stage verification infrastructure that helps teams ev
 
 ## MVP Snapshot
 
-Current focus: establish a stable HC:// verification workflow with clear trust-kernel boundaries, reproducible package checks, and auditable reviewer handoff.
+Current phase: post-runtime stabilization / operating-layer refinement. Runtime hardening was recently reviewed through #628 (telemetry contract sufficient), #629 (replay / continuity coverage), and #630 (runtime conditionally stabilized); #631 completed the HC Operating Layer review as operating layer conditionally sufficient.
 
-- Scope: verification package generation, validation outputs, and viewer-first review flow.
+- Scope: verification package generation, validation outputs, viewer-first review flow, and current-state navigation synchronization.
 - Positioning: early-stage infrastructure for transparent verification, not production-final trust arbitration.
 - Canonical boundaries: schema continuity, provenance continuity, audit trail continuity.
+- Next safe direction: docs-only navigation/index refresh or public validator / explorer planning; avoid repeating telemetry, replay, or runtime review unless new evidence appears.
 
 Key docs:
 

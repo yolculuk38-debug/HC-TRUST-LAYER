@@ -6,13 +6,13 @@ This file lists safe, advisory next work for HC-TRUST-LAYER. Each item is REPORT
 
 | Field | Status |
 | --- | --- |
-| Current phase | Phase 2 — Trust Kernel Enforcement |
-| Active focus | Follow the five REPORT ONLY items below in priority order. |
-| Next up | Start with PR risk labeler Tier-1 sync review, then safe auto-merge Tier-1 restriction review. |
-| Blocked / parked work | Any workflow, runtime, schema, validator, record, policy, federation, signing, trust-kernel index, or governance-enforcement change remains out of scope for this next-actions list. |
-| Do-not-repeat references | Cross-check `docs/project-control/project-state.md` and `docs/project-control/task-ledger.md` before proposing work related to #545 through #551. |
-| Protected-path reminder | Treat protected paths as read-only in REPORT ONLY mode unless explicit authorization changes the mode. |
-| Source-of-truth priority | Markdown project-control docs and repository evidence outrank `hc_context`, chat memory, and advisory summaries. |
+| Current phase | Post-runtime stabilization / operating-layer refinement |
+| Active focus | Synchronize repository navigation with current state; plan public validator / explorer direction. |
+| Next up | Start with docs-only navigation/index refresh, then public validator / explorer planning. |
+| Blocked / parked work | Do not modify runtime, code, tests, schemas, validators, workflows, governance rules, records, hashes, QR artifacts, generated artifacts, signing, federation, or policy for this next-actions list. |
+| Do-not-repeat references | #628 telemetry contract sufficient; #629 replay / continuity coverage merged; #630 runtime conditionally stabilized; #631 operating layer conditionally sufficient. Avoid repeating those reviews unless new evidence appears. |
+| Protected-path reminder | Protected paths still require explicit approval and human-supervised validation before modification. |
+| Source-of-truth priority | Markdown project-control docs and repository evidence outrank `hc_context`, chat memory, and advisory summaries. AI output is advisory only; human reviewers retain final authority. |
 
 ## Shift-change read order
 
@@ -20,54 +20,40 @@ Before taking the next action, read:
 
 1. `AGENTS.md`
 2. `HC_BOOTSTRAP.md`
-3. `docs/project-control/project-state.md`
-4. `docs/project-control/agent-operating-model.md`
-5. `docs/project-control/task-ledger.md`
-6. `docs/project-control/next-actions.md`
-7. `docs/project-control/active-work-registry.md`
-8. `docs/project-control/shift-change-checklist.md`
+3. `docs/START_HERE.md`
+4. `docs/project-control/project-state.md`
+5. `docs/project-control/agent-operating-model.md`
+6. `docs/project-control/task-ledger.md`
+7. `docs/project-control/next-actions.md`
+8. `docs/project-control/active-work-registry.md`
+9. `docs/project-control/shift-change-checklist.md`
 
 Use `docs/project-control/active-work-registry.md` only for advisory shift-level coordination; this file remains the priority queue source. If `hc_context` files are useful for orientation, read them after the markdown project-control docs and treat them as advisory only.
 
-## 1. PR risk labeler Tier-1 sync review
+## 1. Navigation / index synchronization
 
 - Priority order: 1
-- Mode: REPORT ONLY
-- Risk: Governance-enforcement and protected path adjacency; do not modify workflow, policy, script, CODEOWNERS, or trust-kernel index files.
-- Allowed inspection scope: Repository documentation, project-control files, existing PR references, current workflow descriptions, risk-labeling documentation, and public repository metadata available to the operator.
-- Why it is next: The project-state handoff identifies PR risk labeler Tier-1 review as an active focus, and report-only review can surface gaps without introducing workflow behavior.
+- Mode: DOCUMENTATION ONLY unless explicitly authorized otherwise.
+- Risk: Low if limited to onboarding/navigation documents; do not edit protected paths or generated artifacts.
+- Safe output: Clear entry path linking `README.md`, `docs/START_HERE.md`, `docs/project-control/project-state.md`, and this file.
+- Why it is next: #631 identified navigation / current-state synchronization as the primary remaining gap after the operating-layer review.
+- Decision language: **NAVIGATION REFRESH COMPLETE**.
 
-## 2. Safe auto-merge Tier-1 restriction review
+## 2. Public validator / explorer planning
 
 - Priority order: 2
-- Mode: REPORT ONLY
-- Risk: Governance-enforcement and merge-control adjacency; do not modify workflows, branch protection, policy, CODEOWNERS, or automation behavior.
-- Allowed inspection scope: Repository documentation, project-control files, existing governance notes, safe auto-merge documentation, and current PR or check evidence visible to the operator.
-- Why it is next: Tier-1 restriction review supports protected path boundary clarity while preserving advisory-only semantics and avoiding autonomous governance claims.
+- Mode: REPORT ONLY.
+- Risk: Runtime, validator, schema, federation, signing, workflow, policy, record, hash, QR, generated-artifact, and governance-rule adjacency; keep planning advisory until explicitly authorized.
+- Safe output: A concise plan that identifies user paths, evidence boundaries, local-only processing assumptions where possible, and human-supervised validation points.
+- Why it is next: Public validator / explorer planning can improve the repository entry path without changing verification behavior.
 
-## 3. HC Guide Bot design review
+## 3. Evidence-triggered runtime follow-up only if needed
 
 - Priority order: 3
-- Mode: REPORT ONLY
-- Risk: Agent operating model and onboarding guidance; avoid uncontrolled architecture expansion or bot capability claims.
-- Allowed inspection scope: Repository documentation, project-control files, agent workspace references, HC Control Panel direction, and existing guide or onboarding documents.
-- Why it is next: A future HC Guide Bot can improve shift guide and onboarding consistency if its design remains advisory and repository-state based.
-
-## 4. GitHub Project Board and label taxonomy plan
-
-- Priority order: 4
-- Mode: REPORT ONLY
-- Risk: Governance organization and contributor routing; do not introduce automation, workflow behavior, or policy enforcement.
-- Allowed inspection scope: Repository documentation, project-control files, current issue or label references available to the operator, and governance planning documents.
-- Why it is next: A label taxonomy and board plan can clarify work order routing, task status, and do-not-repeat rules without changing protected paths.
-
-## 5. `hc_context` machine-readable state proposal
-
-- Priority order: 5
-- Mode: REPORT ONLY
-- Risk: Machine-readable project memory adjacency; do not create schema, validator, protocol graph, verification map, trust-kernel index, or canonical record changes in this mode.
-- Allowed inspection scope: Repository documentation, project-control files, machine-readable index documentation, verification map documentation, protocol graph documentation, and agent context references.
-- Why it is next: A future TREX-like `hc_context` JSON proposal can support cross-checking, task barcodes, and shift handoff summaries, but it must remain a proposal until reviewed through human-supervised validation.
+- Mode: REPORT ONLY, and only if new repository evidence appears.
+- Risk: Runtime and validator adjacency; do not repeat completed telemetry, replay, or runtime stabilization reviews without new evidence.
+- Safe output: A narrow evidence report that cites the new trigger and explains whether further review is necessary.
+- Why it is parked by default: #628, #629, and #630 already covered the recent telemetry contract, replay / continuity, and runtime stabilization sequence.
 
 ## Stale-context guidance
 

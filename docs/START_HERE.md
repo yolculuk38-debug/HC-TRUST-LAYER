@@ -73,8 +73,9 @@ The project was previously known by these names during early experimental phases
 3. **Then read:** [`HC_BOOTSTRAP.md`](../HC_BOOTSTRAP.md) — startup sequence and check-in/checkout protocol
 4. **Then read:** [`docs/project-control/agent-operating-model.md`](project-control/agent-operating-model.md) — roles, authority levels, scope limits
 5. **Then read:** [`docs/project-control/task-ledger.md`](project-control/task-ledger.md) — completed work, closed work, do-not-repeat rules
-6. **Reference:** [`docs/project-control/next-actions.md`](project-control/next-actions.md) — safe next investigation work
-7. **Stop and report if:** you encounter protected paths, trust-kernel-adjacent work, or repository evidence gaps
+6. **Then read:** [`docs/project-control/project-state.md`](project-control/project-state.md) — current phase and repository-state handoff
+7. **Reference:** [`docs/project-control/next-actions.md`](project-control/next-actions.md) — next safe work and do-not-repeat boundaries
+8. **Stop and report if:** you encounter protected paths, trust-kernel-adjacent work, or repository evidence gaps
 
 **Mode:** Report-only investigations before any editing. Preserve advisory-only semantics. No autonomous governance finality.
 
@@ -181,8 +182,11 @@ The **trust kernel** is the set of files and paths that affect record identity, 
 
 - **Version:** `0.1.0` (see [`VERSION`](../VERSION) file)
 - **Status:** MVP / Early Stage
+- **Current phase:** Post-runtime stabilization / operating-layer refinement
 - **Release Date:** [See CHANGELOG]
 - **Tag Ready:** Yes, with known limitations
+
+For the current handoff state and next safe work, read [`docs/project-control/project-state.md`](project-control/project-state.md) and [`docs/project-control/next-actions.md`](project-control/next-actions.md). Runtime hardening was recently reviewed through #628 (telemetry contract sufficient), #629 (replay / continuity coverage), and #630 (runtime conditionally stabilized). #631 completed the HC Operating Layer review as operating layer conditionally sufficient.
 
 ### What v0.1.0 Includes
 
@@ -200,6 +204,7 @@ The **trust kernel** is the set of files and paths that affect record identity, 
 - Trust scoring foundations
 
 🔮 **Planned (Future):**
+- Navigation/index synchronization and public validator / explorer planning
 - Federation/sync interoperability
 - Ecosystem integrations
 - Long-horizon institutional adapters
@@ -421,6 +426,7 @@ These files intentionally use legacy project names ("Humanity Chain", "Insanlik-
 4. → Run agent check-in protocol from HC_BOOTSTRAP.md
 5. → Investigate with report-only mode first
 6. → Request human-supervised validation for trust-kernel-adjacent work
+7. → Prefer navigation/index synchronization or public validator / explorer planning; avoid repeating telemetry, replay, or runtime review unless new evidence appears
 
 ---
 
