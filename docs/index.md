@@ -31,9 +31,12 @@ Optional hash references, QR-linked archive paths, and additional verification l
 
 ## Public Sections
 
-- [Protocol](protocol.md)
+> **Public navigation note:** This Pages landing surface is informational navigation only. The canonical source remains repository evidence and documentation. It does not claim production readiness, guaranteed truth, or forensic certainty.
+
+- [Protocol / Project Start](START_HERE.md)
 - [Timeline](timeline.md)
-- [Witness Records](witnesses.md)
+- [Project State](project-control/project-state.md)
+- [Mini Public Validator Demo](demo/mini-public-validator-demo.md)
 
 ---
 
