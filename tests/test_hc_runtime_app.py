@@ -428,7 +428,7 @@ async def test_runtime_warning_lists_remain_deterministic_and_ordered(client: ht
     assert set(second.keys()) == expected_keys
     assert second["replay_warning"] is True
 
-    history = (await client.get("/verify/dup-record/history")).json()
+    history = (await client.get("/verify/warning-order-record/history")).json()
     assert history["replay_warning_visible"] is True
 
 
