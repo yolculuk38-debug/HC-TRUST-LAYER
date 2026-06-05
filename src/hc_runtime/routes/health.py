@@ -15,7 +15,22 @@ def _degraded_runtime_events() -> list[dict[str, object]]:
 
 
 def _telemetry_base(*, degraded: bool, escalation_required: bool = False) -> dict[str, object]:
+    """Build a deterministic telemetry payload with explicit advisory posture.
+
+    The human_review_required flag is set deterministically based on this bool algebra:
+        human_review_required = bool(warnings) OR escalation_required
+
+    This ensures that:
+    - When degraded=True, warnings are populated, so human_review_required=True
+    - When escalation_required=True, human_review_required=True regardless of warnings
+    - Otherwise, human_review_required=False
+
+    The flag signals to operators that human-supervised validation is needed.
+    It never silently downgrades to False when risks exist.
+    """
     warnings = [DEGRADED_RUNTIME_WARNING] if degraded else []
+    # Deterministic bool algebra: human review required if any warnings exist OR escalation queue has items
+    human_review_required = bool(warnings) or escalation_required
     return {
         "status": "degraded" if degraded else "ok",
         "runtime_mode": "prototype",
@@ -26,7 +41,7 @@ def _telemetry_base(*, degraded: bool, escalation_required: bool = False) -> dic
         "traceable": True,
         "truth_guarantee": False,
         "warnings": warnings,
-        "human_review_required": bool(warnings) or escalation_required,
+        "human_review_required": human_review_required,
         "degraded": degraded,
         "degraded_reasons": ["runtime_recovery_mode"] if degraded else [],
     }
