@@ -16,6 +16,28 @@
 
 HC-TRUST-LAYER is an early-stage verification infrastructure that helps teams evaluate integrity and provenance signals through an auditable verification map and protocol graph. It supports reproducible technical checks and structured review boundaries; it does **not** claim objective-truth finality, forensic certainty, or autonomous finality.
 
+## What Works Today
+
+Start with the [Mini Public Validator Demo](docs/demo/mini-public-validator-demo.md) for the shortest public-safe walkthrough, then use [START_HERE onboarding](docs/START_HERE.md) for repository navigation. Current working surfaces and recently completed reviews include:
+
+- Mini Public Validator Demo: `advisory_only: true`, `public_safe: true`, `truth_guarantee: false`, and human final authority preserved.
+- START_HERE onboarding for first-click orientation.
+- Advisory runtime baseline.
+- Telemetry contract review completed.
+- Replay / continuity coverage completed.
+- Runtime stabilization review completed.
+- Operating layer review completed.
+- Navigation/current-state refresh completed.
+
+### Still Not Claimed
+
+- No production readiness.
+- No objective-truth finality.
+- No security certification.
+- No autonomous AI finality.
+- No live federation guarantee.
+- No institutional/legal finality.
+
 ## Quick Navigation
 
 - [MVP Snapshot](#mvp-snapshot)
