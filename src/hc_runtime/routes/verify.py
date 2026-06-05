@@ -236,8 +236,7 @@ def verify_history(record_id: str) -> dict[str, object]:
         "truth_guarantee": False,
         "warnings": [],
         "human_review_required": False,
-        "replay_warning_visible": any(event["event_type"] == "replay_warning" for event in events)
-        or bool(QUEUE_STORE.replay_warning_queue),
+        "replay_warning_visible": any(event["event_type"] == "replay_warning" for event in events),
         "trust_state_transitions": [e for e in events if e["event_type"] == "trust_state_transition"],
         "events": events,
     }

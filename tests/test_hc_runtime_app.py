@@ -124,6 +124,34 @@ async def test_verify_history_endpoint_returns_public_safe_event_history(client:
 
 
 @pytest.mark.anyio
+async def test_replay_warning_history_visibility_is_record_scoped_for_missing_events(client: httpx.AsyncClient) -> None:
+    await client.post("/verify/replayed-history-record", json={"qr_input": "hc://replayed-history-record hash:ok replay"})
+
+    replay_history = (await client.get("/verify/replayed-history-record/history")).json()
+    missing_history = (await client.get("/verify/unrelated-missing-history-record/history")).json()
+    queues = (await client.get("/telemetry/queues")).json()
+
+    assert replay_history["record_id"] == "replayed-history-record"
+    assert replay_history["advisory_only"] is True
+    assert replay_history["public_safe"] is True
+    assert replay_history["truth_guarantee"] is False
+    assert replay_history["warnings"] == []
+    assert replay_history["replay_warning_visible"] is True
+    assert any(event["event_type"] == "replay_warning" for event in replay_history["events"])
+
+    assert missing_history["record_id"] == "unrelated-missing-history-record"
+    assert missing_history["advisory_only"] is True
+    assert missing_history["public_safe"] is True
+    assert missing_history["truth_guarantee"] is False
+    assert missing_history["warnings"] == []
+    assert missing_history["human_review_required"] is False
+    assert missing_history["replay_warning_visible"] is False
+    assert missing_history["trust_state_transitions"] == []
+    assert missing_history["events"] == []
+    assert queues["replay_warning_queue"]
+
+
+@pytest.mark.anyio
 async def test_runtime_public_endpoints_never_expose_forbidden_authority_claims(client: httpx.AsyncClient) -> None:
     endpoint_payloads = [
         (await client.get("/health")).json(),
@@ -400,7 +428,7 @@ async def test_runtime_warning_lists_remain_deterministic_and_ordered(client: ht
     assert set(second.keys()) == expected_keys
     assert second["replay_warning"] is True
 
-    history = (await client.get("/verify/dup-record/history")).json()
+    history = (await client.get("/verify/warning-order-record/history")).json()
     assert history["replay_warning_visible"] is True
 
 
