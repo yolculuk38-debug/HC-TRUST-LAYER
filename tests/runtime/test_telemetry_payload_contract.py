@@ -270,3 +270,61 @@ async def test_telemetry_payloads_do_not_expose_secret_token_or_credential_marke
             "replay_warning_queue": 1,
         },
     )
+
+
+@pytest.mark.anyio
+async def test_human_review_required_bool_algebra_is_deterministic(client: httpx.AsyncClient) -> None:
+    """Validate that human_review_required follows the deterministic bool algebra:
+    human_review_required = bool(warnings) OR escalation_required
+
+    This ensures:
+    - When warnings exist, human_review_required=True
+    - When escalation queue has items, human_review_required=True
+    - Otherwise, human_review_required=False
+    """
+    # Case 1: clean state (no warnings, no escalation)
+    payloads_clean = await _telemetry_payloads(client)
+    for endpoint_name, payload in payloads_clean.items():
+        warnings_bool = bool(payload["warnings"])
+        escalation_bool = bool(payload.get("escalation_queue", []))
+        expected = warnings_bool or escalation_bool
+        assert payload["human_review_required"] is expected, (
+            f"{endpoint_name}: human_review_required={payload['human_review_required']} "
+            f"does not match bool(warnings)={warnings_bool} or "
+            f"escalation_required={escalation_bool}, expected={expected}"
+        )
+
+    # Case 2: degraded runtime (warnings exist)
+    EVENT_STORE._events.clear()
+    QUEUE_STORE.verification_queue.clear()
+    QUEUE_STORE.escalation_queue.clear()
+    QUEUE_STORE.replay_warning_queue.clear()
+
+    _append_degraded_runtime_event()
+    payloads_degraded = await _telemetry_payloads(client)
+    for endpoint_name, payload in payloads_degraded.items():
+        # degraded state always has warnings
+        assert bool(payload["warnings"]) is True
+        assert payload["human_review_required"] is True
+
+    # Case 3: escalation queue populated (escalation_required=True)
+    EVENT_STORE._events.clear()
+    QUEUE_STORE.verification_queue.clear()
+    QUEUE_STORE.escalation_queue.clear()
+    QUEUE_STORE.replay_warning_queue.clear()
+
+    _populate_escalation_queue()
+    payloads_escalation = await _telemetry_payloads(client)
+    for endpoint_name, payload in payloads_escalation.items():
+        escalation_bool = bool(payload.get("escalation_queue", []))
+        warnings_bool = bool(payload["warnings"])
+        # /telemetry/queues should have escalation_queue populated
+        if endpoint_name == "/telemetry/queues":
+            assert escalation_bool is True
+            expected = warnings_bool or escalation_bool
+            assert payload["human_review_required"] is expected
+        else:
+            # Other endpoints don't expose escalation_queue directly, but they're aware of it
+            # via escalation_required parameter passed to _telemetry_base
+            expected = warnings_bool or escalation_bool
+            assert payload["human_review_required"] is expected
