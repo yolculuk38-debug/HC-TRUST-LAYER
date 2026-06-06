@@ -29,7 +29,9 @@ The current local QR payload parser is separate from QR authenticity and record 
 
 The current local lookup flow is separate from QR payload trust. A successful `record_id` lookup only means a local repository checkout found exactly one matching record within the allowed local record directories. It does not prove that a scanned QR payload is trustworthy.
 
-The current schema/hash checks are also separate from truth. A schema/hash pass can show that a matched local record conforms to current advisory checks, but it is not a truth guarantee, QR authenticity proof, issuer approval, legal finding, safety certification, or production trust decision.
+The local QR record bridge adds one advisory connection between these layers: after the QR payload parser accepts a local payload, the bridge can reuse the local Public Validator lookup path for the parsed `record_id` and compare the QR payload `content_hash` with the matched local canonical record `content_hash`. This bridge checks only the existing allowed canonical record paths: `records/pending/*.json`, `records/verified/*.json`, and `records/archived/*.json`. It does not fetch `canonical_url`, call a network, use a backend/API, verify signatures, prove QR authenticity, prove issuer authority, or prove truth. Demo fixtures remain documentation examples only and are not treated as canonical records.
+
+The current schema/hash checks are also separate from truth. A schema/hash pass or bridge `content_hash` match can show local advisory consistency with the inspected checkout, but it is not a truth guarantee, QR authenticity proof, issuer approval, legal finding, safety certification, or production trust decision.
 
 
 ## Local Parser CLI Runner
@@ -52,6 +54,14 @@ The CLI parser:
 - does not call a network, backend, or API;
 - does not verify truth, issuer authority, safety, legality, or production readiness;
 - keeps human review required.
+
+## Local QR Record Bridge
+
+`check_qr_payload_record_bridge` is a local advisory helper for reviewer and test workflows. It accepts a raw QR payload JSON string or parsed payload object, runs the local QR payload parser, and only proceeds to local record lookup when the payload is parser-valid. Malformed payloads, invalid payloads, missing `record_id`, and invalid `record_id` values return public-safe advisory results without record lookup.
+
+When lookup proceeds, the bridge reuses the existing local Public Validator lookup boundary and reports one of these advisory bridge outcomes: `bridge_match`, `bridge_mismatch`, `record_not_found`, `duplicate_record_id`, `invalid_payload`, `malformed_payload`, or `bridge_not_checked`. If exactly one allowed local canonical record is found, the bridge compares the QR payload `content_hash` with the local record `content_hash` after normalizing surrounding whitespace and hexadecimal case.
+
+A bridge `content_hash` match does not prove QR authenticity, does not prove truth, does not prove issuer authority, does not verify signatures, does not validate `canonical_url` ownership, and does not replace human review. A bridge mismatch is a local advisory integrity warning for reviewers, not a final legal, regulatory, safety, forensic, or production decision.
 
 ## Parser Result Contract
 

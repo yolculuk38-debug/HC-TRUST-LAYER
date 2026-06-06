@@ -4,9 +4,13 @@ import subprocess
 import sys
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT / "src"
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
+
 from hc_runtime.public_validator_lookup import SAFETY_MARKERS, lookup_public_validator_record
 
-ROOT = Path(__file__).resolve().parents[1]
 RUNNER = ROOT / "scripts" / "run_public_validator_lookup.py"
 GOLDEN_OUTPUT_FIXTURES = ROOT / "docs" / "demo" / "fixtures" / "local-validator-output"
 REQUIRED_FIELDS = {
