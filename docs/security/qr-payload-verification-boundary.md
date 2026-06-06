@@ -7,9 +7,9 @@
 
 ## Purpose
 
-This document defines the trust boundary for HC:// QR payload parsing and future QR payload verification. The current implementation includes a local-only parser and a small command-line runner, but it does not add QR cryptography, signing, backend/API behavior, validator changes, schema changes, network calls, or URL fetches.
+This document defines the trust boundary for HC:// QR payload parsing, the local QR record bridge, and future QR payload verification. The current implementation includes a local-only parser, a local-only parser CLI runner, and a local-only QR record bridge CLI runner, but it does not add QR cryptography, signing, backend/API behavior, validator changes, schema changes, network calls, or URL fetches.
 
-The current Public Validator work can perform local Public Validator lookup and advisory schema/hash checks against local records. The existing QR/link demo can route a reviewer into the static demo experience. The QR payload parser can check JSON payload shape locally. Those capabilities are useful for review, but they do not establish real QR authenticity.
+The current Public Validator work can perform local Public Validator lookup and advisory schema/hash checks against local records. The existing QR/link demo can route a reviewer into the static demo experience. The QR payload parser can check JSON payload shape locally. The QR record bridge can compare a parser-valid payload `content_hash` with exactly one matched local canonical record `content_hash`. Those capabilities are useful for review, but they do not establish real QR authenticity or record truth.
 
 ## Current Boundary
 
@@ -59,9 +59,17 @@ The CLI parser:
 
 `check_qr_payload_record_bridge` is a local advisory helper for reviewer and test workflows. It accepts a raw QR payload JSON string or parsed payload object, runs the local QR payload parser, and only proceeds to local record lookup when the payload is parser-valid. Malformed payloads, invalid payloads, missing `record_id`, and invalid `record_id` values return public-safe advisory results without record lookup.
 
+Reviewers can run the bridge from the command line with one JSON string argument:
+
+```bash
+python scripts/run_qr_record_bridge.py '{"qr_version":"1","record_id":"HC-EXAMPLE-2026-0001","canonical_url":"https://example.invalid/record/HC-EXAMPLE-2026-0001","payload_hash":"771d6e804359164526070f3806d2f82cd53bf71f49e6fa843f067e7f848d3271","content_hash":"def","issued_at":"2026-01-01T00:00:00Z","issuer_id":"demo","algorithm":"none","key_id":"demo-key"}'
+```
+
+The CLI output is deterministic JSON from `check_qr_payload_record_bridge` with sorted keys and no extra prose on stdout. It is local-only: it does not call a network, fetch `canonical_url`, use a backend/API, verify signatures, or widen the existing local lookup boundary.
+
 When lookup proceeds, the bridge reuses the existing local Public Validator lookup boundary and reports one of these advisory bridge outcomes: `bridge_match`, `bridge_mismatch`, `record_not_found`, `duplicate_record_id`, `invalid_payload`, `malformed_payload`, or `bridge_not_checked`. If exactly one allowed local canonical record is found, the bridge compares the QR payload `content_hash` with the local record `content_hash` after normalizing surrounding whitespace and hexadecimal case.
 
-A bridge `content_hash` match does not prove QR authenticity, does not prove truth, does not prove issuer authority, does not verify signatures, does not validate `canonical_url` ownership, and does not replace human review. A bridge mismatch is a local advisory integrity warning for reviewers, not a final legal, regulatory, safety, forensic, or production decision.
+A bridge `content_hash` match does not prove QR authenticity, does not prove truth, does not prove issuer authority, does not verify signatures, does not validate `canonical_url` ownership, and does not replace human review. A bridge mismatch is a local advisory integrity warning for reviewers, not a final legal, regulatory, safety, forensic, or production decision. The bridge result preserves `advisory_only: true`, `public_safe: true`, `truth_guarantee: false`, and `human_review_required: true` for every outcome.
 
 ## Parser Result Contract
 

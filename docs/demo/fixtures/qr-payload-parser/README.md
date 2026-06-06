@@ -7,10 +7,11 @@
 
 ## Purpose
 
-These fixtures make the local HC:// QR payload parser easier to review. They provide small payload examples and expected parser behavior for the CLI runner added in #662. PR #664 adds tests that run these fixtures through the CLI and compare stable public-safe output fields only. PR #667 adds explicit matching, mismatched, and uppercase `payload_hash` fixture coverage:
+These fixtures make the local HC:// QR payload parser and local QR record bridge easier to review. They provide small payload examples and expected parser behavior for the CLI runner added in #662. PR #664 adds tests that run these fixtures through the parser CLI and compare stable public-safe output fields only. PR #667 adds explicit matching, mismatched, and uppercase `payload_hash` fixture coverage. PR #669 adds a local-only bridge CLI runner that accepts the same one-argument QR payload JSON shape:
 
 ```bash
 python scripts/run_qr_payload_parser.py '<payload-json-string>'
+python scripts/run_qr_record_bridge.py '<payload-json-string>'
 ```
 
 The fixtures are not canonical records, schemas, validators, signed QR payloads, production QR manifests, backend/API responses, runtime lookup material, or evidence that a real-world claim is true. Their `payload_hash` values exercise the parser-local advisory hash check only. The local QR record bridge must not treat these demo fixtures as canonical records; bridge lookup remains limited to `records/pending/*.json`, `records/verified/*.json`, and `records/archived/*.json`.
@@ -20,9 +21,9 @@ The golden tests intentionally compare only stable parser output boundaries: `st
 
 ## Local QR Record Bridge Boundary
 
-PR #668 adds a local advisory bridge helper that can compare a parser-valid QR payload `content_hash` with the `content_hash` on exactly one matched local canonical record. This bridge is for local reviewer checks only. It does not add network calls, backend/API behavior, signature verification, QR authenticity proof, issuer-authority proof, canonical URL fetching, schema changes, validator changes, or production claims.
+PR #668 adds a local advisory bridge helper that can compare a parser-valid QR payload `content_hash` with the `content_hash` on exactly one matched local canonical record. PR #669 exposes that helper through `scripts/run_qr_record_bridge.py` for local reviewer checks. The CLI prints deterministic JSON with sorted keys and no extra prose on stdout. It does not add network calls, backend/API behavior, signature verification, QR authenticity proof, issuer-authority proof, canonical URL fetching, schema changes, validator changes, or production claims.
 
-A `content_hash` match means only that the QR payload hash string matches the local canonical record hash string in the inspected checkout after lowercase/whitespace normalization. It does not prove QR authenticity, record truth, issuer authority, legal status, regulatory status, safety certification, forensic certainty, or production readiness. Human review remains required.
+A `content_hash` match means only that the QR payload hash string matches the local canonical record hash string in the inspected checkout after lowercase/whitespace normalization. It does not prove QR authenticity, record truth, issuer authority, legal status, regulatory status, safety certification, forensic certainty, or production readiness. Human review remains required. Demo fixtures in this directory are not canonical records and are not lookup targets for the bridge.
 
 ## Safety Markers
 
@@ -43,10 +44,11 @@ These markers remain required even when `status` is `valid_payload`.
 
 Run each example from the repository root. The CLI accepts one JSON string argument, so these examples pass fixture contents with command substitution.
 
-To run the fixture-backed golden output tests:
+To run the fixture-backed parser golden output tests and bridge CLI tests:
 
 ```bash
 python -m pytest tests/test_qr_payload_parser.py
+python -m pytest tests/test_qr_record_bridge.py
 ```
 
 ### Valid Payload Example
@@ -143,6 +145,16 @@ Expected behavior:
 - `warnings` reports that the unknown field was ignored;
 - `errors` is empty because the fixture `payload_hash` was computed over the full payload object after removing `payload_hash`;
 - ignored fields do not create hidden defaults, network discovery, backend/API lookup, record truth verification, or signature verification.
+
+## Bridge CLI Quickstart
+
+The bridge runner accepts one QR payload JSON string argument and returns public-safe JSON from `check_qr_payload_record_bridge`:
+
+```bash
+python scripts/run_qr_record_bridge.py "$(cat docs/demo/fixtures/qr-payload-parser/matching-payload-hash.json)"
+```
+
+Expected behavior for these demo fixtures is usually `record_not_found`, because this fixture directory is intentionally not a canonical record lookup path. A `bridge_match` can occur only when the payload `record_id` resolves to exactly one allowed local canonical record under `records/pending/`, `records/verified/`, or `records/archived/` and the payload `content_hash` matches that record's `content_hash`. `bridge_match` remains advisory-only and does not prove QR authenticity, signature verification, `canonical_url` control, record truth, safety, legality, regulatory status, or production readiness.
 
 ## Status Meanings
 
