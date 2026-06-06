@@ -1,6 +1,6 @@
 # QR Verification Layer
 
-This directory contains QR-related references for Humanity Chain archive records.
+This directory contains QR-related references for HC:// archive records.
 
 ## Purpose
 
@@ -18,7 +18,7 @@ A QR code may link to:
 
 QR codes should not contain private or secret information.
 
-They should only point to official public Humanity Chain archive links.
+They should only point to official public HC:// archive links.
 
 ## Recommended Format
 
@@ -50,7 +50,7 @@ Expected output path (example only):
 
 ## Security Notice
 
-Users should verify that QR links point to the official Humanity Chain archive domain or GitHub Pages address.
+Users should verify that QR links point to the official HC:// archive location or approved GitHub Pages/GitHub repository address.
 
 QR codes are access tools, not proof of truth.
 
