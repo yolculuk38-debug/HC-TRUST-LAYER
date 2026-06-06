@@ -13,8 +13,9 @@ Principle: Trust the record, not the narrative.
 
 ## Hash Integrity and Verification Status
 
-- The hash entries below preserve historical display prefixes only.
-- Full original SHA-256 values are unavailable and are not recorded in this file.
+- The primary hash entries below preserve historical display prefixes only.
+- Full original SHA-256 values are not treated as canonical verification anchors in this file.
+- Some English full-hash candidates have been recovered from user-provided historical screenshots and are listed in a separate candidate section.
 - Prefixes are shown with ellipsis notation to avoid implying fake full hashes are real SHA-256 values.
 - This Genesis Block remains **historical/provenance context**, not a canonical verification anchor.
 
@@ -37,12 +38,31 @@ DATE: May 7, 2026
 
 DATE: May 7, 2026
 
-1. ChatGPT: `e58151e2…` — historical display prefix only; full SHA-256 not available in this file.
-2. Copilot: `7c3c44d5…` — historical display prefix only; full SHA-256 not available in this file.
-3. Muse Spark: `ad655850…` — historical display prefix only; full SHA-256 not available in this file.
-4. Gemini: `bc29065b…` — historical display prefix only; full SHA-256 not available in this file.
-5. Claude: `d875a310…` — historical display prefix only; full SHA-256 not available in this file.
-6. Grok: `0ac65117…` — historical display prefix only; full SHA-256 not available in this file.
+1. ChatGPT: `e58151e2…` — historical display prefix only; see recovered full-hash candidate section below.
+2. Copilot: `7c3c44d5…` — historical display prefix only; see recovered full-hash candidate section below.
+3. Muse Spark: `ad655850…` — historical display prefix only; see recovered full-hash candidate section below.
+4. Gemini: `bc29065b…` — historical display prefix only; see recovered full-hash candidate section below.
+5. Claude: `d875a310…` — historical display prefix only; see recovered full-hash candidate section below.
+6. Grok: `0ac65117…` — historical display prefix only; see recovered full-hash candidate section below.
+
+---
+
+## Known Full Hash Candidates — English Responses
+
+The full SHA-256 values below were recovered from user-provided historical screenshots of an early English hash table.
+
+They match the English display prefixes preserved above. However, the original full English response texts are currently unavailable and have not been re-hashed from canonical source text.
+
+Therefore, these values are preserved as **screenshot-derived historical full-hash candidates** only. They are not canonical verification anchors and do not prove response content, model authorship, institutional endorsement, or truth.
+
+| Model | Company / Provider label from screenshot | Full SHA-256 candidate | Verification status |
+| --- | --- | --- | --- |
+| ChatGPT | OpenAI | `e58151e2519e9add00d457d18ad7e46b4da01efb14edf5373ac2abdd586dfddb` | candidate; prefix match; original content not recovered |
+| Copilot | Microsoft | `7c3c44d5f3d3d1e0f7b6a15a00e639e42fe889847ecd7e8d6b133fd90d660fda` | candidate; prefix match; original content not recovered |
+| Muse Spark | Meta | `ad655850972dc9629984204246686e5b952ff3424f777f6bfffd98b5d6d1bd68c` | candidate; prefix match; original content not recovered |
+| Gemini | Google | `bc29065bd32f21bc418e1f918fe0863bfdb6246012e6c673232583147805e488` | candidate; prefix match; original content not recovered |
+| Claude | Anthropic | `d875a310287ce91e55dc80e18f2a709c917417fd0ebcb3df1084f7b479e9f311` | candidate; prefix match; original content not recovered |
+| Grok | xAI | `0ac6511750abd8602c621d8a08e9b2572d2fd8c4802955ba09c808866ec65358` | candidate; prefix match; original content not recovered |
 
 ---
 
@@ -60,7 +80,7 @@ It documents:
 
 This document does not claim that AI systems autonomously joined or endorsed the project.
 
-It preserves recorded outputs and display-level hash references as part of an experimental archive.
+It preserves recorded outputs, display-level hash references, and recovered screenshot-derived full-hash candidates as part of an experimental archive.
 
 ---
 
