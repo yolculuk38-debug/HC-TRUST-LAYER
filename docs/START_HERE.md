@@ -41,6 +41,14 @@ The project was previously known by these names during early experimental phases
 
 ## 2. QUICK START BY ROLE
 
+### Try the Public Validator Demo
+
+Use these HC:// Public Validator demo entry points for a fast, public-safe, advisory-only walkthrough. The demo preserves `public_safe: true` and `truth_guarantee: false`, requires human-supervised review, and does not claim production readiness, certification, legal authority, or autonomous finality.
+
+- Open the static viewer in a browser: [`docs/demo/public-validator-static-viewer.html`](demo/public-validator-static-viewer.html)
+- Run the local demo runner from the repository root: [`scripts/run_public_validator_demo.py`](../scripts/run_public_validator_demo.py)
+- Read the quickstart: [`docs/demo/public-validator-demo-quickstart.md`](demo/public-validator-demo-quickstart.md)
+
 ### For First-Time Contributors
 
 1. **Start here:** This file (you're reading it)

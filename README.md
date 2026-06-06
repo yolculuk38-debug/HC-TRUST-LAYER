@@ -40,6 +40,7 @@ Start with the [Mini Public Validator Demo](docs/demo/mini-public-validator-demo
 
 ## Quick Navigation
 
+- [Try the Public Validator Demo](#try-the-public-validator-demo)
 - [MVP Snapshot](#mvp-snapshot)
 - [Start Here navigation guide](docs/START_HERE.md)
 - [Current project state](docs/project-control/project-state.md)
@@ -95,6 +96,14 @@ Core architecture/status references:
 ## Demo & Verification Viewer
 
 Use the CLI + viewer workflow to inspect verification packages and provenance timeline signals.
+
+### Try the Public Validator Demo
+
+Use the HC:// Public Validator demo entry points to inspect a public-safe, advisory-only validation flow without claiming production readiness, certification, legal authority, autonomous finality, or truth finality. Demo outputs preserve `public_safe: true` and `truth_guarantee: false` posture and require human-supervised review.
+
+- Open the static browser viewer: [`docs/demo/public-validator-static-viewer.html`](docs/demo/public-validator-static-viewer.html)
+- Run the local demo runner: [`scripts/run_public_validator_demo.py`](scripts/run_public_validator_demo.py)
+- Read the quickstart: [`docs/demo/public-validator-demo-quickstart.md`](docs/demo/public-validator-demo-quickstart.md)
 
 ### Try local verification preview entry point
 

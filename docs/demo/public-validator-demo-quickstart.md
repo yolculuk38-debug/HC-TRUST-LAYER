@@ -192,4 +192,4 @@ The output is intentionally public-safe and fixture-based. Missing or conflictin
 
 ## Recommended next step
 
-After running the local demo, compare the JSON output with the static public result examples in [`docs/demo/public-validator-static-demo.md`](public-validator-static-demo.md). A recommended follow-up PR is **#646 Public Validator Static Viewer MVP**, focused on a small, mobile-readable static viewer for these public demo scenarios.
+After trying the static viewer and running the local demo, compare the JSON output with the static public result examples in [`docs/demo/public-validator-static-demo.md`](public-validator-static-demo.md). A recommended follow-up PR is **#648 Public Validator demo result fixture JSON export**, focused on reusable public-safe fixture output for review and demo workflows.
