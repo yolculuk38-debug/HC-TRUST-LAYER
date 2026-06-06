@@ -5,13 +5,22 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNNER = ROOT / "scripts" / "run_public_validator_demo.py"
+FIXTURE_DIR = ROOT / "docs" / "demo" / "fixtures" / "results"
+SCENARIOS = ["banana", "building", "news", "qr-spoof"]
 SAFETY_MARKERS = {
     "advisory_only": True,
     "public_safe": True,
     "truth_guarantee": False,
     "human_review_required": True,
 }
-REQUIRED_LISTS = ["warnings", "missing_evidence", "conflicting_evidence"]
+REQUIRED_LISTS = [
+    "source_chain",
+    "responsibility_chain",
+    "evidence",
+    "warnings",
+    "missing_evidence",
+    "conflicting_evidence",
+]
 
 
 def run_scenario(scenario: str) -> dict[str, object]:
@@ -22,6 +31,11 @@ def run_scenario(scenario: str) -> dict[str, object]:
         text=True,
     )
     return json.loads(completed.stdout)
+
+
+def load_fixture(scenario: str) -> dict[str, object]:
+    with (FIXTURE_DIR / f"{scenario}.json").open(encoding="utf-8") as handle:
+        return json.load(handle)
 
 
 def assert_deterministic_json(scenario: str) -> dict[str, object]:
@@ -37,6 +51,11 @@ def assert_safety_markers(result: dict[str, object]) -> None:
     for key in REQUIRED_LISTS:
         assert key in result
         assert isinstance(result[key], list)
+
+
+def test_runner_output_matches_fixture_json_for_each_scenario() -> None:
+    for scenario in SCENARIOS:
+        assert assert_deterministic_json(scenario) == load_fixture(scenario)
 
 
 def test_banana_scenario_returns_deterministic_json() -> None:
@@ -76,5 +95,5 @@ def test_invalid_scenario_exits_non_zero() -> None:
 
 
 def test_safety_markers_are_always_present() -> None:
-    for scenario in ["banana", "building", "news", "qr-spoof"]:
+    for scenario in SCENARIOS:
         assert_safety_markers(run_scenario(scenario))

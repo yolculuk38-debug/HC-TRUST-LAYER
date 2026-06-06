@@ -60,6 +60,10 @@ python scripts/run_public_validator_demo.py qr-spoof
 
 The script prints JSON to standard output. The output is deterministic for each scenario, so repeated runs of the same command should produce the same result unless the fixture definitions are intentionally changed in a later PR.
 
+## Result fixtures
+
+The runner reads demo-only result fixture exports from [`docs/demo/fixtures/results/`](fixtures/results/): [`banana.json`](fixtures/results/banana.json), [`building.json`](fixtures/results/building.json), [`news.json`](fixtures/results/news.json), and [`qr-spoof.json`](fixtures/results/qr-spoof.json). These JSON files are public-safe demo fixtures only; they are not canonical records, generated artifacts, production validator output, certifications, or legal authority.
+
 ## Available scenarios
 
 | Scenario command | Scenario label in output | Public demo focus |

@@ -1,0 +1,53 @@
+{
+  "advisory_only": true,
+  "conflicting_evidence": [
+    "Field sample timestamp is later than one dispatch note timestamp and requires human review."
+  ],
+  "evidence": [
+    {
+      "evidence_status": "present",
+      "reference": "DEMO-CONCRETE-BATCH-5509-TICKET",
+      "type": "demo_batch_ticket"
+    },
+    {
+      "evidence_status": "partial",
+      "reference": "DEMO-SAMPLE-CONCRETE-CYL-03",
+      "type": "demo_sample_collection_note"
+    },
+    {
+      "evidence_status": "present",
+      "reference": "DEMO-CONCRETE-RESULT-28DAY-03",
+      "type": "demo_test_result_reference"
+    }
+  ],
+  "human_review_required": true,
+  "missing_evidence": [
+    "Independent confirmation of sample collection witness",
+    "Complete curing condition log",
+    "Signed supervising authority review note"
+  ],
+  "public_safe": true,
+  "record_id": "HC-DEMO-PV-FIXTURE-CONCRETE-0001",
+  "responsibility_chain": [
+    "Demo concrete plant",
+    "Demo mixer truck operator",
+    "Demo field technician",
+    "Demo concrete lab reviewer",
+    "Demo supervising authority reviewer"
+  ],
+  "scenario": "building_concrete_provenance",
+  "source_chain": [
+    "Demo concrete plant batch ticket",
+    "Demo mixer truck dispatch note",
+    "Demo field sample collection note",
+    "Demo lab receipt note",
+    "Demo test result reference"
+  ],
+  "status": "needs_human_review",
+  "truth_guarantee": false,
+  "warnings": [
+    "Advisory demo result only; not a building safety or code compliance certification.",
+    "Demo result references must not be treated as proof of structural integrity.",
+    "Chain-of-custody contains partial field sample evidence."
+  ]
+}

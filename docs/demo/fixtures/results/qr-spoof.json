@@ -1,0 +1,50 @@
+{
+  "advisory_only": true,
+  "conflicting_evidence": [
+    "Scanned URL differs from the expected HC:// canonical URL in this demo fixture."
+  ],
+  "evidence": [
+    {
+      "evidence_status": "present",
+      "reference": "DEMO-SCANNED-URL-OBSERVATION-01",
+      "type": "demo_scanned_url_observation"
+    },
+    {
+      "evidence_status": "present",
+      "reference": "DEMO-CANONICAL-HC-REFERENCE-01",
+      "type": "demo_canonical_url_reference"
+    },
+    {
+      "evidence_status": "partial",
+      "reference": "DEMO-ISSUER-QR-01",
+      "type": "demo_issuer_reference"
+    }
+  ],
+  "human_review_required": true,
+  "missing_evidence": [
+    "Independently verified issuer authority",
+    "Signed payload evidence",
+    "Real payload hash verification",
+    "Original QR artifact image"
+  ],
+  "public_safe": true,
+  "record_id": "HC-DEMO-PV-FIXTURE-QR-0001",
+  "responsibility_chain": [
+    "Demo label issuer",
+    "Demo scanner operator",
+    "Demo human reviewer"
+  ],
+  "scenario": "qr_spoof_non_canonical_link",
+  "source_chain": [
+    "Demo QR label scan observation",
+    "Demo expected HC:// canonical reference",
+    "Demo issuer reference note"
+  ],
+  "status": "needs_human_review",
+  "truth_guarantee": false,
+  "warnings": [
+    "Advisory demo result only; not a fraud finding or forensic determination.",
+    "Non-canonical link condition requires human review before any reliance.",
+    "This fixture does not validate signatures, generate QR artifacts, or fetch remote URLs."
+  ]
+}
