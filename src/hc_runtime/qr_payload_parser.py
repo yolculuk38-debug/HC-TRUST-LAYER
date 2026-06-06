@@ -7,6 +7,7 @@ backend, or make truth claims about an HC:// record.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from datetime import datetime
@@ -91,6 +92,21 @@ def _load_payload(payload: str) -> Tuple[Optional[dict[str, Any]], list[str]]:
     return decoded, []
 
 
+def _compute_advisory_payload_hash(data: dict[str, Any]) -> str:
+    """Compute the parser-local advisory payload hash.
+
+    This MVP rule is intentionally internal to the QR payload parser. It is not
+    a signing canonicalization standard and does not verify authenticity.
+    """
+
+    canonical_data = dict(data)
+    canonical_data.pop("payload_hash", None)
+    canonical_payload = json.dumps(
+        canonical_data, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return hashlib.sha256(canonical_payload).hexdigest()
+
+
 def _has_valid_record_id(record_id: str) -> bool:
     return bool(RECORD_ID_RE.fullmatch(record_id))
 
@@ -114,10 +130,10 @@ def parse_qr_payload(payload: str) -> dict[str, Any]:
     """Parse a local QR JSON payload and return advisory validation output.
 
     The parser checks shape, required fields, string field types, record_id
-    shape, canonical_url presence/shape, issued_at timestamp shape, and unknown
-    fields. It does not perform cryptographic verification, signature checks,
-    network calls, URL fetches, backend/API calls, schema validation, or truth
-    verification.
+    shape, canonical_url presence/shape, issued_at timestamp shape, an advisory
+    parser-local payload_hash consistency check, and unknown fields. It does not
+    perform cryptographic verification, signature checks, network calls, URL
+    fetches, backend/API calls, schema validation, or truth verification.
     """
 
     data, malformed_errors = _load_payload(payload)
@@ -175,6 +191,15 @@ def parse_qr_payload(payload: str) -> dict[str, Any]:
         errors.append(
             "QR payload issued_at must use UTC format YYYY-MM-DDTHH:MM:SSZ."
         )
+
+    payload_hash = data.get("payload_hash")
+    if isinstance(payload_hash, str) and payload_hash.strip():
+        declared_payload_hash = payload_hash.strip().lower()
+        advisory_payload_hash = _compute_advisory_payload_hash(data).lower()
+        if declared_payload_hash != advisory_payload_hash:
+            errors.append(
+                "QR payload payload_hash does not match advisory canonical payload hash."
+            )
 
     status = INVALID_PAYLOAD if errors else VALID_PAYLOAD
     return _build_result(status, warnings=warnings, errors=errors)

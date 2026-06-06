@@ -2,7 +2,7 @@
   "qr_version": "1",
   "record_id": "HC-EXAMPLE-2026-0001",
   "canonical_url": "https://example.invalid/record/HC-EXAMPLE-2026-0001",
-  "payload_hash": "demo-payload-hash-not-cryptographic-proof",
+  "payload_hash": "6247247225ed9defa5473c98f2f8aade47b42562d568e7d3d7e3b6af6c838cd4",
   "content_hash": "demo-content-hash-not-record-truth-proof",
   "issued_at": "2026-01-01T00:00:00Z",
   "issuer_id": "demo-review-issuer",
