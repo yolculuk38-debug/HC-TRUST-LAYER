@@ -16,6 +16,23 @@ from hc_runtime.qr_payload_parser import parse_qr_payload
 
 CLI = ROOT / "scripts" / "run_qr_payload_parser.py"
 
+FIXTURE_DIR = ROOT / "docs" / "demo" / "fixtures" / "qr-payload-parser"
+EXPECTED_SAFETY_MARKERS = {
+    "advisory_only": True,
+    "public_safe": True,
+    "truth_guarantee": False,
+    "human_review_required": True,
+}
+STABLE_OUTPUT_FIELDS = (
+    "status",
+    "advisory_only",
+    "public_safe",
+    "truth_guarantee",
+    "human_review_required",
+    "warnings",
+    "errors",
+)
+
 VALID_PAYLOAD = {
     "qr_version": "1",
     "record_id": "HC-EXAMPLE-2026-0001",
@@ -191,3 +208,81 @@ def test_cli_does_not_claim_qr_authenticity_or_signature_verification():
     assert "verified" not in output
     assert "signature_verified" not in result
     assert "qr_authenticity_proven" not in result
+
+
+def load_fixture(name):
+    return (FIXTURE_DIR / name).read_text()
+
+
+def cli_fixture_result(name):
+    completed = run_cli(load_fixture(name))
+    assert completed.stderr == ""
+    return json.loads(completed.stdout)
+
+
+def stable_output(result):
+    return {field: result[field] for field in STABLE_OUTPUT_FIELDS}
+
+
+def assert_safety_markers(result):
+    for marker, expected in EXPECTED_SAFETY_MARKERS.items():
+        assert result[marker] is expected
+
+
+def assert_public_safe_list_shape(result):
+    assert isinstance(result["warnings"], list)
+    assert isinstance(result["errors"], list)
+    assert all(isinstance(warning, str) for warning in result["warnings"])
+    assert all(isinstance(error, str) for error in result["errors"])
+
+
+def test_cli_valid_fixture_matches_stable_golden_output_shape():
+    result = cli_fixture_result("valid-payload.json")
+
+    assert stable_output(result) == {
+        "status": "valid_payload",
+        **EXPECTED_SAFETY_MARKERS,
+        "warnings": [],
+        "errors": [],
+    }
+    assert_public_safe_list_shape(result)
+
+
+def test_cli_missing_field_fixture_matches_stable_golden_output_shape():
+    result = cli_fixture_result("missing-field-payload.json")
+
+    assert result["status"] == "invalid_payload"
+    assert_safety_markers(result)
+    assert_public_safe_list_shape(result)
+    assert any(
+        "Missing required QR payload field" in warning
+        for warning in result["warnings"]
+    )
+    assert any("key_id" in warning for warning in result["warnings"])
+    assert any("missing required field" in error for error in result["errors"])
+
+
+def test_cli_unknown_field_fixture_matches_stable_golden_output_shape():
+    result = cli_fixture_result("unknown-field-payload.json")
+
+    assert result["status"] == "valid_payload"
+    assert_safety_markers(result)
+    assert_public_safe_list_shape(result)
+    assert any(
+        "Unknown QR payload field ignored" in warning
+        for warning in result["warnings"]
+    )
+    assert any("review_note" in warning for warning in result["warnings"])
+    assert result["errors"] == []
+
+
+def test_cli_malformed_fixture_matches_stable_golden_output_shape():
+    result = cli_fixture_result("malformed-payload.txt")
+
+    assert result["status"] == "malformed_payload"
+    assert_safety_markers(result)
+    assert_public_safe_list_shape(result)
+    assert result["warnings"] == []
+    assert result["errors"]
+    assert any("malformed JSON" in error for error in result["errors"])
+

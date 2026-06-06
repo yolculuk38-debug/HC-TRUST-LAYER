@@ -1,19 +1,21 @@
 # QR Payload Parser Fixtures
 
-> **Status:** PR #663 reviewer examples for the local QR payload parser
+> **Status:** PR #663 reviewer examples, test-backed by PR #664 golden output coverage
 > **Scope:** documentation and demo fixtures only
 > **Authority:** advisory-only; human review remains required
 > **Production readiness:** not claimed
 
 ## Purpose
 
-These fixtures make the local HC:// QR payload parser easier to review. They provide small payload examples and expected parser behavior for the CLI runner added in #662:
+These fixtures make the local HC:// QR payload parser easier to review. They provide small payload examples and expected parser behavior for the CLI runner added in #662. PR #664 adds tests that run these fixtures through the CLI and compare stable public-safe output fields only:
 
 ```bash
 python scripts/run_qr_payload_parser.py '<payload-json-string>'
 ```
 
 The fixtures are not canonical records, schemas, validators, signed QR payloads, production QR manifests, backend/API responses, runtime lookup material, or evidence that a real-world claim is true.
+
+The golden tests intentionally compare only stable parser output boundaries: `status`, the safety markers, and the list shape/content presence of `warnings` and `errors`. They do not test exact wording beyond current stable marker phrases needed to identify missing-field, unknown-field, and malformed-payload handling.
 
 ## Safety Markers
 
@@ -33,6 +35,12 @@ These markers remain required even when `status` is `valid_payload`.
 ## Quickstart
 
 Run each example from the repository root. The CLI accepts one JSON string argument, so these examples pass fixture contents with command substitution.
+
+To run the fixture-backed golden output tests:
+
+```bash
+python -m pytest tests/test_qr_payload_parser.py
+```
 
 ### Valid Payload Example
 
