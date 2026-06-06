@@ -194,8 +194,9 @@ def parse_qr_payload(payload: str) -> dict[str, Any]:
 
     payload_hash = data.get("payload_hash")
     if isinstance(payload_hash, str) and payload_hash.strip():
-        advisory_payload_hash = _compute_advisory_payload_hash(data)
-        if payload_hash != advisory_payload_hash:
+        declared_payload_hash = payload_hash.strip().lower()
+        advisory_payload_hash = _compute_advisory_payload_hash(data).lower()
+        if declared_payload_hash != advisory_payload_hash:
             errors.append(
                 "QR payload payload_hash does not match advisory canonical payload hash."
             )

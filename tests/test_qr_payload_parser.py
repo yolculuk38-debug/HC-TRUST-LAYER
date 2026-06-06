@@ -172,6 +172,17 @@ def test_matching_payload_hash_passes_advisory_hash_check():
     assert result["errors"] == []
 
 
+def test_uppercase_payload_hash_passes_advisory_hash_check():
+    payload = with_matching_payload_hash(VALID_PAYLOAD)
+    payload["payload_hash"] = f"  {payload['payload_hash'].upper()}  "
+
+    result = parse_qr_payload(encode(payload))
+
+    assert result["status"] == "valid_payload"
+    assert result["warnings"] == []
+    assert result["errors"] == []
+
+
 def test_mismatched_payload_hash_returns_public_safe_error():
     payload = dict(VALID_PAYLOAD, payload_hash="mismatched-advisory-hash")
 
