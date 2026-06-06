@@ -60,3 +60,5 @@ This checkpoint reviewed the public validator demo surface across:
 ## Checkpoint Note
 
 PR **#652 Public Validator Record ID input demo** keeps the work static/demo-only and documents bounded Record ID fixture matching as a viewer convenience layered on top of the existing scenario selection. It does not add backend calls, API calls, external network calls, QR crypto, signing changes, schema changes, validator changes, workflow changes, database/index lookup, canonical lookup, or production-readiness claims. Manual checks for this checkpoint are: query scenario links still work, scenario buttons still work, supported demo `record_id` values select the mapped scenarios, unsupported demo `record_id` values show a safe warning, and no backend/network/API calls are introduced.
+
+PR **#656 Local Public Validator result contract hardening** locks the local lookup result shape after #654 local record lookup and #655 advisory schema/hash validation signals. The contract remains public-safe, advisory-only, local-only, and human-review-required; validation pass values do not create a truth guarantee or production-readiness claim.
