@@ -258,6 +258,7 @@
       <div class="notice">
         This viewer is advisory-only, public-safe, deterministic, local-only, and human-review-required. It does not claim production readiness, food/building/news/legal certification, forensic certainty, truth guarantees, or autonomous AI authority.
       </div>
+      <p class="muted">QR/link-style demo URLs may select a bundled scenario with <code>?scenario=banana</code>, <code>?scenario=building</code>, <code>?scenario=news</code>, or <code>?scenario=qr-spoof</code>. This is static demo navigation only, not QR authenticity or signed payload verification.</p>
       <nav class="scenario-picker" aria-label="Demo scenarios">
         <button type="button" data-scenario="banana" aria-pressed="true">banana</button>
         <button type="button" data-scenario="building" aria-pressed="false">building</button>
@@ -530,11 +531,28 @@
       renderList("warnings", result.warnings);
     }
 
+    function scenarioFromQueryString() {
+      const params = new URLSearchParams(window.location.search);
+      const requestedScenario = params.get("scenario");
+
+      if (Object.prototype.hasOwnProperty.call(scenarios, requestedScenario)) {
+        return requestedScenario;
+      }
+
+      return "banana";
+    }
+
     document.querySelectorAll("[data-scenario]").forEach((button) => {
-      button.addEventListener("click", () => renderScenario(button.dataset.scenario));
+      button.addEventListener("click", () => {
+        const key = button.dataset.scenario;
+        renderScenario(key);
+        const url = new URL(window.location.href);
+        url.searchParams.set("scenario", key);
+        window.history.replaceState(null, "", url);
+      });
     });
 
-    renderScenario("banana");
+    renderScenario(scenarioFromQueryString());
   </script>
 </body>
 </html>

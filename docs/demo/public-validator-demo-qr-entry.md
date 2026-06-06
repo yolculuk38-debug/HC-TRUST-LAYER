@@ -62,13 +62,13 @@ The fixture is not a generated artifact, canonical record, schema, validator inp
 | `news` | `news_source_provenance` | `HC-DEMO-PV-FIXTURE-NEWS-0001` | `public-validator-static-viewer.html?scenario=news` | `docs/demo/public-validator-static-viewer.html` |
 | `qr-spoof` | `qr_spoof_non_canonical_link` | `HC-DEMO-PV-FIXTURE-QR-0001` | `public-validator-static-viewer.html?scenario=qr-spoof` | `docs/demo/public-validator-static-viewer.html` |
 
-The `demo_url` values describe intended demo entry points. The current static viewer remains a local static demo surface and does not provide production routing, backend lookup, remote fetching, or signed QR validation.
+The `demo_url` values are static viewer entry points. When opened in a browser, the `scenario` query-string value selects the matching bundled demo scenario automatically. Unsupported or missing scenario values fall back to the `banana` demo scenario. The current static viewer remains a local static demo surface and does not provide production routing, backend lookup, remote fetching, QR authenticity checks, or signed QR validation.
 
 ## How to Use
 
-1. Open [`public-validator-static-viewer.html`](public-validator-static-viewer.html) locally in a browser.
+1. Open [`public-validator-static-viewer.html`](public-validator-static-viewer.html) locally in a browser, or open a demo entry URL such as `public-validator-static-viewer.html?scenario=banana`.
 2. Use one of the demo links from the fixture or the scenario table as the intended QR/link entry target.
-3. Select the matching scenario in the static viewer if it is not already selected.
+3. Confirm the selected scenario in the static viewer; the page also keeps manual scenario buttons for reviewer comparison.
 4. Review the displayed `record_id`, `scenario`, evidence list, missing evidence, conflicts, source chain, responsibility chain, and warnings.
 5. Treat the result as advisory-only and require human review before relying on any displayed claim.
 

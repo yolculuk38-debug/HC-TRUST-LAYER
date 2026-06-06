@@ -15,7 +15,7 @@ The runner is local-only. It does not make external network calls, contact live 
 
 ## Static browser viewer
 
-Open [`docs/demo/public-validator-static-viewer.html`](public-validator-static-viewer.html) in a browser to view the same public-safe demo scenario shape as a static HC result card. The viewer is demo-only, local-only, deterministic, and does not use a backend, external network calls, external dependencies, or a build step.
+Open [`docs/demo/public-validator-static-viewer.html`](public-validator-static-viewer.html) in a browser to view the same public-safe demo scenario shape as a static HC result card. The viewer accepts static query-string demo entry links for the bundled scenarios: `public-validator-static-viewer.html?scenario=banana`, `public-validator-static-viewer.html?scenario=building`, `public-validator-static-viewer.html?scenario=news`, and `public-validator-static-viewer.html?scenario=qr-spoof`. Unsupported or missing scenario values fall back to the `banana` demo scenario. The viewer is demo-only, local-only, deterministic, and does not use a backend, external network calls, external dependencies, or a build step. Query-string selection is a navigation convenience only; it does not prove QR authenticity, validate signed payloads, or certify any real-world claim.
 
 ## What this demo does
 
