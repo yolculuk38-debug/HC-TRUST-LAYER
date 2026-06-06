@@ -12,7 +12,11 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from hc_runtime.qr_payload_parser import parse_qr_payload
+from hc_runtime.qr_payload_parser import (
+    ALLOWED_QR_PAYLOAD_STATUSES,
+    RESULT_FIELD_CONTRACT,
+    parse_qr_payload,
+)
 
 CLI = ROOT / "scripts" / "run_qr_payload_parser.py"
 
@@ -23,15 +27,7 @@ EXPECTED_SAFETY_MARKERS = {
     "truth_guarantee": False,
     "human_review_required": True,
 }
-STABLE_OUTPUT_FIELDS = (
-    "status",
-    "advisory_only",
-    "public_safe",
-    "truth_guarantee",
-    "human_review_required",
-    "warnings",
-    "errors",
-)
+STABLE_OUTPUT_FIELDS = RESULT_FIELD_CONTRACT
 
 VALID_PAYLOAD = {
     "qr_version": "1",
@@ -67,6 +63,13 @@ def load_cli_module():
     return module
 
 
+def assert_exact_result_contract(result):
+    assert set(result) == set(RESULT_FIELD_CONTRACT)
+    assert result["status"] in ALLOWED_QR_PAYLOAD_STATUSES
+    assert_safety_markers(result)
+    assert_public_safe_list_shape(result)
+
+
 def test_valid_payload_returns_advisory_valid_payload():
     result = parse_qr_payload(encode(VALID_PAYLOAD))
 
@@ -77,6 +80,69 @@ def test_valid_payload_returns_advisory_valid_payload():
     assert result["public_safe"] is True
     assert result["truth_guarantee"] is False
     assert result["human_review_required"] is True
+    assert_exact_result_contract(result)
+
+
+def test_valid_payload_has_exact_top_level_field_set():
+    result = parse_qr_payload(encode(VALID_PAYLOAD))
+
+    assert_exact_result_contract(result)
+
+
+def test_invalid_payload_has_exact_top_level_field_set():
+    payload = dict(VALID_PAYLOAD)
+    del payload["payload_hash"]
+
+    result = parse_qr_payload(encode(payload))
+
+    assert result["status"] == "invalid_payload"
+    assert_exact_result_contract(result)
+
+
+def test_malformed_payload_has_exact_top_level_field_set():
+    result = parse_qr_payload('{"record_id":')
+
+    assert result["status"] == "malformed_payload"
+    assert_exact_result_contract(result)
+
+
+def test_parser_results_only_use_allowed_statuses():
+    malformed = parse_qr_payload('{"record_id":')
+    invalid = parse_qr_payload(encode({"record_id": "bad"}))
+    valid = parse_qr_payload(encode(VALID_PAYLOAD))
+
+    assert set(ALLOWED_QR_PAYLOAD_STATUSES) == {
+        "valid_payload",
+        "invalid_payload",
+        "malformed_payload",
+    }
+    assert {valid["status"], invalid["status"], malformed["status"]} == set(
+        ALLOWED_QR_PAYLOAD_STATUSES
+    )
+
+
+def test_parser_result_safety_markers_are_fixed_values():
+    for raw_payload in [
+        encode(VALID_PAYLOAD),
+        '{"record_id":',
+        encode({"record_id": "bad"}),
+    ]:
+        result = parse_qr_payload(raw_payload)
+
+        assert {marker: result[marker] for marker in EXPECTED_SAFETY_MARKERS} == (
+            EXPECTED_SAFETY_MARKERS
+        )
+
+
+def test_parser_result_warnings_and_errors_are_always_lists():
+    for raw_payload in [
+        encode(VALID_PAYLOAD),
+        '{"record_id":',
+        encode({"record_id": "bad"}),
+    ]:
+        result = parse_qr_payload(raw_payload)
+
+        assert_public_safe_list_shape(result)
 
 
 def test_missing_field_returns_warning_and_invalid_payload():
@@ -181,6 +247,19 @@ def test_cli_output_preserves_safety_markers():
     assert result["public_safe"] is True
     assert result["truth_guarantee"] is False
     assert result["human_review_required"] is True
+
+
+def test_cli_output_preserves_exact_field_set():
+    for raw_payload in [
+        encode(VALID_PAYLOAD),
+        '{"record_id":',
+        encode({"record_id": "bad"}),
+    ]:
+        completed = run_cli(raw_payload)
+        result = json.loads(completed.stdout)
+
+        assert completed.stderr == ""
+        assert_exact_result_contract(result)
 
 
 def test_cli_does_not_fetch_urls_or_call_network(monkeypatch, capsys):
