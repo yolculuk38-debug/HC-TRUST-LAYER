@@ -31,9 +31,11 @@ demo QR or link
 → human review reminder
 ```
 
-In this demo posture, the QR or link is only an entry point. It does not prove that the QR label is authentic, that a scanned URL is canonical, that a payload is signed, or that a real-world claim is true.
+In this demo posture, the QR or link is only an entry point. It does not prove that the QR label is authentic, that a scanned URL is canonical, that a payload is signed, or that a real-world claim is true. The Record ID input follows the same boundary: fixture matching only, not canonical lookup or security verification.
 
 The static viewer remains the visible public demo surface. The scenario result remains advisory-only and public-safe, with `truth_guarantee: false` and `human_review_required: true`.
+
+The viewer also includes a Record ID fixture input for demo convenience. It maps only the bundled demo IDs to bundled scenarios and must not be treated as canonical record lookup, database lookup, production verification, truth verification, QR authenticity proof, or signed payload verification.
 
 ## Demo Link Fixtures
 
