@@ -51,6 +51,7 @@ Use these HC:// Public Validator demo entry points for a fast, public-safe, advi
 - Run the local demo runner from the repository root: [`scripts/run_public_validator_demo.py`](../scripts/run_public_validator_demo.py)
 - Read the demo quickstart: [`docs/demo/public-validator-demo-quickstart.md`](demo/public-validator-demo-quickstart.md)
 - Try the local `record_id` lookup quickstart: [`docs/demo/public-validator-local-lookup-quickstart.md`](demo/public-validator-local-lookup-quickstart.md). Example: `python scripts/run_public_validator_lookup.py HC-EXAMPLE-2026-0001`. This command is local-only, advisory-only, public-safe, not a production API, not truth verification, not QR authenticity proof, not signed payload verification, and not legal/regulatory/safety certification; human review remains required.
+- Read the QR trust-boundary specification: [`docs/security/qr-payload-verification-boundary.md`](security/qr-payload-verification-boundary.md). It defines the future QR payload verification boundary without implementing QR crypto, signing, runtime behavior, validators, schemas, workflows, backend/API behavior, or network calls.
 
 ### For First-Time Contributors
 

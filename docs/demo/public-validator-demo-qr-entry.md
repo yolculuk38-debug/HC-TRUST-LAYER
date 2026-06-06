@@ -13,6 +13,8 @@ The entry flow is intentionally small and public-safe. A demo QR or ordinary lin
 
 No real QR artifacts are generated here. The links are fixture-level examples only and do not assert signed QR verification, production QR security, legal authority, certification authority, truth finality, or forensic certainty.
 
+For the next trust-boundary specification, see [QR Payload Verification Boundary](../security/qr-payload-verification-boundary.md).
+
 ## Purpose
 
 The purpose of this entry point is to show how a future public-facing HC:// validation experience could begin from a QR scan or link click without expanding the protocol, changing validator logic, or claiming production readiness.
