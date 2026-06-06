@@ -1,0 +1,32 @@
+{
+  "advisory_only": true,
+  "checked_paths": [
+    "records/pending/*.json",
+    "records/verified/*.json",
+    "records/archived/*.json"
+  ],
+  "errors": [],
+  "found": false,
+  "hash_validation": {
+    "errors": [],
+    "status": "not_checked"
+  },
+  "human_review_required": true,
+  "public_safe": true,
+  "record_id": "HC-NOT-FOUND-2026-0001",
+  "schema_validation": {
+    "errors": [],
+    "status": "not_checked"
+  },
+  "source_path": null,
+  "status": "not_found",
+  "truth_guarantee": false,
+  "validation_summary": {
+    "canonical_record_checked": false,
+    "hash_passed": false,
+    "schema_passed": false
+  },
+  "warnings": [
+    "No matching record_id was found in allowed canonical record directories; demo fixtures and generated artifacts were not checked."
+  ]
+}
