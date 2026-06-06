@@ -1,6 +1,6 @@
 # Local Public Validator Lookup Quickstart
 
-> **Status:** PR #657 CLI quickstart for the local Public Validator lookup
+> **Status:** PR #659 test-backed CLI quickstart for the local Public Validator lookup
 > **Scope:** documentation/examples for local `record_id` lookup and advisory schema/hash signals
 > **Authority:** advisory-only; human review remains required
 > **Production readiness:** not claimed
@@ -48,7 +48,7 @@ From the repository root:
 python scripts/run_public_validator_lookup.py HC-EXAMPLE-2026-0001
 ```
 
-The command prints JSON to standard output. Stable illustrative golden output fixtures are also available under [`fixtures/local-validator-output/`](fixtures/local-validator-output/). They are reviewer examples for comparing result shapes, not canonical records, production API responses, signed payloads, QR artifacts, or truth-verification evidence.
+The command prints JSON to standard output. Stable illustrative golden output fixtures are also available under [`fixtures/local-validator-output/`](fixtures/local-validator-output/). Tests compare CLI output against stable fixture contract fields for found, unknown, and invalid lookup examples. The fixtures are reviewer examples for comparing result shapes, not canonical records, production API responses, signed payloads, QR artifacts, or truth-verification evidence.
 
 ## Example: Found Record
 
