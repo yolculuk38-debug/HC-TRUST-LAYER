@@ -1,0 +1,11 @@
+{
+  "qr_version": "1",
+  "record_id": "HC-EXAMPLE-2026-0001",
+  "canonical_url": "https://example.invalid/record/HC-EXAMPLE-2026-0001",
+  "payload_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "content_hash": "demo-content-hash-not-record-truth-proof",
+  "issued_at": "2026-01-01T00:00:00Z",
+  "issuer_id": "demo-review-issuer",
+  "algorithm": "none",
+  "key_id": "demo-key"
+}

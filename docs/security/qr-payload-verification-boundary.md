@@ -67,7 +67,7 @@ Every parser result must remain public-safe and use the same stable top-level fi
 
 Allowed `status` values are `valid_payload`, `invalid_payload`, and `malformed_payload`. `warnings` and `errors` must always be lists. Unknown payload fields should produce public-safe warnings instead of crashing or triggering network lookup. Missing required fields should produce `invalid_payload`, a mismatched `payload_hash` should produce `invalid_payload` as a safer local integrity-failure signal, and malformed JSON should produce `malformed_payload`.
 
-The current parser includes an advisory MVP `payload_hash` canonicalization rule for local parser consistency only. It parses the payload as a JSON object, removes the `payload_hash` field before hashing, serializes the remaining object with sorted keys and compact separators, UTF-8 encodes that JSON, and compares the SHA-256 hex digest with `payload_hash`. This rule is not a final signing canonicalization standard, does not verify signatures, and does not prove QR authenticity or record truth.
+The current parser includes an advisory MVP `payload_hash` canonicalization rule for local parser consistency only. It parses the payload as a JSON object, removes the `payload_hash` field before hashing, serializes the remaining object with sorted keys and compact separators, UTF-8 encodes that JSON, computes the SHA-256 hex digest, and compares it with `payload_hash` after normalizing hexadecimal case and surrounding whitespace. This rule is not a final signing canonicalization standard, does not verify signatures, does not fetch `canonical_url`, and does not prove QR authenticity or record truth.
 
 The safety markers are fixed for this parser contract: `advisory_only` is `true`, `public_safe` is `true`, `truth_guarantee` is `false`, and `human_review_required` is `true`. A `valid_payload` result means only that local parser shape checks and any present advisory `payload_hash` consistency check passed. It must not imply QR authenticity, signature verification, truth verification, URL fetching, issuer approval, legal authority, safety certification, or production readiness.
 
@@ -79,6 +79,9 @@ Run these examples from the repository root:
 
 ```bash
 python scripts/run_qr_payload_parser.py "$(cat docs/demo/fixtures/qr-payload-parser/valid-payload.json)"
+python scripts/run_qr_payload_parser.py "$(cat docs/demo/fixtures/qr-payload-parser/matching-payload-hash.json)"
+python scripts/run_qr_payload_parser.py "$(cat docs/demo/fixtures/qr-payload-parser/mismatched-payload-hash.json)"
+python scripts/run_qr_payload_parser.py "$(cat docs/demo/fixtures/qr-payload-parser/uppercase-payload-hash.json)"
 python scripts/run_qr_payload_parser.py "$(cat docs/demo/fixtures/qr-payload-parser/missing-field-payload.json)"
 python scripts/run_qr_payload_parser.py "$(cat docs/demo/fixtures/qr-payload-parser/malformed-payload.txt)"
 python scripts/run_qr_payload_parser.py "$(cat docs/demo/fixtures/qr-payload-parser/unknown-field-payload.json)"

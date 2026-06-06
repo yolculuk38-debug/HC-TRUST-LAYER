@@ -448,6 +448,60 @@ def test_cli_unknown_field_fixture_matches_stable_golden_output_shape():
     assert result["errors"] == []
 
 
+def test_cli_matching_payload_hash_fixture_matches_stable_golden_output_shape():
+    result = cli_fixture_result("matching-payload-hash.json")
+
+    assert stable_output(result) == {
+        "status": "valid_payload",
+        **EXPECTED_SAFETY_MARKERS,
+        "warnings": [],
+        "errors": [],
+    }
+    assert_public_safe_list_shape(result)
+
+
+def test_cli_mismatched_payload_hash_fixture_matches_stable_golden_output_shape():
+    result = cli_fixture_result("mismatched-payload-hash.json")
+
+    assert stable_output(result) == {
+        "status": "invalid_payload",
+        **EXPECTED_SAFETY_MARKERS,
+        "warnings": [],
+        "errors": [
+            "QR payload payload_hash does not match advisory canonical payload hash."
+        ],
+    }
+    assert_public_safe_list_shape(result)
+
+
+def test_cli_uppercase_payload_hash_fixture_normalizes_hex_case():
+    result = cli_fixture_result("uppercase-payload-hash.json")
+
+    assert stable_output(result) == {
+        "status": "valid_payload",
+        **EXPECTED_SAFETY_MARKERS,
+        "warnings": [],
+        "errors": [],
+    }
+    assert_public_safe_list_shape(result)
+
+
+def test_cli_payload_hash_fixtures_do_not_claim_authenticity_or_signature_verification():
+    for fixture_name in [
+        "matching-payload-hash.json",
+        "mismatched-payload-hash.json",
+        "uppercase-payload-hash.json",
+    ]:
+        result = cli_fixture_result(fixture_name)
+        output = json.dumps(result, sort_keys=True).lower()
+
+        assert "authentic" not in output
+        assert "signature" not in output
+        assert "verified" not in output
+        assert "signature_verified" not in result
+        assert "qr_authenticity_proven" not in result
+
+
 def test_cli_malformed_fixture_matches_stable_golden_output_shape():
     result = cli_fixture_result("malformed-payload.txt")
 
