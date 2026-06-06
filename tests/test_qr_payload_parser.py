@@ -1,3 +1,4 @@
+import hashlib
 import importlib.util
 import json
 import socket
@@ -33,7 +34,7 @@ VALID_PAYLOAD = {
     "qr_version": "1",
     "record_id": "HC-EXAMPLE-2026-0001",
     "canonical_url": "https://example.invalid/record/HC-EXAMPLE-2026-0001",
-    "payload_hash": "abc",
+    "payload_hash": "771d6e804359164526070f3806d2f82cd53bf71f49e6fa843f067e7f848d3271",
     "content_hash": "def",
     "issued_at": "2026-01-01T00:00:00Z",
     "issuer_id": "demo",
@@ -44,6 +45,22 @@ VALID_PAYLOAD = {
 
 def encode(payload):
     return json.dumps(payload)
+
+
+def advisory_payload_hash(payload):
+    canonical_payload = dict(payload)
+    canonical_payload.pop("payload_hash", None)
+    return hashlib.sha256(
+        json.dumps(canonical_payload, sort_keys=True, separators=(",", ":")).encode(
+            "utf-8"
+        )
+    ).hexdigest()
+
+
+def with_matching_payload_hash(payload):
+    updated = dict(payload)
+    updated["payload_hash"] = advisory_payload_hash(updated)
+    return updated
 
 
 def run_cli(raw_payload):
@@ -145,6 +162,56 @@ def test_parser_result_warnings_and_errors_are_always_lists():
         assert_public_safe_list_shape(result)
 
 
+def test_matching_payload_hash_passes_advisory_hash_check():
+    payload = with_matching_payload_hash(VALID_PAYLOAD)
+
+    result = parse_qr_payload(encode(payload))
+
+    assert result["status"] == "valid_payload"
+    assert result["warnings"] == []
+    assert result["errors"] == []
+
+
+def test_mismatched_payload_hash_returns_public_safe_error():
+    payload = dict(VALID_PAYLOAD, payload_hash="mismatched-advisory-hash")
+
+    result = parse_qr_payload(encode(payload))
+
+    assert result["status"] == "invalid_payload"
+    assert result["warnings"] == []
+    assert result["errors"] == [
+        "QR payload payload_hash does not match advisory canonical payload hash."
+    ]
+    assert_exact_result_contract(result)
+
+
+def test_advisory_hash_canonicalization_ignores_payload_hash_field_itself():
+    payload = with_matching_payload_hash(VALID_PAYLOAD)
+    changed_hash = dict(payload, payload_hash="different-self-reference")
+
+    assert advisory_payload_hash(payload) == advisory_payload_hash(changed_hash)
+
+    result = parse_qr_payload(encode(changed_hash))
+
+    assert result["status"] == "invalid_payload"
+    assert result["errors"] == [
+        "QR payload payload_hash does not match advisory canonical payload hash."
+    ]
+
+
+def test_advisory_hash_canonicalization_ignores_field_order():
+    payload = with_matching_payload_hash(VALID_PAYLOAD)
+    reordered_payload = {key: payload[key] for key in reversed(payload)}
+
+    assert encode(payload) != encode(reordered_payload)
+
+    result = parse_qr_payload(encode(reordered_payload))
+
+    assert result["status"] == "valid_payload"
+    assert result["warnings"] == []
+    assert result["errors"] == []
+
+
 def test_missing_field_returns_warning_and_invalid_payload():
     payload = dict(VALID_PAYLOAD)
     del payload["payload_hash"]
@@ -180,7 +247,7 @@ def test_invalid_record_id_returns_invalid_payload():
 
 
 def test_unknown_field_returns_warning_without_invalidating_payload():
-    payload = dict(VALID_PAYLOAD, debug_note="local-only")
+    payload = with_matching_payload_hash(dict(VALID_PAYLOAD, debug_note="local-only"))
 
     result = parse_qr_payload(encode(payload))
 
@@ -228,6 +295,21 @@ def test_cli_missing_field_returns_invalid_payload():
 
     assert completed.stderr == ""
     assert result["status"] == "invalid_payload"
+
+
+def test_cli_mismatched_payload_hash_preserves_contract_and_error_behavior():
+    payload = dict(VALID_PAYLOAD, payload_hash="mismatched-advisory-hash")
+
+    completed = run_cli(encode(payload))
+    result = json.loads(completed.stdout)
+
+    assert completed.stderr == ""
+    assert result["status"] == "invalid_payload"
+    assert result["warnings"] == []
+    assert result["errors"] == [
+        "QR payload payload_hash does not match advisory canonical payload hash."
+    ]
+    assert_exact_result_contract(result)
 
 
 def test_cli_output_is_valid_json():
