@@ -32,6 +32,22 @@ REQUIRED_FIELDS = (
 EXPECTED_FIELD_TYPES = {field: str for field in REQUIRED_FIELDS}
 RECORD_ID_RE = re.compile(r"^HC-[A-Z0-9]+(?:-[A-Z0-9]+)*-\d{4}-\d{4}$")
 
+ALLOWED_QR_PAYLOAD_STATUSES = (
+    VALID_PAYLOAD,
+    INVALID_PAYLOAD,
+    MALFORMED_PAYLOAD,
+)
+
+RESULT_FIELD_CONTRACT = (
+    "status",
+    "warnings",
+    "errors",
+    "advisory_only",
+    "public_safe",
+    "truth_guarantee",
+    "human_review_required",
+)
+
 SAFETY_MARKERS = {
     "advisory_only": True,
     "public_safe": True,
@@ -40,19 +56,24 @@ SAFETY_MARKERS = {
 }
 
 
-def _base_result(
+def _build_result(
     status: str,
     warnings: Optional[list[str]] = None,
     errors: Optional[list[str]] = None,
 ) -> dict[str, Any]:
-    """Build the public-safe parser response with mandatory safety markers."""
+    """Build the exact public-safe parser response contract."""
 
-    return {
+    if status not in ALLOWED_QR_PAYLOAD_STATUSES:
+        raise ValueError(f"Unsupported QR payload parser status: {status}")
+
+    result = {
         "status": status,
-        "warnings": warnings or [],
-        "errors": errors or [],
+        "warnings": list(warnings or []),
+        "errors": list(errors or []),
         **SAFETY_MARKERS,
     }
+
+    return {field: result[field] for field in RESULT_FIELD_CONTRACT}
 
 
 def _load_payload(payload: str) -> Tuple[Optional[dict[str, Any]], list[str]]:
@@ -101,7 +122,7 @@ def parse_qr_payload(payload: str) -> dict[str, Any]:
 
     data, malformed_errors = _load_payload(payload)
     if malformed_errors:
-        return _base_result(MALFORMED_PAYLOAD, errors=malformed_errors)
+        return _build_result(MALFORMED_PAYLOAD, errors=malformed_errors)
     assert data is not None
 
     warnings: list[str] = []
@@ -156,12 +177,14 @@ def parse_qr_payload(payload: str) -> dict[str, Any]:
         )
 
     status = INVALID_PAYLOAD if errors else VALID_PAYLOAD
-    return _base_result(status, warnings=warnings, errors=errors)
+    return _build_result(status, warnings=warnings, errors=errors)
 
 
 __all__ = [
+    "ALLOWED_QR_PAYLOAD_STATUSES",
     "INVALID_PAYLOAD",
     "MALFORMED_PAYLOAD",
+    "RESULT_FIELD_CONTRACT",
     "VALID_PAYLOAD",
     "parse_qr_payload",
 ]

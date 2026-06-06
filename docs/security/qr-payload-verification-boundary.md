@@ -52,6 +52,22 @@ The CLI parser:
 - does not verify truth, issuer authority, safety, legality, or production readiness;
 - keeps human review required.
 
+## Parser Result Contract
+
+Every parser result must remain public-safe and use the same stable top-level field set:
+
+- `status`;
+- `warnings`;
+- `errors`;
+- `advisory_only`;
+- `public_safe`;
+- `truth_guarantee`;
+- `human_review_required`.
+
+Allowed `status` values are `valid_payload`, `invalid_payload`, and `malformed_payload`. `warnings` and `errors` must always be lists. Unknown payload fields should produce public-safe warnings instead of crashing or triggering network lookup. Missing required fields should produce `invalid_payload`, and malformed JSON should produce `malformed_payload`.
+
+The safety markers are fixed for this parser contract: `advisory_only` is `true`, `public_safe` is `true`, `truth_guarantee` is `false`, and `human_review_required` is `true`. A `valid_payload` result means only that local parser shape checks passed. It must not imply QR authenticity, signature verification, truth verification, URL fetching, issuer approval, legal authority, safety certification, or production readiness.
+
 ## Reviewer Fixture Quickstart
 
 Example payload fixtures are available under [`docs/demo/fixtures/qr-payload-parser/`](../demo/fixtures/qr-payload-parser/). They are documentation/demo fixtures only, not canonical records, schemas, validators, signed QR payloads, production QR manifests, runtime lookup material, backend/API responses, or truth-verification evidence.
