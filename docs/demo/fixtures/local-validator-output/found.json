@@ -1,0 +1,32 @@
+{
+  "advisory_only": true,
+  "checked_paths": [
+    "records/pending/*.json",
+    "records/verified/*.json",
+    "records/archived/*.json"
+  ],
+  "errors": [],
+  "found": true,
+  "hash_validation": {
+    "errors": [],
+    "status": "pass"
+  },
+  "human_review_required": true,
+  "public_safe": true,
+  "record_id": "HC-EXAMPLE-2026-0001",
+  "schema_validation": {
+    "errors": [],
+    "status": "pass"
+  },
+  "source_path": "records/pending/HC-EXAMPLE-2026-0001.json",
+  "status": "found",
+  "truth_guarantee": false,
+  "validation_summary": {
+    "canonical_record_checked": true,
+    "hash_passed": true,
+    "schema_passed": true
+  },
+  "warnings": [
+    "Local MVP lookup only; schema/hash validation signals are advisory and do not provide truth verification, QR authenticity, or signed payload verification."
+  ]
+}

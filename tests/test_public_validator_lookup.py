@@ -8,6 +8,7 @@ from hc_runtime.public_validator_lookup import SAFETY_MARKERS, lookup_public_val
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNNER = ROOT / "scripts" / "run_public_validator_lookup.py"
+GOLDEN_OUTPUT_FIXTURES = ROOT / "docs" / "demo" / "fixtures" / "local-validator-output"
 REQUIRED_FIELDS = {
     "record_id",
     "status",
@@ -315,6 +316,44 @@ def test_canonical_record_checked_only_when_single_canonical_match_is_checked(tm
         assert result["source_path"] is None
         assert result["validation_summary"]["canonical_record_checked"] is False
 
+
+def test_local_validator_golden_fixtures_preserve_public_safe_contract() -> None:
+    expected_statuses = {
+        "found.json": "found",
+        "not-found.json": "not_found",
+        "invalid-record-id.json": "invalid_record_id",
+    }
+
+    for fixture_name, expected_status in expected_statuses.items():
+        fixture = json.loads((GOLDEN_OUTPUT_FIXTURES / fixture_name).read_text(encoding="utf-8"))
+
+        _assert_public_safe_shape(fixture)
+        assert fixture["status"] == expected_status
+
+
+def test_cli_found_output_matches_golden_fixture_contract_shape() -> None:
+    completed = subprocess.run(
+        [sys.executable, str(RUNNER), "HC-EXAMPLE-2026-0001"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    payload = json.loads(completed.stdout)
+    fixture = json.loads((GOLDEN_OUTPUT_FIXTURES / "found.json").read_text(encoding="utf-8"))
+
+    _assert_public_safe_shape(payload)
+    _assert_public_safe_shape(fixture)
+    assert set(payload) == set(fixture)
+    assert set(payload["schema_validation"]) == set(fixture["schema_validation"])
+    assert set(payload["hash_validation"]) == set(fixture["hash_validation"])
+    assert set(payload["validation_summary"]) == set(fixture["validation_summary"])
+    assert payload["checked_paths"] == fixture["checked_paths"]
+    for key in SAFETY_MARKERS:
+        assert payload[key] is fixture[key]
+    assert payload["record_id"] == fixture["record_id"]
+    assert payload["status"] == fixture["status"]
+    assert payload["found"] is fixture["found"]
+    assert payload["source_path"] == fixture["source_path"]
 
 def test_cli_output_matches_result_contract_for_found_and_invalid() -> None:
     for record_id, expected_status in [

@@ -1,0 +1,32 @@
+{
+  "advisory_only": true,
+  "checked_paths": [
+    "records/pending/*.json",
+    "records/verified/*.json",
+    "records/archived/*.json"
+  ],
+  "errors": [
+    "Invalid record_id. Provide a non-empty record_id, not a path, URL, or query."
+  ],
+  "found": false,
+  "hash_validation": {
+    "errors": [],
+    "status": "not_checked"
+  },
+  "human_review_required": true,
+  "public_safe": true,
+  "record_id": "../records/pending/example.json",
+  "schema_validation": {
+    "errors": [],
+    "status": "not_checked"
+  },
+  "source_path": null,
+  "status": "invalid_record_id",
+  "truth_guarantee": false,
+  "validation_summary": {
+    "canonical_record_checked": false,
+    "hash_passed": false,
+    "schema_passed": false
+  },
+  "warnings": []
+}

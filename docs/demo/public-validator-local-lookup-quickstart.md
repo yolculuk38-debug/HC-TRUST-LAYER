@@ -48,7 +48,7 @@ From the repository root:
 python scripts/run_public_validator_lookup.py HC-EXAMPLE-2026-0001
 ```
 
-The command prints JSON to standard output.
+The command prints JSON to standard output. Stable illustrative golden output fixtures are also available under [`fixtures/local-validator-output/`](fixtures/local-validator-output/). They are reviewer examples for comparing result shapes, not canonical records, production API responses, signed payloads, QR artifacts, or truth-verification evidence.
 
 ## Example: Found Record
 
