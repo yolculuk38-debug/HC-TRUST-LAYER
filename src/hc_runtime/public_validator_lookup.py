@@ -13,6 +13,26 @@ ALLOWED_RECORD_PATTERNS: tuple[str, ...] = (
     "records/verified/*.json",
     "records/archived/*.json",
 )
+RESULT_FIELD_CONTRACT: tuple[str, ...] = (
+    "record_id",
+    "status",
+    "found",
+    "source_path",
+    "advisory_only",
+    "public_safe",
+    "truth_guarantee",
+    "human_review_required",
+    "warnings",
+    "errors",
+    "checked_paths",
+    "schema_validation",
+    "hash_validation",
+    "validation_summary",
+)
+ALLOWED_LOOKUP_STATUSES: frozenset[str] = frozenset(
+    {"found", "not_found", "duplicate_record_id", "invalid_record_id", "lookup_error"}
+)
+ALLOWED_VALIDATION_STATUSES: frozenset[str] = frozenset({"pass", "fail", "not_checked"})
 SAFETY_MARKERS: dict[str, bool] = {
     "advisory_only": True,
     "public_safe": True,
@@ -24,6 +44,8 @@ _VALID_RECORD_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9:_-]{0,199}$")
 
 
 def _validation_result(status: str = "not_checked", errors: list[str] | None = None) -> dict[str, Any]:
+    if status not in ALLOWED_VALIDATION_STATUSES:
+        raise ValueError(f"Unsupported validation status: {status}")
     return {"status": status, "errors": list(errors or [])}
 
 
@@ -32,7 +54,9 @@ def _checked_paths() -> list[str]:
 
 
 def _base_result(record_id: str, status: str, found: bool) -> dict[str, Any]:
-    return {
+    if status not in ALLOWED_LOOKUP_STATUSES:
+        raise ValueError(f"Unsupported lookup status: {status}")
+    result = {
         "record_id": record_id,
         "status": status,
         "found": found,
@@ -49,6 +73,9 @@ def _base_result(record_id: str, status: str, found: bool) -> dict[str, Any]:
             "canonical_record_checked": False,
         },
     }
+    if tuple(result) != RESULT_FIELD_CONTRACT:
+        raise RuntimeError("Public Validator lookup result contract changed unexpectedly.")
+    return result
 
 
 def _is_valid_record_id(record_id: object) -> bool:

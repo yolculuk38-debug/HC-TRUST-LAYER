@@ -24,6 +24,15 @@ REQUIRED_FIELDS = {
     "hash_validation",
     "validation_summary",
 }
+REQUIRED_VALIDATION_FIELDS = {"status", "errors"}
+REQUIRED_SUMMARY_FIELDS = {"schema_passed", "hash_passed", "canonical_record_checked"}
+ALLOWED_LOOKUP_STATUSES = {"found", "not_found", "duplicate_record_id", "invalid_record_id", "lookup_error"}
+ALLOWED_VALIDATION_STATUSES = {"pass", "fail", "not_checked"}
+DETERMINISTIC_CHECKED_PATHS = [
+    "records/pending/*.json",
+    "records/verified/*.json",
+    "records/archived/*.json",
+]
 
 
 def _valid_record_payload(record_id: str, *, content: str = "public validator lookup test") -> dict[str, object]:
@@ -55,19 +64,22 @@ def _copy_record_schema(root: Path) -> None:
 
 
 def _assert_public_safe_shape(result: dict[str, object]) -> None:
-    assert REQUIRED_FIELDS.issubset(result)
+    assert set(result) == REQUIRED_FIELDS
+    assert result["status"] in ALLOWED_LOOKUP_STATUSES
     for key, value in SAFETY_MARKERS.items():
         assert result[key] is value
     assert isinstance(result["warnings"], list)
     assert isinstance(result["errors"], list)
-    assert result["checked_paths"] == [
-        "records/pending/*.json",
-        "records/verified/*.json",
-        "records/archived/*.json",
-    ]
-    assert isinstance(result["schema_validation"], dict)
-    assert isinstance(result["hash_validation"], dict)
-    assert isinstance(result["validation_summary"], dict)
+    assert result["checked_paths"] == DETERMINISTIC_CHECKED_PATHS
+    assert set(result["schema_validation"]) == REQUIRED_VALIDATION_FIELDS
+    assert set(result["hash_validation"]) == REQUIRED_VALIDATION_FIELDS
+    assert result["schema_validation"]["status"] in ALLOWED_VALIDATION_STATUSES
+    assert result["hash_validation"]["status"] in ALLOWED_VALIDATION_STATUSES
+    assert isinstance(result["schema_validation"]["errors"], list)
+    assert isinstance(result["hash_validation"]["errors"], list)
+    assert set(result["validation_summary"]) == REQUIRED_SUMMARY_FIELDS
+    for value in result["validation_summary"].values():
+        assert isinstance(value, bool)
 
 
 def _schema_validation_supported() -> bool:
@@ -242,3 +254,82 @@ def test_runner_returns_deterministic_public_safe_json() -> None:
     _assert_public_safe_shape(first_payload)
     assert first_payload == second_payload
     assert first_payload["status"] == "found"
+
+
+def test_all_non_found_statuses_keep_full_contract_and_null_source_path(tmp_path: Path) -> None:
+    duplicate_id = "HC-DUP-CONTRACT-2026-0001"
+    _write_record(tmp_path / "records" / "pending" / "one.json", duplicate_id)
+    _write_record(tmp_path / "records" / "verified" / "two.json", duplicate_id)
+
+    corrupt_id = "HC-LOOKUP-ERROR-2026-0001"
+    corrupt_path = tmp_path / "records" / "pending" / f"{corrupt_id}.json"
+    corrupt_path.parent.mkdir(parents=True, exist_ok=True)
+    corrupt_path.write_text("{not-json", encoding="utf-8")
+
+    cases = [
+        lookup_public_validator_record("HC-MISSING-CONTRACT-2026-0001", root=tmp_path),
+        lookup_public_validator_record("../records/pending/HC-BAD.json", root=tmp_path),
+        lookup_public_validator_record(duplicate_id, root=tmp_path),
+        lookup_public_validator_record(corrupt_id, root=tmp_path),
+    ]
+
+    assert {result["status"] for result in cases} == {
+        "not_found",
+        "invalid_record_id",
+        "duplicate_record_id",
+        "lookup_error",
+    }
+    for result in cases:
+        _assert_public_safe_shape(result)
+        assert result["found"] is False
+        assert result["source_path"] is None
+        assert result["schema_validation"] == {"status": "not_checked", "errors": []}
+        assert result["hash_validation"] == {"status": "not_checked", "errors": []}
+        assert result["validation_summary"] == {
+            "schema_passed": False,
+            "hash_passed": False,
+            "canonical_record_checked": False,
+        }
+
+
+def test_canonical_record_checked_only_when_single_canonical_match_is_checked(tmp_path: Path) -> None:
+    single_id = "HC-SINGLE-CHECKED-2026-0001"
+    duplicate_id = "HC-DUP-CHECKED-2026-0001"
+    _write_record(tmp_path / "records" / "pending" / f"{single_id}.json", single_id)
+    _write_record(tmp_path / "records" / "pending" / "duplicate-one.json", duplicate_id)
+    _write_record(tmp_path / "records" / "verified" / "duplicate-two.json", duplicate_id)
+
+    single = lookup_public_validator_record(single_id, root=tmp_path)
+    missing = lookup_public_validator_record("HC-MISSING-CHECKED-2026-0001", root=tmp_path)
+    duplicate = lookup_public_validator_record(duplicate_id, root=tmp_path)
+    invalid = lookup_public_validator_record("https://example.test/HC-SINGLE-CHECKED-2026-0001", root=tmp_path)
+
+    _assert_public_safe_shape(single)
+    assert single["status"] == "found"
+    assert single["validation_summary"]["canonical_record_checked"] is True
+    assert single["source_path"] == f"records/pending/{single_id}.json"
+
+    for result in (missing, duplicate, invalid):
+        _assert_public_safe_shape(result)
+        assert result["status"] != "found"
+        assert result["source_path"] is None
+        assert result["validation_summary"]["canonical_record_checked"] is False
+
+
+def test_cli_output_matches_result_contract_for_found_and_invalid() -> None:
+    for record_id, expected_status in [
+        ("HC-EXAMPLE-2026-0001", "found"),
+        ("https://example.test/HC-EXAMPLE-2026-0001", "invalid_record_id"),
+    ]:
+        completed = subprocess.run(
+            [sys.executable, str(RUNNER), record_id],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        payload = json.loads(completed.stdout)
+        direct = lookup_public_validator_record(record_id, root=ROOT)
+
+        _assert_public_safe_shape(payload)
+        assert payload == direct
+        assert payload["status"] == expected_status

@@ -1,10 +1,10 @@
 # Public Validator Local Record Lookup Boundary
 
-> **Status:** local lookup MVP boundary and #655 validation-signal notes
+> **Status:** local lookup MVP boundary and #656 result-contract notes
 > **Scope:** local-only HC:// Public Validator record lookup
 > **Authority:** advisory-only; human review remains required
 > **Production readiness:** not claimed
-> **Current validation step:** #655 Local Public Validator schema/hash validation integration
+> **Current validation step:** #656 Local Public Validator result contract hardening
 
 ## Purpose
 
@@ -42,7 +42,7 @@ Fixture matching is a demo convenience only. A matching demo `record_id` means o
 
 ## Local MVP Boundary
 
-PR #654 introduced real local lookup while remaining local-only and advisory. PR #655 adds advisory schema/hash validation signals for a matched canonical record without changing the lookup allowlist or claiming truth verification.
+PR #654 introduced real local lookup while remaining local-only and advisory. PR #655 added advisory schema/hash validation signals for a matched canonical record without changing the lookup allowlist or claiming truth verification. PR #656 locks the local Public Validator result contract so public-safe response semantics cannot silently drift.
 
 The current MVP flow is:
 
@@ -93,7 +93,11 @@ A local lookup result must preserve explicit safety markers in its public-safe r
 }
 ```
 
-Additional fields may describe lookup status, source path, checked paths, warnings, errors, and advisory schema/hash validation signals. Schema/hash validation fields must not weaken the safety markers above.
+The stable result contract includes the following top-level fields for every lookup result: `record_id`, `status`, `found`, `source_path`, `advisory_only`, `public_safe`, `truth_guarantee`, `human_review_required`, `warnings`, `errors`, `checked_paths`, `schema_validation`, `hash_validation`, and `validation_summary`. Schema/hash validation fields must not weaken the safety markers above.
+
+`warnings` and `errors` are always lists. `checked_paths` is deterministic and limited to `records/pending/*.json`, `records/verified/*.json`, and `records/archived/*.json`. `source_path` remains `null` unless exactly one allowed canonical record is found.
+
+`schema_validation` and `hash_validation` each expose only `status` and `errors`; validation status values are limited to `pass`, `fail`, and `not_checked`. `validation_summary` exposes `schema_passed`, `hash_passed`, and `canonical_record_checked`. `canonical_record_checked` is true only when exactly one canonical record was found and validation signals were attempted.
 
 ## Boundary Statements
 
@@ -146,3 +150,11 @@ It does not modify:
 ## #655 Validation Signal Boundary
 
 PR **#655 Local Public Validator schema/hash validation integration** remains local-only, preserves deterministic public-safe output, and reports schema/hash validation as advisory signals requiring human review. A schema pass or hash pass means only that the local canonical record shape or `content_hash` check passed through existing reusable local helpers; it is not truth verification, production readiness, QR authenticity proof, issuer authority proof, signature verification, or autonomous governance approval.
+
+## #656 Result Contract Boundary
+
+PR **#656 Local Public Validator result contract hardening** locks the local Public Validator output shape for every lookup status: `found`, `not_found`, `duplicate_record_id`, `invalid_record_id`, and `lookup_error`. Unknown, invalid, duplicate, and lookup-error results still include advisory schema/hash validation fields with public-safe defaults.
+
+The result contract is public-safe and advisory-only. Validation pass values do not establish a truth guarantee, production readiness, QR authenticity proof, signed payload verification, legal authority, or autonomous governance approval. Human review remains required for all result types.
+
+Recommended next PR: **#657 Local Public Validator CLI quickstart and examples**.
