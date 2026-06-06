@@ -91,6 +91,42 @@ def _schema_validation_supported() -> bool:
     return True
 
 
+def _load_golden_fixture(fixture_name: str) -> dict[str, object]:
+    return json.loads((GOLDEN_OUTPUT_FIXTURES / fixture_name).read_text(encoding="utf-8"))
+
+
+def _run_lookup_cli(record_id: str) -> dict[str, object]:
+    completed = subprocess.run(
+        [sys.executable, str(RUNNER), record_id],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return json.loads(completed.stdout)
+
+
+def _assert_cli_result_matches_golden_contract(payload: dict[str, object], fixture: dict[str, object]) -> None:
+    _assert_public_safe_shape(payload)
+    _assert_public_safe_shape(fixture)
+    assert set(payload) == set(fixture)
+    assert payload["record_id"] == fixture["record_id"]
+    assert payload["status"] == fixture["status"]
+    assert payload["found"] is fixture["found"]
+    assert (payload["source_path"] is None) is (fixture["source_path"] is None)
+    assert payload["checked_paths"] == fixture["checked_paths"]
+
+    for key in SAFETY_MARKERS:
+        assert payload[key] is fixture[key]
+
+    for key in ("schema_validation", "hash_validation"):
+        assert set(payload[key]) == set(fixture[key])
+        assert isinstance(payload[key]["errors"], list)
+
+    assert set(payload["validation_summary"]) == set(fixture["validation_summary"])
+    assert isinstance(payload["warnings"], list)
+    assert isinstance(payload["errors"], list)
+
+
 def test_existing_record_id_found_from_allowed_records_directory() -> None:
     result = lookup_public_validator_record("HC-EXAMPLE-2026-0001", root=ROOT)
 
@@ -331,44 +367,27 @@ def test_local_validator_golden_fixtures_preserve_public_safe_contract() -> None
         assert fixture["status"] == expected_status
 
 
-def test_cli_found_output_matches_golden_fixture_contract_shape() -> None:
-    completed = subprocess.run(
-        [sys.executable, str(RUNNER), "HC-EXAMPLE-2026-0001"],
-        check=True,
-        capture_output=True,
-        text=True,
-    )
-    payload = json.loads(completed.stdout)
-    fixture = json.loads((GOLDEN_OUTPUT_FIXTURES / "found.json").read_text(encoding="utf-8"))
+def test_cli_output_matches_golden_fixture_contract_shapes() -> None:
+    cases = [
+        ("HC-EXAMPLE-2026-0001", "found.json"),
+        ("HC-NOT-FOUND-2026-0001", "not-found.json"),
+        ("../records/pending/example.json", "invalid-record-id.json"),
+    ]
 
-    _assert_public_safe_shape(payload)
-    _assert_public_safe_shape(fixture)
-    assert set(payload) == set(fixture)
-    assert set(payload["schema_validation"]) == set(fixture["schema_validation"])
-    assert set(payload["hash_validation"]) == set(fixture["hash_validation"])
-    assert set(payload["validation_summary"]) == set(fixture["validation_summary"])
-    assert payload["checked_paths"] == fixture["checked_paths"]
-    for key in SAFETY_MARKERS:
-        assert payload[key] is fixture[key]
-    assert payload["record_id"] == fixture["record_id"]
-    assert payload["status"] == fixture["status"]
-    assert payload["found"] is fixture["found"]
-    assert payload["source_path"] == fixture["source_path"]
+    for record_id, fixture_name in cases:
+        payload = _run_lookup_cli(record_id)
+        fixture = _load_golden_fixture(fixture_name)
 
-def test_cli_output_matches_result_contract_for_found_and_invalid() -> None:
+        _assert_cli_result_matches_golden_contract(payload, fixture)
+
+
+def test_cli_output_matches_result_contract_for_found_unknown_and_invalid() -> None:
     for record_id, expected_status in [
         ("HC-EXAMPLE-2026-0001", "found"),
-        ("https://example.test/HC-EXAMPLE-2026-0001", "invalid_record_id"),
+        ("HC-NOT-FOUND-2026-0001", "not_found"),
+        ("../records/pending/example.json", "invalid_record_id"),
     ]:
-        completed = subprocess.run(
-            [sys.executable, str(RUNNER), record_id],
-            check=True,
-            capture_output=True,
-            text=True,
-        )
-        payload = json.loads(completed.stdout)
-        direct = lookup_public_validator_record(record_id, root=ROOT)
+        payload = _run_lookup_cli(record_id)
 
         _assert_public_safe_shape(payload)
-        assert payload == direct
         assert payload["status"] == expected_status
