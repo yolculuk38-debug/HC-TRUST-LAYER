@@ -1,0 +1,55 @@
+{
+  "advisory_only": true,
+  "conflicting_evidence": [
+    "Destination intake count differs from export count by two cartons."
+  ],
+  "evidence": [
+    {
+      "evidence_status": "present",
+      "reference": "DEMO-LOT-0187-RECORD",
+      "type": "demo_lot_record"
+    },
+    {
+      "evidence_status": "present",
+      "reference": "DEMO-ORIGIN-INSPECTION-REF",
+      "type": "demo_inspection_summary"
+    },
+    {
+      "evidence_status": "present",
+      "reference": "DEMO-LAB-METHOD-FOOD-01",
+      "type": "demo_lab_method_summary"
+    }
+  ],
+  "human_review_required": true,
+  "missing_evidence": [
+    "Independent confirmation of origin inspection issuer authority",
+    "Destination intake image evidence",
+    "Complete transport temperature log"
+  ],
+  "public_safe": true,
+  "record_id": "HC-DEMO-PV-FIXTURE-FOOD-0001",
+  "responsibility_chain": [
+    "Demo grower cooperative",
+    "Demo packhouse operator",
+    "Demo export broker",
+    "Demo carrier",
+    "Demo destination intake reviewer",
+    "Demo human review approver"
+  ],
+  "scenario": "imported_banana_food_provenance",
+  "source_chain": [
+    "Demo grower cooperative harvest note",
+    "Demo packhouse lot record",
+    "Demo export inspection note",
+    "Demo carrier handoff note",
+    "Demo destination intake note",
+    "Demo lab method summary"
+  ],
+  "status": "needs_human_review",
+  "truth_guarantee": false,
+  "warnings": [
+    "Advisory demo result only; not a food safety certification.",
+    "Visible provenance is incomplete and requires human review.",
+    "Conflicting carton count should be reviewed before relying on this demo result."
+  ]
+}

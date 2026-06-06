@@ -1,0 +1,51 @@
+{
+  "advisory_only": true,
+  "conflicting_evidence": [
+    "Demo press statement and demo meeting note use different date wording for the same event."
+  ],
+  "evidence": [
+    {
+      "evidence_status": "present",
+      "reference": "DEMO-MEETING-NOTE-2026-05-02",
+      "type": "demo_original_source_note"
+    },
+    {
+      "evidence_status": "present",
+      "reference": "DEMO-PRESS-STATEMENT-01",
+      "type": "demo_referenced_source"
+    },
+    {
+      "evidence_status": "present",
+      "reference": "DEMO-CORRECTION-NOTE-01",
+      "type": "demo_correction_history"
+    }
+  ],
+  "human_review_required": true,
+  "missing_evidence": [
+    "Final independent confirmation response",
+    "Full context for the public dataset summary"
+  ],
+  "public_safe": true,
+  "record_id": "HC-DEMO-PV-FIXTURE-NEWS-0001",
+  "responsibility_chain": [
+    "Demo staff reporter",
+    "Demo assigning editor",
+    "Demo publisher review desk",
+    "Demo human reviewer"
+  ],
+  "scenario": "news_source_provenance",
+  "source_chain": [
+    "Demo public meeting note",
+    "Demo reporter interview note",
+    "Demo press statement",
+    "Demo public dataset summary",
+    "Demo correction note"
+  ],
+  "status": "needs_human_review",
+  "truth_guarantee": false,
+  "warnings": [
+    "Advisory demo result only; not a truth rating or news certification.",
+    "Source provenance is partial and requires human editorial review.",
+    "Opinion or analysis marker should remain visible to public reviewers."
+  ]
+}
