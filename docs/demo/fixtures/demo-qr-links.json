@@ -1,0 +1,62 @@
+[
+  {
+    "scenario": "imported_banana_food_provenance",
+    "record_id": "HC-DEMO-PV-FIXTURE-FOOD-0001",
+    "demo_url": "../public-validator-static-viewer.html?scenario=banana",
+    "canonical_demo_path": "docs/demo/public-validator-static-viewer.html",
+    "advisory_only": true,
+    "public_safe": true,
+    "truth_guarantee": false,
+    "human_review_required": true,
+    "warnings": [
+      "Advisory demo link only; not a food safety certification.",
+      "Demo QR/link entry does not prove QR authenticity or signed payload verification.",
+      "Visible provenance remains incomplete and requires human review."
+    ]
+  },
+  {
+    "scenario": "building_concrete_provenance",
+    "record_id": "HC-DEMO-PV-FIXTURE-CONCRETE-0001",
+    "demo_url": "../public-validator-static-viewer.html?scenario=building",
+    "canonical_demo_path": "docs/demo/public-validator-static-viewer.html",
+    "advisory_only": true,
+    "public_safe": true,
+    "truth_guarantee": false,
+    "human_review_required": true,
+    "warnings": [
+      "Advisory demo link only; not a building safety or code compliance certification.",
+      "Demo QR/link entry does not prove QR authenticity or signed payload verification.",
+      "Chain-of-custody and field sample evidence remain subject to human review."
+    ]
+  },
+  {
+    "scenario": "news_source_provenance",
+    "record_id": "HC-DEMO-PV-FIXTURE-NEWS-0001",
+    "demo_url": "../public-validator-static-viewer.html?scenario=news",
+    "canonical_demo_path": "docs/demo/public-validator-static-viewer.html",
+    "advisory_only": true,
+    "public_safe": true,
+    "truth_guarantee": false,
+    "human_review_required": true,
+    "warnings": [
+      "Advisory demo link only; not a truth rating or news certification.",
+      "Demo QR/link entry does not prove QR authenticity or signed payload verification.",
+      "Source provenance remains partial and requires human editorial review."
+    ]
+  },
+  {
+    "scenario": "qr_spoof_non_canonical_link",
+    "record_id": "HC-DEMO-PV-FIXTURE-QR-0001",
+    "demo_url": "../public-validator-static-viewer.html?scenario=qr-spoof",
+    "canonical_demo_path": "docs/demo/public-validator-static-viewer.html",
+    "advisory_only": true,
+    "public_safe": true,
+    "truth_guarantee": false,
+    "human_review_required": true,
+    "warnings": [
+      "Advisory demo link only; not a fraud finding or forensic determination.",
+      "Demo QR/link entry does not prove QR authenticity or signed payload verification.",
+      "Non-canonical link conditions require human review before any reliance."
+    ]
+  }
+]
