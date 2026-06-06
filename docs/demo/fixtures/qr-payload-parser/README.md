@@ -13,9 +13,16 @@ These fixtures make the local HC:// QR payload parser easier to review. They pro
 python scripts/run_qr_payload_parser.py '<payload-json-string>'
 ```
 
-The fixtures are not canonical records, schemas, validators, signed QR payloads, production QR manifests, backend/API responses, runtime lookup material, or evidence that a real-world claim is true. Their `payload_hash` values exercise the parser-local advisory hash check only.
+The fixtures are not canonical records, schemas, validators, signed QR payloads, production QR manifests, backend/API responses, runtime lookup material, or evidence that a real-world claim is true. Their `payload_hash` values exercise the parser-local advisory hash check only. The local QR record bridge must not treat these demo fixtures as canonical records; bridge lookup remains limited to `records/pending/*.json`, `records/verified/*.json`, and `records/archived/*.json`.
 
 The golden tests intentionally compare only stable parser output boundaries: `status`, the safety markers, and the list shape/content presence of `warnings` and `errors`. They do not test exact wording beyond current stable marker phrases needed to identify missing-field, unknown-field, malformed-payload, and mismatched `payload_hash` handling.
+
+
+## Local QR Record Bridge Boundary
+
+PR #668 adds a local advisory bridge helper that can compare a parser-valid QR payload `content_hash` with the `content_hash` on exactly one matched local canonical record. This bridge is for local reviewer checks only. It does not add network calls, backend/API behavior, signature verification, QR authenticity proof, issuer-authority proof, canonical URL fetching, schema changes, validator changes, or production claims.
+
+A `content_hash` match means only that the QR payload hash string matches the local canonical record hash string in the inspected checkout after lowercase/whitespace normalization. It does not prove QR authenticity, record truth, issuer authority, legal status, regulatory status, safety certification, forensic certainty, or production readiness. Human review remains required.
 
 ## Safety Markers
 
