@@ -1,14 +1,14 @@
 # Public Validator Local Record Lookup Boundary
 
-> **Status:** boundary specification for the next Public Validator phase
-> **Scope:** local-only HC:// Public Validator record lookup planning
+> **Status:** local lookup MVP boundary and implementation notes
+> **Scope:** local-only HC:// Public Validator record lookup
 > **Authority:** advisory-only; human review remains required
 > **Production readiness:** not claimed
-> **Recommended next PR:** #654 Local Public Validator record lookup MVP
+> **Recommended next PR:** #655 Local Public Validator schema/hash validation integration
 
 ## Purpose
 
-This document defines the trust boundary between the current fixture-backed Public Validator Record ID demo and a future local Public Validator MVP that may read canonical JSON records from `records/`.
+This document defines the trust boundary between the fixture-backed Public Validator Record ID demo and the local Public Validator MVP that reads canonical JSON records from allowed `records/` directories.
 
 The boundary exists to prevent the demo Record ID input from being mistaken for real canonical record lookup, a production API, a backend service, truth verification, QR authenticity proof, signature verification, or autonomous governance output.
 
@@ -40,20 +40,19 @@ It does not provide:
 
 Fixture matching is a demo convenience only. A matching demo `record_id` means only that the static viewer can select a bundled demo scenario.
 
-## Future Local MVP Boundary
+## Local MVP Boundary
 
-A future local Public Validator MVP may introduce real local lookup while remaining local-only and advisory.
+The local Public Validator MVP introduces real local lookup while remaining local-only and advisory.
 
-The expected flow is:
+The current MVP flow is:
 
 1. A user enters a `record_id`.
 2. The system searches only the allowed canonical record directories.
-3. The system loads the matching JSON record from an allowed path.
-4. The system performs schema validation for the loaded record.
-5. The system performs `content_hash` / SHA-256 validation for the loaded record where the record shape supports that check.
-6. The system returns a deterministic, public-safe, advisory-only result.
+3. The system loads matching JSON records from allowed paths.
+4. The system rejects duplicate matching `record_id` values.
+5. The system returns a deterministic, public-safe, advisory-only result.
 
-This future MVP must not be described as a production API, live federation service, legal authority, fraud finding, safety certification, forensic determination, QR authenticity proof, signing authority, or truth guarantee.
+Schema validation and `content_hash` / SHA-256 validation are intentionally deferred to a later PR. The local MVP must not be described as a production API, live federation service, legal authority, fraud finding, safety certification, forensic determination, QR authenticity proof, signed payload verification, signing authority, or truth guarantee.
 
 ## Allowed Canonical Record Paths
 
@@ -67,7 +66,7 @@ The lookup boundary must reject arbitrary paths and must not traverse outside th
 
 ## Explicitly Excluded Sources
 
-The future local MVP must not use these sources for canonical lookup:
+The local MVP must not use these sources for canonical lookup:
 
 - generated indexes;
 - explorer indexes;
@@ -79,9 +78,9 @@ The future local MVP must not use these sources for canonical lookup:
 
 These materials may support navigation, demos, review, or derived packaging, but they must not be treated as the canonical lookup source for a user-entered `record_id`.
 
-## Required Future Safety Markers
+## Required Safety Markers
 
-A future local lookup result must preserve explicit safety markers in its public-safe result shape:
+A local lookup result must preserve explicit safety markers in its public-safe result shape:
 
 ```json
 {
@@ -93,7 +92,7 @@ A future local lookup result must preserve explicit safety markers in its public
 }
 ```
 
-Additional fields may describe lookup status, schema validation status, hash validation status, public-safe evidence summaries, and errors. Those fields must not weaken the safety markers above.
+Additional fields may describe lookup status, source path, checked paths, warnings, and errors. Future schema/hash validation fields must not weaken the safety markers above.
 
 ## Boundary Statements
 
@@ -107,9 +106,9 @@ Additional fields may describe lookup status, schema validation status, hash val
 - Public-safe output is not a legal, regulatory, safety, forensic, or certification determination.
 - Human-supervised review remains required.
 
-## Security Notes for the Future MVP
+## Security Notes for the Local MVP
 
-The local lookup implementation should preserve these constraints:
+The local lookup implementation preserves these constraints:
 
 - use safe path handling;
 - disallow arbitrary file reads;
@@ -123,18 +122,17 @@ The local lookup implementation should preserve these constraints:
 - preserve public-safe output boundaries;
 - avoid exposing private, sensitive, or non-public evidence beyond the public-safe result shape.
 
-Unknown `record_id` values should produce an explicit public-safe error such as `record_not_found` rather than silently selecting a demo scenario.
+Unknown `record_id` values produce an explicit public-safe `not_found` result rather than silently selecting a demo scenario.
 
-## Non-Goals for This PR
+## Non-Goals for This MVP
 
-This PR does not implement local lookup.
+This MVP does not implement schema validation, hash validation, backend/API serving, QR authenticity proof, signed payload verification, or truth verification.
 
 It does not modify:
 
 - schemas;
 - validators;
 - workflows;
-- runtime code;
 - static viewer behavior;
 - demo fixture behavior;
 - canonical records;
@@ -146,6 +144,6 @@ It does not modify:
 
 ## Recommended Next PR
 
-The recommended next PR is **#654 Local Public Validator record lookup MVP**.
+The recommended next PR is **#655 Local Public Validator schema/hash validation integration**.
 
-That PR should remain local-only, use the allowed canonical record paths above, preserve deterministic public-safe output, and report schema/hash validation as advisory signals requiring human review.
+That PR should remain local-only, preserve deterministic public-safe output, and report schema/hash validation as advisory signals requiring human review. Schema/hash validation must not be presented as truth verification or production readiness.
