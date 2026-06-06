@@ -46,6 +46,7 @@ The project was previously known by these names during early experimental phases
 Use these HC:// Public Validator demo entry points for a fast, public-safe, advisory-only walkthrough. The demo preserves `public_safe: true` and `truth_guarantee: false`, requires human-supervised review, and does not claim production readiness, certification, legal authority, or autonomous finality.
 
 - Open the static viewer in a browser: [`docs/demo/public-validator-static-viewer.html`](demo/public-validator-static-viewer.html)
+- Open a static scenario link: [`banana`](demo/public-validator-static-viewer.html?scenario=banana), [`building`](demo/public-validator-static-viewer.html?scenario=building), [`news`](demo/public-validator-static-viewer.html?scenario=news), or [`qr-spoof`](demo/public-validator-static-viewer.html?scenario=qr-spoof). These are demo-only navigation links and do not prove QR authenticity or signed payload verification.
 - Run the local demo runner from the repository root: [`scripts/run_public_validator_demo.py`](../scripts/run_public_validator_demo.py)
 - Read the quickstart: [`docs/demo/public-validator-demo-quickstart.md`](demo/public-validator-demo-quickstart.md)
 

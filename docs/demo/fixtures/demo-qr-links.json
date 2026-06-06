@@ -2,7 +2,7 @@
   {
     "scenario": "imported_banana_food_provenance",
     "record_id": "HC-DEMO-PV-FIXTURE-FOOD-0001",
-    "demo_url": "../public-validator-static-viewer.html?scenario=banana",
+    "demo_url": "public-validator-static-viewer.html?scenario=banana",
     "canonical_demo_path": "docs/demo/public-validator-static-viewer.html",
     "advisory_only": true,
     "public_safe": true,
@@ -17,7 +17,7 @@
   {
     "scenario": "building_concrete_provenance",
     "record_id": "HC-DEMO-PV-FIXTURE-CONCRETE-0001",
-    "demo_url": "../public-validator-static-viewer.html?scenario=building",
+    "demo_url": "public-validator-static-viewer.html?scenario=building",
     "canonical_demo_path": "docs/demo/public-validator-static-viewer.html",
     "advisory_only": true,
     "public_safe": true,
@@ -32,7 +32,7 @@
   {
     "scenario": "news_source_provenance",
     "record_id": "HC-DEMO-PV-FIXTURE-NEWS-0001",
-    "demo_url": "../public-validator-static-viewer.html?scenario=news",
+    "demo_url": "public-validator-static-viewer.html?scenario=news",
     "canonical_demo_path": "docs/demo/public-validator-static-viewer.html",
     "advisory_only": true,
     "public_safe": true,
@@ -47,7 +47,7 @@
   {
     "scenario": "qr_spoof_non_canonical_link",
     "record_id": "HC-DEMO-PV-FIXTURE-QR-0001",
-    "demo_url": "../public-validator-static-viewer.html?scenario=qr-spoof",
+    "demo_url": "public-validator-static-viewer.html?scenario=qr-spoof",
     "canonical_demo_path": "docs/demo/public-validator-static-viewer.html",
     "advisory_only": true,
     "public_safe": true,

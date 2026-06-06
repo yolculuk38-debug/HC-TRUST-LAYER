@@ -1,13 +1,13 @@
 # Public Validator Demo Checkpoint
 
-> **Status:** checkpoint review for the completed #640-#649 demo flow
+> **Status:** checkpoint review for the completed #640-#651 demo flow
 > **Scope:** public-safe HC:// Public Validator demo documentation, static viewer, local runner, and demo fixtures
 > **Authority:** advisory-only; human review remains required
 > **Production readiness:** not claimed
 
 ## What Currently Works
 
-- The static viewer at [`public-validator-static-viewer.html`](public-validator-static-viewer.html) displays the four demo scenarios: `banana`, `building`, `news`, and `qr-spoof`.
+- The static viewer at [`public-validator-static-viewer.html`](public-validator-static-viewer.html) displays the four demo scenarios: `banana`, `building`, `news`, and `qr-spoof`. It also supports static query-string scenario selection for demo links such as `public-validator-static-viewer.html?scenario=banana`, with unsupported or missing values falling back to `banana`.
 - The local runner at [`../../scripts/run_public_validator_demo.py`](../../scripts/run_public_validator_demo.py) accepts the same four scenario commands and prints deterministic JSON from [`fixtures/results/`](fixtures/results/).
 - The result fixtures expose consistent safety markers across scenarios:
   - `advisory_only: true`
@@ -50,13 +50,11 @@ This checkpoint reviewed the public validator demo surface across:
 ## Known Limitations
 
 - The static viewer is a local static HTML page with bundled demo data. It does not load fixture JSON files, call a backend, fetch evidence, or perform live HC:// validation.
-- The QR/link fixture URLs document intended local demo entry points. They do not prove QR authenticity, payload integrity, issuer authority, or canonical HC:// binding.
+- The QR/link fixture URLs are local static demo entry points for bundled scenario selection. They do not prove QR authenticity, payload integrity, issuer authority, or canonical HC:// binding.
 - The demo result identifiers are fixture identifiers for public demo output; they are not production records, signed payloads, legal certifications, or canonical records.
 - The scenario evidence is intentionally incomplete or conflicting in places so public reviewers can see `missing_evidence`, `conflicting_evidence`, warnings, and human-review boundaries.
 - The current demo remains suitable for checkpoint review and onboarding only; it should not be described as a production Public Validator, real Verification API, security workflow, or truth-verification system.
 
-## Recommended Next PR
+## Checkpoint Note
 
-Recommended next PR: **#651 Public Validator demo navigation polish**.
-
-Suggested scope for #651: keep the work documentation/demo-only and consider a small navigation polish pass for public demo entry points, such as clarifying whether local query-string scenario selection should remain a documented fixture convention or become a bounded static-viewer convenience. Do not add backend calls, QR crypto, signing changes, schema changes, validator changes, workflow changes, or production-readiness claims.
+PR **#651 Public Validator demo navigation polish** keeps the work static/demo-only and documents bounded query-string scenario selection as a viewer convenience. It does not add backend calls, QR crypto, signing changes, schema changes, validator changes, workflow changes, canonical lookup, or production-readiness claims.
