@@ -68,7 +68,7 @@ The `demo_url` values describe intended demo entry points. The current static vi
 
 1. Open [`public-validator-static-viewer.html`](public-validator-static-viewer.html) locally in a browser.
 2. Use one of the demo links from the fixture or the scenario table as the intended QR/link entry target.
-3. Select the matching scenario in the static viewer if the local browser does not apply the query string automatically.
+3. Select the matching scenario in the static viewer if it is not already selected.
 4. Review the displayed `record_id`, `scenario`, evidence list, missing evidence, conflicts, source chain, responsibility chain, and warnings.
 5. Treat the result as advisory-only and require human review before relying on any displayed claim.
 
@@ -122,4 +122,4 @@ A human reviewer remains responsible for evaluating evidence, missing evidence, 
 
 ## Recommended Next PR
 
-#650 Public Validator MVP checkpoint review
+#651 Public Validator demo navigation polish
