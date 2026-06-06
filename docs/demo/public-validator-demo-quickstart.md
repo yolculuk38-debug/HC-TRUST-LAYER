@@ -9,9 +9,13 @@
 
 This quickstart helps a new user run the local HC:// Public Validator demo and read the JSON output quickly.
 
-The demo runner is [`scripts/run_public_validator_demo.py`](../../scripts/run_public_validator_demo.py). It prints deterministic, public-safe fixture results for the demo scenarios described in the [Public Validator Static Demo](public-validator-static-demo.md) and the [Public Validator Demo Fixtures](fixtures/public-validator-demo-fixtures.md).
+The demo runner is [`scripts/run_public_validator_demo.py`](../../scripts/run_public_validator_demo.py). It prints deterministic, public-safe fixture results for the demo scenarios described in the [Public Validator Static Demo](public-validator-static-demo.md), the [Public Validator Static Viewer MVP](public-validator-static-viewer.html), and the [Public Validator Demo Fixtures](fixtures/public-validator-demo-fixtures.md).
 
 The runner is local-only. It does not make external network calls, contact live HC:// services, fetch remote evidence, validate signatures, or certify real-world claims.
+
+## Static browser viewer
+
+Open [`docs/demo/public-validator-static-viewer.html`](public-validator-static-viewer.html) in a browser to view the same public-safe demo scenario shape as a static HC result card. The viewer is demo-only, local-only, deterministic, and does not use a backend, external network calls, external dependencies, or a build step.
 
 ## What this demo does
 
