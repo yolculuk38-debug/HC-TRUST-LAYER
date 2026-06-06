@@ -1,15 +1,15 @@
 # QR Payload Verification Boundary
 
-> **Status:** documentation/spec boundary only
-> **Scope:** future HC:// Public Validator QR payload verification posture
+> **Status:** documentation/spec boundary with local parser and CLI runner
+> **Scope:** HC:// Public Validator QR payload parsing posture
 > **Authority:** advisory-only; human review remains required
 > **Production readiness:** not claimed
 
 ## Purpose
 
-This document defines the trust boundary for a future HC:// QR payload verification step before any QR cryptography, signing, parser, backend, API, validator, schema, or runtime behavior is added.
+This document defines the trust boundary for HC:// QR payload parsing and future QR payload verification. The current implementation includes a local-only parser and a small command-line runner, but it does not add QR cryptography, signing, backend/API behavior, validator changes, schema changes, network calls, or URL fetches.
 
-The current Public Validator work can perform local Public Validator lookup and advisory schema/hash checks against local records. The existing QR/link demo can route a reviewer into the static demo experience. Those capabilities are useful for review, but they do not establish real QR authenticity.
+The current Public Validator work can perform local Public Validator lookup and advisory schema/hash checks against local records. The existing QR/link demo can route a reviewer into the static demo experience. The QR payload parser can check JSON payload shape locally. Those capabilities are useful for review, but they do not establish real QR authenticity.
 
 ## Current Boundary
 
@@ -25,9 +25,32 @@ A demo QR code or ordinary link is only a navigation entry point into a public-s
 - the real-world claim is true;
 - the result is production-ready, legally authoritative, regulatory-approved, safety-certified, or forensically certain.
 
+The current local QR payload parser is separate from QR authenticity and record trust. It checks payload shape only, returns advisory public-safe markers, does not verify signatures, does not fetch `canonical_url`, and does not prove that a QR code came from an authorized issuer.
+
 The current local lookup flow is separate from QR payload trust. A successful `record_id` lookup only means a local repository checkout found exactly one matching record within the allowed local record directories. It does not prove that a scanned QR payload is trustworthy.
 
 The current schema/hash checks are also separate from truth. A schema/hash pass can show that a matched local record conforms to current advisory checks, but it is not a truth guarantee, QR authenticity proof, issuer approval, legal finding, safety certification, or production trust decision.
+
+
+## Local Parser CLI Runner
+
+Reviewers can run the local parser from the command line with one JSON string argument:
+
+```bash
+python scripts/run_qr_payload_parser.py '{"qr_version":"1","record_id":"HC-EXAMPLE-2026-0001","canonical_url":"https://example.invalid/record/HC-EXAMPLE-2026-0001","payload_hash":"abc","content_hash":"def","issued_at":"2026-01-01T00:00:00Z","issuer_id":"demo","algorithm":"none","key_id":"demo-key"}'
+```
+
+The CLI output is deterministic JSON from `parse_qr_payload`. It is local-only and emits no extra prose on stdout.
+
+The CLI parser:
+
+- checks QR payload JSON shape only;
+- does not prove QR authenticity;
+- does not verify signatures;
+- does not fetch `canonical_url`;
+- does not call a network, backend, or API;
+- does not verify truth, issuer authority, safety, legality, or production readiness;
+- keeps human review required.
 
 ## Separation of Concerns
 
@@ -40,9 +63,9 @@ Future QR verification must keep these boundaries separate:
 
 Passing one layer must not silently imply that another layer passed.
 
-## Required Future QR Payload Fields
+## QR Payload Fields
 
-A future signed QR payload format must define and validate these fields before it is treated as QR payload verification:
+The local parser checks a minimal MVP field shape for reviewer testing. A future signed QR payload format must define and validate these fields before it is treated as QR payload verification:
 
 | Field | Boundary requirement |
 | --- | --- |
@@ -61,9 +84,9 @@ A future signed QR payload format must define and validate these fields before i
 
 Missing or malformed required fields must produce advisory warnings or errors. They must not fall back to fixture data, hidden defaults, network discovery, or unverified assumptions.
 
-## Required Checks for Future Implementation
+## Required Checks for Future Verification Implementation
 
-A future QR payload parser/verifier must perform these checks before presenting a QR payload as verified:
+The current parser does not present payloads as verified. A future QR payload verifier must perform these checks before presenting a QR payload as verified:
 
 - **Canonical domain check:** confirm `canonical_url` uses an approved HC:// canonical validation domain or route.
 - **`record_id` format check:** reject paths, URLs, queries, blank values, and malformed identifiers.
@@ -80,7 +103,7 @@ These checks are future work. This document does not implement them.
 
 ## Security Boundaries
 
-Future QR payload verification must preserve these boundaries:
+Current QR payload parser and future QR payload verification work must preserve these boundaries:
 
 - no blind URL trust;
 - no external fetch by default;
@@ -93,9 +116,9 @@ Future QR payload verification must preserve these boundaries:
 
 A scanned URL must not be treated as trustworthy just because it came from a QR code. The verifier should parse and validate the payload boundary first, avoid automatic remote fetches by default, and make any network-dependent behavior explicit, reviewable, and opt-in in later work.
 
-## Required Safety Markers for Future Results
+## Required Safety Markers
 
-Future QR payload verification results must preserve these public-safe safety markers unless a later reviewed specification explicitly changes them:
+Current parser results and future QR payload verification results must preserve these public-safe safety markers unless a later reviewed specification explicitly changes them:
 
 ```json
 {
@@ -108,24 +131,24 @@ Future QR payload verification results must preserve these public-safe safety ma
 
 These markers must be present even when QR payload checks pass. A pass means only that the future QR payload layer satisfied its implemented checks; it does not certify truth, safety, legality, regulatory compliance, or production readiness.
 
-## Non-Goals for This PR
+## Non-Goals for This Parser/CLI Scope
 
-This PR does not:
+This parser/CLI scope does not:
 
 - implement QR crypto;
 - implement signing;
-- modify runtime behavior;
 - modify validators;
 - modify schemas;
 - modify workflows;
 - add an API or backend;
 - add network calls;
 - alter existing QR demo behavior;
+- prove QR authenticity;
+- verify signatures;
+- fetch `canonical_url`;
 - claim production readiness;
 - perform a large refactor.
 
 ## Recommended Next PR
 
-Recommended next PR: **#661 QR payload parser MVP**.
-
-That follow-up should remain local-only and parser-focused unless reviewers explicitly approve a broader scope. It should parse payload shape, produce public-safe warnings for missing or malformed fields, and continue to avoid QR crypto/signing implementation until a dedicated reviewed step.
+Recommended next PR: a dedicated, reviewed follow-up only if reviewers approve broader QR verification work. Any follow-up must remain evidence-preserving, human-reviewable, and explicit about whether it changes parsing, signing, lookup, validator, schema, backend/API, or network behavior.
