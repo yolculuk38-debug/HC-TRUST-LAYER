@@ -17,6 +17,7 @@
 - The viewer links, QR/link fixture entries, quickstart scenario commands, runner scenario names, and Record ID fixture matches align around the same demo keys: `banana`, `building`, `news`, and `qr-spoof`.
 - The static viewer includes a Record ID input for bundled fixture matching only: `HC-DEMO-PV-FIXTURE-FOOD-0001` → `banana`, `HC-DEMO-PV-FIXTURE-CONCRETE-0001` → `building`, `HC-DEMO-PV-FIXTURE-NEWS-0001` → `news`, and `HC-DEMO-PV-FIXTURE-QR-0001` → `qr-spoof`. Unsupported IDs show a public-safe warning without backend, network, API, database, canonical lookup, truth verification, QR authenticity, signed payload verification, or production verification behavior.
 - The README and START_HERE navigation point users to the static viewer, local runner, and quickstart without presenting the demo as production-ready.
+- The local record lookup boundary spec defines the next-phase separation between fixture matching and future local canonical record lookup: [`public-validator-local-record-lookup-boundary.md`](public-validator-local-record-lookup-boundary.md).
 
 ## Demo-Only Boundaries
 
