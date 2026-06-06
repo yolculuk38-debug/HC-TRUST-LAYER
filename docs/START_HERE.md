@@ -47,6 +47,7 @@ Use these HC:// Public Validator demo entry points for a fast, public-safe, advi
 
 - Open the static viewer in a browser: [`docs/demo/public-validator-static-viewer.html`](demo/public-validator-static-viewer.html)
 - Open a static scenario link: [`banana`](demo/public-validator-static-viewer.html?scenario=banana), [`building`](demo/public-validator-static-viewer.html?scenario=building), [`news`](demo/public-validator-static-viewer.html?scenario=news), or [`qr-spoof`](demo/public-validator-static-viewer.html?scenario=qr-spoof). These are demo-only navigation links and do not prove QR authenticity or signed payload verification.
+- Try the viewer Record ID fixture input with supported demo IDs such as `HC-DEMO-PV-FIXTURE-FOOD-0001`; it only maps bundled fixture IDs to bundled scenarios and does not perform canonical record lookup, backend/API calls, production verification, truth verification, QR authenticity checks, or signed payload verification.
 - Run the local demo runner from the repository root: [`scripts/run_public_validator_demo.py`](../scripts/run_public_validator_demo.py)
 - Read the quickstart: [`docs/demo/public-validator-demo-quickstart.md`](demo/public-validator-demo-quickstart.md)
 

@@ -103,6 +103,7 @@ Use the HC:// Public Validator demo entry points to inspect a public-safe, advis
 
 - Open the static browser viewer: [`docs/demo/public-validator-static-viewer.html`](docs/demo/public-validator-static-viewer.html)
 - Open a static scenario link: [`banana`](docs/demo/public-validator-static-viewer.html?scenario=banana), [`building`](docs/demo/public-validator-static-viewer.html?scenario=building), [`news`](docs/demo/public-validator-static-viewer.html?scenario=news), or [`qr-spoof`](docs/demo/public-validator-static-viewer.html?scenario=qr-spoof). These are demo-only navigation links and do not prove QR authenticity or signed payload verification.
+- Try the viewer Record ID fixture input with supported demo IDs such as `HC-DEMO-PV-FIXTURE-FOOD-0001`; it only maps bundled fixture IDs to bundled scenarios and does not perform canonical record lookup, backend/API calls, production verification, truth verification, QR authenticity checks, or signed payload verification.
 - Run the local demo runner: [`scripts/run_public_validator_demo.py`](scripts/run_public_validator_demo.py)
 - Read the quickstart: [`docs/demo/public-validator-demo-quickstart.md`](docs/demo/public-validator-demo-quickstart.md)
 

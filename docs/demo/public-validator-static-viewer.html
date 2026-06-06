@@ -112,6 +112,34 @@
       margin-top: 1rem;
     }
 
+    .record-id-demo {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin-top: 1rem;
+      padding: 0.85rem;
+    }
+
+    .record-id-form {
+      display: flex;
+      gap: 0.6rem;
+      margin: 0.75rem 0;
+    }
+
+    .record-id-form input {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--text);
+      flex: 1;
+      font: inherit;
+      min-width: 0;
+      padding: 0.75rem 0.9rem;
+    }
+
+    .record-id-message {
+      margin: 0;
+    }
+
     button {
       appearance: none;
       background: transparent;
@@ -243,6 +271,11 @@
         grid-template-columns: 1fr;
       }
 
+      .record-id-form {
+        flex-direction: column;
+      }
+
+      .record-id-form input,
       button {
         border-radius: 14px;
         text-align: left;
@@ -265,6 +298,16 @@
         <button type="button" data-scenario="news" aria-pressed="false">news</button>
         <button type="button" data-scenario="qr-spoof" aria-pressed="false">qr-spoof</button>
       </nav>
+      <div class="record-id-demo" aria-labelledby="record-id-demo-heading">
+        <h2 id="record-id-demo-heading">Demo Record ID fixture match</h2>
+        <p class="muted">Type or paste a supported demo <code>record_id</code> to render the matching bundled scenario. This is fixture matching only, not canonical record lookup, production verification, truth verification, QR authenticity, or signed payload verification.</p>
+        <form class="record-id-form" id="record-id-form">
+          <label class="label" for="record-id-input">record_id</label>
+          <input id="record-id-input" name="record_id" type="text" autocomplete="off" inputmode="text" placeholder="HC-DEMO-PV-FIXTURE-FOOD-0001">
+          <button type="submit">Show demo result</button>
+        </form>
+        <p class="record-id-message muted" id="record-id-message" role="status" aria-live="polite">Supported demo IDs map only to bundled fixture scenarios.</p>
+      </div>
     </header>
 
     <section aria-labelledby="result-heading">
@@ -316,6 +359,13 @@
       public_safe: true,
       truth_guarantee: false,
       human_review_required: true
+    };
+
+    const recordIdScenarioMap = {
+      "HC-DEMO-PV-FIXTURE-FOOD-0001": "banana",
+      "HC-DEMO-PV-FIXTURE-CONCRETE-0001": "building",
+      "HC-DEMO-PV-FIXTURE-NEWS-0001": "news",
+      "HC-DEMO-PV-FIXTURE-QR-0001": "qr-spoof"
     };
 
     const scenarios = {
@@ -507,6 +557,19 @@
       });
     }
 
+    function updateScenarioUrl(key) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("scenario", key);
+      window.history.replaceState(null, "", url);
+    }
+
+    function setRecordIdMessage(message, isWarning = false) {
+      const messageElement = document.getElementById("record-id-message");
+      messageElement.classList.toggle("notice", isWarning);
+      messageElement.classList.toggle("muted", !isWarning);
+      messageElement.textContent = message;
+    }
+
     function renderScenario(key) {
       const result = { ...scenarios[key], ...safetyMarkers };
 
@@ -516,6 +579,7 @@
 
       setText("scenario-summary", `Selected scenario: ${key}`);
       setText("status-badge", result.status);
+      document.getElementById("record-id-input").value = result.record_id;
       setText("record-id", result.record_id);
       setText("scenario", result.scenario);
       setText("status", result.status);
@@ -546,10 +610,27 @@
       button.addEventListener("click", () => {
         const key = button.dataset.scenario;
         renderScenario(key);
-        const url = new URL(window.location.href);
-        url.searchParams.set("scenario", key);
-        window.history.replaceState(null, "", url);
+        updateScenarioUrl(key);
+        setRecordIdMessage(`Selected bundled scenario '${key}' from the demo scenario button.`);
       });
+    });
+
+    document.getElementById("record-id-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const requestedRecordId = document.getElementById("record-id-input").value.trim().toUpperCase();
+      const key = recordIdScenarioMap[requestedRecordId];
+
+      if (!key) {
+        setRecordIdMessage(
+          "Public-safe demo warning: unsupported demo record_id. This static viewer does not call a backend, perform canonical lookup, verify truth, prove QR authenticity, or validate signed payloads.",
+          true
+        );
+        return;
+      }
+
+      renderScenario(key);
+      updateScenarioUrl(key);
+      setRecordIdMessage(`Matched demo record_id to bundled scenario '${key}' for advisory fixture display only.`);
     });
 
     renderScenario(scenarioFromQueryString());
