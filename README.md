@@ -41,6 +41,7 @@ Start with the [Mini Public Validator Demo](docs/demo/mini-public-validator-demo
 ## Quick Navigation
 
 - [Try the Public Validator Demo](#try-the-public-validator-demo)
+- [Local Public Validator lookup quickstart](docs/demo/public-validator-local-lookup-quickstart.md)
 - [MVP Snapshot](#mvp-snapshot)
 - [Start Here navigation guide](docs/START_HERE.md)
 - [Current project state](docs/project-control/project-state.md)
@@ -105,7 +106,8 @@ Use the HC:// Public Validator demo entry points to inspect a public-safe, advis
 - Open a static scenario link: [`banana`](docs/demo/public-validator-static-viewer.html?scenario=banana), [`building`](docs/demo/public-validator-static-viewer.html?scenario=building), [`news`](docs/demo/public-validator-static-viewer.html?scenario=news), or [`qr-spoof`](docs/demo/public-validator-static-viewer.html?scenario=qr-spoof). These are demo-only navigation links and do not prove QR authenticity or signed payload verification.
 - Try the viewer Record ID fixture input with supported demo IDs such as `HC-DEMO-PV-FIXTURE-FOOD-0001`; it only maps bundled fixture IDs to bundled scenarios and does not perform canonical record lookup, backend/API calls, production verification, truth verification, QR authenticity checks, or signed payload verification.
 - Run the local demo runner: [`scripts/run_public_validator_demo.py`](scripts/run_public_validator_demo.py)
-- Read the quickstart: [`docs/demo/public-validator-demo-quickstart.md`](docs/demo/public-validator-demo-quickstart.md)
+- Read the demo quickstart: [`docs/demo/public-validator-demo-quickstart.md`](docs/demo/public-validator-demo-quickstart.md)
+- Run the local `record_id` lookup quickstart: [`docs/demo/public-validator-local-lookup-quickstart.md`](docs/demo/public-validator-local-lookup-quickstart.md). Example: `python scripts/run_public_validator_lookup.py HC-EXAMPLE-2026-0001`. The CLI lookup is local-only, advisory-only, public-safe, not a production API, not truth verification, not QR authenticity proof, not signed payload verification, and not legal/regulatory/safety certification; human review remains required.
 
 ### Try local verification preview entry point
 

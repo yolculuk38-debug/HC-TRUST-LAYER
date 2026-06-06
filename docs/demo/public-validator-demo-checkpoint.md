@@ -16,7 +16,7 @@
   - `human_review_required: true`
 - The viewer links, QR/link fixture entries, quickstart scenario commands, runner scenario names, and Record ID fixture matches align around the same demo keys: `banana`, `building`, `news`, and `qr-spoof`.
 - The static viewer includes a Record ID input for bundled fixture matching only: `HC-DEMO-PV-FIXTURE-FOOD-0001` → `banana`, `HC-DEMO-PV-FIXTURE-CONCRETE-0001` → `building`, `HC-DEMO-PV-FIXTURE-NEWS-0001` → `news`, and `HC-DEMO-PV-FIXTURE-QR-0001` → `qr-spoof`. Unsupported IDs show a public-safe warning without backend, network, API, database, canonical lookup, truth verification, QR authenticity, signed payload verification, or production verification behavior.
-- The README and START_HERE navigation point users to the static viewer, local runner, and quickstart without presenting the demo as production-ready.
+- The README and START_HERE navigation point users to the static viewer, local demo runner, local lookup runner, demo quickstart, and local lookup quickstart without presenting the demo or CLI lookup as production-ready.
 - The local record lookup boundary spec defines the next-phase separation between fixture matching and future local canonical record lookup: [`public-validator-local-record-lookup-boundary.md`](public-validator-local-record-lookup-boundary.md).
 
 ## Demo-Only Boundaries
@@ -40,6 +40,7 @@ The fixture files remain demo-only exports for reviewer discussion. They are not
 This checkpoint reviewed the public validator demo surface across:
 
 - [`public-validator-demo-quickstart.md`](public-validator-demo-quickstart.md)
+- [`public-validator-local-lookup-quickstart.md`](public-validator-local-lookup-quickstart.md)
 - [`public-validator-static-viewer.html`](public-validator-static-viewer.html)
 - [`public-validator-demo-qr-entry.md`](public-validator-demo-qr-entry.md)
 - [`fixtures/results/`](fixtures/results/)
@@ -47,6 +48,7 @@ This checkpoint reviewed the public validator demo surface across:
 - [`../../README.md`](../../README.md)
 - [`../START_HERE.md`](../START_HERE.md)
 - [`../../scripts/run_public_validator_demo.py`](../../scripts/run_public_validator_demo.py)
+- [`../../scripts/run_public_validator_lookup.py`](../../scripts/run_public_validator_lookup.py)
 - [`../../tests/test_public_validator_demo_runner.py`](../../tests/test_public_validator_demo_runner.py)
 
 ## Known Limitations
@@ -62,3 +64,5 @@ This checkpoint reviewed the public validator demo surface across:
 PR **#652 Public Validator Record ID input demo** keeps the work static/demo-only and documents bounded Record ID fixture matching as a viewer convenience layered on top of the existing scenario selection. It does not add backend calls, API calls, external network calls, QR crypto, signing changes, schema changes, validator changes, workflow changes, database/index lookup, canonical lookup, or production-readiness claims. Manual checks for this checkpoint are: query scenario links still work, scenario buttons still work, supported demo `record_id` values select the mapped scenarios, unsupported demo `record_id` values show a safe warning, and no backend/network/API calls are introduced.
 
 PR **#656 Local Public Validator result contract hardening** locks the local lookup result shape after #654 local record lookup and #655 advisory schema/hash validation signals. The contract remains public-safe, advisory-only, local-only, and human-review-required; validation pass values do not create a truth guarantee or production-readiness claim.
+
+PR **#657 Local Public Validator CLI quickstart and examples** adds a documentation-only command-line quickstart for `python scripts/run_public_validator_lookup.py HC-EXAMPLE-2026-0001`. It explains found, unknown, invalid, duplicate, and schema/hash advisory outcomes while preserving local-only, advisory-only, public-safe, not-production-API, not-truth-verification, not-QR-authenticity-proof, not-signed-payload-verification, and not-legal/regulatory/safety-certification boundaries. Human review remains required.

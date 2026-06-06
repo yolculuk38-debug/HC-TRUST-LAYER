@@ -28,6 +28,17 @@ Use the public self-service entry point: [`docs/self-service-verify.html`](self-
 
 This path is mobile-friendly and intended for low-friction, browser-side HC:// preview checks.
 
+
+## Local Public Validator CLI Lookup
+
+For command-line review of a local `record_id` lookup, use the local-only Public Validator lookup quickstart: [`docs/demo/public-validator-local-lookup-quickstart.md`](demo/public-validator-local-lookup-quickstart.md).
+
+```bash
+python scripts/run_public_validator_lookup.py HC-EXAMPLE-2026-0001
+```
+
+The lookup returns public-safe advisory JSON for found, unknown, invalid, duplicate, and schema/hash advisory outcomes. It is not a production API, truth verification, QR authenticity proof, signed payload verification, or legal/regulatory/safety certification, and human review remains required.
+
 ## MVP-1 Public Demo Quick Links
 
 Use these shareable viewer hash links to open each bundled MVP-1 verification package state directly:

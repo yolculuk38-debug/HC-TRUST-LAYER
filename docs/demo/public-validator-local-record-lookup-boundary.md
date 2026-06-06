@@ -4,7 +4,7 @@
 > **Scope:** local-only HC:// Public Validator record lookup
 > **Authority:** advisory-only; human review remains required
 > **Production readiness:** not claimed
-> **Current validation step:** #656 Local Public Validator result contract hardening
+> **Current validation step:** #657 CLI quickstart and examples
 
 ## Purpose
 
@@ -157,4 +157,14 @@ PR **#656 Local Public Validator result contract hardening** locks the local Pub
 
 The result contract is public-safe and advisory-only. Validation pass values do not establish a truth guarantee, production readiness, QR authenticity proof, signed payload verification, legal authority, or autonomous governance approval. Human review remains required for all result types.
 
-Recommended next PR: **#657 Local Public Validator CLI quickstart and examples**.
+## CLI Quickstart
+
+PR **#657 Local Public Validator CLI quickstart and examples** documents command-line use for the local lookup runner without changing schemas, validators, workflows, lookup paths, signing logic, federation logic, backend/API behavior, QR cryptography, or canonical records.
+
+Run from the repository root:
+
+```bash
+python scripts/run_public_validator_lookup.py HC-EXAMPLE-2026-0001
+```
+
+The quickstart explains the stable result fields, found and non-found outcomes, invalid input handling, duplicate `record_id` meaning, and advisory schema/hash failure meaning: [`public-validator-local-lookup-quickstart.md`](public-validator-local-lookup-quickstart.md).
