@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HC:// Public Validator Static Viewer MVP</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #172033;
+      --muted: #5b667a;
+      --border: #d8deea;
+      --accent: #244fb3;
+      --accent-bg: #eaf0ff;
+      --warning: #8a5a00;
+      --warning-bg: #fff4d6;
+      --ok: #12683a;
+      --ok-bg: #e7f6ee;
+      --shadow: 0 12px 30px rgba(23, 32, 51, 0.10);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #101521;
+        --card: #182133;
+        --text: #eef3ff;
+        --muted: #bcc7d8;
+        --border: #334056;
+        --accent: #9bb7ff;
+        --accent-bg: #22345f;
+        --warning: #ffd27a;
+        --warning-bg: #3d321c;
+        --ok: #98e6ba;
+        --ok-bg: #183a2a;
+        --shadow: none;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    main {
+      width: min(100%, 980px);
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    header,
+    section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      margin: 0 0 1rem;
+      padding: 1rem;
+    }
+
+    h1,
+    h2,
+    h3 {
+      line-height: 1.2;
+      margin: 0 0 0.75rem;
+    }
+
+    h1 {
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+    }
+
+    h2 {
+      font-size: 1.25rem;
+    }
+
+    h3 {
+      color: var(--muted);
+      font-size: 1rem;
+      margin-top: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    p {
+      margin: 0 0 0.75rem;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .notice {
+      background: var(--warning-bg);
+      border: 1px solid color-mix(in srgb, var(--warning), transparent 55%);
+      border-radius: 14px;
+      color: var(--warning);
+      padding: 0.85rem;
+    }
+
+    .scenario-picker {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+
+    button {
+      appearance: none;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--text);
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+      padding: 0.75rem 0.9rem;
+    }
+
+    button[aria-pressed="true"] {
+      background: var(--accent-bg);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .card-top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .status {
+      background: var(--warning-bg);
+      border: 1px solid color-mix(in srgb, var(--warning), transparent 55%);
+      border-radius: 999px;
+      color: var(--warning);
+      display: inline-block;
+      font-weight: 700;
+      padding: 0.35rem 0.7rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+
+    .field,
+    .marker {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 0.8rem;
+      overflow-wrap: anywhere;
+    }
+
+    .label {
+      color: var(--muted);
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      margin-bottom: 0.25rem;
+      text-transform: uppercase;
+    }
+
+    .value {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.95rem;
+    }
+
+    .marker strong {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .marker.ok {
+      background: var(--ok-bg);
+      border-color: color-mix(in srgb, var(--ok), transparent 55%);
+      color: var(--ok);
+    }
+
+    .marker.warning {
+      background: var(--warning-bg);
+      border-color: color-mix(in srgb, var(--warning), transparent 55%);
+      color: var(--warning);
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+
+    li + li {
+      margin-top: 0.35rem;
+    }
+
+    .evidence-list {
+      display: grid;
+      gap: 0.6rem;
+      list-style: none;
+      padding: 0;
+    }
+
+    .evidence-list li {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.7rem;
+    }
+
+    .empty {
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    footer {
+      color: var(--muted);
+      font-size: 0.92rem;
+      padding: 0 0.25rem 1rem;
+    }
+
+    @media (max-width: 720px) {
+      main {
+        padding: 0.75rem;
+      }
+
+      header,
+      section {
+        border-radius: 14px;
+        padding: 0.9rem;
+      }
+
+      .scenario-picker,
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      button {
+        border-radius: 14px;
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>HC:// Public Validator Static Viewer MVP</h1>
+      <p class="muted">Demo-only static page for browser-readable HC:// Public Validator fixture results.</p>
+      <div class="notice">
+        This viewer is advisory-only, public-safe, deterministic, local-only, and human-review-required. It does not claim production readiness, food/building/news/legal certification, forensic certainty, truth guarantees, or autonomous AI authority.
+      </div>
+      <nav class="scenario-picker" aria-label="Demo scenarios">
+        <button type="button" data-scenario="banana" aria-pressed="true">banana</button>
+        <button type="button" data-scenario="building" aria-pressed="false">building</button>
+        <button type="button" data-scenario="news" aria-pressed="false">news</button>
+        <button type="button" data-scenario="qr-spoof" aria-pressed="false">qr-spoof</button>
+      </nav>
+    </header>
+
+    <section aria-labelledby="result-heading">
+      <div class="card-top">
+        <div>
+          <h2 id="result-heading">Public-safe HC result card</h2>
+          <p class="muted" id="scenario-summary">Selected scenario: banana</p>
+        </div>
+        <span class="status" id="status-badge">needs_human_review</span>
+      </div>
+
+      <div class="grid" aria-label="Result fields">
+        <div class="field"><span class="label">record_id</span><span class="value" id="record-id"></span></div>
+        <div class="field"><span class="label">scenario</span><span class="value" id="scenario"></span></div>
+        <div class="field"><span class="label">status</span><span class="value" id="status"></span></div>
+        <div class="marker warning"><span class="label">advisory_only</span><strong id="advisory-only">true</strong></div>
+        <div class="marker ok"><span class="label">public_safe</span><strong id="public-safe">true</strong></div>
+        <div class="marker warning"><span class="label">truth_guarantee</span><strong id="truth-guarantee">false</strong></div>
+        <div class="marker warning"><span class="label">human_review_required</span><strong id="human-review-required">true</strong></div>
+      </div>
+
+      <h3>source_chain</h3>
+      <ul id="source-chain"></ul>
+
+      <h3>responsibility_chain</h3>
+      <ul id="responsibility-chain"></ul>
+
+      <h3>evidence</h3>
+      <ul class="evidence-list" id="evidence"></ul>
+
+      <h3>missing_evidence</h3>
+      <ul id="missing-evidence"></ul>
+
+      <h3>conflicting_evidence</h3>
+      <ul id="conflicting-evidence"></ul>
+
+      <h3>warnings</h3>
+      <ul id="warnings"></ul>
+    </section>
+
+    <footer>
+      Static HTML only. No backend, external network calls, external dependencies, or build step. Fixture content mirrors the local demo runner shape for public demo review.
+    </footer>
+  </main>
+
+  <script>
+    const safetyMarkers = {
+      advisory_only: true,
+      public_safe: true,
+      truth_guarantee: false,
+      human_review_required: true
+    };
+
+    const scenarios = {
+      "banana": {
+        record_id: "HC-DEMO-PV-FIXTURE-FOOD-0001",
+        scenario: "imported_banana_food_provenance",
+        status: "needs_human_review",
+        source_chain: [
+          "Demo grower cooperative harvest note",
+          "Demo packhouse lot record",
+          "Demo export inspection note",
+          "Demo carrier handoff note",
+          "Demo destination intake note",
+          "Demo lab method summary"
+        ],
+        responsibility_chain: [
+          "Demo grower cooperative",
+          "Demo packhouse operator",
+          "Demo export broker",
+          "Demo carrier",
+          "Demo destination intake reviewer",
+          "Demo human review approver"
+        ],
+        evidence: [
+          { type: "demo_lot_record", reference: "DEMO-LOT-0187-RECORD", evidence_status: "present" },
+          { type: "demo_inspection_summary", reference: "DEMO-ORIGIN-INSPECTION-REF", evidence_status: "present" },
+          { type: "demo_lab_method_summary", reference: "DEMO-LAB-METHOD-FOOD-01", evidence_status: "present" }
+        ],
+        missing_evidence: [
+          "Independent confirmation of origin inspection issuer authority",
+          "Destination intake image evidence",
+          "Complete transport temperature log"
+        ],
+        conflicting_evidence: [
+          "Destination intake count differs from export count by two cartons."
+        ],
+        warnings: [
+          "Advisory demo result only; not a food safety certification.",
+          "Visible provenance is incomplete and requires human review.",
+          "Conflicting carton count should be reviewed before relying on this demo result."
+        ]
+      },
+      "building": {
+        record_id: "HC-DEMO-PV-FIXTURE-CONCRETE-0001",
+        scenario: "building_concrete_provenance",
+        status: "needs_human_review",
+        source_chain: [
+          "Demo concrete plant batch ticket",
+          "Demo mixer truck dispatch note",
+          "Demo field sample collection note",
+          "Demo lab receipt note",
+          "Demo test result reference"
+        ],
+        responsibility_chain: [
+          "Demo concrete plant",
+          "Demo mixer truck operator",
+          "Demo field technician",
+          "Demo concrete lab reviewer",
+          "Demo supervising authority reviewer"
+        ],
+        evidence: [
+          { type: "demo_batch_ticket", reference: "DEMO-CONCRETE-BATCH-5509-TICKET", evidence_status: "present" },
+          { type: "demo_sample_collection_note", reference: "DEMO-SAMPLE-CONCRETE-CYL-03", evidence_status: "partial" },
+          { type: "demo_test_result_reference", reference: "DEMO-CONCRETE-RESULT-28DAY-03", evidence_status: "present" }
+        ],
+        missing_evidence: [
+          "Independent confirmation of sample collection witness",
+          "Complete curing condition log",
+          "Signed supervising authority review note"
+        ],
+        conflicting_evidence: [
+          "Field sample timestamp is later than one dispatch note timestamp and requires human review."
+        ],
+        warnings: [
+          "Advisory demo result only; not a building safety or code compliance certification.",
+          "Demo result references must not be treated as proof of structural integrity.",
+          "Chain-of-custody contains partial field sample evidence."
+        ]
+      },
+      "news": {
+        record_id: "HC-DEMO-PV-FIXTURE-NEWS-0001",
+        scenario: "news_source_provenance",
+        status: "needs_human_review",
+        source_chain: [
+          "Demo public meeting note",
+          "Demo reporter interview note",
+          "Demo press statement",
+          "Demo public dataset summary",
+          "Demo correction note"
+        ],
+        responsibility_chain: [
+          "Demo staff reporter",
+          "Demo assigning editor",
+          "Demo publisher review desk",
+          "Demo human reviewer"
+        ],
+        evidence: [
+          { type: "demo_original_source_note", reference: "DEMO-MEETING-NOTE-2026-05-02", evidence_status: "present" },
+          { type: "demo_referenced_source", reference: "DEMO-PRESS-STATEMENT-01", evidence_status: "present" },
+          { type: "demo_correction_history", reference: "DEMO-CORRECTION-NOTE-01", evidence_status: "present" }
+        ],
+        missing_evidence: [
+          "Final independent confirmation response",
+          "Full context for the public dataset summary"
+        ],
+        conflicting_evidence: [
+          "Demo press statement and demo meeting note use different date wording for the same event."
+        ],
+        warnings: [
+          "Advisory demo result only; not a truth rating or news certification.",
+          "Source provenance is partial and requires human editorial review.",
+          "Opinion or analysis marker should remain visible to public reviewers."
+        ]
+      },
+      "qr-spoof": {
+        record_id: "HC-DEMO-PV-FIXTURE-QR-0001",
+        scenario: "qr_spoof_non_canonical_link",
+        status: "needs_human_review",
+        source_chain: [
+          "Demo QR label scan observation",
+          "Demo expected HC:// canonical reference",
+          "Demo issuer reference note"
+        ],
+        responsibility_chain: [
+          "Demo label issuer",
+          "Demo scanner operator",
+          "Demo human reviewer"
+        ],
+        evidence: [
+          { type: "demo_scanned_url_observation", reference: "DEMO-SCANNED-URL-OBSERVATION-01", evidence_status: "present" },
+          { type: "demo_canonical_url_reference", reference: "DEMO-CANONICAL-HC-REFERENCE-01", evidence_status: "present" },
+          { type: "demo_issuer_reference", reference: "DEMO-ISSUER-QR-01", evidence_status: "partial" }
+        ],
+        missing_evidence: [
+          "Independently verified issuer authority",
+          "Signed payload evidence",
+          "Real payload hash verification",
+          "Original QR artifact image"
+        ],
+        conflicting_evidence: [
+          "Scanned URL differs from the expected HC:// canonical URL in this demo fixture."
+        ],
+        warnings: [
+          "Advisory demo result only; not a fraud finding or forensic determination.",
+          "Non-canonical link condition requires human review before any reliance.",
+          "This fixture does not validate signatures, generate QR artifacts, or fetch remote URLs."
+        ]
+      }
+    };
+
+    function setText(id, value) {
+      document.getElementById(id).textContent = String(value);
+    }
+
+    function renderList(id, values) {
+      const list = document.getElementById(id);
+      list.replaceChildren();
+
+      if (!values.length) {
+        const item = document.createElement("li");
+        item.className = "empty";
+        item.textContent = "No items in this demo fixture.";
+        list.appendChild(item);
+        return;
+      }
+
+      values.forEach((value) => {
+        const item = document.createElement("li");
+        item.textContent = value;
+        list.appendChild(item);
+      });
+    }
+
+    function renderEvidence(values) {
+      const list = document.getElementById("evidence");
+      list.replaceChildren();
+
+      values.forEach((entry) => {
+        const item = document.createElement("li");
+        item.innerHTML = "";
+        const type = document.createElement("div");
+        const reference = document.createElement("div");
+        const status = document.createElement("div");
+        type.textContent = `type: ${entry.type}`;
+        reference.textContent = `reference: ${entry.reference}`;
+        status.textContent = `evidence_status: ${entry.evidence_status}`;
+        item.append(type, reference, status);
+        list.appendChild(item);
+      });
+    }
+
+    function renderScenario(key) {
+      const result = { ...scenarios[key], ...safetyMarkers };
+
+      document.querySelectorAll("[data-scenario]").forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.scenario === key));
+      });
+
+      setText("scenario-summary", `Selected scenario: ${key}`);
+      setText("status-badge", result.status);
+      setText("record-id", result.record_id);
+      setText("scenario", result.scenario);
+      setText("status", result.status);
+      setText("advisory-only", result.advisory_only);
+      setText("public-safe", result.public_safe);
+      setText("truth-guarantee", result.truth_guarantee);
+      setText("human-review-required", result.human_review_required);
+      renderList("source-chain", result.source_chain);
+      renderList("responsibility-chain", result.responsibility_chain);
+      renderEvidence(result.evidence);
+      renderList("missing-evidence", result.missing_evidence);
+      renderList("conflicting-evidence", result.conflicting_evidence);
+      renderList("warnings", result.warnings);
+    }
+
+    document.querySelectorAll("[data-scenario]").forEach((button) => {
+      button.addEventListener("click", () => renderScenario(button.dataset.scenario));
+    });
+
+    renderScenario("banana");
+  </script>
+</body>
+</html>
