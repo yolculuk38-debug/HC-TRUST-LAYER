@@ -52,6 +52,29 @@ The CLI parser:
 - does not verify truth, issuer authority, safety, legality, or production readiness;
 - keeps human review required.
 
+## Reviewer Fixture Quickstart
+
+Example payload fixtures are available under [`docs/demo/fixtures/qr-payload-parser/`](../demo/fixtures/qr-payload-parser/). They are documentation/demo fixtures only, not canonical records, schemas, validators, signed QR payloads, production QR manifests, runtime lookup material, backend/API responses, or truth-verification evidence.
+
+Run these examples from the repository root:
+
+```bash
+python scripts/run_qr_payload_parser.py "$(cat docs/demo/fixtures/qr-payload-parser/valid-payload.json)"
+python scripts/run_qr_payload_parser.py "$(cat docs/demo/fixtures/qr-payload-parser/missing-field-payload.json)"
+python scripts/run_qr_payload_parser.py "$(cat docs/demo/fixtures/qr-payload-parser/malformed-payload.txt)"
+python scripts/run_qr_payload_parser.py "$(cat docs/demo/fixtures/qr-payload-parser/unknown-field-payload.json)"
+```
+
+Status meanings:
+
+| Status | Meaning |
+| --- | --- |
+| `valid_payload` | Required MVP fields and local field-shape checks passed. This is shape validation only, not QR authenticity, signature verification, URL fetching, record lookup, record truth verification, or production readiness. |
+| `invalid_payload` | The input was valid JSON, but one or more local shape checks failed, such as missing fields, invalid field types, blank values, malformed `record_id`, malformed `canonical_url`, or malformed `issued_at`. |
+| `malformed_payload` | The input could not be parsed as a JSON object. The parser returns public-safe errors and does not attempt fallback lookup, network access, backend/API calls, URL fetching, signature verification, or record truth verification. |
+
+For detailed fixture descriptions and expected behavior, read the fixture quickstart: [`docs/demo/fixtures/qr-payload-parser/README.md`](../demo/fixtures/qr-payload-parser/README.md).
+
 ## Separation of Concerns
 
 Future QR verification must keep these boundaries separate:

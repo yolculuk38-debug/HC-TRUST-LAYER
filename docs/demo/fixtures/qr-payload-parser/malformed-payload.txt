@@ -1,0 +1,1 @@
+{"qr_version":"1","record_id":"HC-EXAMPLE-2026-0001",

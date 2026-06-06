@@ -57,6 +57,12 @@ Each fixture entry includes:
 
 The fixture is not a generated artifact, canonical record, schema, validator input, signed payload, production QR manifest, or security control. It is a public-safe list of demo entry links for reviewer discussion.
 
+## QR Payload Parser Fixtures
+
+Separate reviewer fixtures for the local QR payload parser are available at [`fixtures/qr-payload-parser/`](fixtures/qr-payload-parser/). They demonstrate local parser statuses for valid, missing-field, malformed JSON, and unknown-field payload examples. These fixtures are documentation/demo examples only and do not modify parser behavior, schemas, validators, workflows, runtime lookup, records, signing, federation, backend/API behavior, or network behavior.
+
+The parser checks payload shape only. It does not prove QR authenticity, verify signatures, fetch `canonical_url`, call a network/backend/API, verify record truth, or remove the requirement for human-supervised review. Parser outputs preserve `advisory_only: true`, `public_safe: true`, `truth_guarantee: false`, and `human_review_required: true`.
+
 ## Scenario Entry Points
 
 | Demo key | Scenario | Record ID | Demo URL | Canonical demo path |
