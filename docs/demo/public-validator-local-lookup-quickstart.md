@@ -11,6 +11,8 @@ The local Public Validator lookup lets a reviewer enter a `record_id` and inspec
 
 Use it to understand whether a local repository checkout contains a matching public-safe record entry and whether existing local schema/hash helpers could produce advisory signals for that matched record.
 
+This lookup remains separate from QR payload trust. For the future QR trust-boundary specification, see [QR Payload Verification Boundary](../security/qr-payload-verification-boundary.md).
+
 ## What It Does
 
 - Accepts a single `record_id` value from the command line.
