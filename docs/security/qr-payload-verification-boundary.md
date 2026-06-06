@@ -31,7 +31,9 @@ The current local lookup flow is separate from QR payload trust. A successful `r
 
 The local QR record bridge adds one advisory connection between these layers: after the QR payload parser accepts a local payload, the bridge can reuse the local Public Validator lookup path for the parsed `record_id` and compare the QR payload `content_hash` with the matched local canonical record `content_hash`. This bridge checks only the existing allowed canonical record paths: `records/pending/*.json`, `records/verified/*.json`, and `records/archived/*.json`. It does not fetch `canonical_url`, call a network, use a backend/API, verify signatures, prove QR authenticity, prove issuer authority, or prove truth. Demo fixtures remain documentation examples only and are not treated as canonical records.
 
-The current schema/hash checks are also separate from truth. A schema/hash pass or bridge `content_hash` match can show local advisory consistency with the inspected checkout, but it is not a truth guarantee, QR authenticity proof, issuer approval, legal finding, safety certification, or production trust decision.
+The combined local QR Public Validator result is the first local combined advisory verification output for these layers. It uses the parser and bridge result, then includes the existing local Public Validator lookup/schema/hash advisory result only when exactly one allowed local canonical record is found. It keeps the same local lookup boundary and safety markers: `advisory_only: true`, `public_safe: true`, `truth_guarantee: false`, and `human_review_required: true`.
+
+The current schema/hash checks are also separate from truth. A schema/hash pass or bridge `content_hash` match can show local advisory consistency with the inspected checkout, but it is not a truth guarantee, QR authenticity proof, issuer approval, legal finding, safety certification, or production trust decision. QR payload validity does not prove QR authenticity, a `content_hash` match does not prove truth, and local schema/hash validation does not prove issuer authority.
 
 
 ## Local Parser CLI Runner
@@ -54,6 +56,14 @@ The CLI parser:
 - does not call a network, backend, or API;
 - does not verify truth, issuer authority, safety, legality, or production readiness;
 - keeps human review required.
+
+## Combined Local QR Public Validator
+
+`run_qr_public_validator(payload, repo_root=None)` returns one combined public-safe local advisory result for reviewer and test workflows. It parses the QR payload, runs the parser-local advisory `payload_hash` check through the existing QR parser/bridge path, compares the QR payload `content_hash` with the matched local canonical record `content_hash` when exactly one allowed local record is found, and includes the existing Local Public Validator lookup/schema/hash advisory result in `local_validator` for that exact-one-record case.
+
+Allowed combined statuses are `qr_record_validated`, `qr_record_mismatch`, `record_not_found`, `duplicate_record_id`, `invalid_payload`, `malformed_payload`, and `validation_not_checked`. The combined result is the first local combined advisory verification output for these layers, not a production verifier.
+
+The combined helper does not widen lookup paths, treat demo fixtures as canonical records, fetch `canonical_url`, call a network, add backend/API behavior, verify signatures, prove QR authenticity, prove issuer authority, or prove truth. QR payload validity does not prove QR authenticity. A `content_hash` match does not prove truth. Local schema/hash validation does not prove issuer authority. Human review remains required.
 
 ## Local QR Record Bridge
 

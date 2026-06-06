@@ -16,6 +16,8 @@ python scripts/run_qr_record_bridge.py '<payload-json-string>'
 
 The fixtures are not canonical records, schemas, validators, signed QR payloads, production QR manifests, backend/API responses, runtime lookup material, or evidence that a real-world claim is true. Their `payload_hash` values exercise the parser-local advisory hash check only. The local QR record bridge must not treat these demo fixtures as canonical records; bridge lookup remains limited to `records/pending/*.json`, `records/verified/*.json`, and `records/archived/*.json`.
 
+PR #670 adds the first local combined advisory verification output through `run_qr_public_validator(payload, repo_root=None)`. The combined result reuses the QR parser, QR record bridge, and Local Public Validator lookup/schema/hash advisory result when exactly one allowed local canonical record is found. It remains local-only and public-safe: it does not fetch `canonical_url`, call a network, use a backend/API, verify signatures, prove QR authenticity, prove issuer authority, prove truth, or claim production readiness. Human review remains required.
+
 The golden tests intentionally compare only stable parser output boundaries: `status`, the safety markers, and the list shape/content presence of `warnings` and `errors`. They do not test exact wording beyond current stable marker phrases needed to identify missing-field, unknown-field, malformed-payload, and mismatched `payload_hash` handling.
 
 
@@ -44,11 +46,12 @@ These markers remain required even when `status` is `valid_payload`.
 
 Run each example from the repository root. The CLI accepts one JSON string argument, so these examples pass fixture contents with command substitution.
 
-To run the fixture-backed parser golden output tests and bridge CLI tests:
+To run the fixture-backed parser golden output tests, bridge CLI tests, and combined local QR Public Validator tests:
 
 ```bash
 python -m pytest tests/test_qr_payload_parser.py
 python -m pytest tests/test_qr_record_bridge.py
+python -m pytest tests/test_qr_public_validator.py
 ```
 
 ### Valid Payload Example
@@ -145,6 +148,12 @@ Expected behavior:
 - `warnings` reports that the unknown field was ignored;
 - `errors` is empty because the fixture `payload_hash` was computed over the full payload object after removing `payload_hash`;
 - ignored fields do not create hidden defaults, network discovery, backend/API lookup, record truth verification, or signature verification.
+
+## Combined Local QR Public Validator
+
+`run_qr_public_validator(payload, repo_root=None)` combines the parser, the QR record bridge, and the Local Public Validator lookup/schema/hash advisory result into one public-safe local result. The `local_validator` field is included only when lookup finds exactly one allowed local canonical record; otherwise it is `null`.
+
+Combined statuses are `qr_record_validated`, `qr_record_mismatch`, `record_not_found`, `duplicate_record_id`, `invalid_payload`, `malformed_payload`, and `validation_not_checked`. The combined result is advisory-only and local-only. QR payload validity does not prove QR authenticity, `content_hash` match does not prove truth, and local schema/hash validation does not prove issuer authority. The helper does not fetch `canonical_url`, call a network, use a backend/API, verify signatures, or claim production readiness. Human review remains required.
 
 ## Bridge CLI Quickstart
 
