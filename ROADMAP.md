@@ -17,21 +17,33 @@
    - Improve validator UX and audit trace readability
    - Strengthen reproducible verification outputs
 
-4. **Federation**
+4. **Source, Social, and Identity Context**
+   - Plan advisory source, account, media, and social verification boundaries
+   - Define identity-evidence concepts without creating automatic authority or truth guarantees
+   - Keep future-layer work documentation-first until reviewed implementation plans exist
+
+5. **Federation**
    - Establish node-to-node trust exchange and sync pathways
    - Formalize federation governance and resilience requirements
    - Validate distributed consensus behavior in production-like scenarios
 
-5. **Integrations**
+6. **Integrations**
    - Provide SDK/API integration pathways for external platforms
    - Support bridge adapters for media, identity, and automation pipelines
    - Improve developer onboarding for third-party adopters
 
-6. **Ecosystem**
+7. **Ecosystem**
    - Grow community participation, tooling, and institutional adoption
    - Encourage interoperable extensions and reference implementations
    - Sustain long-term governance, transparency, and shared stewardship
 
+## Future Vision References
+
+- [`docs/vision/source-and-social-verification.md`](docs/vision/source-and-social-verification.md) — future source, account, media, and social verification direction.
+- [`docs/vision/identity-layer-concept.md`](docs/vision/identity-layer-concept.md) — future identity-layer concept for account identity, claimed identity, authority scope, and identity evidence.
+
+These documents are vision/planning only. They do not implement runtime behavior, validators, schemas, records, QR behavior, signing, federation, policy, or governance enforcement.
+
 ## Direction
 
-HC-TRUST-LAYER advances in a deliberate order: stabilize the core, standardize protocol behavior, open public verification, scale federation, enable integrations, and then expand a durable ecosystem.
+HC-TRUST-LAYER advances in a deliberate order: stabilize the core, standardize protocol behavior, open public verification, define source/social/identity context boundaries, scale federation, enable integrations, and then expand a durable ecosystem.
