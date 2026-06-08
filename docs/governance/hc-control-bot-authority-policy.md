@@ -40,7 +40,7 @@ Every bot output must preserve these HC principles:
 - AI advisory only;
 - human final authority;
 - trust the record, not the narrative;
-- no absolute truth guarantee.
+- no objective-truth guarantee.
 
 ## Trusted Evidence
 
