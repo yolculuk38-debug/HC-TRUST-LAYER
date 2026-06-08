@@ -118,6 +118,8 @@ jobs:
               section("governance-adjacent paths", report.get("governance_adjacent_paths_touched", [])),
               section("generated artifact paths", report.get("generated_artifacts_observed", [])),
               section("warnings", report.get("warnings", [])),
+              section("evidence prompts", report.get("evidence_prompts", [])),
+              section("review routes", report.get("review_routes", [])),
               "",
               "Boundary: advisory-only; no labels, assignments, approvals, review decisions, or merge actions.",
           ])
