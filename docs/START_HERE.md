@@ -92,7 +92,7 @@ Use these HC:// Public Validator demo entry points for a fast, public-safe, advi
 
 **Mode:** Report-only investigations before any editing. Preserve advisory-only semantics. No autonomous governance finality.
 
-### For Vision / Future-Layer Reviewers
+### For Vision Reviewers
 
 1. **Start here:** This file
 2. **Then read:** [`docs/vision/source-and-social-verification.md`](vision/source-and-social-verification.md) — future source, account, media, and social verification direction; vision/planning only.
@@ -255,109 +255,224 @@ For the current handoff state and next safe work, read [`docs/project-control/pr
 
 ---
 
-## 5. VALIDATION & CHECKS
+## 5. BEFORE OPENING A PULL REQUEST
 
-Before opening PRs, run:
+### Checks to Run
+
+For **documentation-only changes:**
 
 ```bash
 python scripts/check_terminology.py
 python scripts/check_docs_drift.py
 python scripts/check_canonical_artifacts.py
-pytest
-```
-
-For docs-only changes, at minimum:
-
-```bash
-python scripts/check_terminology.py
-python scripts/check_docs_drift.py
 git diff --check
 ```
 
----
+For **code or runtime changes:**
 
-## 6. COMMON TASKS
+```bash
+pytest -q
+python scripts/check_terminology.py
+python scripts/check_docs_drift.py
+```
 
-### Add a New Record
+If you cannot run checks in your environment, **state that in the PR** and do not imply success.
 
-1. Create JSON file in `records/pending/`
-2. Follow schema in `schema/record-v1.schema.json`
-3. Run validator: `python validators/validate_record.py records/pending/your_record.json`
-4. Submit PR with evidence trail
-5. Wait for human review and merge approval
+### PR Checklist
 
-**Warning:** Do not edit `records/verified/` or `records/archived/` directly without explicit maintainer task.
+- [ ] Branch name follows pattern: `docs/topic` or `feat/topic` or `fix/topic`
+- [ ] One focused change (not multiple unrelated changes)
+- [ ] Commit message is clear and references any related issue
+- [ ] Required checks pass locally (or noted why they couldn't run)
+- [ ] Changed files do not include protected paths (unless task explicitly requests)
+- [ ] If touching `src/`, `schema/`, `.github/workflows/`, `policy/`, `federation/`, `signing/`: requested review before opening PR
+- [ ] Terminology is consistent: `HC-TRUST-LAYER` and `HC://` in new docs
+- [ ] No deletions of evidence-bearing files
+- [ ] No modifications to hash, QR, generated, or archived artifacts unless explicitly tasked
 
-### Update Documentation
+### Merge Policy
 
-1. Confirm the target file is not evidence-bearing or governance-critical
-2. Make the minimal change
-3. Preserve terminology: use `HC-TRUST-LAYER` and `HC://` for active references
-4. Run documentation checks
-5. Open PR with clear scope and testing notes
+| PR Type | Merge Requirement |
+|---------|------------------|
+| Docs-only | Auto-merge after checks pass (if labeled `docs-auto`) |
+| Code, schema, workflows, src/ | Manual review required (labeled `manual-review`) |
+| Mixed docs + sensitive | Manual review (escalates to `manual-review` by default) |
+| Trust-kernel-adjacent | Explicit justification + human-supervised validation |
 
-### Fix a Broken Link
-
-1. Verify the correct target path
-2. Update only the broken link
-3. Run link check or documentation validation
-4. Mention the exact link fixed in PR description
-
-### Review a PR
-
-1. Check changed files against protected paths
-2. Verify PR scope matches description
-3. Confirm terminology alignment
-4. Review validation output
-5. Ensure no evidence-bearing files were modified unexpectedly
-6. Approve, request changes, or escalate according to `GOVERNANCE.md`
+**See [`CONTRIBUTING.md`](../CONTRIBUTING.md) for full merge policy.**
 
 ---
 
-## 7. TROUBLESHOOTING
+## 6. KEY REFERENCE DOCUMENTS
 
-### "Why are old names still in the repo?"
+### For Understanding the Project
 
-Legacy names are preserved in evidence-bearing contexts for provenance and audit trail continuity. Do not remove them from `records/archived/`, `halkalar/`, or migration docs. Only update active public-facing documentation.
+| Document | Purpose |
+|----------|---------|
+| [`README.md`](../README.md) | Project overview, demo, and quick links |
+| [`AGENTS.md`](../AGENTS.md) | Rules for humans, agents, and contributors |
+| [`HC_BOOTSTRAP.md`](../HC_BOOTSTRAP.md) | Startup sequence and agent protocol |
+| [`CONTRIBUTING.md`](../CONTRIBUTING.md) | How to submit pull requests and contribute |
+| [`SECURITY.md`](../SECURITY.md) | Security and vulnerability reporting |
 
-### "Can I trust the validation output?"
+### For Understanding Trust Boundaries
 
-Validation output is **advisory-only** and supports human review. HC-TRUST-LAYER does not provide legal certification, absolute truth, production authority, or autonomous finality.
+| Document | Purpose |
+|----------|---------|
+| [`HC_CONSTITUTION.md`](../HC_CONSTITUTION.md) | Immutable core principles and governance foundation |
+| [`GOVERNANCE.md`](../GOVERNANCE.md) | Merge authority, review escalation, dispute handling |
+| [`docs/limitations-and-risks.md`](limitations-and-risks.md) | Risk model and boundary language |
+| [`docs/trust-kernel-index.md`](trust-kernel-index.md) | Advisory trust kernel routing index |
+| [`docs/pr-scope-boundaries.md`](pr-scope-boundaries.md) | PR scope and sensitive-surface guidance |
 
-### "Which AI should I trust?"
+### For Understanding Verification Architecture
 
-None automatically. AI outputs are assistive signals only. Human review and repository evidence remain authoritative.
+| Document | Purpose |
+|----------|---------|
+| [`docs/master-architecture.md`](master-architecture.md) | Overall architecture and system design |
+| [`docs/implementation-map.md`](implementation-map.md) | Implementation status and component matrix |
+| [`docs/verification-map.md`](verification-map.md) | Verification workflow and mapping |
+| [`docs/protocol-graph-index.md`](protocol-graph-index.md) | Protocol structure navigation |
+| [`docs/capability-status.md`](capability-status.md) | Feature status and maturity |
 
-### "Can I modify workflows?"
+### For Future Vision Planning
 
-Not without explicit task and review. `.github/workflows/**` affects CI/CD security posture and is protected.
+| Document | Purpose |
+|----------|---------|
+| [`docs/vision/source-and-social-verification.md`](vision/source-and-social-verification.md) | Future source, account, media, and social verification direction |
+| [`docs/vision/identity-layer-concept.md`](vision/identity-layer-concept.md) | Future identity-layer concept for account identity, authority scope, and identity evidence |
 
-### "What if I see a conflict between docs?"
+### For Release & Governance
 
-Do not silently resolve it. Open an issue or PR describing the conflict and cite both sources. Maintainers will decide.
+| Document | Purpose |
+|----------|---------|
+| [`CHANGELOG.md`](../CHANGELOG.md) | Version history and release notes |
+| [`ROADMAP.md`](../ROADMAP.md) | Long-term direction and strategic sequence |
+| [`docs/v0.1.0-release-notes.md`](v0.1.0-release-notes.md) | v0.1.0 release details and evidence |
+| [`docs/governance/v0.1.0-tag-readiness-review.md`](governance/v0.1.0-tag-readiness-review.md) | v0.1.0 tag decision and approval process |
+| [`docs/governance/`](governance/) | Detailed governance, disputes, moderation, accountability |
+
+### For Historical Context
+
+| Document | Purpose |
+|----------|---------|
+| [`GENESIS_BLOCK.md`](../GENESIS_BLOCK.md) | Historical origin record and project genesis |
+| [`halkalar/`](../halkalar/) | Witness records of early AI interactions |
+| [`records/archived/`](../records/archived/) | Verified and archived interaction records |
+| [`docs/governance/post-migration-qr-review.md`](governance/post-migration-qr-review.md) | Migration from Insanlik-Zinciri to HC-TRUST-LAYER |
 
 ---
 
-## 8. CONTACT & ESCALATION
+## 7. HISTORICAL RECORD FOLDERS (DO NOT EDIT)
 
-- **Repository Owner:** `@yolculuk38-debug`
-- **Security Issues:** Follow `SECURITY.md`
-- **Governance Questions:** Open public issue unless sensitive
-- **Contribution Help:** Use GitHub Discussions or issues
+These directories contain evidence-bearing records that preserve project provenance and audit trail continuity. **Do not modify, delete, or silently rewrite files in these locations:**
+
+- **`records/archived/`** — Verified interaction records and release evidence
+- **`halkalar/`** — Witness records of early AI system interactions (Turkish: "rings/circles")
+- **`GENESIS_BLOCK.md`** — Project genesis and historical origin documentation
+
+These files intentionally use legacy project names ("Humanity Chain", "Insanlik-Zinciri") as historical evidence. This is correct and should not be changed. When referencing these files in new documentation, clarify: "See historical record [filename]" or "This is legacy documentation".
 
 ---
 
-## 9. REFERENCES
+## 8. COMMON QUESTIONS
 
-- [`README.md`](../README.md) — project overview
-- [`HC_CONSTITUTION.md`](../HC_CONSTITUTION.md) — immutable principles
-- [`GOVERNANCE.md`](../GOVERNANCE.md) — governance model
-- [`CONTRIBUTING.md`](../CONTRIBUTING.md) — contribution guide
-- [`SECURITY.md`](../SECURITY.md) — security policy
-- [`docs/limitations-and-risks.md`](limitations-and-risks.md) — risk model
-- [`docs/master-architecture.md`](master-architecture.md) — architecture overview
-- [`docs/implementation-map.md`](implementation-map.md) — implementation status
-- [`docs/project-control/project-state.md`](project-control/project-state.md) — current handoff state
-- [`docs/project-control/next-actions.md`](project-control/next-actions.md) — next safe work
-- [`docs/vision/source-and-social-verification.md`](vision/source-and-social-verification.md) — future source/social verification vision
-- [`docs/vision/identity-layer-concept.md`](vision/identity-layer-concept.md) — future identity-layer concept
+### Q: I found "Humanity Chain" in the README. Should I fix it?
+
+**A:** If it's in the main README.md or active public-facing docs (quickstart, user guides), yes—update to `HC-TRUST-LAYER`. If it's in `records/archived/`, `halkalar/`, `GENESIS_BLOCK.md`, or historical docs, **leave it exactly as-is**. It's evidence.
+
+### Q: Can I make changes to the schema files?
+
+**A:** Not without explicit maintainer approval. The schema is a trust-kernel artifact. If you have a schema proposal, open an issue first and request review before implementing.
+
+### Q: What if I find a broken QR link?
+
+**A:** Report it as an issue (public, if not sensitive) or contact the maintainer. QR artifacts are carefully managed for evidence/migration purposes, so updates require review.
+
+### Q: Can I delete old records to clean up?
+
+**A:** **No.** Historical records in `records/archived/` and witness records in `halkalar/` are evidence-bearing. Deleting them breaks the audit trail and violates the immutable core principles in `HC_CONSTITUTION.md`.
+
+### Q: Why do the tests reference "Insanlik-Zinciri"?
+
+**A:** Tests intentionally check that QR URLs pointing to the old repository are flagged as unsafe/high-risk. This validates the security posture. Don't remove these tests.
+
+### Q: Who decides whether my PR merges?
+
+**A:** The repository owner (`@yolculuk38-debug`). Review requirements are:
+- Docs-only: Auto-merge if checks pass and labeled `docs-auto`
+- Code/schemas/workflows: Manual review required
+- Trust-kernel-adjacent: Explicit justification + human-supervised validation
+
+### Q: What does "human-supervised validation" mean?
+
+**A:** It means a human (the maintainer or designated reviewer) must review, understand, and explicitly approve the change before it merges. AI agents and automation can assist, but a human makes the final decision for trust-critical changes.
+
+---
+
+## 9. WHEN TO STOP AND ASK FOR HELP
+
+**Before editing, request review if:**
+
+- [ ] The change touches a protected path (see section 3)
+- [ ] The change may alter verification or trust behavior
+- [ ] The change affects schemas, validators, policy, signing, federation, or governance
+- [ ] You are unsure whether repository evidence supports a claim
+- [ ] A required check fails and the fix is non-trivial
+- [ ] You are tempted to broaden the PR beyond the original task
+- [ ] The change could affect trust kernel boundaries or audit trail continuity
+
+**When in doubt: stop and ask. The maintainer will clarify within 24 hours.**
+
+---
+
+## 10. NEXT STEPS
+
+### For First-Time Contributors
+
+1. ✓ You've read this file
+2. → Read [`README.md`](../README.md)
+3. → Read [`CONTRIBUTING.md`](../CONTRIBUTING.md)
+4. → Pick an issue or make a small docs improvement
+5. → Run the checks in section 5
+6. → Open a PR and request review
+
+**Expected time to first PR:** ~1 hour
+
+### For Maintainers
+
+1. ✓ You've read this file
+2. → Review [`GOVERNANCE.md`](../GOVERNANCE.md)
+3. → Check [`docs/governance/v0.1.0-tag-readiness-review.md`](governance/v0.1.0-tag-readiness-review.md)
+4. → Decide on v0.1.0 release tag and announcement
+5. → Continue merging PRs per merge policy
+
+### For AI Agents
+
+1. ✓ You've read this file
+2. → Read [`AGENTS.md`](../AGENTS.md)
+3. → Read [`HC_BOOTSTRAP.md`](../HC_BOOTSTRAP.md)
+4. → Run agent check-in protocol from HC_BOOTSTRAP.md
+5. → Investigate with report-only mode first
+6. → Request human-supervised validation for trust-kernel-adjacent work
+7. → Prefer navigation/index synchronization or public validator / explorer planning; avoid repeating telemetry, replay, or runtime review unless new evidence appears
+
+---
+
+## Related Documents
+
+- [`README.md`](../README.md) — Start here if you haven't read the main project overview
+- [`CONTRIBUTING.md`](../CONTRIBUTING.md) — Contribution workflow and PR policy
+- [`AGENTS.md`](../AGENTS.md) — Rules for agents and contributors
+- [`HC_BOOTSTRAP.md`](../HC_BOOTSTRAP.md) — Startup sequence and project protocol
+- [`SECURITY.md`](../SECURITY.md) — Security and vulnerability reporting
+- [`HC_CONSTITUTION.md`](../HC_CONSTITUTION.md) — Immutable core principles
+- [`GOVERNANCE.md`](../GOVERNANCE.md) — Merge authority and governance framework
+- [`docs/contributor-start-here.md`](contributor-start-here.md) — Detailed beginner guidance
+- [`docs/vision/source-and-social-verification.md`](vision/source-and-social-verification.md) — Future source/social verification vision
+- [`docs/vision/identity-layer-concept.md`](vision/identity-layer-concept.md) — Future identity-layer concept
+
+---
+
+**Last Updated:** 2026-06-05  
+**Status:** Documentation Guide (Advisory; not a canonical record, schema, validator, policy, signing, federation, or runtime artifact)
