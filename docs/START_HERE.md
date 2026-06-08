@@ -92,6 +92,15 @@ Use these HC:// Public Validator demo entry points for a fast, public-safe, advi
 
 **Mode:** Report-only investigations before any editing. Preserve advisory-only semantics. No autonomous governance finality.
 
+### For Vision Reviewers
+
+1. **Start here:** This file
+2. **Then read:** [`docs/vision/source-and-social-verification.md`](vision/source-and-social-verification.md) — future source, account, media, and social verification direction; vision/planning only.
+3. **Then read:** [`docs/vision/identity-layer-concept.md`](vision/identity-layer-concept.md) — future identity-layer concept for account identity, claimed identity, authority scope, and identity evidence; not implemented.
+4. **Then cross-check:** [`docs/trust-graph.md`](trust-graph.md), [`docs/validator-identity-architecture.md`](validator-identity-architecture.md), and [`docs/future/signed-validator-identity.md`](future/signed-validator-identity.md).
+
+**Boundary:** Vision documents do not implement runtime behavior, schemas, validators, records, QR behavior, signing, federation, policy, or governance enforcement.
+
 ### For Security Reviewers
 
 1. **Start here:** This file
@@ -326,6 +335,13 @@ If you cannot run checks in your environment, **state that in the PR** and do no
 | [`docs/protocol-graph-index.md`](protocol-graph-index.md) | Protocol structure navigation |
 | [`docs/capability-status.md`](capability-status.md) | Feature status and maturity |
 
+### For Future Vision Planning
+
+| Document | Purpose |
+|----------|---------|
+| [`docs/vision/source-and-social-verification.md`](vision/source-and-social-verification.md) | Future source, account, media, and social verification direction |
+| [`docs/vision/identity-layer-concept.md`](vision/identity-layer-concept.md) | Future identity-layer concept for account identity, authority scope, and identity evidence |
+
 ### For Release & Governance
 
 | Document | Purpose |
@@ -453,6 +469,8 @@ These files intentionally use legacy project names ("Humanity Chain", "Insanlik-
 - [`HC_CONSTITUTION.md`](../HC_CONSTITUTION.md) — Immutable core principles
 - [`GOVERNANCE.md`](../GOVERNANCE.md) — Merge authority and governance framework
 - [`docs/contributor-start-here.md`](contributor-start-here.md) — Detailed beginner guidance
+- [`docs/vision/source-and-social-verification.md`](vision/source-and-social-verification.md) — Future source/social verification vision
+- [`docs/vision/identity-layer-concept.md`](vision/identity-layer-concept.md) — Future identity-layer concept
 
 ---
 
