@@ -7,10 +7,10 @@ This file lists safe, advisory next work for HC-TRUST-LAYER. Each item is REPORT
 | Field | Status |
 | --- | --- |
 | Current phase | Post-runtime stabilization / operating-layer refinement |
-| Active focus | Public explorer planning gap review and maturity checklist are complete; align navigation so the checklist is discoverable without changing runtime behavior. |
-| Next up | Public explorer checklist navigation alignment. |
+| Active focus | Public validator and public explorer planning/navigation sequence is complete. Stay in evidence-triggered report-only mode unless new repository evidence appears. |
+| Next up | Evidence-triggered runtime or planning follow-up only if new evidence appears. |
 | Blocked / parked work | Do not modify runtime, code, tests, schemas, validators, workflows, governance rules, records, hashes, QR artifacts, generated artifacts, signing, federation, or policy for this next-actions list. |
-| Do-not-repeat references | #628 telemetry contract sufficient; #629 replay / continuity coverage merged; #630 runtime conditionally stabilized; #631 operating layer conditionally sufficient; public validator readiness/spec/implementation planning already exists; public validator navigation alignment completed in #682; public explorer navigation map completed in #683; public explorer gap review completed in #685; public explorer maturity checklist completed in #686. Avoid repeating those reviews unless new evidence appears. |
+| Do-not-repeat references | #628 telemetry contract sufficient; #629 replay / continuity coverage merged; #630 runtime conditionally stabilized; #631 operating layer conditionally sufficient; public validator readiness/spec/implementation planning already exists; public validator navigation alignment completed in #682; public explorer navigation map completed in #683; public explorer gap review completed in #685; public explorer maturity checklist completed in #686; public explorer checklist navigation alignment completed in #688. Avoid repeating those reviews unless new evidence appears. |
 | Protected-path reminder | Protected paths still require explicit approval and human-supervised validation before modification. |
 | Source-of-truth priority | Markdown project-control docs and repository evidence outrank `hc_context`, chat memory, and advisory summaries. AI output is advisory only; human reviewers retain final authority. |
 
@@ -33,30 +33,30 @@ Before taking the next action, read:
 
 Use `docs/project-control/active-work-registry.md` only for advisory shift-level coordination; this file remains the priority queue source. If `hc_context` files are useful for orientation, read them after the markdown project-control docs and treat them as advisory only.
 
-## Completed public explorer planning sequence
+## Completed public validator / public explorer planning sequence
 
 - Public validator planning navigation was linked in #682.
 - Public explorer navigation map was added in #683.
 - Public explorer planning gap review was completed in #685.
 - Public explorer maturity checklist was added in #686.
+- Public explorer checklist navigation alignment was completed in #688.
 - Do not create duplicate public validator or public explorer planning documents unless a new repository-evidence gap appears.
 
-## 1. Public explorer checklist navigation alignment
+## 1. Evidence-triggered follow-up only if needed
 
 - Priority order: 1
-- Mode: DOCUMENTATION ONLY.
-- Risk: Low if limited to navigation references; do not edit runtime, APIs, generated artifacts, protected paths, or implementation behavior.
-- Safe output: Make `docs/project-control/public-explorer-planning-gap-review.md` and `docs/project-control/public-explorer-maturity-checklist.md` discoverable from appropriate navigation surfaces such as `docs/project-control/public-explorer-navigation.md`, `docs/START_HERE.md`, or related project-control docs.
-- Why it is next: The gap review and maturity checklist now exist, but the navigation map may not yet reference the maturity checklist.
-- Decision language: **PUBLIC EXPLORER CHECKLIST NAVIGATION ALIGNED**.
+- Mode: REPORT ONLY, and only if new repository evidence appears.
+- Risk: Runtime, validator, API, explorer, generated-artifact, and trust-kernel adjacency; do not repeat completed public validator/public explorer planning or runtime stabilization work without new evidence.
+- Safe output: A narrow evidence report that cites the new trigger and explains whether further review, navigation refresh, or implementation planning is necessary.
+- Why it is next: The public validator and public explorer planning/navigation sequence is complete; future work should be triggered by concrete repository evidence, not repeated planning.
 
-## 2. Evidence-triggered runtime follow-up only if needed
+## 2. Parked implementation work
 
 - Priority order: 2
-- Mode: REPORT ONLY, and only if new repository evidence appears.
-- Risk: Runtime and validator adjacency; do not repeat completed telemetry, replay, runtime stabilization, public validator planning, public explorer gap review, or public explorer maturity checklist work without new evidence.
-- Safe output: A narrow evidence report that cites the new trigger and explains whether further review is necessary.
-- Why it is parked by default: #628, #629, and #630 already covered the recent telemetry contract, replay / continuity, and runtime stabilization sequence.
+- Mode: BLOCKED unless explicitly authorized.
+- Risk: Implementation expansion could affect runtime/API behavior, generated artifacts, validation semantics, public UX claims, or trust-kernel-adjacent surfaces.
+- Safe output: None by default. Open a separate, explicit implementation proposal only if the Founder or authorized reviewer requests it.
+- Why it is parked: Current public explorer and public validator work is documentation/planning aligned. Implementation changes require a new scoped task.
 
 ## Stale-context guidance
 
