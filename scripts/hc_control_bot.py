@@ -49,6 +49,19 @@ GENERATED_ARTIFACT_PATTERNS: tuple[str, ...] = (
     "**/*export*.json",
 )
 
+REVIEW_ROUTE_PATTERNS: tuple[tuple[str, str], ...] = (
+    (".github/workflows/**", "workflow-automation-review"),
+    ("src/hc_runtime/**", "runtime-contract-review"),
+    ("validators/**", "validator-review"),
+    ("schema/**", "schema-compatibility-review"),
+    ("records/**", "record-boundary-review"),
+    ("docs/governance/**", "governance-review"),
+    ("docs/project-control/**", "project-control-review"),
+    ("policy/**", "policy-review"),
+    ("federation/**", "federation-review"),
+    ("generated/**", "generated-artifact-review"),
+)
+
 
 @dataclass(frozen=True)
 class ScanResult:
@@ -62,6 +75,8 @@ class ScanResult:
     governance_adjacent_paths_touched: list[str]
     generated_artifacts_observed: list[str]
     warnings: list[str]
+    evidence_prompts: list[str]
+    review_routes: list[str]
     evidence_source: str
 
     def to_dict(self) -> dict[str, object]:
@@ -74,6 +89,8 @@ class ScanResult:
             "governance_adjacent_paths_touched": self.governance_adjacent_paths_touched,
             "generated_artifacts_observed": self.generated_artifacts_observed,
             "warnings": self.warnings,
+            "evidence_prompts": self.evidence_prompts,
+            "review_routes": self.review_routes,
             "evidence_source": self.evidence_source,
         }
 
@@ -84,6 +101,44 @@ def _normalize_path(path: str) -> str:
 
 def _matches_any(path: str, patterns: Iterable[str]) -> bool:
     return any(fnmatch.fnmatch(path, pattern) for pattern in patterns)
+
+
+def _dedupe_sorted(values: Iterable[str]) -> list[str]:
+    return sorted(set(values))
+
+
+def _build_review_routes(paths: Iterable[str]) -> list[str]:
+    routes: list[str] = []
+    for path in paths:
+        for pattern, route in REVIEW_ROUTE_PATTERNS:
+            if fnmatch.fnmatch(path, pattern):
+                routes.append(route)
+    return _dedupe_sorted(routes)
+
+
+def _build_evidence_prompts(
+    protected_paths: list[str],
+    governance_adjacent_paths: list[str],
+    generated_artifacts: list[str],
+) -> list[str]:
+    prompts: list[str] = []
+
+    if protected_paths:
+        prompts.append("Provide reviewer evidence for protected or trust-kernel-adjacent paths.")
+    if governance_adjacent_paths:
+        prompts.append("Provide maintainer rationale for governance-adjacent changes.")
+    if generated_artifacts:
+        prompts.append("Identify the canonical source and reproduction method for generated artifacts.")
+    if any(path.startswith(".github/workflows/") for path in protected_paths):
+        prompts.append("Confirm workflow changes do not run untrusted PR branch code.")
+    if any(path.startswith("src/hc_runtime/") for path in protected_paths):
+        prompts.append("Provide runtime test output or response-contract examples.")
+    if any(path.startswith("validators/") for path in protected_paths):
+        prompts.append("Provide validator test output including malformed-input behavior.")
+    if any(path.startswith("schema/") for path in protected_paths):
+        prompts.append("Provide schema compatibility notes and example records.")
+
+    return _dedupe_sorted(prompts)
 
 
 def scan_changed_paths(changed_paths: Iterable[str]) -> ScanResult:
@@ -115,6 +170,13 @@ def scan_changed_paths(changed_paths: Iterable[str]) -> ScanResult:
     if generated_artifacts:
         warnings.append("Generated artifact path observed; do not treat as canonical record by default.")
 
+    evidence_prompts = _build_evidence_prompts(
+        protected_paths,
+        governance_adjacent_paths,
+        generated_artifacts,
+    )
+    review_routes = _build_review_routes(normalized_paths)
+
     return ScanResult(
         advisory_only=True,
         public_safe=True,
@@ -124,6 +186,8 @@ def scan_changed_paths(changed_paths: Iterable[str]) -> ScanResult:
         governance_adjacent_paths_touched=governance_adjacent_paths,
         generated_artifacts_observed=generated_artifacts,
         warnings=warnings,
+        evidence_prompts=evidence_prompts,
+        review_routes=review_routes,
         evidence_source="changed file path metadata only",
     )
 
