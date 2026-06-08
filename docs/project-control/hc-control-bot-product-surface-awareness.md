@@ -117,7 +117,7 @@ The bot may remind reviewers that human review is required when:
 - QR spoof risk is present;
 - interpretation is consequential;
 - legal, security, institutional, or real-world impact is implied;
-- a user asks whether the result proves truth.
+- a user asks whether the result supports a consequential decision.
 
 The bot may surface this as a checklist. It must not decide final sufficiency.
 
