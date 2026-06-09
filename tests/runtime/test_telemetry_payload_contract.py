@@ -18,6 +18,31 @@ TELEMETRY_ENDPOINTS = (
     "/telemetry/queues",
 )
 QUEUE_FIELDS = ("verification_queue", "escalation_queue", "replay_warning_queue")
+BASE_REQUIRED_KEYS = {
+    "status",
+    "runtime_mode",
+    "advisory_only",
+    "runtime_stage",
+    "verification_mode",
+    "public_safe",
+    "traceable",
+    "truth_guarantee",
+    "warnings",
+    "human_review_required",
+    "degraded",
+    "degraded_reasons",
+}
+ENDPOINT_REQUIRED_KEYS = {
+    "/telemetry/health": BASE_REQUIRED_KEYS,
+    "/telemetry/runtime": BASE_REQUIRED_KEYS | {"events_total", "degraded_events"},
+    "/telemetry/queues": BASE_REQUIRED_KEYS
+    | {
+        "verification_queue",
+        "escalation_queue",
+        "replay_warning_queue",
+        "degraded_queue_handling",
+    },
+}
 SECRET_MARKERS = (
     "token=",
     "api_key=",
@@ -162,6 +187,14 @@ async def _telemetry_payloads(client: httpx.AsyncClient) -> dict[str, dict[str, 
         assert response.status_code == 200
         payloads[endpoint] = response.json()
     return payloads
+
+
+@pytest.mark.anyio
+async def test_telemetry_payload_required_keys_are_locked(client: httpx.AsyncClient) -> None:
+    payloads = await _telemetry_payloads(client)
+
+    for endpoint, payload in payloads.items():
+        assert set(payload.keys()) == ENDPOINT_REQUIRED_KEYS[endpoint]
 
 
 @pytest.mark.anyio
