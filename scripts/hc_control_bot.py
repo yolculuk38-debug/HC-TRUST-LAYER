@@ -62,6 +62,17 @@ REVIEW_ROUTE_PATTERNS: tuple[tuple[str, str], ...] = (
     ("generated/**", "generated-artifact-review"),
 )
 
+SUGGESTED_LABEL_PATTERNS: tuple[tuple[str, str], ...] = (
+    (".github/workflows/**", "risk:workflow"),
+    ("src/hc_runtime/**", "area:runtime"),
+    ("validators/**", "area:validator"),
+    ("schema/**", "area:schema"),
+    ("records/**", "area:records"),
+    ("docs/governance/**", "area:governance"),
+    ("docs/project-control/**", "area:project-control"),
+    ("generated/**", "area:generated-artifact"),
+)
+
 
 @dataclass(frozen=True)
 class ScanResult:
@@ -71,12 +82,14 @@ class ScanResult:
     public_safe: bool
     truth_guarantee: bool
     human_review_required: bool
+    review_priority: str
     protected_paths_touched: list[str]
     governance_adjacent_paths_touched: list[str]
     generated_artifacts_observed: list[str]
     warnings: list[str]
     evidence_prompts: list[str]
     review_routes: list[str]
+    suggested_labels: list[str]
     evidence_source: str
 
     def to_dict(self) -> dict[str, object]:
@@ -85,12 +98,14 @@ class ScanResult:
             "public_safe": self.public_safe,
             "truth_guarantee": self.truth_guarantee,
             "human_review_required": self.human_review_required,
+            "review_priority": self.review_priority,
             "protected_paths_touched": self.protected_paths_touched,
             "governance_adjacent_paths_touched": self.governance_adjacent_paths_touched,
             "generated_artifacts_observed": self.generated_artifacts_observed,
             "warnings": self.warnings,
             "evidence_prompts": self.evidence_prompts,
             "review_routes": self.review_routes,
+            "suggested_labels": self.suggested_labels,
             "evidence_source": self.evidence_source,
         }
 
@@ -114,6 +129,35 @@ def _build_review_routes(paths: Iterable[str]) -> list[str]:
             if fnmatch.fnmatch(path, pattern):
                 routes.append(route)
     return _dedupe_sorted(routes)
+
+
+def _build_suggested_labels(paths: Iterable[str]) -> list[str]:
+    labels: list[str] = []
+    for path in paths:
+        for pattern, label in SUGGESTED_LABEL_PATTERNS:
+            if fnmatch.fnmatch(path, pattern):
+                labels.append(label)
+    return _dedupe_sorted(labels)
+
+
+def _build_review_priority(
+    protected_paths: list[str],
+    governance_adjacent_paths: list[str],
+    generated_artifacts: list[str],
+) -> str:
+    if any(path.startswith(".github/workflows/") for path in protected_paths):
+        return "high"
+    if any(path.startswith("src/hc_runtime/") for path in protected_paths):
+        return "high"
+    if any(path.startswith("validators/") for path in protected_paths):
+        return "high"
+    if any(path.startswith("schema/") for path in protected_paths):
+        return "high"
+    if protected_paths or governance_adjacent_paths:
+        return "medium"
+    if generated_artifacts:
+        return "low"
+    return "low"
 
 
 def _build_evidence_prompts(
@@ -176,18 +220,26 @@ def scan_changed_paths(changed_paths: Iterable[str]) -> ScanResult:
         generated_artifacts,
     )
     review_routes = _build_review_routes(normalized_paths)
+    suggested_labels = _build_suggested_labels(normalized_paths)
+    review_priority = _build_review_priority(
+        protected_paths,
+        governance_adjacent_paths,
+        generated_artifacts,
+    )
 
     return ScanResult(
         advisory_only=True,
         public_safe=True,
         truth_guarantee=False,
         human_review_required=bool(protected_paths or governance_adjacent_paths),
+        review_priority=review_priority,
         protected_paths_touched=protected_paths,
         governance_adjacent_paths_touched=governance_adjacent_paths,
         generated_artifacts_observed=generated_artifacts,
         warnings=warnings,
         evidence_prompts=evidence_prompts,
         review_routes=review_routes,
+        suggested_labels=suggested_labels,
         evidence_source="changed file path metadata only",
     )
 
