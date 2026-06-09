@@ -78,6 +78,14 @@ jobs:
         run: |
           python scripts/hc_control_bot.py --pretty --paths-file hc-control-bot-changed-paths.txt | tee hc-control-bot-report.json
 
+      - name: Upload advisory report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hc-control-bot-advisory-report-${{ github.event.pull_request.number }}
+          path: hc-control-bot-report.json
+          if-no-files-found: error
+          retention-days: 14
+
       - name: Post or update single advisory comment
         env:
           GITHUB_TOKEN: ${{ github.token }}
