@@ -14,6 +14,14 @@ It does not create autonomous authority.
 
 It does not provide a truth guarantee.
 
+## Workflow index
+
+For the full manual Council workflow, read:
+
+- `council/workflow-index.md`
+
+This index connects roles, prompts, checklists, response summaries, intake logs, decision-record update planning, and final human review.
+
 ## Current status
 
 The Council is documentation-first and manual.
