@@ -320,6 +320,34 @@ def test_recovery_after_degraded_state_preserves_append_only_continuity() -> Non
     assert all(event["public_safe"] is True for event in recovered_history["events"])
 
 
+def test_recovery_response_does_not_hide_prior_degraded_telemetry_visibility() -> None:
+    record_id = "recovery-telemetry-visible-record"
+    event_store = RuntimeEventStore()
+
+    _run_isolated_qr_flow(
+        record_id=record_id,
+        qr_input="hc://recovery-visible hash:ok degraded",
+        event_store=event_store,
+    )
+    recovered_payload, event_store, queue_store = _run_isolated_qr_flow(
+        record_id=record_id,
+        qr_input="hc://recovery-visible hash:ok",
+        event_store=event_store,
+    )
+    recovered_history = _history_response(record_id=record_id, event_store=event_store)
+    telemetry = _telemetry_snapshot(event_store=event_store, queue_store=queue_store)
+
+    _assert_advisory_contract(recovered_payload, record_id=record_id)
+    _assert_history_contract(recovered_history, record_id=record_id)
+    _assert_telemetry_contract(telemetry)
+    assert recovered_payload["degraded_runtime"] is False
+    assert telemetry["status"] == "degraded"
+    assert telemetry["degraded"] is True
+    assert telemetry["degraded_events"] == 1
+    assert telemetry["degraded_reasons"] == ["runtime_recovery_mode"]
+    assert any(event["event_type"] == "runtime_recovery_mode" for event in recovered_history["events"])
+
+
 def test_partial_queue_failure_keeps_replay_marker_visible_without_authority_escalation() -> None:
     record_id = "partial-queue-replay-record"
     queue_store = PartialQueueStore()
