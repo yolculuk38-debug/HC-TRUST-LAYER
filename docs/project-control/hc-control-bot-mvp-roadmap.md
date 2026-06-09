@@ -1,16 +1,38 @@
 # HC Control Bot MVP Roadmap
 
-> Status: planning roadmap
+> Status: implementation in progress
 >
 > Depends on: `docs/governance/hc-control-bot-authority-policy.md`
 >
-> Mode: documentation only
+> Mode: roadmap and implementation status tracking
 
 ## Purpose
 
-This roadmap defines the safe implementation path for the planned HC Control Bot / HC Trust Engineer.
+This roadmap defines the safe implementation path for the HC Control Bot / HC Trust Engineer.
 
-This document does not implement code, scripts, workflows, runtime behavior, validators, schemas, records, QR behavior, signing, federation, generated artifacts, LLM integration, labels, checks, or dashboard features.
+This document tracks implementation state only. It does not itself implement code, scripts, workflows, runtime behavior, validators, schemas, records, QR behavior, signing, federation, generated artifacts, LLM integration, labels, checks, or dashboard features.
+
+## Current Implementation Snapshot
+
+As of the current roadmap update, the MVP has moved from planning into early implementation.
+
+Implemented or partially implemented:
+
+- deterministic path scanner in `scripts/hc_control_bot.py`;
+- scanner tests in `tests/test_hc_control_bot.py`;
+- machine-readable advisory JSON output;
+- newline-delimited changed-path file input for safer workflow integration;
+- single advisory comment workflow in `.github/workflows/hc-control-bot-advisory-comment.yml`;
+- advisory-only wording and human final authority boundary.
+
+Still not implemented:
+
+- autonomous approval, rejection, closing, or merge behavior;
+- automatic label application;
+- LLM calls;
+- trust scoring;
+- production-readiness claims;
+- external federation or hosted API behavior.
 
 ## Operating Principle
 
@@ -33,7 +55,7 @@ Implementation must proceed in this order:
 9. Optional GitHub App migration.
 10. Optional LLM-assisted project memory.
 
-Steps 3 and later require separate PRs.
+Steps 1 through 6 are now represented in repository artifacts. Later steps still require separate PRs and human maintainer review.
 
 ## Phase 0: Authority Policy
 
@@ -53,11 +75,13 @@ The policy defines:
 - audit expectations;
 - future expansion review.
 
+Status: represented in repository governance docs.
+
 ## Phase 1: Non-LLM Deterministic Scanner
 
 Goal: create a small path and metadata scanner.
 
-Recommended file:
+Implemented file:
 
 ```text
 scripts/hc_control_bot.py
@@ -66,13 +90,14 @@ scripts/hc_control_bot.py
 Allowed behavior:
 
 - accept a list of changed file paths;
+- accept a newline-delimited changed-paths file;
 - match paths against protected or governance-adjacent surfaces;
 - produce a structured advisory result;
 - avoid reading PR body, comments, commit messages, or file contents for risk decisions;
 - avoid LLM calls;
 - avoid semantic review.
 
-Initial protected surfaces may include:
+Initial protected surfaces include:
 
 ```text
 .github/workflows/**
@@ -88,37 +113,49 @@ docs/project-control/**
 scripts/hc_control_bot.py
 ```
 
-Expected result fields:
+Expected result fields include:
 
 ```text
 advisory_only
 public_safe
 truth_guarantee
 human_review_required
+review_priority
 protected_paths_touched
+governance_adjacent_paths_touched
+generated_artifacts_observed
 warnings
+evidence_prompts
+review_routes
+suggested_labels
 evidence_source
 ```
+
+Status: implemented as deterministic scanner behavior.
 
 ## Phase 2: Scanner Tests
 
 Goal: lock deterministic behavior before workflow integration.
 
-Recommended tests:
+Implemented tests:
 
 ```text
 tests/test_hc_control_bot.py
 ```
 
-Test cases:
+Test coverage includes:
 
 - non-protected docs path returns low advisory risk;
 - governance path requires human review;
 - workflow path raises protected-surface warning;
 - runtime path raises protected-surface warning;
 - generated artifact path is not treated as canonical record by default;
-- instruction-like PR text has no effect on scanner result;
-- output always includes advisory and public-safety fields.
+- instruction-like path text has no authority effect on scanner result;
+- output always includes advisory and public-safety fields;
+- CLI output remains machine-readable JSON;
+- newline-delimited changed-path file input is supported.
+
+Status: implemented as scanner regression coverage.
 
 ## Phase 3: Report-Only Integration
 
@@ -134,6 +171,8 @@ Safety requirements:
 - use changed-file metadata instead of untrusted PR content;
 - never approve, reject, merge, close, reopen, or certify.
 
+Status: represented by the advisory comment workflow, which checks out the trusted base revision and runs the deterministic scanner.
+
 ## Phase 4: Single Advisory Comment
 
 Goal: make the bot useful without creating noise.
@@ -142,31 +181,21 @@ Comment rules:
 
 - one bot comment per PR;
 - update existing bot comment instead of posting repeated comments;
-- skip or minimize output for draft PRs;
 - aggregate all findings into one concise report;
 - avoid decision-like wording;
-- include the advisory notice from the authority policy.
+- include advisory-only and human final authority language.
 
-Suggested comment shape:
+Current comment shape includes:
 
 ```text
-HC Control Bot Advisory Note
+HC Control Bot advisory observation
 
-Changed surfaces observed:
-- docs/governance/example.md
-
-Advisory observations:
-- Protected or governance-adjacent path matched.
-- Human-supervised review remains required.
-
-Evidence source:
-- Changed file metadata only.
-- Policy baseline: main@SHA.
-
-This observation is non-authoritative.
+This is advisory and uses changed file path metadata only.
+It is not approval, rejection, merge authority, or a final validation result.
 Human maintainers retain final authority.
-Trust the record, not the narrative.
 ```
+
+Status: implemented as single advisory comment workflow behavior.
 
 ## Phase 5: Evidence Prompt Support
 
@@ -181,6 +210,8 @@ Allowed prompts may request:
 
 The bot may ask for evidence, but must not decide whether the evidence is sufficient.
 
+Status: partially implemented as deterministic `evidence_prompts` in scanner output.
+
 ## Phase 6: Optional Issue Routing
 
 Goal: help maintainers classify work.
@@ -192,6 +223,8 @@ Allowed behavior:
 - suggest likely area labels in plain text;
 - surface related docs;
 - leave final routing to humans.
+
+Status: partially represented as suggested labels in advisory output only. No automatic label application is implemented.
 
 ## Phase 7: Optional GitHub App Migration
 
@@ -206,6 +239,8 @@ Possible reasons:
 - better webhook handling.
 
 Migration must preserve the authority policy.
+
+Status: deferred.
 
 ## Phase 8: Future LLM-Assisted Project Memory
 
@@ -223,6 +258,8 @@ Future LLM use requires separate governance review and must include:
 
 The LLM may explain deterministic findings, but must not override them.
 
+Status: deferred.
+
 ## Explicit Non-Goals for MVP
 
 The MVP must not include:
@@ -231,50 +268,10 @@ The MVP must not include:
 - approval or rejection behavior;
 - merge behavior;
 - issue closing or reopening;
-- label automation unless separately approved;
+- automatic label application unless separately approved;
 - trust scoring;
 - production-readiness claims;
 - truth claims;
 - LLM calls;
 - embeddings;
-- vector databases;
-- dashboard or chat UI;
-- multi-repo memory;
-- CI release or deployment decisions.
-
-## Review Gates
-
-Each implementation phase should answer:
-
-1. What trusted evidence did it read?
-2. What untrusted input did it observe?
-3. What actions can it take?
-4. What actions are impossible by design?
-5. What audit trace is produced?
-6. How can a human maintainer ignore the advisory output?
-7. Does it preserve AI advisory only and human final authority?
-
-## Recommended PR Sequence
-
-```text
-#691 docs(project-control): add HC Control Bot MVP roadmap
-#692 scripts: add HC Control Bot deterministic scanner
-#693 tests: cover HC Control Bot scanner behavior
-#694 workflows: add HC Control Bot report-only workflow
-#695 workflows: add single advisory PR comment mode
-```
-
-The sequence may change if governance review requires a smaller step.
-
-## MVP Completion Criteria
-
-The MVP is complete when:
-
-- authority policy exists on `main`;
-- roadmap exists on `main`;
-- deterministic scanner has tests;
-- report integration avoids PR-branch governance as trusted input;
-- output is advisory-only;
-- one-comment behavior prevents noise;
-- audit fields are available;
-- humans remain the only final authority.
+- vector databases.
