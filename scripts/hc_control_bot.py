@@ -13,6 +13,7 @@ import argparse
 import fnmatch
 import json
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Iterable
 
 
@@ -120,6 +121,10 @@ def _matches_any(path: str, patterns: Iterable[str]) -> bool:
 
 def _dedupe_sorted(values: Iterable[str]) -> list[str]:
     return sorted(set(values))
+
+
+def _read_paths_file(path: str) -> list[str]:
+    return Path(path).read_text(encoding="utf-8").splitlines()
 
 
 def _build_review_routes(paths: Iterable[str]) -> list[str]:
@@ -254,6 +259,10 @@ def build_parser() -> argparse.ArgumentParser:
         help="Changed repository paths to classify.",
     )
     parser.add_argument(
+        "--paths-file",
+        help="Newline-delimited file containing changed repository paths.",
+    )
+    parser.add_argument(
         "--pretty",
         action="store_true",
         help="Pretty-print JSON output.",
@@ -263,7 +272,10 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    result = scan_changed_paths(args.paths).to_dict()
+    paths = list(args.paths)
+    if args.paths_file:
+        paths.extend(_read_paths_file(args.paths_file))
+    result = scan_changed_paths(paths).to_dict()
     indent = 2 if args.pretty else None
     print(json.dumps(result, indent=indent, sort_keys=True))
     return 0
