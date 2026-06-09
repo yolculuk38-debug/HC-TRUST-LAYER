@@ -76,7 +76,7 @@ jobs:
 
       - name: Run deterministic scanner
         run: |
-          python scripts/hc_control_bot.py --pretty $(cat hc-control-bot-changed-paths.txt) | tee hc-control-bot-report.json
+          python scripts/hc_control_bot.py --pretty --paths-file hc-control-bot-changed-paths.txt | tee hc-control-bot-report.json
 
       - name: Post or update single advisory comment
         env:
