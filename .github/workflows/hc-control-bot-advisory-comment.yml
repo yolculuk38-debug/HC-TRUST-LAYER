@@ -114,6 +114,8 @@ jobs:
               "It is not approval, rejection, merge authority, or a final validation result.",
               "Human maintainers retain final authority.",
               "",
+              f"- review priority: `{report.get('review_priority', 'unknown')}`",
+              section("suggested labels", report.get("suggested_labels", [])),
               section("protected paths", report.get("protected_paths_touched", [])),
               section("governance-adjacent paths", report.get("governance_adjacent_paths_touched", [])),
               section("generated artifact paths", report.get("generated_artifacts_observed", [])),
