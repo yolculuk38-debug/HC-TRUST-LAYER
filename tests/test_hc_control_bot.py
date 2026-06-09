@@ -1,4 +1,6 @@
-from scripts.hc_control_bot import scan_changed_paths
+import json
+
+from scripts.hc_control_bot import main, scan_changed_paths
 
 
 def test_non_protected_docs_path_is_advisory_only_without_human_review():
@@ -148,3 +150,18 @@ def test_multiple_review_routes_and_labels_are_sorted_and_deduplicated():
         "Provide validator test output including malformed-input behavior."
         in result["evidence_prompts"]
     )
+
+
+def test_cli_outputs_machine_readable_advisory_json(capsys):
+    exit_code = main(["schema/record-v1.schema.json"])
+
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+
+    assert exit_code == 0
+    assert payload["advisory_only"] is True
+    assert payload["truth_guarantee"] is False
+    assert payload["human_review_required"] is True
+    assert payload["review_routes"] == ["schema-compatibility-review"]
+    assert payload["suggested_labels"] == ["area:schema"]
+    assert payload["evidence_source"] == "changed file path metadata only"
