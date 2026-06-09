@@ -165,3 +165,22 @@ def test_cli_outputs_machine_readable_advisory_json(capsys):
     assert payload["review_routes"] == ["schema-compatibility-review"]
     assert payload["suggested_labels"] == ["area:schema"]
     assert payload["evidence_source"] == "changed file path metadata only"
+
+
+def test_cli_reads_changed_paths_from_newline_delimited_file(tmp_path, capsys):
+    paths_file = tmp_path / "changed-paths.txt"
+    paths_file.write_text(
+        "docs/demo/example.md\n"
+        "schema/record-v1.schema.json\n",
+        encoding="utf-8",
+    )
+
+    exit_code = main(["--paths-file", str(paths_file)])
+
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+
+    assert exit_code == 0
+    assert payload["protected_paths_touched"] == ["schema/record-v1.schema.json"]
+    assert payload["review_routes"] == ["schema-compatibility-review"]
+    assert payload["suggested_labels"] == ["area:schema"]
