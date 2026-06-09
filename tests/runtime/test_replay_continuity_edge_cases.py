@@ -297,6 +297,35 @@ def test_event_history_consistency_for_replay_and_continuity_markers() -> None:
     assert events[3]["details"] == {"degraded_detected": True, "recovery_mode": True, "failover_safe": True}
 
 
+def test_event_history_is_isolated_by_record_id_for_replay_and_continuity() -> None:
+    replay_record_id = "isolated-replay-history-record"
+    clean_record_id = "isolated-clean-history-record"
+    event_store = RuntimeEventStore()
+
+    _run_isolated_qr_flow(
+        record_id=replay_record_id,
+        qr_input="hc://isolated-replay-history-record hash:ok replay continuity-warning",
+        event_store=event_store,
+    )
+    _run_isolated_qr_flow(
+        record_id=clean_record_id,
+        qr_input="hc://isolated-clean-history-record hash:ok",
+        event_store=event_store,
+    )
+
+    replay_history = _history_response(record_id=replay_record_id, event_store=event_store)
+    clean_history = _history_response(record_id=clean_record_id, event_store=event_store)
+
+    assert replay_history["replay_warning_visible"] is True
+    assert any(event["event_type"] == "replay_warning" for event in replay_history["events"])
+    assert any(event["event_type"] == "runtime_recovery_mode" for event in replay_history["events"])
+    assert clean_history["replay_warning_visible"] is False
+    assert all(event["record_id"] == clean_record_id for event in clean_history["events"])
+    assert all(event["record_id"] == replay_record_id for event in replay_history["events"])
+    assert not any(event["event_type"] == "replay_warning" for event in clean_history["events"])
+    assert not any(event["event_type"] == "runtime_recovery_mode" for event in clean_history["events"])
+
+
 def test_malformed_continuity_state_is_handled_as_safe_degraded_advisory_state() -> None:
     engine = TrustStateDecisionEngine()
 
