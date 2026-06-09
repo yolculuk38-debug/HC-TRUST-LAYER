@@ -71,7 +71,7 @@ Any advanced capability must preserve these rules:
 
 Examples:
 
-- comments
+- advisory comments
 - report artifacts
 - evidence prompts
 - review routes
@@ -80,12 +80,14 @@ Examples:
 
 Status: allowed when deterministic and public-safe.
 
+The advisory comment must remain informational and must not apply labels, assign reviewers, submit review decisions, close pull requests, or merge pull requests.
+
 ### Class B: low-risk metadata write
 
 Examples:
 
 - applying a label from a strict allowlist
-- updating a single bot-owned comment
+- writing non-decision repository metadata from an allowlisted rule
 
 Status: requires separate governance PR before activation.
 
