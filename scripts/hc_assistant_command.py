@@ -40,7 +40,7 @@ STATUS_LINES: tuple[str, ...] = (
     "- command_interface: documented",
     "- assistant_console_guide: documented",
     "- command_parser: local deterministic parser",
-    "- automation_status: not connected to issue comments yet",
+    "- automation_status: issue-comment listener connected for /hc commands",
     "- authority: advisory only; human maintainers retain final authority",
 )
 
@@ -114,7 +114,7 @@ EXPLAIN_TOPICS: dict[str, tuple[str, ...]] = {
     "commands": (
         "HC Trust Engineer commands use the /hc prefix.",
         "Implemented local commands include help, status, next, evidence, explain, risks, and review.",
-        "The parser is local, deterministic, non-LLM, and not connected to issue comments yet.",
+        "The parser is local, deterministic, non-LLM, and connected to the /hc issue-comment listener.",
     ),
 }
 
