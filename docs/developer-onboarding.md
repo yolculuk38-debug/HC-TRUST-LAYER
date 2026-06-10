@@ -19,11 +19,11 @@ Use these documents as the first source of truth for repository status, contribu
 
 ## Python Version Guidance
 
-Use Python 3.11 or newer for local development when possible.
+Use Python 3.14 or newer for local development when possible.
 
-- Preferred contributor version: Python 3.11+
-- Package metadata floor: Python >=3.9
-- CI alignment target: Python 3.11
+- Preferred contributor version: Python 3.14+
+- Package metadata floor: Python >=3.14
+- CI alignment target: Python 3.14
 
 If your local Python version differs from CI alignment, report that in check notes when failures may be environment-related.
 
