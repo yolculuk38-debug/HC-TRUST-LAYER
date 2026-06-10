@@ -16,6 +16,7 @@ SUPPORTED_COMMANDS: tuple[str, ...] = (
     "help",
     "status",
     "next",
+    "evidence",
 )
 
 HELP_LINES: tuple[str, ...] = (
@@ -23,8 +24,8 @@ HELP_LINES: tuple[str, ...] = (
     "- /hc help",
     "- /hc status",
     "- /hc next",
+    "- /hc evidence",
     "- /hc explain <topic-or-path> (documented, not implemented in this parser)",
-    "- /hc evidence (documented, not implemented in this parser)",
     "Boundary: advisory only. Human maintainers retain final authority.",
 )
 
@@ -47,6 +48,19 @@ NEXT_LINES: tuple[str, ...] = (
     "- avoid: duplicate public validator/public explorer planning and unrequested implementation expansion",
     "- source: docs/project-control/next-actions.md",
     "- before_acting: read docs/project-control/next-actions.md directly and confirm new repository evidence or explicit authorization exists",
+    "Boundary: advisory only. Human maintainers retain final authority.",
+)
+
+EVIDENCE_LINES: tuple[str, ...] = (
+    "HC Trust Engineer evidence bundle checklist:",
+    "- changed_files: list every file path touched",
+    "- scope: state whether the change is docs-only, runtime, workflow, schema, validator, record, generated artifact, policy, federation, or governance-adjacent",
+    "- source_of_truth: cite live GitHub state and trusted main-branch docs when available",
+    "- checks: include relevant CI/check results or state that checks are not yet available",
+    "- protected_path_assessment: state whether protected or trust-kernel-adjacent paths are touched",
+    "- advisory_boundary: confirm advisory_only=true, public_safe=true, truth_guarantee=false",
+    "- human_review: state whether human review is required before merge or implementation expansion",
+    "- do_not_claim: do not claim approval, rejection, merge authority, production readiness, legal validity, or objective truth",
     "Boundary: advisory only. Human maintainers retain final authority.",
 )
 
@@ -147,7 +161,25 @@ def parse_hc_command(raw_text: str) -> CommandResult:
             evidence_source="static project-control guidance from docs/project-control/next-actions.md",
         )
 
-    if command in {"explain", "evidence", "review", "risks"}:
+    if command == "evidence":
+        return CommandResult(
+            advisory_only=True,
+            public_safe=True,
+            truth_guarantee=False,
+            human_review_required=True,
+            command_prefix="/hc",
+            command="evidence",
+            implemented=True,
+            response_lines=list(EVIDENCE_LINES),
+            warnings=[
+                "This local parser does not inspect the current PR or issue context.",
+                "Attach live GitHub evidence separately before acting on this checklist.",
+                "This checklist is not approval, rejection, merge authority, or a truth guarantee.",
+            ],
+            evidence_source="static evidence checklist from HC assistant command interface",
+        )
+
+    if command in {"explain", "review", "risks"}:
         return CommandResult(
             advisory_only=True,
             public_safe=True,
