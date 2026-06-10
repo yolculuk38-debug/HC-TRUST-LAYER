@@ -43,8 +43,10 @@ NEXT_LINES: tuple[str, ...] = (
     "- mode: REPORT ONLY",
     "- next_action: evidence-triggered runtime or planning follow-up only if new repository evidence appears",
     "- scope: narrow evidence report, navigation refresh, or implementation planning only when triggered by concrete repo evidence",
-    "- avoid: duplicate public validator/public explorer planning and unrequested runtime, schema, validator, workflow, record, QR, signing, federation, or policy changes",
+    "- blocked_work: do not modify runtime, code, tests, schemas, validators, workflows, governance rules, records, hashes, QR artifacts, generated artifacts, signing, federation, or policy from this command output",
+    "- avoid: duplicate public validator/public explorer planning and unrequested implementation expansion",
     "- source: docs/project-control/next-actions.md",
+    "- before_acting: read docs/project-control/next-actions.md directly and confirm new repository evidence or explicit authorization exists",
     "Boundary: advisory only. Human maintainers retain final authority.",
 )
 
@@ -140,6 +142,7 @@ def parse_hc_command(raw_text: str) -> CommandResult:
             warnings=[
                 "This local parser does not perform live GitHub state lookup.",
                 "Proceed only if new repository evidence appears or an authorized reviewer requests implementation planning.",
+                "Read docs/project-control/next-actions.md directly before acting on this static summary.",
             ],
             evidence_source="static project-control guidance from docs/project-control/next-actions.md",
         )
