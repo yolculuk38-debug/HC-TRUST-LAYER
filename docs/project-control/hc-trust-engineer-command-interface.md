@@ -1,6 +1,6 @@
 # HC Trust Engineer Command Interface
 
-Status: local deterministic command interface implemented for the current core command set.
+Status: local deterministic command interface implemented and connected to an advisory issue-comment listener for `/hc` commands.
 
 This document defines a safe command interface for using HC Trust Engineer inside the GitHub repository without requiring a separate website or chat UI.
 
@@ -18,18 +18,23 @@ Implemented in `scripts/hc_assistant_command.py`:
 
 Covered by `tests/test_hc_assistant_command.py`.
 
+Connected workflow:
+
+```text
+.github/workflows/hc-assistant-command.yml
+```
+
 Current implementation mode:
 
 - local deterministic parser;
 - machine-readable JSON output;
 - static response maps and checklists only;
-- no workflow connection;
-- no issue-comment listener;
-- no live pull request inspection;
+- issue and pull request comments starting with `/hc` can trigger the listener;
+- trusted default-branch checkout for command execution;
+- no PR-branch code execution;
+- no live pull request inspection by the parser;
 - no file reading from command execution;
-- no network calls;
 - no LLM calls;
-- no repository writes;
 - no labels, assignments, approvals, rejections, merges, or closes.
 
 ## Purpose
@@ -43,14 +48,14 @@ The goal is to make the repository feel guided while keeping all interactions ad
 ```text
 User writes a command in an issue or pull request comment.
 ↓
-HC Trust Engineer parses the command.
+HC Trust Engineer parses the first `/hc` command line through the trusted default-branch parser.
 ↓
-The assistant returns an advisory-only response.
+The assistant posts an advisory-only response and uploads a machine-readable artifact.
 ↓
 Human maintainers decide what to do next.
 ```
 
-Current limitation: the parser exists locally, but GitHub issue/PR comment automation is not connected yet.
+Current limitation: the listener is intentionally narrow. It does not perform live PR review, semantic analysis, label application, assignment, approval, rejection, merge, close, or LLM-assisted reasoning.
 
 ## Recommended console issue
 
@@ -80,7 +85,7 @@ This keeps the interface explicit and avoids accidental bot responses.
 
 ### `/hc help`
 
-Implementation status: implemented in the local deterministic parser.
+Implementation status: implemented in the local deterministic parser and available through the `/hc` listener.
 
 Shows available commands and explains advisory-only boundaries.
 
@@ -100,7 +105,7 @@ Boundary: advisory only. Human maintainers retain final authority.
 
 ### `/hc status`
 
-Implementation status: implemented as static local parser output.
+Implementation status: implemented as static local parser output and available through the `/hc` listener.
 
 Summarizes current command-surface status.
 
@@ -115,7 +120,7 @@ Future implementation may add live GitHub state only through a separately review
 
 ### `/hc next`
 
-Implementation status: implemented as static local parser output.
+Implementation status: implemented as static local parser output and available through the `/hc` listener.
 
 Suggests the next safe task from static project-control guidance.
 
@@ -132,7 +137,7 @@ The command must not create or merge work automatically.
 
 ### `/hc evidence`
 
-Implementation status: implemented as static local parser output.
+Implementation status: implemented as static local parser output and available through the `/hc` listener.
 
 Returns an advisory evidence-bundle checklist for human review.
 
@@ -157,7 +162,7 @@ Current parser boundaries:
 
 ### `/hc explain`
 
-Implementation status: implemented as static local parser output.
+Implementation status: implemented as static local parser output and available through the `/hc` listener.
 
 Explains supported static topics without repository inspection.
 
@@ -187,7 +192,7 @@ Current parser boundaries:
 
 ### `/hc risks`
 
-Implementation status: implemented as static local parser output.
+Implementation status: implemented as static local parser output and available through the `/hc` listener.
 
 Returns a static risk checklist for proposed work, pull requests, or issues.
 
@@ -211,7 +216,7 @@ Current parser boundaries:
 
 ### `/hc review`
 
-Implementation status: implemented as static local parser output.
+Implementation status: implemented as static local parser output and available through the `/hc` listener.
 
 Provides a human-review preparation checklist.
 
@@ -249,7 +254,7 @@ The following commands are not required for the first implementation:
 
 They should be added only after the core commands are stable and after separate governance-reviewed PRs.
 
-## Where commands should work
+## Where commands work
 
 ### Assistant console issue
 
@@ -263,7 +268,7 @@ Use for:
 - `/hc risks`;
 - `/hc review`.
 
-Current limitation: the issue exists, but automatic issue-comment listening is not connected yet.
+The listener responds to issue comments that start with `/hc`.
 
 ### Pull request comments
 
@@ -273,7 +278,7 @@ Use for:
 - `/hc risks`;
 - `/hc evidence`.
 
-Current limitation: PR comment automation is not connected yet.
+The listener responds to pull request comments that start with `/hc`, but the parser output remains static and advisory. It does not inspect the PR diff or decide the PR outcome.
 
 ## Output boundary
 
