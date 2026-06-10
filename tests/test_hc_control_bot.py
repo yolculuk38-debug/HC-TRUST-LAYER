@@ -13,6 +13,8 @@ def test_non_protected_docs_path_is_advisory_only_without_human_review():
     assert result["review_priority"] == "low"
     assert result["protected_paths_touched"] == []
     assert result["governance_adjacent_paths_touched"] == []
+    assert result["generated_artifacts_observed"] == []
+    assert result["version_alignment_paths_touched"] == []
     assert result["warnings"] == []
     assert result["evidence_prompts"] == []
     assert result["review_routes"] == []
@@ -47,8 +49,13 @@ def test_workflow_path_is_protected_surface():
     assert result["protected_paths_touched"] == [
         ".github/workflows/hc-control-bot.yml"
     ]
+    assert result["version_alignment_paths_touched"] == [
+        ".github/workflows/hc-control-bot.yml"
+    ]
     assert "workflow-automation-review" in result["review_routes"]
     assert "risk:workflow" in result["suggested_labels"]
+    assert "risk:version-alignment" not in result["suggested_labels"]
+    assert "Version alignment risk path observed." in result["warnings"]
     assert (
         "Confirm workflow changes do not run untrusted PR branch code."
         in result["evidence_prompts"]
@@ -79,6 +86,7 @@ def test_generated_artifact_is_observed_but_not_canonical_by_default():
     assert result["review_priority"] == "low"
     assert result["protected_paths_touched"] == []
     assert result["generated_artifacts_observed"] == ["generated/explorer_index.json"]
+    assert result["version_alignment_paths_touched"] == []
     assert (
         "Generated artifact path observed; do not treat as canonical record by default."
         in result["warnings"]
@@ -87,6 +95,25 @@ def test_generated_artifact_is_observed_but_not_canonical_by_default():
     assert "area:generated-artifact" in result["suggested_labels"]
     assert (
         "Identify the canonical source and reproduction method for generated artifacts."
+        in result["evidence_prompts"]
+    )
+
+
+def test_version_alignment_path_requires_human_review():
+    result = scan_changed_paths(["pyproject.toml"]).to_dict()
+
+    assert result["advisory_only"] is True
+    assert result["public_safe"] is True
+    assert result["truth_guarantee"] is False
+    assert result["human_review_required"] is True
+    assert result["review_priority"] == "medium"
+    assert result["protected_paths_touched"] == []
+    assert result["version_alignment_paths_touched"] == ["pyproject.toml"]
+    assert "Version alignment risk path observed." in result["warnings"]
+    assert "version-alignment-review" in result["review_routes"]
+    assert "risk:version-alignment" in result["suggested_labels"]
+    assert (
+        "Provide version alignment evidence across package metadata, CI, dependencies, tests, docs, and checkpoint records."
         in result["evidence_prompts"]
     )
 
