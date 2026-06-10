@@ -104,6 +104,34 @@ Not allowed:
 
 Automation level: advisory engineering analysis and patch proposal only.
 
+## External advisory reviewers
+
+HC-TRUST-LAYER may also receive advisory comments from external review tools or connected GitHub integrations, such as a Codex review connector.
+
+These tools are not HC Control Bot, HC Guide Bot, or HC Engineer Assistant.
+
+They may be useful as additional reviewer signals, but their output remains advisory and must not be treated as repository authority.
+
+External advisory reviewer output may:
+
+- identify possible bugs;
+- suggest missing tests;
+- point out stale documentation;
+- flag incomplete boundaries;
+- help humans notice review gaps.
+
+External advisory reviewer output must not:
+
+- override HC governance;
+- replace human review;
+- become merge authority;
+- become release authority;
+- be treated as a trust anchor;
+- bypass protected-path review;
+- create downstream automation decisions by itself.
+
+If an external advisory reviewer and HC Trust Engineer disagree, human maintainers should resolve the conflict using repository evidence, trusted default-branch files, tests, and governance documents.
+
 ## Automatic vs human-supervised behavior
 
 Fully automatic is allowed only for low-authority observation tasks:
