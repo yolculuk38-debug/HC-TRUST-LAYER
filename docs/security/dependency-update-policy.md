@@ -84,6 +84,19 @@ Before enabling Python dependency monitoring, the repository should define:
 - review boundaries for runtime/API behavior;
 - maximum open pull request limits.
 
+## Python declaration consistency
+
+Before Python dependency monitoring is expanded, maintainers should review the current declaration reports:
+
+```text
+docs/security/python-dependency-monitoring-readiness.md
+docs/security/python-dependency-declaration-review.md
+```
+
+Future Python dependency pull requests should confirm that both dependency declaration locations were checked and that duplicated versions remain aligned when applicable.
+
+This protects the project from drift between CI installation behavior and package metadata.
+
 ## Safe operating rule
 
 For HC-TRUST-LAYER, dependency tooling should follow this sequence:
