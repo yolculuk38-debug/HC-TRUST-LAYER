@@ -53,8 +53,28 @@ def test_next_command_returns_static_project_control_guidance():
         "- next_action: evidence-triggered runtime or planning follow-up only if new repository evidence appears"
         in result["response_lines"]
     )
+    blocked_line = next(
+        line for line in result["response_lines"] if line.startswith("- blocked_work:")
+    )
+    for required_term in (
+        "runtime",
+        "code",
+        "tests",
+        "schemas",
+        "validators",
+        "workflows",
+        "governance rules",
+        "records",
+        "hashes",
+        "QR artifacts",
+        "generated artifacts",
+        "signing",
+        "federation",
+        "policy",
+    ):
+        assert required_term in blocked_line
     assert (
-        "Proceed only if new repository evidence appears or an authorized reviewer requests implementation planning."
+        "Read docs/project-control/next-actions.md directly before acting on this static summary."
         in result["warnings"]
     )
     assert (
