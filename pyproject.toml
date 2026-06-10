@@ -7,7 +7,7 @@ name = "hc-trust-layer"
 version = "0.1.0"
 description = "HC Trust Layer utilities"
 readme = "ROADMAP.md"
-requires-python = ">=3.14"
+requires-python = ">=3.11"
 dependencies = [
   "fastapi==0.128.8",
   "jsonschema==4.25.1",
