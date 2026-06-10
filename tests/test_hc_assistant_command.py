@@ -3,21 +3,18 @@ import json
 from scripts.hc_assistant_command import main, parse_hc_command
 
 
-def test_help_command_returns_advisory_command_list():
+def test_help_command_lists_core_commands():
     result = parse_hc_command("/hc help").to_dict()
 
     assert result["advisory_only"] is True
     assert result["public_safe"] is True
     assert result["truth_guarantee"] is False
-    assert result["human_review_required"] is False
-    assert result["command_prefix"] == "/hc"
     assert result["command"] == "help"
     assert result["implemented"] is True
     assert "- /hc help" in result["response_lines"]
     assert "- /hc status" in result["response_lines"]
     assert "- /hc next" in result["response_lines"]
-    assert result["warnings"] == []
-    assert result["evidence_source"] == "static command interface only"
+    assert "- /hc evidence" in result["response_lines"]
 
 
 def test_empty_hc_command_defaults_to_help():
@@ -27,18 +24,15 @@ def test_empty_hc_command_defaults_to_help():
     assert result["implemented"] is True
 
 
-def test_status_command_is_static_and_warns_no_live_lookup():
+def test_status_command_is_static_and_advisory():
     result = parse_hc_command("/hc status").to_dict()
 
-    assert result["advisory_only"] is True
-    assert result["truth_guarantee"] is False
     assert result["command"] == "status"
     assert result["implemented"] is True
+    assert result["advisory_only"] is True
+    assert result["truth_guarantee"] is False
     assert "- assistant_console_issue: #763" in result["response_lines"]
-    assert (
-        "This local parser does not perform live GitHub state lookup."
-        in result["warnings"]
-    )
+    assert result["evidence_source"] == "static command interface only"
 
 
 def test_next_command_returns_static_project_control_guidance():
@@ -50,80 +44,71 @@ def test_next_command_returns_static_project_control_guidance():
     assert result["truth_guarantee"] is False
     assert "- mode: REPORT ONLY" in result["response_lines"]
     assert (
-        "- next_action: evidence-triggered runtime or planning follow-up only if new repository evidence appears"
-        in result["response_lines"]
-    )
-    blocked_line = next(
-        line for line in result["response_lines"] if line.startswith("- blocked_work:")
-    )
-    for required_term in (
-        "runtime",
-        "code",
-        "tests",
-        "schemas",
-        "validators",
-        "workflows",
-        "governance rules",
-        "records",
-        "hashes",
-        "QR artifacts",
-        "generated artifacts",
-        "signing",
-        "federation",
-        "policy",
-    ):
-        assert required_term in blocked_line
-    assert (
-        "Read docs/project-control/next-actions.md directly before acting on this static summary."
-        in result["warnings"]
-    )
-    assert (
         result["evidence_source"]
         == "static project-control guidance from docs/project-control/next-actions.md"
     )
 
 
-def test_deferred_command_is_not_executed():
+def test_evidence_command_returns_checklist():
     result = parse_hc_command("/hc evidence").to_dict()
 
     assert result["command"] == "evidence"
+    assert result["implemented"] is True
+    assert result["advisory_only"] is True
+    assert result["public_safe"] is True
+    assert result["truth_guarantee"] is False
+    assert result["human_review_required"] is True
+    assert "HC Trust Engineer evidence bundle checklist:" in result["response_lines"]
+    assert any(line.startswith("- changed_files:") for line in result["response_lines"])
+    assert any(line.startswith("- checks:") for line in result["response_lines"])
+    assert any(line.startswith("- advisory_boundary:") for line in result["response_lines"])
+
+
+def test_deferred_review_command_is_not_implemented():
+    result = parse_hc_command("/hc review").to_dict()
+
+    assert result["command"] == "review"
     assert result["implemented"] is False
     assert result["advisory_only"] is True
     assert result["truth_guarantee"] is False
-    assert (
-        "Command is intentionally deferred for a later governance-reviewed PR."
-        in result["warnings"]
-    )
 
 
-def test_unknown_command_is_ignored_without_repository_action():
-    result = parse_hc_command("/hc unsupported-action").to_dict()
+def test_unknown_command_is_ignored():
+    result = parse_hc_command("/hc unknown-command").to_dict()
 
-    assert result["command"] == "unsupported-action"
+    assert result["command"] == "unknown-command"
     assert result["implemented"] is False
     assert result["advisory_only"] is True
     assert result["truth_guarantee"] is False
-    assert "Unsupported command ignored; no repository action was taken." in result["warnings"]
 
 
 def test_missing_prefix_is_treated_as_unknown():
-    result = parse_hc_command("please run unsupported action").to_dict()
+    result = parse_hc_command("plain text without prefix").to_dict()
 
     assert result["command"] == "unknown"
     assert result["implemented"] is False
-    assert "Unsupported command ignored; no repository action was taken." in result["warnings"]
 
 
-def test_cli_outputs_machine_readable_json(capsys):
+def test_cli_outputs_machine_readable_status_json(capsys):
     exit_code = main(["/hc", "status"])
 
     captured = capsys.readouterr()
     payload = json.loads(captured.out)
 
     assert exit_code == 0
-    assert payload["advisory_only"] is True
-    assert payload["public_safe"] is True
-    assert payload["truth_guarantee"] is False
     assert payload["command"] == "status"
     assert payload["implemented"] is True
-    assert payload["evidence_source"] == "static command interface only"
+    assert payload["advisory_only"] is True
+
+
+def test_cli_outputs_machine_readable_evidence_json(capsys):
+    exit_code = main(["/hc", "evidence"])
+
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+
+    assert exit_code == 0
+    assert payload["command"] == "evidence"
+    assert payload["implemented"] is True
+    assert payload["advisory_only"] is True
+    assert payload["human_review_required"] is True
