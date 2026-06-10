@@ -50,6 +50,18 @@ GENERATED_ARTIFACT_PATTERNS: tuple[str, ...] = (
     "**/*export*.json",
 )
 
+VERSION_ALIGNMENT_PATTERNS: tuple[str, ...] = (
+    "pyproject.toml",
+    "requirements.txt",
+    ".github/workflows/**",
+    "CONTRIBUTING.md",
+    "docs/developer-onboarding.md",
+    "docs/security/*dependency*.md",
+    "docs/security/*python*.md",
+    "docs/project-control/*version-alignment*.md",
+    "docs/governance/version-alignment-review-rule.md",
+)
+
 REVIEW_ROUTE_PATTERNS: tuple[tuple[str, str], ...] = (
     (".github/workflows/**", "workflow-automation-review"),
     ("src/hc_runtime/**", "runtime-contract-review"),
@@ -61,6 +73,10 @@ REVIEW_ROUTE_PATTERNS: tuple[tuple[str, str], ...] = (
     ("policy/**", "policy-review"),
     ("federation/**", "federation-review"),
     ("generated/**", "generated-artifact-review"),
+    ("pyproject.toml", "version-alignment-review"),
+    ("requirements.txt", "version-alignment-review"),
+    ("docs/developer-onboarding.md", "version-alignment-review"),
+    ("CONTRIBUTING.md", "version-alignment-review"),
 )
 
 SUGGESTED_LABEL_PATTERNS: tuple[tuple[str, str], ...] = (
@@ -72,6 +88,10 @@ SUGGESTED_LABEL_PATTERNS: tuple[tuple[str, str], ...] = (
     ("docs/governance/**", "area:governance"),
     ("docs/project-control/**", "area:project-control"),
     ("generated/**", "area:generated-artifact"),
+    ("pyproject.toml", "risk:version-alignment"),
+    ("requirements.txt", "risk:version-alignment"),
+    ("docs/developer-onboarding.md", "risk:version-alignment"),
+    ("CONTRIBUTING.md", "risk:version-alignment"),
 )
 
 
@@ -87,6 +107,7 @@ class ScanResult:
     protected_paths_touched: list[str]
     governance_adjacent_paths_touched: list[str]
     generated_artifacts_observed: list[str]
+    version_alignment_paths_touched: list[str]
     warnings: list[str]
     evidence_prompts: list[str]
     review_routes: list[str]
@@ -103,6 +124,7 @@ class ScanResult:
             "protected_paths_touched": self.protected_paths_touched,
             "governance_adjacent_paths_touched": self.governance_adjacent_paths_touched,
             "generated_artifacts_observed": self.generated_artifacts_observed,
+            "version_alignment_paths_touched": self.version_alignment_paths_touched,
             "warnings": self.warnings,
             "evidence_prompts": self.evidence_prompts,
             "review_routes": self.review_routes,
@@ -149,6 +171,7 @@ def _build_review_priority(
     protected_paths: list[str],
     governance_adjacent_paths: list[str],
     generated_artifacts: list[str],
+    version_alignment_paths: list[str],
 ) -> str:
     if any(path.startswith(".github/workflows/") for path in protected_paths):
         return "high"
@@ -158,7 +181,7 @@ def _build_review_priority(
         return "high"
     if any(path.startswith("schema/") for path in protected_paths):
         return "high"
-    if protected_paths or governance_adjacent_paths:
+    if protected_paths or governance_adjacent_paths or version_alignment_paths:
         return "medium"
     if generated_artifacts:
         return "low"
@@ -169,6 +192,7 @@ def _build_evidence_prompts(
     protected_paths: list[str],
     governance_adjacent_paths: list[str],
     generated_artifacts: list[str],
+    version_alignment_paths: list[str],
 ) -> list[str]:
     prompts: list[str] = []
 
@@ -178,6 +202,8 @@ def _build_evidence_prompts(
         prompts.append("Provide maintainer rationale for governance-adjacent changes.")
     if generated_artifacts:
         prompts.append("Identify the canonical source and reproduction method for generated artifacts.")
+    if version_alignment_paths:
+        prompts.append("Provide version alignment evidence across package metadata, CI, dependencies, tests, docs, and checkpoint records.")
     if any(path.startswith(".github/workflows/") for path in protected_paths):
         prompts.append("Confirm workflow changes do not run untrusted PR branch code.")
     if any(path.startswith("src/hc_runtime/") for path in protected_paths):
@@ -210,6 +236,9 @@ def scan_changed_paths(changed_paths: Iterable[str]) -> ScanResult:
     generated_artifacts = [
         path for path in normalized_paths if _matches_any(path, GENERATED_ARTIFACT_PATTERNS)
     ]
+    version_alignment_paths = [
+        path for path in normalized_paths if _matches_any(path, VERSION_ALIGNMENT_PATTERNS)
+    ]
 
     warnings: list[str] = []
     if protected_paths:
@@ -218,11 +247,14 @@ def scan_changed_paths(changed_paths: Iterable[str]) -> ScanResult:
         warnings.append("Governance-adjacent path observed.")
     if generated_artifacts:
         warnings.append("Generated artifact path observed; do not treat as canonical record by default.")
+    if version_alignment_paths:
+        warnings.append("Version alignment risk path observed.")
 
     evidence_prompts = _build_evidence_prompts(
         protected_paths,
         governance_adjacent_paths,
         generated_artifacts,
+        version_alignment_paths,
     )
     review_routes = _build_review_routes(normalized_paths)
     suggested_labels = _build_suggested_labels(normalized_paths)
@@ -230,17 +262,21 @@ def scan_changed_paths(changed_paths: Iterable[str]) -> ScanResult:
         protected_paths,
         governance_adjacent_paths,
         generated_artifacts,
+        version_alignment_paths,
     )
 
     return ScanResult(
         advisory_only=True,
         public_safe=True,
         truth_guarantee=False,
-        human_review_required=bool(protected_paths or governance_adjacent_paths),
+        human_review_required=bool(
+            protected_paths or governance_adjacent_paths or version_alignment_paths
+        ),
         review_priority=review_priority,
         protected_paths_touched=protected_paths,
         governance_adjacent_paths_touched=governance_adjacent_paths,
         generated_artifacts_observed=generated_artifacts,
+        version_alignment_paths_touched=version_alignment_paths,
         warnings=warnings,
         evidence_prompts=evidence_prompts,
         review_routes=review_routes,
