@@ -18,6 +18,7 @@ SUPPORTED_COMMANDS: tuple[str, ...] = (
     "next",
     "evidence",
     "explain",
+    "risks",
 )
 
 HELP_LINES: tuple[str, ...] = (
@@ -27,6 +28,7 @@ HELP_LINES: tuple[str, ...] = (
     "- /hc next",
     "- /hc evidence",
     "- /hc explain <topic-or-path>",
+    "- /hc risks",
     "Boundary: advisory only. Human maintainers retain final authority.",
 )
 
@@ -65,6 +67,19 @@ EVIDENCE_LINES: tuple[str, ...] = (
     "Boundary: advisory only. Human maintainers retain final authority.",
 )
 
+RISK_LINES: tuple[str, ...] = (
+    "HC Trust Engineer risk checklist:",
+    "- protected_path: schema, validators, records, signatures, policy, federation, runtime, governance, project-control, or workflow surfaces may require human-supervised review",
+    "- workflow_risk: workflow changes can affect automation authority and must not run untrusted PR branch code",
+    "- runtime_risk: runtime/API changes may affect public-safe response contracts and require tests",
+    "- schema_validator_risk: schema or validator changes require compatibility and malformed-input evidence",
+    "- record_hash_qr_risk: records, hashes, QR artifacts, and generated outputs must not imply truth, authenticity, or production readiness",
+    "- governance_risk: governance and project-control docs can change operating authority and require careful review",
+    "- stale_context_risk: chat memory or summaries must not outrank live GitHub state and trusted main-branch docs",
+    "- implementation_risk: issue listeners, comments, labels, assignments, LLM, network, and repository writes require separate governance review",
+    "Boundary: advisory only. This checklist does not decide PR outcome.",
+)
+
 EXPLAIN_TOPICS: dict[str, tuple[str, ...]] = {
     "advisory-only": (
         "HC advisory-only means the system can observe, explain, warn, and suggest.",
@@ -83,7 +98,7 @@ EXPLAIN_TOPICS: dict[str, tuple[str, ...]] = {
     ),
     "commands": (
         "HC Trust Engineer commands use the /hc prefix.",
-        "Implemented local commands include help, status, next, evidence, and explain.",
+        "Implemented local commands include help, status, next, evidence, explain, and risks.",
         "The parser is local, deterministic, non-LLM, and not connected to issue comments yet.",
     ),
 }
@@ -253,7 +268,25 @@ def parse_hc_command(raw_text: str) -> CommandResult:
             evidence_source="static explain topic map only",
         )
 
-    if command in {"review", "risks"}:
+    if command == "risks":
+        return CommandResult(
+            advisory_only=True,
+            public_safe=True,
+            truth_guarantee=False,
+            human_review_required=True,
+            command_prefix="/hc",
+            command="risks",
+            implemented=True,
+            response_lines=list(RISK_LINES),
+            warnings=[
+                "This local parser does not inspect the current PR or issue context.",
+                "Use live changed-file evidence before applying this checklist to a specific PR.",
+                "This checklist is not approval, rejection, merge authority, or a truth guarantee.",
+            ],
+            evidence_source="static risk checklist from HC assistant command interface",
+        )
+
+    if command == "review":
         return CommandResult(
             advisory_only=True,
             public_safe=True,
