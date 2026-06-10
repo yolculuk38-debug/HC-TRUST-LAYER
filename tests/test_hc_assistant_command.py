@@ -16,6 +16,7 @@ def test_help_command_lists_core_commands():
     assert "- /hc next" in result["response_lines"]
     assert "- /hc evidence" in result["response_lines"]
     assert "- /hc explain <topic-or-path>" in result["response_lines"]
+    assert "- /hc risks" in result["response_lines"]
 
 
 def test_empty_hc_command_defaults_to_help():
@@ -101,6 +102,25 @@ def test_explain_unknown_topic_is_advisory_only():
     assert "Unknown explain topic ignored; no repository action was taken." in result["warnings"]
 
 
+def test_risks_command_returns_static_risk_checklist():
+    result = parse_hc_command("/hc risks").to_dict()
+
+    assert result["command"] == "risks"
+    assert result["implemented"] is True
+    assert result["advisory_only"] is True
+    assert result["public_safe"] is True
+    assert result["truth_guarantee"] is False
+    assert result["human_review_required"] is True
+    assert "HC Trust Engineer risk checklist:" in result["response_lines"]
+    assert any(line.startswith("- protected_path:") for line in result["response_lines"])
+    assert any(line.startswith("- workflow_risk:") for line in result["response_lines"])
+    assert any(line.startswith("- stale_context_risk:") for line in result["response_lines"])
+    assert (
+        result["evidence_source"]
+        == "static risk checklist from HC assistant command interface"
+    )
+
+
 def test_deferred_review_command_is_not_implemented():
     result = parse_hc_command("/hc review").to_dict()
 
@@ -162,3 +182,16 @@ def test_cli_outputs_machine_readable_explain_json(capsys):
     assert payload["implemented"] is True
     assert payload["advisory_only"] is True
     assert payload["evidence_source"] == "static explain topic map only"
+
+
+def test_cli_outputs_machine_readable_risks_json(capsys):
+    exit_code = main(["/hc", "risks"])
+
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+
+    assert exit_code == 0
+    assert payload["command"] == "risks"
+    assert payload["implemented"] is True
+    assert payload["advisory_only"] is True
+    assert payload["human_review_required"] is True
