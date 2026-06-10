@@ -9,7 +9,7 @@ description = "HC Trust Layer utilities"
 readme = "ROADMAP.md"
 requires-python = ">=3.9"
 dependencies = [
-  "fastapi==0.115.14",
+  "fastapi==0.128.8",
   "jsonschema==4.25.1",
   "pydantic==2.11.7",
   "qrcode[pil]==8.2",
