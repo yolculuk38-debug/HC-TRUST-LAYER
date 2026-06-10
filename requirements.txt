@@ -1,6 +1,6 @@
 # Pinned for CI stability and reproducible installs.
 jsonschema==4.25.1
-qrcode[pil]==7.4.2
+qrcode[pil]==8.2
 
 # Runtime API test dependencies for the advisory-only HC:// reference runtime skeleton.
 anyio==4.9.0
