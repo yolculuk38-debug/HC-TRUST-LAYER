@@ -14,7 +14,7 @@ This document tracks implementation state only. It does not itself implement cod
 
 ## Current Implementation Snapshot
 
-As of the current roadmap update, the MVP has moved from planning into early implementation.
+As of the current roadmap update, the MVP has moved from planning into early implementation and a narrow command listener exists for `/hc` commands.
 
 Implemented or partially implemented:
 
@@ -23,12 +23,16 @@ Implemented or partially implemented:
 - machine-readable advisory JSON output;
 - newline-delimited changed-path file input for safer workflow integration;
 - single advisory comment workflow in `.github/workflows/hc-control-bot-advisory-comment.yml`;
+- local deterministic HC assistant command parser in `scripts/hc_assistant_command.py`;
+- assistant command tests in `tests/test_hc_assistant_command.py`;
+- narrow `/hc` issue and pull request comment listener in `.github/workflows/hc-assistant-command.yml`;
 - advisory-only wording and human final authority boundary.
 
 Still not implemented:
 
 - autonomous approval, rejection, closing, or merge behavior;
 - automatic label application;
+- assignment automation;
 - LLM calls;
 - trust scoring;
 - production-readiness claims;
@@ -38,7 +42,7 @@ Still not implemented:
 
 The first working version must be boring, deterministic, auditable, and non-authoritative.
 
-The bot begins as an advisory path scanner, not as an autonomous reviewer.
+The bot begins as an advisory path scanner and command guide, not as an autonomous reviewer.
 
 ## Required Order
 
@@ -51,11 +55,12 @@ Implementation must proceed in this order:
 5. Report-only integration.
 6. Single advisory comment mode.
 7. Evidence prompt support.
-8. Optional issue routing.
-9. Optional GitHub App migration.
-10. Optional LLM-assisted project memory.
+8. Narrow `/hc` command listener.
+9. Optional issue routing.
+10. Optional GitHub App migration.
+11. Optional LLM-assisted project memory.
 
-Steps 1 through 6 are now represented in repository artifacts. Later steps still require separate PRs and human maintainer review.
+Steps 1 through 8 are now represented in repository artifacts. Later steps still require separate PRs and human maintainer review.
 
 ## Phase 0: Authority Policy
 
@@ -212,11 +217,46 @@ The bot may ask for evidence, but must not decide whether the evidence is suffic
 
 Status: partially implemented as deterministic `evidence_prompts` in scanner output.
 
-## Phase 6: Optional Issue Routing
+## Phase 6: Narrow `/hc` Command Listener
+
+Goal: make the HC Trust Engineer command surface usable inside issues and pull requests without adding LLM authority.
+
+Implemented workflow:
+
+```text
+.github/workflows/hc-assistant-command.yml
+```
+
+Implemented parser:
+
+```text
+scripts/hc_assistant_command.py
+```
+
+Allowed behavior:
+
+- respond only to issue or pull request comments that start with `/hc`;
+- check out the trusted default branch before command execution;
+- run the existing deterministic parser;
+- post advisory-only command responses;
+- upload machine-readable command response artifacts.
+
+Not allowed:
+
+- execute PR-branch code;
+- perform LLM calls;
+- inspect PR diffs for semantic review;
+- apply labels;
+- assign reviewers;
+- approve, reject, request changes, merge, close, reopen, or certify.
+
+Status: implemented as a narrow issue-comment listener for the current core command set.
+
+## Phase 7: Optional Issue Routing
 
 Goal: help maintainers classify work.
 
-This phase should not be added until the deterministic scanner is stable.
+This phase should not be expanded until the deterministic scanner and command listener remain stable.
 
 Allowed behavior:
 
@@ -226,7 +266,7 @@ Allowed behavior:
 
 Status: partially represented as suggested labels in advisory output only. No automatic label application is implemented.
 
-## Phase 7: Optional GitHub App Migration
+## Phase 8: Optional GitHub App Migration
 
 A GitHub App may be considered after the workflow version proves stable.
 
@@ -242,7 +282,7 @@ Migration must preserve the authority policy.
 
 Status: deferred.
 
-## Phase 8: Future LLM-Assisted Project Memory
+## Phase 9: Future LLM-Assisted Project Memory
 
 LLM usage is not allowed in v0.1.
 
@@ -257,21 +297,3 @@ Future LLM use requires separate governance review and must include:
 - audit logging.
 
 The LLM may explain deterministic findings, but must not override them.
-
-Status: deferred.
-
-## Explicit Non-Goals for MVP
-
-The MVP must not include:
-
-- autonomous code review;
-- approval or rejection behavior;
-- merge behavior;
-- issue closing or reopening;
-- automatic label application unless separately approved;
-- trust scoring;
-- production-readiness claims;
-- truth claims;
-- LLM calls;
-- embeddings;
-- vector databases.
