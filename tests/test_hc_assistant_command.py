@@ -15,6 +15,7 @@ def test_help_command_returns_advisory_command_list():
     assert result["implemented"] is True
     assert "- /hc help" in result["response_lines"]
     assert "- /hc status" in result["response_lines"]
+    assert "- /hc next" in result["response_lines"]
     assert result["warnings"] == []
     assert result["evidence_source"] == "static command interface only"
 
@@ -40,10 +41,32 @@ def test_status_command_is_static_and_warns_no_live_lookup():
     )
 
 
-def test_deferred_command_is_not_executed():
+def test_next_command_returns_static_project_control_guidance():
     result = parse_hc_command("/hc next").to_dict()
 
     assert result["command"] == "next"
+    assert result["implemented"] is True
+    assert result["advisory_only"] is True
+    assert result["truth_guarantee"] is False
+    assert "- mode: REPORT ONLY" in result["response_lines"]
+    assert (
+        "- next_action: evidence-triggered runtime or planning follow-up only if new repository evidence appears"
+        in result["response_lines"]
+    )
+    assert (
+        "Proceed only if new repository evidence appears or an authorized reviewer requests implementation planning."
+        in result["warnings"]
+    )
+    assert (
+        result["evidence_source"]
+        == "static project-control guidance from docs/project-control/next-actions.md"
+    )
+
+
+def test_deferred_command_is_not_executed():
+    result = parse_hc_command("/hc evidence").to_dict()
+
+    assert result["command"] == "evidence"
     assert result["implemented"] is False
     assert result["advisory_only"] is True
     assert result["truth_guarantee"] is False
@@ -54,9 +77,9 @@ def test_deferred_command_is_not_executed():
 
 
 def test_unknown_command_is_ignored_without_repository_action():
-    result = parse_hc_command("/hc merge-now").to_dict()
+    result = parse_hc_command("/hc unsupported-action").to_dict()
 
-    assert result["command"] == "merge-now"
+    assert result["command"] == "unsupported-action"
     assert result["implemented"] is False
     assert result["advisory_only"] is True
     assert result["truth_guarantee"] is False
@@ -64,7 +87,7 @@ def test_unknown_command_is_ignored_without_repository_action():
 
 
 def test_missing_prefix_is_treated_as_unknown():
-    result = parse_hc_command("please approve this PR").to_dict()
+    result = parse_hc_command("please run unsupported action").to_dict()
 
     assert result["command"] == "unknown"
     assert result["implemented"] is False
