@@ -105,7 +105,7 @@ If there is uncertainty, the policy defaults to `manual-review`.
 
 ## Setup
 
-- Python 3.11+ recommended.
+- Python 3.14+ recommended.
 - Install dependencies: `pip install -r requirements.txt`
 
 ## Validation
