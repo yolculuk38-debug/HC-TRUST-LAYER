@@ -15,6 +15,7 @@ def test_help_command_lists_core_commands():
     assert "- /hc status" in result["response_lines"]
     assert "- /hc next" in result["response_lines"]
     assert "- /hc evidence" in result["response_lines"]
+    assert "- /hc explain <topic-or-path>" in result["response_lines"]
 
 
 def test_empty_hc_command_defaults_to_help():
@@ -62,6 +63,42 @@ def test_evidence_command_returns_checklist():
     assert any(line.startswith("- changed_files:") for line in result["response_lines"])
     assert any(line.startswith("- checks:") for line in result["response_lines"])
     assert any(line.startswith("- advisory_boundary:") for line in result["response_lines"])
+
+
+def test_explain_command_lists_topics_when_no_topic_is_provided():
+    result = parse_hc_command("/hc explain").to_dict()
+
+    assert result["command"] == "explain"
+    assert result["implemented"] is True
+    assert result["advisory_only"] is True
+    assert result["truth_guarantee"] is False
+    assert "HC Trust Engineer explain topics:" in result["response_lines"]
+    assert "- advisory-only" in result["response_lines"]
+    assert "No topic was provided; returning available static topics." in result["warnings"]
+
+
+def test_explain_command_returns_static_topic_details():
+    result = parse_hc_command("/hc explain advisory-only").to_dict()
+
+    assert result["command"] == "explain"
+    assert result["implemented"] is True
+    assert result["advisory_only"] is True
+    assert result["truth_guarantee"] is False
+    assert "HC Trust Engineer explanation: advisory-only" in result["response_lines"]
+    assert any("must not approve" in line for line in result["response_lines"])
+    assert result["warnings"] == []
+    assert result["evidence_source"] == "static explain topic map only"
+
+
+def test_explain_unknown_topic_is_advisory_only():
+    result = parse_hc_command("/hc explain unknown-topic").to_dict()
+
+    assert result["command"] == "explain"
+    assert result["implemented"] is True
+    assert result["advisory_only"] is True
+    assert result["truth_guarantee"] is False
+    assert "No static explanation is available for: unknown-topic" in result["response_lines"]
+    assert "Unknown explain topic ignored; no repository action was taken." in result["warnings"]
 
 
 def test_deferred_review_command_is_not_implemented():
@@ -112,3 +149,16 @@ def test_cli_outputs_machine_readable_evidence_json(capsys):
     assert payload["implemented"] is True
     assert payload["advisory_only"] is True
     assert payload["human_review_required"] is True
+
+
+def test_cli_outputs_machine_readable_explain_json(capsys):
+    exit_code = main(["/hc", "explain", "trust-kernel"])
+
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+
+    assert exit_code == 0
+    assert payload["command"] == "explain"
+    assert payload["implemented"] is True
+    assert payload["advisory_only"] is True
+    assert payload["evidence_source"] == "static explain topic map only"

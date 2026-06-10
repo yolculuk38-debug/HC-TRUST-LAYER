@@ -17,6 +17,7 @@ SUPPORTED_COMMANDS: tuple[str, ...] = (
     "status",
     "next",
     "evidence",
+    "explain",
 )
 
 HELP_LINES: tuple[str, ...] = (
@@ -25,7 +26,7 @@ HELP_LINES: tuple[str, ...] = (
     "- /hc status",
     "- /hc next",
     "- /hc evidence",
-    "- /hc explain <topic-or-path> (documented, not implemented in this parser)",
+    "- /hc explain <topic-or-path>",
     "Boundary: advisory only. Human maintainers retain final authority.",
 )
 
@@ -63,6 +64,29 @@ EVIDENCE_LINES: tuple[str, ...] = (
     "- do_not_claim: do not claim approval, rejection, merge authority, production readiness, legal validity, or objective truth",
     "Boundary: advisory only. Human maintainers retain final authority.",
 )
+
+EXPLAIN_TOPICS: dict[str, tuple[str, ...]] = {
+    "advisory-only": (
+        "HC advisory-only means the system can observe, explain, warn, and suggest.",
+        "It must not approve, reject, merge, close, certify, or guarantee truth.",
+        "Human maintainers retain final authority.",
+    ),
+    "trust-kernel": (
+        "The trust-kernel is the protected verification core of HC-TRUST-LAYER.",
+        "It includes schema, validators, records, signatures, policy, federation, runtime, and governance-sensitive surfaces.",
+        "Changes near the trust-kernel require human-supervised review and evidence.",
+    ),
+    "protected-paths": (
+        "Protected paths are repository areas that require explicit human review before modification.",
+        "Examples include schema/**, validators/**, records/**, signatures/**, policy/**, federation/**, src/hc_runtime/**, docs/governance/**, docs/project-control/**, and .github/workflows/**.",
+        "The assistant may warn about these paths but must not override maintainers.",
+    ),
+    "commands": (
+        "HC Trust Engineer commands use the /hc prefix.",
+        "Implemented local commands include help, status, next, evidence, and explain.",
+        "The parser is local, deterministic, non-LLM, and not connected to issue comments yet.",
+    ),
+}
 
 
 @dataclass(frozen=True)
@@ -107,10 +131,45 @@ def _normalize_command(raw_text: str) -> tuple[str, list[str]]:
     return parts[1].strip().lower(), parts[2:]
 
 
+def _normalize_topic(args: list[str]) -> str:
+    return " ".join(args).strip().lower().replace("_", "-")
+
+
+def _build_explain_lines(args: list[str]) -> tuple[list[str], list[str]]:
+    topic = _normalize_topic(args)
+    if not topic:
+        return (
+            [
+                "HC Trust Engineer explain topics:",
+                "- advisory-only",
+                "- trust-kernel",
+                "- protected-paths",
+                "- commands",
+                "Boundary: advisory only. Human maintainers retain final authority.",
+            ],
+            ["No topic was provided; returning available static topics."],
+        )
+
+    if topic in EXPLAIN_TOPICS:
+        return (
+            [f"HC Trust Engineer explanation: {topic}", *EXPLAIN_TOPICS[topic], "Boundary: advisory only. Human maintainers retain final authority."],
+            [],
+        )
+
+    return (
+        [
+            f"No static explanation is available for: {topic}",
+            "Use /hc explain with one of: advisory-only, trust-kernel, protected-paths, commands.",
+            "Boundary: advisory only. Human maintainers retain final authority.",
+        ],
+        ["Unknown explain topic ignored; no repository action was taken."],
+    )
+
+
 def parse_hc_command(raw_text: str) -> CommandResult:
     """Parse an explicit `/hc` command without executing any repository action."""
 
-    command, _args = _normalize_command(raw_text)
+    command, args = _normalize_command(raw_text)
 
     if command == "help":
         return CommandResult(
@@ -179,7 +238,22 @@ def parse_hc_command(raw_text: str) -> CommandResult:
             evidence_source="static evidence checklist from HC assistant command interface",
         )
 
-    if command in {"explain", "review", "risks"}:
+    if command == "explain":
+        response_lines, warnings = _build_explain_lines(args)
+        return CommandResult(
+            advisory_only=True,
+            public_safe=True,
+            truth_guarantee=False,
+            human_review_required=False,
+            command_prefix="/hc",
+            command="explain",
+            implemented=True,
+            response_lines=response_lines,
+            warnings=warnings,
+            evidence_source="static explain topic map only",
+        )
+
+    if command in {"review", "risks"}:
         return CommandResult(
             advisory_only=True,
             public_safe=True,
