@@ -12,6 +12,31 @@ This document helps human contributors, AI assistants, and agentic tools quickly
 - Navigation synchronization.
 - Public validator planning.
 - Public explorer planning.
+- HC Trust Engineer command-surface planning.
+
+## Assistant Console
+
+The repository-level HC Assistant Console is Issue #763:
+
+- https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/763
+
+Use it for project-level `/hc` commands such as:
+
+```text
+/hc help
+/hc status
+/hc next
+```
+
+Use pull request comments for PR-specific commands such as:
+
+```text
+/hc review
+/hc risks
+/hc evidence
+```
+
+Boundary: advisory only. Human maintainers retain final authority.
 
 ## Read Order
 
@@ -21,7 +46,10 @@ This document helps human contributors, AI assistants, and agentic tools quickly
 4. docs/project-control/project-state.md
 5. docs/project-control/next-actions.md
 6. docs/project-control/shift-change-checklist.md
-7. docs/terminology-audit.md
+7. docs/project-control/hc-assistant-console-guide.md
+8. docs/project-control/hc-trust-engineer-command-interface.md
+9. docs/project-control/hc-assistant-console-issue-template.md
+10. docs/terminology-audit.md
 
 ## Protected Areas
 
@@ -55,6 +83,8 @@ Historical provenance records must not be silently rewritten.
 
 ## Safe Next Work
 
+- assistant console discoverability
+- command-interface implementation planning
 - navigation improvements
 - onboarding improvements
 - public validator planning
