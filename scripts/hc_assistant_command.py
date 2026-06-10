@@ -19,6 +19,7 @@ SUPPORTED_COMMANDS: tuple[str, ...] = (
     "evidence",
     "explain",
     "risks",
+    "review",
 )
 
 HELP_LINES: tuple[str, ...] = (
@@ -29,6 +30,7 @@ HELP_LINES: tuple[str, ...] = (
     "- /hc evidence",
     "- /hc explain <topic-or-path>",
     "- /hc risks",
+    "- /hc review",
     "Boundary: advisory only. Human maintainers retain final authority.",
 )
 
@@ -80,6 +82,19 @@ RISK_LINES: tuple[str, ...] = (
     "Boundary: advisory only. This checklist does not decide PR outcome.",
 )
 
+REVIEW_LINES: tuple[str, ...] = (
+    "HC Trust Engineer review preparation checklist:",
+    "- collect_changed_files: list every changed path before review",
+    "- classify_scope: identify docs, runtime, workflow, schema, validator, record, generated artifact, policy, federation, governance, or project-control scope",
+    "- check_protected_paths: verify whether trust-kernel or governance-sensitive paths are touched",
+    "- attach_evidence_bundle: include changed files, CI/check status, source-of-truth docs, and human-review requirement",
+    "- inspect_ci_status: wait for required checks and record pending or failed checks honestly",
+    "- compare_against_next_actions: do not revive completed or duplicate work without new repository evidence",
+    "- preserve_boundaries: confirm advisory_only=true, public_safe=true, truth_guarantee=false",
+    "- human_decision: leave approve, reject, merge, close, labels, and assignments to authorized human maintainers or explicit governance workflows",
+    "Boundary: advisory only. This checklist prepares human review but does not perform review decisions.",
+)
+
 EXPLAIN_TOPICS: dict[str, tuple[str, ...]] = {
     "advisory-only": (
         "HC advisory-only means the system can observe, explain, warn, and suggest.",
@@ -98,7 +113,7 @@ EXPLAIN_TOPICS: dict[str, tuple[str, ...]] = {
     ),
     "commands": (
         "HC Trust Engineer commands use the /hc prefix.",
-        "Implemented local commands include help, status, next, evidence, explain, and risks.",
+        "Implemented local commands include help, status, next, evidence, explain, risks, and review.",
         "The parser is local, deterministic, non-LLM, and not connected to issue comments yet.",
     ),
 }
@@ -291,16 +306,17 @@ def parse_hc_command(raw_text: str) -> CommandResult:
             advisory_only=True,
             public_safe=True,
             truth_guarantee=False,
-            human_review_required=False,
+            human_review_required=True,
             command_prefix="/hc",
-            command=command,
-            implemented=False,
-            response_lines=[
-                f"/hc {command} is documented but not implemented in this parser.",
-                "Boundary: advisory only. Human maintainers retain final authority.",
+            command="review",
+            implemented=True,
+            response_lines=list(REVIEW_LINES),
+            warnings=[
+                "This local parser does not inspect the current PR or issue context.",
+                "Attach live changed-file, CI, and review-thread evidence before using this checklist.",
+                "This checklist is not approval, rejection, merge authority, or a truth guarantee.",
             ],
-            warnings=["Command is intentionally deferred for a later governance-reviewed PR."],
-            evidence_source="static command interface only",
+            evidence_source="static review preparation checklist from HC assistant command interface",
         )
 
     return CommandResult(
