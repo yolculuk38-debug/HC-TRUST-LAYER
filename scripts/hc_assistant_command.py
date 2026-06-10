@@ -15,13 +15,14 @@ from dataclasses import dataclass
 SUPPORTED_COMMANDS: tuple[str, ...] = (
     "help",
     "status",
+    "next",
 )
 
 HELP_LINES: tuple[str, ...] = (
     "HC Trust Engineer commands:",
     "- /hc help",
     "- /hc status",
-    "- /hc next (documented, not implemented in this parser)",
+    "- /hc next",
     "- /hc explain <topic-or-path> (documented, not implemented in this parser)",
     "- /hc evidence (documented, not implemented in this parser)",
     "Boundary: advisory only. Human maintainers retain final authority.",
@@ -35,6 +36,16 @@ STATUS_LINES: tuple[str, ...] = (
     "- command_parser: local deterministic parser",
     "- automation_status: not connected to issue comments yet",
     "- authority: advisory only; human maintainers retain final authority",
+)
+
+NEXT_LINES: tuple[str, ...] = (
+    "HC Trust Engineer next safe task:",
+    "- mode: REPORT ONLY",
+    "- next_action: evidence-triggered runtime or planning follow-up only if new repository evidence appears",
+    "- scope: narrow evidence report, navigation refresh, or implementation planning only when triggered by concrete repo evidence",
+    "- avoid: duplicate public validator/public explorer planning and unrequested runtime, schema, validator, workflow, record, QR, signing, federation, or policy changes",
+    "- source: docs/project-control/next-actions.md",
+    "Boundary: advisory only. Human maintainers retain final authority.",
 )
 
 
@@ -116,7 +127,24 @@ def parse_hc_command(raw_text: str) -> CommandResult:
             evidence_source="static command interface only",
         )
 
-    if command in {"next", "explain", "evidence", "review", "risks"}:
+    if command == "next":
+        return CommandResult(
+            advisory_only=True,
+            public_safe=True,
+            truth_guarantee=False,
+            human_review_required=False,
+            command_prefix="/hc",
+            command="next",
+            implemented=True,
+            response_lines=list(NEXT_LINES),
+            warnings=[
+                "This local parser does not perform live GitHub state lookup.",
+                "Proceed only if new repository evidence appears or an authorized reviewer requests implementation planning.",
+            ],
+            evidence_source="static project-control guidance from docs/project-control/next-actions.md",
+        )
+
+    if command in {"explain", "evidence", "review", "risks"}:
         return CommandResult(
             advisory_only=True,
             public_safe=True,
