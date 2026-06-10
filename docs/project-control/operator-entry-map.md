@@ -13,6 +13,7 @@ This document helps human contributors, AI assistants, and agentic tools quickly
 - Public validator planning.
 - Public explorer planning.
 - HC Trust Engineer command-surface planning.
+- HC Control Bot advisory comment governance is documented but not enabled.
 
 ## Assistant Console
 
@@ -50,6 +51,31 @@ Boundary: advisory only. Human maintainers retain final authority.
 8. docs/project-control/hc-trust-engineer-command-interface.md
 9. docs/project-control/hc-assistant-console-issue-template.md
 10. docs/terminology-audit.md
+
+## HC Control Bot Reference Chain
+
+For HC Control Bot / HC Trust Engineer work, read these documents before proposing new bot behavior:
+
+1. docs/governance/hc-control-bot-authority-policy.md
+2. docs/project-control/hc-control-bot-mvp-roadmap.md
+3. docs/project-control/hc-control-bot-report-interpretation-guide.md
+4. docs/project-control/hc-control-bot-advisory-comment-boundary.md
+5. docs/governance/advisory-comment-lifecycle.md
+6. docs/project-control/hc-control-bot-advisory-comment-template.md
+7. scripts/hc_control_bot.py
+8. tests/test_hc_control_bot.py
+
+Current boundary:
+
+```text
+comment governance is documented
+comment template is documented
+comment automation is not enabled by these docs
+label application is not enabled by these docs
+assignment is not enabled by these docs
+LLM review is not enabled by these docs
+approve/reject/merge/close remains forbidden
+```
 
 ## Protected Areas
 
