@@ -35,6 +35,11 @@ def test_status_command_is_static_and_advisory():
     assert result["advisory_only"] is True
     assert result["truth_guarantee"] is False
     assert "- assistant_console_issue: #763" in result["response_lines"]
+    assert (
+        "- automation_status: issue-comment listener connected for /hc commands"
+        in result["response_lines"]
+    )
+    assert not any("not connected to issue comments yet" in line for line in result["response_lines"])
     assert result["evidence_source"] == "static command interface only"
 
 
@@ -90,6 +95,15 @@ def test_explain_command_returns_static_topic_details():
     assert any("must not approve" in line for line in result["response_lines"])
     assert result["warnings"] == []
     assert result["evidence_source"] == "static explain topic map only"
+
+
+def test_explain_commands_topic_reflects_listener_connection():
+    result = parse_hc_command("/hc explain commands").to_dict()
+
+    assert result["command"] == "explain"
+    assert result["implemented"] is True
+    assert any("connected to the /hc issue-comment listener" in line for line in result["response_lines"])
+    assert not any("not connected to issue comments yet" in line for line in result["response_lines"])
 
 
 def test_explain_unknown_topic_is_advisory_only():
@@ -167,6 +181,10 @@ def test_cli_outputs_machine_readable_status_json(capsys):
     assert payload["command"] == "status"
     assert payload["implemented"] is True
     assert payload["advisory_only"] is True
+    assert (
+        "- automation_status: issue-comment listener connected for /hc commands"
+        in payload["response_lines"]
+    )
 
 
 def test_cli_outputs_machine_readable_evidence_json(capsys):
