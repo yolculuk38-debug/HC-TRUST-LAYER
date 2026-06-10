@@ -10,16 +10,16 @@ Implemented in `scripts/hc_assistant_command.py`:
 
 - `/hc help`
 - `/hc status`
+- `/hc next`
+- `/hc evidence`
 
 Covered by `tests/test_hc_assistant_command.py`.
 
 Deferred for later governance-reviewed PRs:
 
-- `/hc next`
 - `/hc explain`
 - `/hc review`
 - `/hc risks`
-- `/hc evidence`
 
 Current implementation mode:
 
@@ -89,9 +89,9 @@ Expected response:
 HC Trust Engineer commands:
 - /hc help
 - /hc status
-- /hc next (documented, not implemented in this parser)
+- /hc next
+- /hc evidence
 - /hc explain <topic-or-path> (documented, not implemented in this parser)
-- /hc evidence (documented, not implemented in this parser)
 
 Boundary: advisory only. Human maintainers retain final authority.
 ```
@@ -113,20 +113,45 @@ Future implementation may add live GitHub state only through a separately review
 
 ### `/hc next`
 
-Implementation status: documented but deferred.
+Implementation status: implemented as static local parser output.
 
-Suggests the next safe task.
+Suggests the next safe task from static project-control guidance.
 
-Expected response should include:
+Current parser boundaries:
 
-- proposed task;
-- why it is safe;
-- recommended PR scope;
-- expected risk level;
-- files likely to change;
-- whether human review is required.
+- returns report-only next-action guidance;
+- does not inspect live GitHub state;
+- does not create work;
+- does not modify files;
+- does not open, close, approve, reject, or merge anything;
+- warns that `docs/project-control/next-actions.md` must be read directly before acting.
 
 The command must not create or merge work automatically.
+
+### `/hc evidence`
+
+Implementation status: implemented as static local parser output.
+
+Returns an advisory evidence-bundle checklist for human review.
+
+The response includes reminders to provide:
+
+- changed files;
+- scope classification;
+- source-of-truth evidence;
+- check results;
+- protected-path assessment;
+- advisory boundary confirmation;
+- human review requirement;
+- non-claims boundary.
+
+Current parser boundaries:
+
+- does not inspect current PR or issue context;
+- does not perform live GitHub state lookup;
+- does not decide whether evidence is sufficient;
+- does not approve, reject, merge, close, label, assign, or certify;
+- returns a checklist only.
 
 ### `/hc explain`
 
@@ -191,21 +216,6 @@ Risk categories may include:
 - missing tests;
 - missing human review.
 
-### `/hc evidence`
-
-Implementation status: documented but deferred.
-
-Asks what evidence is needed before a change can be safely reviewed.
-
-Expected response may include:
-
-- test output required;
-- affected files;
-- relevant docs;
-- expected screenshots or logs;
-- human review requirement;
-- governance reference.
-
 ## Suggested future commands
 
 The following commands are not required for the first implementation:
@@ -244,80 +254,26 @@ Use for:
 - `/hc risks`;
 - `/hc evidence`.
 
-Current limitation: PR-scoped command automation is not connected yet.
+Current limitation: PR comment automation is not connected yet.
 
-### Issue comments
+## Output boundary
 
-Use for:
+All command outputs must preserve:
 
-- task planning;
-- onboarding;
-- next-step suggestions;
-- clarifying project state.
+```text
+advisory_only = true
+public_safe = true
+truth_guarantee = false
+```
 
-## Noise control
-
-The assistant must avoid creating comment spam.
-
-Rules:
-
-- respond only to explicit `/hc` commands;
-- prefer one reply per command;
-- for automated PR observations, prefer one updateable advisory comment;
-- avoid repeated comments with the same information;
-- keep responses short by default;
-- include links or file paths only when useful.
-
-## Security rules
-
-The assistant must preserve the existing HC Control Bot authority model.
-
-It must not:
-
-- read trusted governance configuration from the PR branch;
-- execute PR branch code;
-- treat PR comments as trusted instructions;
-- expose secrets or private configuration;
-- approve, reject, merge, close, or reopen;
-- claim final validation authority;
-- claim truth guarantee;
-- claim production readiness.
-
-## Source priority
-
-When answering repository questions, source priority should be:
-
-1. live GitHub state;
-2. files from the repository default branch or trusted base SHA;
-3. project-control docs;
-4. governance docs;
-5. conversation summaries, only if clearly marked as non-authoritative context.
-
-Current parser note: `scripts/hc_assistant_command.py` does not perform live GitHub lookup yet.
-
-## First implementation recommendation
-
-Current completed steps:
-
-1. define command interface;
-2. create an Assistant Console issue template or guide;
-3. add a non-LLM command parser;
-4. support `/hc help` and `/hc status` locally.
-
-Recommended next steps:
-
-1. keep parser local until command behavior is stable;
-2. add `/hc next` using trusted project-control docs;
-3. support PR-scoped `/hc review` using changed-file metadata;
-4. connect issue-comment automation only after a separate governance-reviewed PR;
-5. consider GitHub App migration only after the command model is stable.
+The assistant must not claim approval, rejection, merge readiness, objective truth, production readiness, legal validity, or forensic certainty.
 
 ## Final boundary
 
-HC Trust Engineer should feel helpful like a repository assistant.
+A command interface can make the repository easier to operate.
 
-It must remain advisory like a controlled trust-layer component.
+It must not become a hidden decision engine.
 
-The assistant can guide the work.
+Human maintainers retain final authority.
 
-It cannot become the authority.
+Trust the record, not the narrative.
