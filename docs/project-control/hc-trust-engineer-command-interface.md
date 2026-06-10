@@ -1,6 +1,6 @@
 # HC Trust Engineer Command Interface
 
-Status: partially implemented command interface.
+Status: local deterministic command interface implemented for the current core command set.
 
 This document defines a safe command interface for using HC Trust Engineer inside the GitHub repository without requiring a separate website or chat UI.
 
@@ -12,37 +12,38 @@ Implemented in `scripts/hc_assistant_command.py`:
 - `/hc status`
 - `/hc next`
 - `/hc evidence`
+- `/hc explain`
+- `/hc risks`
+- `/hc review`
 
 Covered by `tests/test_hc_assistant_command.py`.
-
-Deferred for later governance-reviewed PRs:
-
-- `/hc explain`
-- `/hc review`
-- `/hc risks`
 
 Current implementation mode:
 
 - local deterministic parser;
 - machine-readable JSON output;
+- static response maps and checklists only;
 - no workflow connection;
 - no issue-comment listener;
+- no live pull request inspection;
+- no file reading from command execution;
 - no network calls;
 - no LLM calls;
-- no repository writes.
+- no repository writes;
+- no labels, assignments, approvals, rejections, merges, or closes.
 
 ## Purpose
 
-GitHub repositories do not provide a native always-on chat panel. For the first safe implementation, HC Trust Engineer can behave like a repository assistant through issue and pull request comments.
+GitHub repositories do not provide a native always-on chat panel. For the first safe implementation, HC Trust Engineer can behave like a repository assistant through explicit commands and auditable GitHub comments.
 
-The goal is to make the repository feel guided while keeping all interactions auditable in GitHub.
+The goal is to make the repository feel guided while keeping all interactions advisory-only and reviewable.
 
 ## Operating model
 
 ```text
 User writes a command in an issue or pull request comment.
 ↓
-HC Trust Engineer reads the command.
+HC Trust Engineer parses the command.
 ↓
 The assistant returns an advisory-only response.
 ↓
@@ -83,18 +84,19 @@ Implementation status: implemented in the local deterministic parser.
 
 Shows available commands and explains advisory-only boundaries.
 
-Expected response:
+Current output includes:
 
 ```text
-HC Trust Engineer commands:
-- /hc help
-- /hc status
-- /hc next
-- /hc evidence
-- /hc explain <topic-or-path> (documented, not implemented in this parser)
+/hc help
+/hc status
+/hc next
+/hc evidence
+/hc explain <topic-or-path>
+/hc risks
+/hc review
+```
 
 Boundary: advisory only. Human maintainers retain final authority.
-```
 
 ### `/hc status`
 
@@ -155,66 +157,81 @@ Current parser boundaries:
 
 ### `/hc explain`
 
-Implementation status: documented but deferred.
+Implementation status: implemented as static local parser output.
 
-Explains a file, concept, or project area.
+Explains supported static topics without repository inspection.
+
+Supported topics:
+
+```text
+advisory-only
+trust-kernel
+protected-paths
+commands
+```
 
 Examples:
 
 ```text
 /hc explain trust-kernel
-/hc explain docs/project-control/
+/hc explain protected-paths
 /hc explain advisory-only
+/hc explain commands
 ```
 
-Expected behavior:
+Current parser boundaries:
 
-- explain using repository context;
-- distinguish current implementation from future roadmap;
-- avoid unsupported truth or production-readiness claims.
-
-### `/hc review`
-
-Implementation status: documented but deferred.
-
-Provides advisory review context for a pull request.
-
-Expected response should include:
-
-- changed files summary;
-- protected paths touched;
-- governance-adjacent paths touched;
-- generated artifacts observed;
-- evidence prompts;
-- review routes;
-- advisory warnings.
-
-Not allowed:
-
-- approval;
-- rejection;
-- request-changes authority;
-- merge decision;
-- auto-labeling unless separately approved by governance.
+- uses a static topic map only;
+- does not read files or inspect live repository state;
+- does not claim production readiness, legal validity, forensic certainty, or objective truth.
 
 ### `/hc risks`
 
-Implementation status: documented but deferred.
+Implementation status: implemented as static local parser output.
 
-Explains risk areas for a PR, issue, or proposed task.
+Returns a static risk checklist for proposed work, pull requests, or issues.
 
-Risk categories may include:
+Risk categories include:
 
-- protected path touched;
-- workflow change;
-- governance change;
-- schema or validator change;
-- runtime behavior change;
-- generated artifact confusion;
-- untrusted PR input;
-- stale summary risk;
-- missing tests;
-- missing human review.
+- protected path risk;
+- workflow risk;
+- runtime risk;
+- schema or validator risk;
+- record, hash, or QR risk;
+- governance risk;
+- stale context risk;
+- implementation expansion risk.
+
+Current parser boundaries:
+
+- does not inspect current PR or issue context;
+- does not perform live GitHub state lookup;
+- does not decide PR outcome;
+- returns a checklist only.
+
+### `/hc review`
+
+Implementation status: implemented as static local parser output.
+
+Provides a human-review preparation checklist.
+
+The checklist includes:
+
+- changed file collection;
+- scope classification;
+- protected path assessment;
+- evidence bundle reminder;
+- CI/check status inspection;
+- duplicate or stale work prevention;
+- advisory boundary confirmation;
+- human decision reminder.
+
+Current parser boundaries:
+
+- does not inspect current PR or issue context;
+- does not perform live GitHub state lookup;
+- does not approve, reject, request changes, merge, close, label, assign, or certify;
+- returns a review preparation checklist only.
 
 ## Suggested future commands
 
@@ -230,7 +247,7 @@ The following commands are not required for the first implementation:
 /hc demo
 ```
 
-They should be added only after the core commands are stable.
+They should be added only after the core commands are stable and after separate governance-reviewed PRs.
 
 ## Where commands should work
 
@@ -242,7 +259,9 @@ Use for:
 - `/hc status`;
 - `/hc next`;
 - `/hc explain`;
-- `/hc evidence`.
+- `/hc evidence`;
+- `/hc risks`;
+- `/hc review`.
 
 Current limitation: the issue exists, but automatic issue-comment listening is not connected yet.
 
