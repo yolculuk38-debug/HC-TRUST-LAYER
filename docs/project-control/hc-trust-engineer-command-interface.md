@@ -1,8 +1,35 @@
 # HC Trust Engineer Command Interface
 
-Status: design proposal.
+Status: partially implemented command interface.
 
 This document defines a safe command interface for using HC Trust Engineer inside the GitHub repository without requiring a separate website or chat UI.
+
+## Current implementation snapshot
+
+Implemented in `scripts/hc_assistant_command.py`:
+
+- `/hc help`
+- `/hc status`
+
+Covered by `tests/test_hc_assistant_command.py`.
+
+Deferred for later governance-reviewed PRs:
+
+- `/hc next`
+- `/hc explain`
+- `/hc review`
+- `/hc risks`
+- `/hc evidence`
+
+Current implementation mode:
+
+- local deterministic parser;
+- machine-readable JSON output;
+- no workflow connection;
+- no issue-comment listener;
+- no network calls;
+- no LLM calls;
+- no repository writes.
 
 ## Purpose
 
@@ -22,12 +49,20 @@ The assistant returns an advisory-only response.
 Human maintainers decide what to do next.
 ```
 
+Current limitation: the parser exists locally, but GitHub issue/PR comment automation is not connected yet.
+
 ## Recommended console issue
 
 A repository may keep one pinned or clearly named issue as the assistant console:
 
 ```text
 HC Assistant Console
+```
+
+Current console issue:
+
+```text
+#763 HC Assistant Console
 ```
 
 This issue can be used for project-level questions such as status, next task, onboarding, and explanation commands.
@@ -44,6 +79,8 @@ This keeps the interface explicit and avoids accidental bot responses.
 
 ### `/hc help`
 
+Implementation status: implemented in the local deterministic parser.
+
 Shows available commands and explains advisory-only boundaries.
 
 Expected response:
@@ -52,34 +89,31 @@ Expected response:
 HC Trust Engineer commands:
 - /hc help
 - /hc status
-- /hc next
-- /hc explain
-- /hc review
-- /hc risks
-- /hc evidence
+- /hc next (documented, not implemented in this parser)
+- /hc explain <topic-or-path> (documented, not implemented in this parser)
+- /hc evidence (documented, not implemented in this parser)
 
 Boundary: advisory only. Human maintainers retain final authority.
 ```
 
 ### `/hc status`
 
-Summarizes current repository state.
+Implementation status: implemented as static local parser output.
 
-Allowed sources:
+Summarizes current command-surface status.
 
-- current open PR list;
-- latest merged PR metadata;
-- project-control documents;
-- governance documents;
-- known roadmap/checkpoint documents.
+Current parser boundaries:
 
-Required boundaries:
+- returns static command-surface status;
+- does not perform live GitHub state lookup;
+- warns that a separate GitHub-verified control pass is required for current PR state;
+- does not expose secrets, credentials, tokens, or private keys.
 
-- separate GitHub-verified state from stale summaries;
-- do not claim full repository audit unless actually performed;
-- do not expose secrets, credentials, tokens, or private keys.
+Future implementation may add live GitHub state only through a separately reviewed integration.
 
 ### `/hc next`
+
+Implementation status: documented but deferred.
 
 Suggests the next safe task.
 
@@ -95,6 +129,8 @@ Expected response should include:
 The command must not create or merge work automatically.
 
 ### `/hc explain`
+
+Implementation status: documented but deferred.
 
 Explains a file, concept, or project area.
 
@@ -113,6 +149,8 @@ Expected behavior:
 - avoid unsupported truth or production-readiness claims.
 
 ### `/hc review`
+
+Implementation status: documented but deferred.
 
 Provides advisory review context for a pull request.
 
@@ -136,6 +174,8 @@ Not allowed:
 
 ### `/hc risks`
 
+Implementation status: documented but deferred.
+
 Explains risk areas for a PR, issue, or proposed task.
 
 Risk categories may include:
@@ -152,6 +192,8 @@ Risk categories may include:
 - missing human review.
 
 ### `/hc evidence`
+
+Implementation status: documented but deferred.
 
 Asks what evidence is needed before a change can be safely reviewed.
 
@@ -192,6 +234,8 @@ Use for:
 - `/hc explain`;
 - `/hc evidence`.
 
+Current limitation: the issue exists, but automatic issue-comment listening is not connected yet.
+
 ### Pull request comments
 
 Use for:
@@ -199,6 +243,8 @@ Use for:
 - `/hc review`;
 - `/hc risks`;
 - `/hc evidence`.
+
+Current limitation: PR-scoped command automation is not connected yet.
 
 ### Issue comments
 
@@ -247,19 +293,24 @@ When answering repository questions, source priority should be:
 4. governance docs;
 5. conversation summaries, only if clearly marked as non-authoritative context.
 
+Current parser note: `scripts/hc_assistant_command.py` does not perform live GitHub lookup yet.
+
 ## First implementation recommendation
 
-The first implementation should be documentation-only or report-only.
-
-Recommended sequence:
+Current completed steps:
 
 1. define command interface;
 2. create an Assistant Console issue template or guide;
 3. add a non-LLM command parser;
-4. support `/hc help` and `/hc status`;
-5. support `/hc next` using trusted project-control docs;
-6. support PR-scoped `/hc review` using changed-file metadata;
-7. consider GitHub App migration only after the command model is stable.
+4. support `/hc help` and `/hc status` locally.
+
+Recommended next steps:
+
+1. keep parser local until command behavior is stable;
+2. add `/hc next` using trusted project-control docs;
+3. support PR-scoped `/hc review` using changed-file metadata;
+4. connect issue-comment automation only after a separate governance-reviewed PR;
+5. consider GitHub App migration only after the command model is stable.
 
 ## Final boundary
 
