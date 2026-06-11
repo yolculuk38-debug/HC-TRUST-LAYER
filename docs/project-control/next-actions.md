@@ -7,10 +7,10 @@ This file lists safe, advisory next work for HC-TRUST-LAYER. Each item is REPORT
 | Field | Status |
 | --- | --- |
 | Current phase | Post-runtime stabilization / operating-layer refinement |
-| Active focus | Public validator and public explorer planning/navigation sequence is complete. HC Control Bot advisory comment governance/navigation is synchronized. Stay in evidence-triggered report-only mode unless new repository evidence appears. |
-| Next up | Evidence-triggered runtime, public validator/public explorer, or bot-governance follow-up only if new repository evidence appears. |
+| Active focus | Public validator and public explorer planning/navigation sequence is complete. HC Control Bot advisory comment governance/navigation and assistant-console rotation state are synchronized. Stay in evidence-triggered report-only mode unless new repository evidence appears. |
+| Next up | Docs-only navigation/index synchronization, or evidence-triggered report-only runtime, public validator/public explorer, or bot-governance follow-up only if new repository evidence appears. |
 | Blocked / parked work | Do not modify runtime, code, tests, schemas, validators, workflows, governance rules, records, hashes, QR artifacts, generated artifacts, signing, federation, or policy for this next-actions list. |
-| Do-not-repeat references | #628 telemetry contract sufficient; #629 replay / continuity coverage merged; #630 runtime conditionally stabilized; #631 operating layer conditionally sufficient; public validator readiness/spec/implementation planning already exists; public validator navigation alignment completed in #682; public explorer navigation map completed in #683; public explorer gap review completed in #685; public explorer maturity checklist completed in #686; public explorer checklist navigation alignment completed in #688; HC Control Bot advisory comment boundary/lifecycle/template/navigation are covered by #701, #794, #795, and #796. Avoid repeating those reviews unless new repository evidence appears. |
+| Do-not-repeat references | #628 telemetry contract sufficient; #629 replay / continuity coverage merged; #630 runtime conditionally stabilized; #631 operating layer conditionally sufficient; public validator readiness/spec/implementation planning already exists; public validator navigation alignment completed in #682; public explorer navigation map completed in #683; public explorer gap review completed in #685; public explorer maturity checklist completed in #686; public explorer checklist navigation alignment completed in #688; HC Control Bot advisory comment boundary/lifecycle/template/navigation are covered by #701, #794, #795, and #796; assistant-console rotation plan/status/docs/tests/checklist sync is covered by #811, #813, and #814, with #812 active and #763 historical only. Avoid repeating those reviews unless new repository evidence appears. |
 | Protected-path reminder | Protected paths still require explicit approval and human-supervised validation before modification. |
 | Source-of-truth priority | Markdown project-control docs and repository evidence outrank `hc_context`, chat memory, and advisory summaries. AI output is advisory only; human reviewers retain final authority. |
 
@@ -52,13 +52,23 @@ Use `docs/project-control/active-work-registry.md` only for advisory shift-level
 - Do not create duplicate bot-comment governance, lifecycle, template, or navigation documents unless new repository evidence appears.
 - These documents do not enable comment automation, label application, assignment, LLM review, approval, rejection, merge, or close behavior.
 
+## Completed assistant-console rotation maintenance
+
+- #811 recorded the assistant console rotation plan.
+- #812 is the active HC Assistant Console v2 reference.
+- #763 is closed and retained only as the historical first smoke-test trail.
+- #813 synchronized `/hc status`, command tests, and active-console documentation references.
+- #814 synchronized the assistant listener smoke-test checklist.
+- Assistant-console rotation should not be repeated unless new repository evidence appears.
+- This is operating-layer documentation state only; it does not create implementation work, bot authority, labels, assignments, runtime behavior, workflow behavior, or governance finality.
+
 ## 1. Evidence-triggered follow-up only if needed
 
 - Priority order: 1
 - Mode: REPORT ONLY, and only if new repository evidence appears.
-- Risk: Runtime, validator, API, explorer, generated-artifact, bot-governance, and trust-kernel adjacency; do not repeat completed public validator/public explorer planning, runtime stabilization work, or HC Control Bot comment governance work without new evidence.
+- Risk: Runtime, validator, API, explorer, generated-artifact, bot-governance, assistant-console, and trust-kernel adjacency; do not repeat completed public validator/public explorer planning, runtime stabilization work, HC Control Bot comment governance work, or assistant-console rotation work without new evidence.
 - Safe output: A narrow evidence report that cites the new trigger and explains whether further review, navigation refresh, or implementation planning is necessary.
-- Why it is next: The public validator, public explorer, and HC Control Bot advisory comment governance/navigation sequences are complete; future work should be triggered by concrete repository evidence, not repeated planning.
+- Why it is next: The public validator, public explorer, HC Control Bot advisory comment governance/navigation, and assistant-console rotation sequences are complete; future work should be docs-only navigation/index synchronization or triggered by concrete repository evidence, not repeated planning.
 
 ## 2. Parked implementation work
 
@@ -66,7 +76,7 @@ Use `docs/project-control/active-work-registry.md` only for advisory shift-level
 - Mode: BLOCKED unless explicitly authorized.
 - Risk: Implementation expansion could affect runtime/API behavior, generated artifacts, validation semantics, public UX claims, bot authority boundaries, or trust-kernel-adjacent surfaces.
 - Safe output: None by default. Open a separate, explicit implementation proposal only if the Founder or authorized reviewer requests it.
-- Why it is parked: Current public explorer, public validator, and HC Control Bot comment work is documentation/planning aligned. Implementation changes require a new scoped task.
+- Why it is parked: Current public explorer, public validator, HC Control Bot comment, and assistant-console rotation work is documentation/planning aligned. Implementation changes require a new scoped task.
 
 ## Stale-context guidance
 

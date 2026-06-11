@@ -7,10 +7,10 @@ This file is the repository-native shift handoff summary for HC-TRUST-LAYER. Eve
 | Field | Status |
 | --- | --- |
 | Current phase | Post-runtime stabilization / operating-layer refinement |
-| Active focus | Navigation / current-state synchronization; public validator / explorer planning. |
-| Next up | Prefer docs-only navigation/index refresh or public validator / explorer planning. Avoid repeating telemetry, replay, or runtime review unless new evidence appears. |
+| Active focus | Assistant console rotation state is synchronized; continue navigation / current-state synchronization and public validator / explorer planning only when evidence-triggered. |
+| Next up | Prefer docs-only navigation/index refresh or evidence-triggered report-only public validator / explorer planning. Avoid repeating assistant-console rotation, telemetry, replay, or runtime review unless new repository evidence appears. |
 | Blocked / parked work | Workflow, runtime, schema, validator, record, policy, federation, signing, trust-kernel index, and governance-enforcement changes are parked unless explicitly authorized and validated. |
-| Do-not-repeat references | Treat #628, #629, #630, and #631 as recent completed review references for the current stabilization sequence. |
+| Do-not-repeat references | Treat #628, #629, #630, #631, #811, #813, and #814 as recent completed review references for the current stabilization and operating-layer sequence. |
 | Protected-path reminder | Do not modify `schema/**`, `validators/**`, `federation/**`, `signatures/**`, `canonical/**`, `policy/**`, `.github/workflows/**`, `records/**`, or trust-kernel indexes unless explicitly requested and approved. |
 | Source-of-truth priority | Repository markdown docs, merged files, checks, PR evidence, and human review decisions outrank chat memory and advisory machine-readable context. |
 
@@ -29,11 +29,21 @@ HC-TRUST-LAYER is advisory-only, early-stage trust infrastructure. Repository ev
 - #630 runtime stabilization review: RUNTIME CONDITIONALLY STABILIZED
 - #631 HC Operating Layer review: OPERATING LAYER CONDITIONALLY SUFFICIENT
 
+## Recent completed operating-layer maintenance
+
+- #811 recorded the assistant console rotation plan as completed operating-layer planning evidence.
+- #812 is the active HC Assistant Console v2 reference for current assistant-console work.
+- #763 is closed and retained only as the historical first smoke-test trail; do not treat it as the active console or reopen it for rotation work.
+- #813 synchronized `/hc status`, command tests, and active-console documentation references with #812 as active.
+- #814 synchronized the assistant listener smoke-test checklist with the current rotation state.
+- #811, #813, and #814 are do-not-repeat references for assistant-console rotation synchronization unless new repository evidence appears.
+- This maintenance records operating-layer state only; it does not mark runtime, schema, validator, workflow, record, signing, policy, federation, trust-kernel implementation, or governance-enforcement work as completed.
+
 ## Current focus
 
 - Keep onboarding and navigation documents synchronized with the current project state.
 - Plan public validator / explorer work without making runtime, validator, schema, federation, signing, policy, workflow, record, hash, QR, generated artifact, or governance-rule changes.
-- Avoid repeating telemetry contract, replay / continuity, or runtime stabilization review unless new repository evidence appears.
+- Avoid repeating assistant-console rotation, telemetry contract, replay / continuity, or runtime stabilization review unless new repository evidence appears.
 
 ## Next safe task
 
