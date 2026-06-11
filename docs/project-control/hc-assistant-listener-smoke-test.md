@@ -20,10 +20,16 @@ Parser under test:
 scripts/hc_assistant_command.py
 ```
 
-Recommended console issue:
+Active console issue:
 
 ```text
-#763 HC Assistant Console
+#812 HC Assistant Console v2
+```
+
+Historical console trail:
+
+```text
+#763 first HC Assistant Console smoke-test trail
 ```
 
 ## Required Safety Boundary
@@ -61,7 +67,7 @@ The listener must not perform:
 
 ## Manual Test Inputs
 
-Run these as separate comments in the assistant console issue or a safe test issue.
+Run these as separate comments in the active assistant console issue or a safe test issue.
 
 ```text
 /hc help
