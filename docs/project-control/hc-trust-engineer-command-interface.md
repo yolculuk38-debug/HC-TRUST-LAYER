@@ -65,13 +65,19 @@ A repository may keep one pinned or clearly named issue as the assistant console
 HC Assistant Console
 ```
 
-Current console issue:
+Active console issue:
 
 ```text
-#763 HC Assistant Console
+#812 HC Assistant Console v2
 ```
 
-This issue can be used for project-level questions such as status, next task, onboarding, and explanation commands.
+Historical console trail:
+
+```text
+#763 first HC Assistant Console smoke-test trail
+```
+
+Use the active console issue for project-level questions such as status, next task, onboarding, and explanation commands.
 
 Pull-request-specific questions should still be asked on the relevant PR.
 

@@ -34,7 +34,8 @@ def test_status_command_is_static_and_advisory():
     assert result["implemented"] is True
     assert result["advisory_only"] is True
     assert result["truth_guarantee"] is False
-    assert "- assistant_console_issue: #763" in result["response_lines"]
+    assert "- assistant_console_issue: #812" in result["response_lines"]
+    assert "- historical_console_issue: #763" in result["response_lines"]
     assert (
         "- automation_status: issue-comment listener connected for /hc commands"
         in result["response_lines"]
