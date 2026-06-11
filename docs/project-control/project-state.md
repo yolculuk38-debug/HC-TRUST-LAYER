@@ -7,11 +7,11 @@ This file is the repository-native shift handoff summary for HC-TRUST-LAYER. Eve
 | Field | Status |
 | --- | --- |
 | Current phase | Post-runtime stabilization / operating-layer refinement |
-| Active focus | Assistant console rotation state is synchronized; continue navigation / current-state synchronization and public validator / explorer planning only when evidence-triggered. |
-| Next up | Prefer docs-only navigation/index refresh or evidence-triggered report-only public validator / explorer planning. Avoid repeating assistant-console rotation, telemetry, replay, or runtime review unless new repository evidence appears. |
-| Blocked / parked work | Workflow, runtime, schema, validator, record, policy, federation, signing, trust-kernel index, and governance-enforcement changes are parked unless explicitly authorized and validated. |
-| Do-not-repeat references | Treat #628, #629, #630, #631, #811, #813, and #814 as recent completed review references for the current stabilization and operating-layer sequence. |
-| Protected-path reminder | Do not modify `schema/**`, `validators/**`, `federation/**`, `signatures/**`, `canonical/**`, `policy/**`, `.github/workflows/**`, `records/**`, or trust-kernel indexes unless explicitly requested and approved. |
+| Active focus | Public validator / explorer planning and navigation are synchronized through #821; HC Control Bot advisory comment governance/navigation and assistant-console rotation state are synchronized. Stay in evidence-triggered REPORT ONLY mode unless new repository evidence appears. |
+| Next up | Prefer docs-only navigation/index synchronization, or evidence-triggered report-only runtime, public validator/public explorer, or bot-governance follow-up only if new repository evidence appears. Do not reopen Public Validator MVP specification work after #820/#821 without new repository evidence. |
+| Blocked / parked work | Workflow, runtime, schema, validator, record, policy, federation, signing, trust-kernel index, generated artifact, QR/hash, and governance-enforcement changes are parked unless explicitly authorized and validated. |
+| Do-not-repeat references | Treat #628, #629, #630, #631, #682, #683, #685, #686, #688, #701, #794, #795, #796, #811, #813, #814, #820, and #821 as completed review/navigation references. #812 remains the active HC Assistant Console v2 reference; #763 remains historical only. |
+| Protected-path reminder | Do not modify `schema/**`, `validators/**`, `federation/**`, `signatures/**`, `canonical/**`, `policy/**`, `.github/workflows/**`, `records/**`, generated artifacts, QR/hash evidence, or trust-kernel indexes unless explicitly requested and approved. |
 | Source-of-truth priority | Repository markdown docs, merged files, checks, PR evidence, and human review decisions outrank chat memory and advisory machine-readable context. |
 
 ## Current phase
@@ -22,6 +22,8 @@ Post-runtime stabilization / operating-layer refinement.
 
 HC-TRUST-LAYER is advisory-only, early-stage trust infrastructure. Repository evidence, merged files, checks, and human review decisions are the source of truth for current state. AI agents and automation are advisory only; human reviewers retain final authority, especially for trust-kernel-adjacent or protected-path work.
 
+The `v0.1.0` tag remains the initial protected protocol infrastructure and release-candidate documentation baseline. `main` has continued beyond that tag and is the active development line.
+
 ## Last known completed stabilization sequence
 
 - #628 telemetry contract review: TELEMETRY CONTRACT SUFFICIENT
@@ -29,7 +31,26 @@ HC-TRUST-LAYER is advisory-only, early-stage trust infrastructure. Repository ev
 - #630 runtime stabilization review: RUNTIME CONDITIONALLY STABILIZED
 - #631 HC Operating Layer review: OPERATING LAYER CONDITIONALLY SUFFICIENT
 
-## Recent completed operating-layer maintenance
+## Completed public validator / public explorer planning sequence
+
+- #682 linked public validator planning navigation.
+- #820 added the official documentation-only Public Validator MVP Specification.
+- #821 synchronized navigation and project-control references so the #820 specification is the primary planner entry and duplicate Public Validator MVP specification work is avoided.
+- #683 added the public explorer navigation map.
+- #685 completed the public explorer planning gap review.
+- #686 added the public explorer maturity checklist.
+- #688 completed public explorer checklist navigation alignment.
+- Public validator and public explorer planning should not be repeated unless new repository evidence appears.
+
+## Completed HC Control Bot advisory comment governance sequence
+
+- #701 documented the HC Control Bot advisory comment boundary.
+- #794 documented the advisory comment lifecycle.
+- #795 documented the advisory comment template.
+- #796 linked the HC Control Bot reference chain in the Operator Entry Map.
+- HC Control Bot scanner, advisory comment, and `/hc` command surfaces remain advisory-only and do not create approval, rejection, merge, close, label, assignment, LLM review, production-readiness, certification, or truth-finality authority.
+
+## Recent completed assistant-console maintenance
 
 - #811 recorded the assistant console rotation plan as completed operating-layer planning evidence.
 - #812 is the active HC Assistant Console v2 reference for current assistant-console work.
@@ -37,19 +58,18 @@ HC-TRUST-LAYER is advisory-only, early-stage trust infrastructure. Repository ev
 - #813 synchronized `/hc status`, command tests, and active-console documentation references with #812 as active.
 - #814 synchronized the assistant listener smoke-test checklist with the current rotation state.
 - #811, #813, and #814 are do-not-repeat references for assistant-console rotation synchronization unless new repository evidence appears.
-- This maintenance records operating-layer state only; it does not mark runtime, schema, validator, workflow, record, signing, policy, federation, trust-kernel implementation, or governance-enforcement work as completed.
 
 ## Current focus
 
-- Keep onboarding and navigation documents synchronized with the current project state.
-- Plan public validator / explorer work without making runtime, validator, schema, federation, signing, policy, workflow, record, hash, QR, generated artifact, or governance-rule changes.
-- Avoid repeating assistant-console rotation, telemetry contract, replay / continuity, or runtime stabilization review unless new repository evidence appears.
+- Keep onboarding, navigation, and project-control documents synchronized with current repository state.
+- Use evidence-triggered report-only follow-up for runtime, public validator, public explorer, bot-governance, assistant-console, generated-artifact, QR/hash, or trust-kernel-adjacent questions.
+- Avoid repeating public validator/public explorer planning, HC Control Bot comment governance, assistant-console rotation, telemetry contract, replay / continuity, or runtime stabilization review unless new repository evidence appears.
 
 ## Next safe task
 
-The next safe task is a small documentation-only navigation/index synchronization or a report-only public validator / explorer planning pass. Protected paths still require explicit approval and human-supervised validation before modification.
+The next safe task is a small documentation-only navigation/index synchronization or a narrow evidence-triggered REPORT ONLY review. Protected paths still require explicit approval and human-supervised validation before modification.
 
-Recommended decision language after the navigation refresh is complete: **NAVIGATION REFRESH COMPLETE**.
+Recommended decision language after a navigation refresh is complete: **NAVIGATION REFRESH COMPLETE**.
 
 ## Shift-change checklist
 
