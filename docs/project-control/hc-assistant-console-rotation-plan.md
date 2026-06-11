@@ -52,10 +52,36 @@ Use this sequence:
 2. confirm cleanup/archive policy is present on `main`
 3. create a new issue titled `HC Assistant Console v2`
 4. add a clear opening description to the new issue
-5. add a final archival comment to the old console
-6. link the old console to the new console
-7. close the old console as completed
-8. keep the old console available as historical smoke-test evidence
+5. update current main-branch references so repo docs and command output point to the new active console
+6. add a final archival comment to the old console
+7. link the old console to the new console
+8. close the old console as completed
+9. keep the old console available as historical smoke-test evidence
+
+## Main-branch Reference Update Checklist
+
+Before closing the old console, inspect and update any main-branch reference that still points users or `/hc status` output to the old console.
+
+Known reference candidates include:
+
+```text
+scripts/hc_assistant_command.py
+docs/project-control/operator-entry-map.md
+docs/project-control/hc-trust-engineer-command-interface.md
+```
+
+Also inspect any smoke-test checklist, assistant console documentation, or project-control file that mentions the old console issue number.
+
+The old console may remain linked as historical evidence, but the active console reference must point to the new console before the old console is closed.
+
+Required distinction:
+
+```text
+active_console: new console issue
+historical_console: old console issue
+```
+
+Do not close the old console while current docs or command output still identify it as the active console.
 
 ## Old Console Final Comment Template
 
@@ -195,6 +221,7 @@ Do not rotate the console if:
 - the new console purpose is not documented
 - the old console cannot be linked from the new console
 - the maintainer has not authorized closure
+- current main-branch docs or command output still point to the old console as active
 
 ## HC Principle
 
