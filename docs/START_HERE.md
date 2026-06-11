@@ -110,10 +110,11 @@ Use these HC:// Public Validator demo entry points for a fast, public-safe, advi
 ### For Public Validator / Explorer Planners
 
 1. **Start here:** This file
-2. **Then read:** [`docs/project-control/public-validator-mvp-readiness-review.md`](project-control/public-validator-mvp-readiness-review.md) — report-only readiness review and current MVP gap summary.
-3. **Then read:** [`docs/project-control/public-validator-mvp-spec.md`](project-control/public-validator-mvp-spec.md) — documentation-only public-safe MVP contract and result shape.
-4. **Then read:** [`docs/project-control/public-validator-implementation-plan.md`](project-control/public-validator-implementation-plan.md) — documentation-only implementation planning boundaries.
-5. **Cross-check:** [`docs/public-verification-flow.md`](public-verification-flow.md) and [`docs/public-verification-api.md`](public-verification-api.md).
+2. **Then read:** [`docs/project-control/public-validator-mvp-specification.md`](project-control/public-validator-mvp-specification.md) — official documentation-only Public Validator MVP Specification added by #820.
+3. **Then read:** [`docs/project-control/public-validator-mvp-readiness-review.md`](project-control/public-validator-mvp-readiness-review.md) — supporting report-only readiness review and MVP gap summary.
+4. **Then read:** [`docs/project-control/public-validator-mvp-spec.md`](project-control/public-validator-mvp-spec.md) — supporting documentation-only public-safe MVP contract and result shape.
+5. **Then read:** [`docs/project-control/public-validator-implementation-plan.md`](project-control/public-validator-implementation-plan.md) — supporting documentation-only implementation planning boundaries.
+6. **Cross-check:** [`docs/public-verification-flow.md`](public-verification-flow.md) and [`docs/public-verification-api.md`](public-verification-api.md).
 
 **Boundary:** Public validator / explorer planning does not imply hosted production readiness, backend deployment, truth finality, legal/security certification, or autonomous governance authority.
 
@@ -364,9 +365,10 @@ If you cannot run checks in your environment, **state that in the PR** and do no
 
 | Document | Purpose |
 |----------|---------|
-| [`docs/project-control/public-validator-mvp-readiness-review.md`](project-control/public-validator-mvp-readiness-review.md) | Report-only readiness review and MVP gap summary |
-| [`docs/project-control/public-validator-mvp-spec.md`](project-control/public-validator-mvp-spec.md) | Documentation-only public validator MVP contract and result shape |
-| [`docs/project-control/public-validator-implementation-plan.md`](project-control/public-validator-implementation-plan.md) | Documentation-only public validator implementation planning boundaries |
+| [`docs/project-control/public-validator-mvp-specification.md`](project-control/public-validator-mvp-specification.md) | Official documentation-only Public Validator MVP Specification added by #820 |
+| [`docs/project-control/public-validator-mvp-readiness-review.md`](project-control/public-validator-mvp-readiness-review.md) | Supporting report-only readiness review and MVP gap summary |
+| [`docs/project-control/public-validator-mvp-spec.md`](project-control/public-validator-mvp-spec.md) | Supporting documentation-only public validator MVP contract and result shape |
+| [`docs/project-control/public-validator-implementation-plan.md`](project-control/public-validator-implementation-plan.md) | Supporting documentation-only public validator implementation planning boundaries |
 | [`docs/public-verification-flow.md`](public-verification-flow.md) | Future public verification flow foundation |
 | [`docs/public-verification-api.md`](public-verification-api.md) | Future public verification API architecture draft |
 
@@ -504,8 +506,9 @@ These files intentionally use legacy project names ("Humanity Chain", "Insanlik-
 - [`HC_CONSTITUTION.md`](../HC_CONSTITUTION.md) — Immutable core principles
 - [`GOVERNANCE.md`](../GOVERNANCE.md) — Merge authority and governance framework
 - [`docs/contributor-start-here.md`](contributor-start-here.md) — Detailed beginner guidance
-- [`docs/project-control/public-validator-mvp-spec.md`](project-control/public-validator-mvp-spec.md) — Public Validator MVP specification
-- [`docs/project-control/public-validator-implementation-plan.md`](project-control/public-validator-implementation-plan.md) — Public Validator MVP implementation plan
+- [`docs/project-control/public-validator-mvp-specification.md`](project-control/public-validator-mvp-specification.md) — official documentation-only Public Validator MVP Specification added by #820
+- [`docs/project-control/public-validator-mvp-spec.md`](project-control/public-validator-mvp-spec.md) — supporting Public Validator MVP specification reference
+- [`docs/project-control/public-validator-implementation-plan.md`](project-control/public-validator-implementation-plan.md) — supporting Public Validator MVP implementation plan
 - [`docs/vision/source-and-social-verification.md`](vision/source-and-social-verification.md) — Future source/social verification vision
 - [`docs/vision/identity-layer-concept.md`](vision/identity-layer-concept.md) — Future identity-layer concept
 

@@ -9,8 +9,8 @@ This document helps human contributors, AI assistants, and agentic tools quickly
 ## Current Position
 
 - Post-runtime stabilization / operating-layer refinement.
-- Navigation synchronization after #815 project-state, next-actions, and task-ledger sync.
-- Public validator planning.
+- Navigation synchronization after #820 official Public Validator MVP Specification.
+- Public validator planning is documented; specification work should not be reopened without new repository evidence.
 - Public explorer planning.
 - HC Trust Engineer command-surface planning.
 - HC Control Bot advisory comment governance is documented but not enabled.
@@ -65,11 +65,18 @@ Boundary: advisory only. Human maintainers retain final authority.
 3. docs/START_HERE.md
 4. docs/project-control/project-state.md
 5. docs/project-control/next-actions.md
-6. docs/project-control/shift-change-checklist.md
-7. docs/project-control/hc-assistant-console-guide.md
-8. docs/project-control/hc-trust-engineer-command-interface.md
-9. docs/project-control/hc-assistant-console-issue-template.md
-10. docs/terminology-audit.md
+6. docs/project-control/public-validator-mvp-specification.md
+7. docs/project-control/shift-change-checklist.md
+8. docs/project-control/hc-assistant-console-guide.md
+9. docs/project-control/hc-trust-engineer-command-interface.md
+10. docs/project-control/hc-assistant-console-issue-template.md
+11. docs/terminology-audit.md
+
+## Public Validator Planning Reference
+
+The official documentation-only Public Validator MVP Specification is [`docs/project-control/public-validator-mvp-specification.md`](public-validator-mvp-specification.md), added by #820. Treat older readiness review, MVP contract, and implementation planning documents as supporting references; do not reopen duplicate Public Validator MVP specification work unless new repository evidence appears.
+
+Boundary: advisory only, `public_safe: true`, `truth_guarantee: false`, local-only first where possible, and human reviewers retain final authority. This planning reference does not enable production hosting, backend readiness, legal/security certification, forensic certainty, truth verification, runtime behavior, validator changes, workflow changes, or autonomous governance authority.
 
 ## HC Control Bot Reference Chain
 
@@ -132,7 +139,7 @@ Historical provenance records must not be silently rewritten.
 - command-interface implementation planning
 - navigation improvements
 - onboarding improvements
-- public validator planning
+- public validator navigation refreshes only when repository evidence changes
 - public explorer planning
 - vision documentation
 
