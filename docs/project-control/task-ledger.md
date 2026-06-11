@@ -1,6 +1,6 @@
 # Task Ledger
 
-This shift ledger is an advisory repository-state record for HC-TRUST-LAYER work orders, task barcodes, evidence, and do-not-repeat notes. Use it to cross-check PR records, commit history, changed files, checks, and human-supervised validation notes before proposing related work.
+This shift ledger is an advisory repository-state record for HC-TRUST-LAYER work orders, task barcodes, evidence, and do-not-repeat notes. It does not grant bot authority, approval authority, implementation completion, or governance finality. Use it to cross-check PR records, commit history, changed files, checks, and human-supervised validation notes before proposing related work.
 
 ## Shift-ledger table
 
@@ -13,6 +13,11 @@ This shift ledger is an advisory repository-state record for HC-TRUST-LAYER work
 | #549 | Closed / conflicted / do-not-reuse | Repository operators / reviewers | GitHub PR and checks | #549 / closed PR reference | Governance preflight conflict | Closed PR record and review notes | Conflicted governance preflight PR; closed and marked do-not-reuse. | Do not reuse; use #551 as the active merged reference. |
 | #550 | Completed | Repository operators / reviewers | GitHub PR and checks | #550 / commit hash in repository history | Rate-limit advisory documentation | PR record, changed files, checks, review notes | Rate-limit advisory docs fix is part of the completed governance sequence. | Do not repeat; preserve advisory-only language. |
 | #551 | Merged governance preflight Tier-1 sync | Repository operators / reviewers | GitHub PR and checks | #551 / commit hash in repository history | Governance preflight Tier-1 sync | PR record, changed files, checks, review notes | Current merged governance preflight Tier-1 sync reference. | Use as the active reference for related review. |
+| #811 | Completed | Repository operators / reviewers | GitHub PR and checks | #811 / commit hash in repository history | Operating-layer assistant-console rotation planning | PR record, changed files, checks, review notes | Assistant console rotation plan recorded as completed operating-layer maintenance; advisory only. | Do not repeat unless new repository evidence appears. |
+| #812 | Active console reference | Repository operators / reviewers | GitHub PR and checks | #812 / active PR reference | Assistant-console active reference | PR record, status/docs/test references, review notes | Active HC Assistant Console v2 reference for current assistant-console work; preserves advisory-only, public_safe, truth_guarantee=false, and human final authority boundaries. | Keep active unless repository evidence supersedes it; do not close for this rotation record. |
+| #763 | Closed / historical only | Repository operators / reviewers | GitHub PR and checks | #763 / closed PR reference | Historical first smoke-test trail | Closed PR record and smoke-test trail evidence | Retained only as the historical first smoke-test trail; not the active console. | Do not reopen or treat as active console. |
+| #813 | Completed | Repository operators / reviewers | GitHub PR and checks | #813 / commit hash in repository history | Active status/docs/test synchronization | PR record, changed files, checks, review notes | Synchronized `/hc status`, command tests, and active-console documentation references to the #812 active-console state. | Do not repeat unless new repository evidence appears. |
+| #814 | Completed | Repository operators / reviewers | GitHub PR and checks | #814 / commit hash in repository history | Assistant listener smoke-test checklist synchronization | PR record, changed files, checks, review notes | Synchronized the assistant listener smoke-test checklist with the completed console rotation state. | Do not repeat unless new repository evidence appears. |
 
 ## Evidence bundle rule
 
