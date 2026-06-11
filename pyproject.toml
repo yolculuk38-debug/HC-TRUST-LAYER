@@ -10,7 +10,7 @@ readme = "ROADMAP.md"
 requires-python = ">=3.14"
 dependencies = [
   "fastapi==0.128.8",
-  "jsonschema==4.25.1",
+  "jsonschema==4.26.0",
   "pydantic==2.13.4",
   "qrcode[pil]==8.2",
 ]
