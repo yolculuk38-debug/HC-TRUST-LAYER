@@ -143,3 +143,41 @@ On a safe test pull request, run:
 ```
 
 Expected behavior:
+
+- the parser returns static advisory guidance;
+- it does not inspect the PR diff;
+- it does not decide PR outcome;
+- it does not apply labels or assignments;
+- it does not approve, reject, request changes, merge, close, or reopen.
+
+## Pass Criteria
+
+The smoke test passes only if:
+
+- all supported commands respond safely;
+- unsupported commands are ignored safely;
+- non-`/hc` comments do not produce listener output;
+- artifacts are generated;
+- all outputs remain advisory-only;
+- no authority action occurs.
+
+## Failure Handling
+
+If any command output violates the safety boundary:
+
+1. Disable or revert the listener workflow.
+2. Record the failing command and response.
+3. Open a governance-reviewed fix PR.
+4. Do not expand command behavior until the failure is resolved.
+
+## Final Boundary
+
+This checklist verifies the listener surface only.
+
+It is not a production-readiness certificate.
+
+It is not a truth guarantee.
+
+Human maintainers retain final authority.
+
+Trust the record, not the narrative.
