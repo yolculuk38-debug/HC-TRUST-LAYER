@@ -43,7 +43,7 @@ The official smallest MVP journey is:
 README.md
 → docs/demo/mini-public-validator-demo.md
 → demo-safe input
-→ local command or runtime endpoint
+→ local runtime `POST /verify/{record_id}` endpoint
 → advisory public-safe result
 → human review checkpoint
 ```
@@ -53,9 +53,41 @@ User-facing steps:
 1. Open `README.md` for repository orientation.
 2. Follow `docs/demo/mini-public-validator-demo.md` for the public-safe demo flow.
 3. Use only the official demo-safe input type defined below.
-4. Run a local command or local runtime endpoint when available.
+4. Run the official local runtime `POST /verify/{record_id}` route with a demo-safe `qr_input` payload.
 5. Read the advisory public-safe result.
 6. Stop at the human review checkpoint before treating the result as reliable for any consequential use.
+
+## Official Executable MVP Path
+
+The official executable MVP path is the local HC:// runtime route:
+
+```text
+POST /verify/{record_id}
+```
+
+Use this route only in a local runtime environment with a demo-safe `qr_input` payload. The request body shape is:
+
+```json
+{
+  "qr_input": "hc://HC-DEMO-2026-0001 hash:advisory demo-public-safe"
+}
+```
+
+Example local invocation when the reference runtime is already running locally:
+
+```sh
+curl -s -X POST "http://127.0.0.1:8000/verify/HC-DEMO-2026-0001" \
+  -H "Content-Type: application/json" \
+  -d '{"qr_input":"hc://HC-DEMO-2026-0001 hash:advisory demo-public-safe"}'
+```
+
+Executable path requirements:
+
+- `record_id` must identify a demo-safe HC:// review target.
+- `qr_input` must be demo-safe, public-safe, and non-secret.
+- The route is local-only first and does not require a hosted backend.
+- The response remains advisory and public-safe, with human review required before reliance.
+- A route response is not a production, truth, legal, security, forensic, signing, federation, or autonomous authority result.
 
 ## Official MVP Input Type
 
@@ -146,12 +178,12 @@ This specification maps existing components without changing them:
 | Existing surface | MVP reuse role |
 | --- | --- |
 | `docs/demo/mini-public-validator-demo.md` | Public-facing demo entry and explanatory flow. |
-| `src/hc_runtime` routes | Local runtime endpoint candidates for advisory public-safe result display. |
+| `src/hc_runtime` routes | Official executable MVP path through local `POST /verify/{record_id}` with a demo-safe `qr_input` payload. |
 | `src/hc_trust` helpers | Local helper candidates for shape, hash, proof, provenance, and package checks. |
 | `src/public_validator.py` | Adjacent reusable public validator helper surface. |
 | `src/public_validator_api.py` | Adjacent reusable public validator API payload helper surface. |
 | `src/public_verification_response.py` | Adjacent reusable public verification response formatting surface. |
-| `src/verification_cli.py` | Local command candidate for package-oriented verification demos. |
+| `src/verification_cli.py` | Adjacent local command candidate for package-oriented demos; not the official executable MVP path. |
 | `examples/` | Demo-safe examples and explanatory fixtures when public-safe and non-canonical. |
 | `schema/` | Reference material for record-shape boundaries; this specification does not modify schemas. |
 
