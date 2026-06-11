@@ -36,7 +36,8 @@ HELP_LINES: tuple[str, ...] = (
 
 STATUS_LINES: tuple[str, ...] = (
     "HC Trust Engineer command surface status:",
-    "- assistant_console_issue: #763",
+    "- assistant_console_issue: #812",
+    "- historical_console_issue: #763",
     "- command_interface: documented",
     "- assistant_console_guide: documented",
     "- command_parser: local deterministic parser",
