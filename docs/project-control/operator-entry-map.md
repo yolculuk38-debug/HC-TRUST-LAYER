@@ -9,11 +9,25 @@ This document helps human contributors, AI assistants, and agentic tools quickly
 ## Current Position
 
 - Post-runtime stabilization / operating-layer refinement.
-- Navigation synchronization.
+- Navigation synchronization after #815 project-state, next-actions, and task-ledger sync.
 - Public validator planning.
 - Public explorer planning.
 - HC Trust Engineer command-surface planning.
 - HC Control Bot advisory comment governance is documented but not enabled.
+
+
+## Operating Layer Quick Path
+
+Use this path for a new human, AI assistant, or agent taking over HC:// operating-layer work. This path is advisory only; it preserves `public_safe: true`, `truth_guarantee: false`, and human final authority boundaries.
+
+1. Current project state: [`docs/project-control/project-state.md`](project-state.md)
+2. Next safe work: [`docs/project-control/next-actions.md`](next-actions.md)
+3. Completed and do-not-repeat work: [`docs/project-control/task-ledger.md`](task-ledger.md)
+4. Active shift coordination: [`docs/project-control/active-work-registry.md`](active-work-registry.md)
+5. Navigation map and protected areas: [`docs/project-control/operator-entry-map.md`](operator-entry-map.md)
+6. Active assistant console: [#812 HC Assistant Console v2](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/812)
+
+Do not repeat #811, #813, #814, #815, or assistant-console rotation work unless new repository evidence appears. Treat #763 as closed historical evidence only.
 
 ## Assistant Console
 
@@ -23,7 +37,7 @@ The active repository-level HC Assistant Console is Issue #812:
 
 Historical console trail:
 
-- #763 first HC Assistant Console smoke-test trail
+- #763 first HC Assistant Console smoke-test trail; closed and historical only, not active, not to be reopened for this rotation.
 - https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/763
 
 Use it for project-level `/hc` commands such as:

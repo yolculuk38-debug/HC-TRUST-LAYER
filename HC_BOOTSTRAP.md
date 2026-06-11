@@ -16,6 +16,20 @@ Before proposing, assigning, or performing work, complete this read order. Keep 
 
 Repository state is the source of truth. Do not rely on chat memory alone. Do not override repository evidence with assumptions from prior conversations, external memory, or tool suggestions.
 
+
+## Operating Layer quick path
+
+For a fast HC:// handoff after the completed HC Assistant Console rotation, use this path before proposing work. It is advisory only, preserves `public_safe: true`, `truth_guarantee: false`, and human final authority language, and does not grant bot authority.
+
+1. Read [`docs/project-control/project-state.md`](docs/project-control/project-state.md) for current project state.
+2. Read [`docs/project-control/next-actions.md`](docs/project-control/next-actions.md) for next safe work.
+3. Read [`docs/project-control/task-ledger.md`](docs/project-control/task-ledger.md) for completed work and do-not-repeat boundaries.
+4. Use [`docs/project-control/active-work-registry.md`](docs/project-control/active-work-registry.md) only as an advisory shift snapshot when needed.
+5. Use [`docs/project-control/operator-entry-map.md`](docs/project-control/operator-entry-map.md) for navigation and protected-area reminders.
+6. Use [#812 active HC Assistant Console v2](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/812) for current repository-level `/hc` console work. Treat [#763](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/763) as closed, historical-only first smoke-test evidence.
+
+Do not repeat #811, #813, #814, #815, or assistant-console rotation work unless new repository evidence appears. Do not modify protected areas, workflows, runtime code, tests, schemas, validators, records, generated artifacts, federation, signatures, policy, trust-kernel indexes, or governance-enforcement behavior from this navigation path.
+
 ## Operating principles
 
 - Preserve advisory-only semantics for agent output, bot guidance, operating notes, and planning recommendations.
