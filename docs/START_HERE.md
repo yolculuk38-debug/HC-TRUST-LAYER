@@ -4,6 +4,21 @@
 
 ---
 
+## Operating Layer quick path
+
+Use this short path when taking over an HC:// operating-layer shift after the HC Assistant Console rotation. It is advisory only, keeps `public_safe: true` and `truth_guarantee: false` boundaries intact, and does not replace human final authority.
+
+1. Confirm current state in [`docs/project-control/project-state.md`](project-control/project-state.md).
+2. Choose next safe work from [`docs/project-control/next-actions.md`](project-control/next-actions.md).
+3. Check completed and do-not-repeat work in [`docs/project-control/task-ledger.md`](project-control/task-ledger.md).
+4. Use [`docs/project-control/active-work-registry.md`](project-control/active-work-registry.md) only for advisory shift coordination.
+5. Use [`docs/project-control/operator-entry-map.md`](project-control/operator-entry-map.md) as the navigation map.
+6. Route active repository-level `/hc` console work to [#812 active HC Assistant Console v2](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/812). Treat [#763](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/763) as closed and historical only; do not reopen it or treat it as active.
+
+Do not repeat #811, #813, #814, #815, or assistant-console rotation work unless new repository evidence appears. Protected areas remain `schema/**`, `validators/**`, `records/**`, `signatures/**`, `federation/**`, `policy/**`, `canonical/**`, `.github/workflows/**`, generated artifacts, trust-kernel indexes, and governance-enforcement surfaces unless explicitly authorized and human-reviewed.
+
+---
+
 ## 1. PROJECT IDENTITY
 
 ### Current Official Names
