@@ -17,8 +17,13 @@ This document helps human contributors, AI assistants, and agentic tools quickly
 
 ## Assistant Console
 
-The repository-level HC Assistant Console is Issue #763:
+The active repository-level HC Assistant Console is Issue #812:
 
+- https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/812
+
+Historical console trail:
+
+- #763 first HC Assistant Console smoke-test trail
 - https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/763
 
 Use it for project-level `/hc` commands such as:
