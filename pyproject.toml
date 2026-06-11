@@ -26,7 +26,7 @@ where = ["src"]
 
 [project.optional-dependencies]
 test = [
-  "anyio==4.12.1",
+  "anyio==4.13.0",
   "httpx==0.28.1",
   "pytest<9; python_version < '3.10'",
   "pytest==9.0.3; python_version >= '3.10'",
