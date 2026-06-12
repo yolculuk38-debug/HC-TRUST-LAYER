@@ -7,6 +7,47 @@ from hc_runtime.decision_engine import TrustState
 from hc_runtime.runtime import RuntimePolicyEngine, RuntimeQueueStore, TrustStateDecisionEngine, ValidatorPipeline
 
 
+PIPELINE_TOP_LEVEL_KEYS = {
+    "record_id",
+    "canonical_bridge",
+    "schema_result",
+    "hash_result",
+    "trust_assignment",
+    "escalation",
+}
+CANONICAL_BRIDGE_KEYS = {
+    "checked",
+    "placeholder",
+    "lookup_performed",
+    "found",
+    "record_id_match",
+    "malformed",
+    "schema_valid",
+    "content_hash_present",
+    "hash_verified",
+    "lookup_status",
+    "warnings",
+}
+SCHEMA_RESULT_KEYS = {"checked", "placeholder", "valid", "canonical_lookup_status", "warnings"}
+HASH_RESULT_KEYS = {"checked", "placeholder", "hash_verified", "canonical_lookup_status", "warnings"}
+TRUST_ASSIGNMENT_KEYS = {"warnings"}
+ESCALATION_KEYS = {"route", "required", "placeholder"}
+
+
+def _assert_validator_pipeline_nested_contract(result: dict[str, object]) -> None:
+    assert set(result.keys()) == PIPELINE_TOP_LEVEL_KEYS
+    assert set(result["canonical_bridge"].keys()) == CANONICAL_BRIDGE_KEYS
+    assert set(result["schema_result"].keys()) == SCHEMA_RESULT_KEYS
+    assert set(result["hash_result"].keys()) == HASH_RESULT_KEYS
+    assert set(result["trust_assignment"].keys()) == TRUST_ASSIGNMENT_KEYS
+    assert set(result["escalation"].keys()) == ESCALATION_KEYS
+
+    assert isinstance(result["canonical_bridge"]["warnings"], list)
+    assert isinstance(result["schema_result"]["warnings"], list)
+    assert isinstance(result["hash_result"]["warnings"], list)
+    assert isinstance(result["trust_assignment"]["warnings"], list)
+
+
 def test_validator_pipeline_hooks_execute() -> None:
     pipeline = ValidatorPipeline()
 
@@ -74,27 +115,59 @@ def test_validator_pipeline_consistency_for_input_variants() -> None:
     engine = TrustStateDecisionEngine()
 
     cases = [
-        ("empty", "", False, False),
-        ("normal", "hc://normal", True, False),
-        ("hash-marked", "hc://normal hash:abc", True, True),
-        ("repeated-same-input", "hc://normal hash:abc", True, True),
+        ("empty", "", False, False, "human-supervised-validation", True, 2),
+        ("normal", "hc://normal", True, False, "human-supervised-validation", True, 1),
+        ("hash-marked", "hc://normal hash:abc", True, True, "none", False, 0),
+        ("nonstandard", "not-a-hc-record", True, False, "human-supervised-validation", True, 1),
+        ("repeated-same-input", "hc://normal hash:abc", True, True, "none", False, 0),
     ]
 
-    for record_id, qr_input, expected_schema_valid, expected_hash in cases:
+    for (
+        record_id,
+        qr_input,
+        expected_schema_valid,
+        expected_hash,
+        expected_route,
+        expected_escalation_required,
+        expected_warning_count,
+    ) in cases:
         result = pipeline.run(record_id=record_id, qr_input=qr_input)
-        assert set(result.keys()) == {
-            "record_id",
-            "canonical_bridge",
-            "schema_result",
-            "hash_result",
-            "trust_assignment",
-            "escalation",
+        _assert_validator_pipeline_nested_contract(result)
+
+        assert result["record_id"] == record_id
+        assert result["canonical_bridge"] == {
+            "checked": True,
+            "placeholder": True,
+            "lookup_performed": False,
+            "found": False,
+            "record_id_match": False,
+            "malformed": False,
+            "schema_valid": False,
+            "content_hash_present": False,
+            "hash_verified": False,
+            "lookup_status": "not_configured",
+            "warnings": ["Canonical record lookup is not configured for this advisory runtime boundary."],
         }
-        assert result["schema_result"]["valid"] is expected_schema_valid
-        assert result["hash_result"]["hash_verified"] is expected_hash
-        assert isinstance(result["trust_assignment"]["warnings"], list)
-        assert set(result["escalation"].keys()) == {"route", "required", "placeholder"}
-        assert result["escalation"]["placeholder"] is True
+        assert result["schema_result"] == {
+            "checked": True,
+            "placeholder": True,
+            "valid": expected_schema_valid,
+            "canonical_lookup_status": "not_configured",
+            "warnings": [],
+        }
+        assert result["hash_result"] == {
+            "checked": True,
+            "placeholder": True,
+            "hash_verified": expected_hash,
+            "canonical_lookup_status": "not_configured",
+            "warnings": [],
+        }
+        assert len(result["trust_assignment"]["warnings"]) == expected_warning_count
+        assert result["escalation"] == {
+            "route": expected_route,
+            "required": expected_escalation_required,
+            "placeholder": True,
+        }
 
         trust_state, warnings = engine.classify(
             record_id=record_id,
@@ -114,6 +187,50 @@ def test_validator_pipeline_consistency_for_input_variants() -> None:
 
         assert isinstance(warnings, list)
         assert all(isinstance(warning, str) for warning in warnings)
+
+
+def test_validator_pipeline_nested_contract_for_malformed_canonical_record() -> None:
+    pipeline = ValidatorPipeline(canonical_records={"malformed-record": object()})
+
+    result = pipeline.run(record_id="malformed-record", qr_input="hc://malformed-record hash:abc")
+
+    _assert_validator_pipeline_nested_contract(result)
+    expected_warning = "Canonical record is malformed and cannot be schema-validated in the advisory runtime."
+
+    assert result["record_id"] == "malformed-record"
+    assert result["canonical_bridge"] == {
+        "checked": True,
+        "placeholder": True,
+        "lookup_performed": True,
+        "found": True,
+        "record_id_match": False,
+        "malformed": True,
+        "schema_valid": False,
+        "content_hash_present": False,
+        "hash_verified": False,
+        "lookup_status": "malformed",
+        "warnings": [expected_warning],
+    }
+    assert result["schema_result"] == {
+        "checked": True,
+        "placeholder": True,
+        "valid": False,
+        "canonical_lookup_status": "malformed",
+        "warnings": [expected_warning],
+    }
+    assert result["hash_result"] == {
+        "checked": True,
+        "placeholder": True,
+        "hash_verified": False,
+        "canonical_lookup_status": "malformed",
+        "warnings": [expected_warning],
+    }
+    assert result["trust_assignment"] == {"warnings": [expected_warning]}
+    assert result["escalation"] == {
+        "route": "human-supervised-validation",
+        "required": True,
+        "placeholder": True,
+    }
 
 
 def test_runtime_policy_layer_cannot_silently_override_validator_semantics() -> None:
