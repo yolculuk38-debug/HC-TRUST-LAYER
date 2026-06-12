@@ -10,11 +10,11 @@
 
 This roadmap defines the safe implementation path for the HC Control Bot / HC Trust Engineer.
 
-This document tracks implementation state only. It does not itself implement code, scripts, workflows, runtime behavior, validators, schemas, records, QR behavior, signing, federation, generated artifacts, LLM integration, labels, checks, or dashboard features.
+This document tracks implementation state only. It does not itself implement code, scripts, workflows, runtime behavior, validators, schemas, records, QR behavior, signing, federation, generated artifacts, LLM integration, labels, checks, assignments, reviewer requests, or dashboard features.
 
 ## Current Implementation Snapshot
 
-As of the current roadmap update, the MVP has moved from planning into early implementation and a narrow command listener exists for `/hc` commands.
+As of the current roadmap update, the MVP has moved from planning into early implementation. A narrow command listener exists for `/hc` commands, and HC Control Bot now emits advisory human reviewer-role suggestions.
 
 Implemented or partially implemented:
 
@@ -23,6 +23,8 @@ Implemented or partially implemented:
 - machine-readable advisory JSON output;
 - newline-delimited changed-path file input for safer workflow integration;
 - single advisory comment workflow in `.github/workflows/hc-control-bot-advisory-comment.yml`;
+- deterministic `review_routes`, `suggested_labels`, and `suggested_reviewers` output;
+- advisory human reviewer-role display in the PR advisory comment;
 - local deterministic HC assistant command parser in `scripts/hc_assistant_command.py`;
 - assistant command tests in `tests/test_hc_assistant_command.py`;
 - narrow `/hc` issue and pull request comment listener in `.github/workflows/hc-assistant-command.yml`;
@@ -33,6 +35,7 @@ Still not implemented:
 - autonomous approval, rejection, closing, or merge behavior;
 - automatic label application;
 - assignment automation;
+- automatic reviewer requests;
 - LLM calls;
 - trust scoring;
 - production-readiness claims;
@@ -56,11 +59,12 @@ Implementation must proceed in this order:
 6. Single advisory comment mode.
 7. Evidence prompt support.
 8. Narrow `/hc` command listener.
-9. Optional issue routing.
-10. Optional GitHub App migration.
-11. Optional LLM-assisted project memory.
+9. Advisory reviewer-role suggestions.
+10. Optional issue routing.
+11. Optional GitHub App migration.
+12. Optional LLM-assisted project memory.
 
-Steps 1 through 8 are now represented in repository artifacts. Later steps still require separate PRs and human maintainer review.
+Steps 1 through 9 are now represented in repository artifacts. Later steps still require separate PRs and human maintainer review.
 
 ## Phase 0: Authority Policy
 
@@ -129,10 +133,12 @@ review_priority
 protected_paths_touched
 governance_adjacent_paths_touched
 generated_artifacts_observed
+version_alignment_paths_touched
 warnings
 evidence_prompts
 review_routes
 suggested_labels
+suggested_reviewers
 evidence_source
 ```
 
@@ -157,6 +163,7 @@ Test coverage includes:
 - generated artifact path is not treated as canonical record by default;
 - instruction-like path text has no authority effect on scanner result;
 - output always includes advisory and public-safety fields;
+- advisory reviewer-role suggestions are deterministic and deduplicated;
 - CLI output remains machine-readable JSON;
 - newline-delimited changed-path file input is supported.
 
@@ -174,7 +181,7 @@ Safety requirements:
 - do not read governance or bot policy files from the PR branch;
 - read policy and configuration from trusted `main@SHA`;
 - use changed-file metadata instead of untrusted PR content;
-- never approve, reject, merge, close, reopen, or certify.
+- never approve, reject, merge, close, reopen, assign, request reviewers, or certify.
 
 Status: represented by the advisory comment workflow, which checks out the trusted base revision and runs the deterministic scanner.
 
@@ -196,8 +203,10 @@ Current comment shape includes:
 HC Control Bot advisory observation
 
 This is advisory and uses changed file path metadata only.
-It is not approval, rejection, merge authority, or a final validation result.
+It is not approval, rejection, merge authority, assignment authority, or a final validation result.
 Human maintainers retain final authority.
+
+suggested human reviewer roles: ...
 ```
 
 Status: implemented as single advisory comment workflow behavior.
@@ -252,21 +261,48 @@ Not allowed:
 
 Status: implemented as a narrow issue-comment listener for the current core command set.
 
-## Phase 7: Optional Issue Routing
+## Phase 7: Advisory Reviewer-Role Suggestions
+
+Goal: help maintainers identify the likely human review role without creating assignment authority.
+
+Implemented output:
+
+```text
+suggested_reviewers
+```
+
+Allowed behavior:
+
+- suggest human-maintainer role strings derived from changed file paths;
+- display the role suggestions in the single advisory PR comment;
+- keep suggestions public-safe and deterministic;
+- leave final reviewer selection, assignment, and approval to humans.
+
+Not allowed:
+
+- assign users automatically;
+- request reviewers automatically;
+- apply labels automatically;
+- treat a suggested reviewer role as approval, rejection, merge readiness, or final validation.
+
+Status: implemented as advisory reviewer-role suggestions only.
+
+## Phase 8: Optional Issue Routing
 
 Goal: help maintainers classify work.
 
-This phase should not be expanded until the deterministic scanner and command listener remain stable.
+This phase should not be expanded until the deterministic scanner, advisory comment workflow, command listener, and reviewer-role suggestions remain stable.
 
 Allowed behavior:
 
 - suggest likely area labels in plain text;
+- suggest likely human reviewer roles in plain text;
 - surface related docs;
 - leave final routing to humans.
 
-Status: partially represented as suggested labels in advisory output only. No automatic label application is implemented.
+Status: partially represented as suggested labels and suggested reviewer roles in advisory output only. No automatic label application, assignment, or reviewer request is implemented.
 
-## Phase 8: Optional GitHub App Migration
+## Phase 9: Optional GitHub App Migration
 
 A GitHub App may be considered after the workflow version proves stable.
 
@@ -282,7 +318,7 @@ Migration must preserve the authority policy.
 
 Status: deferred.
 
-## Phase 9: Future LLM-Assisted Project Memory
+## Phase 10: Future LLM-Assisted Project Memory
 
 LLM usage is not allowed in v0.1.
 
