@@ -2,9 +2,9 @@
 """Deterministic advisory scanner for HC Control Bot v0.1.
 
 This module intentionally avoids network calls, LLM calls, semantic PR review,
-workflow actions, labels, and repository writes. It only classifies changed file
-paths against a small protected-surface map and returns a public-safe advisory
-result.
+workflow actions, labels, assignments, and repository writes. It only classifies
+changed file paths against a small protected-surface map and returns a
+public-safe advisory result.
 """
 
 from __future__ import annotations
@@ -94,6 +94,23 @@ SUGGESTED_LABEL_PATTERNS: tuple[tuple[str, str], ...] = (
     ("CONTRIBUTING.md", "risk:version-alignment"),
 )
 
+SUGGESTED_REVIEWER_PATTERNS: tuple[tuple[str, str], ...] = (
+    (".github/workflows/**", "human-maintainer:workflow-automation"),
+    ("src/hc_runtime/**", "human-maintainer:runtime-contract"),
+    ("validators/**", "human-maintainer:validator"),
+    ("schema/**", "human-maintainer:schema"),
+    ("records/**", "human-maintainer:record-boundary"),
+    ("docs/governance/**", "human-maintainer:governance"),
+    ("docs/project-control/**", "human-maintainer:project-control"),
+    ("policy/**", "human-maintainer:policy"),
+    ("federation/**", "human-maintainer:federation"),
+    ("generated/**", "human-maintainer:generated-artifact"),
+    ("pyproject.toml", "human-maintainer:version-alignment"),
+    ("requirements.txt", "human-maintainer:version-alignment"),
+    ("docs/developer-onboarding.md", "human-maintainer:version-alignment"),
+    ("CONTRIBUTING.md", "human-maintainer:version-alignment"),
+)
+
 
 @dataclass(frozen=True)
 class ScanResult:
@@ -112,6 +129,7 @@ class ScanResult:
     evidence_prompts: list[str]
     review_routes: list[str]
     suggested_labels: list[str]
+    suggested_reviewers: list[str]
     evidence_source: str
 
     def to_dict(self) -> dict[str, object]:
@@ -129,6 +147,7 @@ class ScanResult:
             "evidence_prompts": self.evidence_prompts,
             "review_routes": self.review_routes,
             "suggested_labels": self.suggested_labels,
+            "suggested_reviewers": self.suggested_reviewers,
             "evidence_source": self.evidence_source,
         }
 
@@ -165,6 +184,17 @@ def _build_suggested_labels(paths: Iterable[str]) -> list[str]:
             if fnmatch.fnmatch(path, pattern):
                 labels.append(label)
     return _dedupe_sorted(labels)
+
+
+def _build_suggested_reviewers(paths: Iterable[str]) -> list[str]:
+    """Return advisory human review roles without assigning anyone."""
+
+    reviewers: list[str] = []
+    for path in paths:
+        for pattern, reviewer in SUGGESTED_REVIEWER_PATTERNS:
+            if fnmatch.fnmatch(path, pattern):
+                reviewers.append(reviewer)
+    return _dedupe_sorted(reviewers)
 
 
 def _build_review_priority(
@@ -258,6 +288,7 @@ def scan_changed_paths(changed_paths: Iterable[str]) -> ScanResult:
     )
     review_routes = _build_review_routes(normalized_paths)
     suggested_labels = _build_suggested_labels(normalized_paths)
+    suggested_reviewers = _build_suggested_reviewers(normalized_paths)
     review_priority = _build_review_priority(
         protected_paths,
         governance_adjacent_paths,
@@ -281,6 +312,7 @@ def scan_changed_paths(changed_paths: Iterable[str]) -> ScanResult:
         evidence_prompts=evidence_prompts,
         review_routes=review_routes,
         suggested_labels=suggested_labels,
+        suggested_reviewers=suggested_reviewers,
         evidence_source="changed file path metadata only",
     )
 
