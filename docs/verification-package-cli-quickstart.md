@@ -41,6 +41,27 @@ For a valid package, the command returns exit code `0` and prints JSON with:
 }
 ```
 
+## Run the operator summary
+
+For a shorter human-readable view:
+
+```bash
+hc-trust verify-package examples/verification-package/valid --summary
+```
+
+Expected summary fields include:
+
+```text
+HC verification package summary
+status: VERIFIED
+verified: true
+files_checked: 1
+issuer_proof: PRESENT
+advisory_only: true
+public_safe: true
+truth_guarantee: false
+```
+
 If a listed file is missing, changed, malformed, or outside the package boundary, the command returns non-zero and reports `missing_evidence` or `conflicting_evidence`.
 
 ## What this proves
