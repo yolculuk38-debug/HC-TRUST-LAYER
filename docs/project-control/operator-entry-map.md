@@ -11,10 +11,10 @@ This document helps human contributors, AI assistants, and agentic tools quickly
 - Post-runtime stabilization / operating-layer refinement.
 - Navigation synchronization after #820 official Public Validator MVP Specification.
 - Public validator planning is documented; specification work should not be reopened without new repository evidence.
-- Public explorer planning.
-- HC Trust Engineer command-surface planning.
-- HC Control Bot advisory comment governance is documented but not enabled.
-
+- Public explorer planning is documented.
+- HC Trust Engineer command surface is implemented as a narrow deterministic `/hc` command interface and recorded by the #826 status checkpoint.
+- Repository assistant baseline status is recorded by #828.
+- HC Control Bot advisory observation and reviewer-role suggestion behavior is implemented as advisory-only operating-layer support.
 
 ## Operating Layer Quick Path
 
@@ -27,7 +27,7 @@ Use this path for a new human, AI assistant, or agent taking over HC:// operatin
 5. Navigation map and protected areas: [`docs/project-control/operator-entry-map.md`](operator-entry-map.md)
 6. Active assistant console: [#812 HC Assistant Console v2](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/812)
 
-Do not repeat #811, #813, #814, #815, or assistant-console rotation work unless new repository evidence appears. Treat #763 as closed historical evidence only.
+Do not repeat #811, #813, #814, #826, #828, or assistant-console / command-surface / repository-assistant-baseline synchronization work unless new repository evidence appears. Treat #763 as closed historical evidence only.
 
 ## Assistant Console
 
@@ -69,8 +69,10 @@ Boundary: advisory only. Human maintainers retain final authority.
 7. docs/project-control/shift-change-checklist.md
 8. docs/project-control/hc-assistant-console-guide.md
 9. docs/project-control/hc-trust-engineer-command-interface.md
-10. docs/project-control/hc-assistant-console-issue-template.md
-11. docs/terminology-audit.md
+10. docs/project-control/hc-engineer-command-surface-status.md
+11. docs/project-control/repository-assistant-baseline-status.md
+12. docs/project-control/hc-assistant-console-issue-template.md
+13. docs/terminology-audit.md
 
 ## Public Validator Planning Reference
 
@@ -88,19 +90,23 @@ For HC Control Bot / HC Trust Engineer work, read these documents before proposi
 4. docs/project-control/hc-control-bot-advisory-comment-boundary.md
 5. docs/governance/advisory-comment-lifecycle.md
 6. docs/project-control/hc-control-bot-advisory-comment-template.md
-7. scripts/hc_control_bot.py
-8. tests/test_hc_control_bot.py
+7. docs/project-control/hc-trust-engineer-command-interface.md
+8. docs/project-control/hc-engineer-command-surface-status.md
+9. docs/project-control/repository-assistant-baseline-status.md
+10. scripts/hc_control_bot.py
+11. tests/test_hc_control_bot.py
 
 Current boundary:
 
 ```text
-comment governance is documented
-comment template is documented
-comment automation is not enabled by these docs
+advisory observation is enabled
+reviewer-role suggestions are advisory only
+command surface is deterministic and narrow
+repository assistant baseline is documentation-only
 label application is not enabled by these docs
 assignment is not enabled by these docs
 LLM review is not enabled by these docs
-approve/reject/merge/close remains forbidden
+human maintainers retain final authority
 ```
 
 ## Protected Areas
@@ -135,8 +141,9 @@ Historical provenance records must not be silently rewritten.
 
 ## Safe Next Work
 
-- assistant console discoverability
-- command-interface implementation planning
+- assistant console discoverability only if new evidence appears
+- command-surface follow-up only if new evidence appears
+- repository assistant baseline follow-up only if new evidence appears
 - navigation improvements
 - onboarding improvements
 - public validator navigation refreshes only when repository evidence changes
