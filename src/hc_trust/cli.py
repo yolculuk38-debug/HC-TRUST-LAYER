@@ -81,6 +81,7 @@ def _format_verify_package_summary(result):
         f"record_id: {result.get('record_id')}",
         f"files_checked: {result.get('checks', {}).get('manifest_files_checked')}",
         f"issuer_proof: {result.get('issuer_proof', {}).get('status', 'NOT_PROVIDED')}",
+        f"timestamp_proof: {result.get('timestamp_proof', {}).get('status', 'NOT_PROVIDED')}",
         f"human_review_required: {str(result['human_review_required']).lower()}",
         "advisory_only: true",
         "public_safe: true",
