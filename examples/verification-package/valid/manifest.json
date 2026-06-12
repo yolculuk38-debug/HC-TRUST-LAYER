@@ -1,0 +1,11 @@
+{
+  "package_id": "HC-SAMPLE-PACKAGE-001",
+  "record_id": "HC-SAMPLE-RECORD-001",
+  "schema_version": "verification-package-sample-v1",
+  "files": [
+    {
+      "path": "metadata/source-info.txt",
+      "sha256": "4994673c753f193e845060f0ed8a3785c9293443584b8f1d192d6d17c44a5f71"
+    }
+  ]
+}
