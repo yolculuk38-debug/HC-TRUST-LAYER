@@ -65,8 +65,34 @@ def cmd_qr(args):
 
 def cmd_verify_package(args):
     result = verify_verification_package(args.package_path)
-    print(json.dumps(result, ensure_ascii=False, sort_keys=True, indent=2))
+    if args.summary:
+        print(_format_verify_package_summary(result))
+    else:
+        print(json.dumps(result, ensure_ascii=False, sort_keys=True, indent=2))
     return 0 if result["status"] == VerificationPackageStatus.VERIFIED else 1
+
+
+def _format_verify_package_summary(result):
+    lines = [
+        "HC verification package summary",
+        f"status: {result['status']}",
+        f"verified: {str(result['verified']).lower()}",
+        f"package_id: {result.get('package_id')}",
+        f"record_id: {result.get('record_id')}",
+        f"files_checked: {result.get('checks', {}).get('manifest_files_checked')}",
+        f"issuer_proof: {result.get('issuer_proof', {}).get('status', 'NOT_PROVIDED')}",
+        f"human_review_required: {str(result['human_review_required']).lower()}",
+        "advisory_only: true",
+        "public_safe: true",
+        "truth_guarantee: false",
+    ]
+    if result.get("missing_evidence"):
+        lines.append("missing_evidence: " + ", ".join(result["missing_evidence"]))
+    if result.get("conflicting_evidence"):
+        lines.append("conflicting_evidence: " + ", ".join(result["conflicting_evidence"]))
+    if result.get("warnings"):
+        lines.append("warnings: " + ", ".join(result["warnings"]))
+    return "\n".join(lines)
 
 
 def build_parser():
@@ -93,6 +119,11 @@ def build_parser():
         help="Verify a local HC verification package manifest and SHA-256 file integrity",
     )
     p_verify_package.add_argument("package_path")
+    p_verify_package.add_argument(
+        "--summary",
+        action="store_true",
+        help="Print a short operator summary instead of full JSON",
+    )
     p_verify_package.set_defaults(func=cmd_verify_package)
     return parser
 
