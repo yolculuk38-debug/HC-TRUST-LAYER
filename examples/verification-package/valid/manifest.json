@@ -7,5 +7,9 @@
       "path": "metadata/source-info.txt",
       "sha256": "4994673c753f193e845060f0ed8a3785c9293443584b8f1d192d6d17c44a5f71"
     }
-  ]
+  ],
+  "issuer_proof": {
+    "path": "issuer-proof.json",
+    "sha256": "19e98a1581d0cd9a7a726e7de1e75e66781f437b6700a591de7f06a99427cd32"
+  }
 }
