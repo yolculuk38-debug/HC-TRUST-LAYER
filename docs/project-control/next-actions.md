@@ -6,11 +6,12 @@ This file lists safe, advisory next work for HC-TRUST-LAYER. Each item is REPORT
 
 | Field | Status |
 | --- | --- |
-| Current phase | Post-runtime stabilization / operating-layer refinement |
-| Active focus | Public validator and public explorer planning/navigation sequence is complete, including #820 official Public Validator MVP Specification. HC Control Bot advisory comment governance/navigation, advisory reviewer-role suggestions, roadmap synchronization, assistant-console rotation state, HC Engineer command-surface status, repository assistant baseline status, and operator-entry-map navigation are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Stay in evidence-triggered report-only mode unless new repository evidence appears. |
-| Next up | Docs-only navigation/index synchronization, or evidence-triggered report-only runtime, public validator/public explorer, HC Engineer command-surface, repository assistant baseline, operator-entry-map, bot-governance, or validator-pipeline follow-up only if new repository evidence appears; do not reopen Public Validator MVP specification work after #820/#821/#822, HC Control Bot reviewer-role roadmap synchronization after #823/#824, HC Engineer command-surface status checkpoint after #826, repository assistant baseline work after #828, operator-entry-map sync after #831, or validator pipeline nested response contract test work after #834 without new repository evidence. |
-| Blocked / parked work | Do not modify runtime, code, tests, schemas, validators, workflows, governance rules, records, hashes, QR artifacts, generated artifacts, signing, federation, or policy for this next-actions list. |
-| Do-not-repeat references | #628 telemetry contract sufficient; #629 replay / continuity coverage merged; #630 runtime conditionally stabilized; #631 operating layer conditionally sufficient; #820/#821/#822 completed public validator project-control state; #823/#824 completed HC Control Bot reviewer-role and roadmap state; #826 completed HC Engineer command-surface status checkpoint; #828 completed repository assistant baseline status; #831 completed operator-entry-map synchronization; #834 completed validator pipeline nested response contract test hardening; #812 remains active console and #763 remains historical only. Avoid repeating those reviews or test-hardening checkpoints unless new repository evidence appears. |
+| Current phase | Working verification core / post-runtime stabilization |
+| Active focus | Public validator and public explorer planning/navigation sequence is complete, including #820 official Public Validator MVP Specification. HC Control Bot advisory comment governance/navigation, advisory reviewer-role suggestions, roadmap synchronization, assistant-console rotation state, HC Engineer command-surface status, repository assistant baseline status, and operator-entry-map navigation are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Verification package hash core was added in #838 and hardened in #839. |
+| Next up | Docs-only synchronization after #838/#839, then a separate scoped working-core PR if authorized. The most practical next core step is a local CLI / documented entry point for `verify_verification_package`; signature/witness/QR/C2PA/OpenTimestamps layers remain later steps. |
+| Blocked / parked work | Do not modify schemas, validators, workflows, governance rules, records, hashes, QR artifacts, generated artifacts, signing, federation, or policy for this next-actions list. |
+| Do-not-repeat references | #628 telemetry contract sufficient; #629 replay / continuity coverage merged; #630 runtime conditionally stabilized; #631 operating layer conditionally sufficient; #820/#821/#822 completed public validator project-control state; #823/#824 completed HC Control Bot reviewer-role and roadmap state; #826 completed HC Engineer command-surface status checkpoint; #828 completed repository assistant baseline status; #831 completed operator-entry-map synchronization; #834 completed validator pipeline nested response contract test hardening; #838 completed verification package hash-core baseline; #839 completed package hash-core hardening; #812 remains active console and #763 remains historical only. |
+| Review / merge rule | Before merge: verify changed files, checks, Codex/review comments, and risk scope. If comments exist, fix first. Do not merge without explicit human merge approval. |
 | Protected-path reminder | Protected paths still require explicit approval and human-supervised validation before modification. |
 | Source-of-truth priority | Markdown project-control docs and repository evidence outrank `hc_context`, chat memory, and advisory summaries. AI output is advisory only; human reviewers retain final authority. |
 
@@ -78,21 +79,38 @@ Use `docs/project-control/active-work-registry.md` only for advisory shift-level
 - #834 was test-only and changed `tests/test_hc_runtime_pipeline.py`; it did not change runtime implementation, workflows, schemas, validators, records, QR/hash evidence, signing, federation, policy, generated artifacts, or trust-kernel indexes.
 - Do not repeat validator pipeline nested response contract test work unless new repository evidence appears.
 
-## 1. Evidence-triggered follow-up only if needed
+## Completed verification package hash core
+
+- #838 added a local verification package hash core.
+- #839 hardened that core after automated review by handling malformed manifest files without raising and enforcing resolved package-path containment before hashing.
+- This core verifies local package integrity only: manifest presence, listed file existence, SHA-256 digest matches, missing evidence, conflicting evidence, advisory-only output, public-safe output, and `truth_guarantee=false`.
+- It does not verify signatures, witnesses, QR authenticity, legal truth, C2PA claims, OpenTimestamps attestations, federation state, or production readiness.
+- Do not repeat #838/#839 unless new repository evidence appears.
+
+## 1. Docs-only synchronization after #838/#839
 
 - Priority order: 1
-- Mode: REPORT ONLY, and only if new repository evidence appears.
-- Risk: Runtime, validator, API, explorer, generated-artifact, bot-governance, assistant-console, HC Engineer command-surface, repository assistant baseline, operator-entry-map, and trust-kernel adjacency; do not repeat completed public validator/public explorer planning or Public Validator MVP specification work, runtime stabilization work, validator pipeline nested response contract test hardening, HC Control Bot comment governance/reviewer-role roadmap synchronization work, HC Engineer command-surface status checkpointing, repository assistant baseline work, operator-entry-map synchronization, or assistant-console rotation work without new evidence.
-- Safe output: A narrow evidence report that cites the new trigger and explains whether further review, navigation refresh, or implementation planning is necessary.
-- Why it is next: The public validator, public explorer, HC Control Bot advisory governance/navigation/reviewer-role roadmap state, HC Engineer command-surface status, repository assistant baseline, operator-entry-map, assistant-console rotation, and validator pipeline nested contract test-hardening sequences are complete; future work should be docs-only navigation/index synchronization or triggered by concrete repository evidence, not repeated planning.
+- Mode: DOCS ONLY.
+- Risk: Low, if limited to project-control documentation.
+- Safe output: Project-control docs reflect #838/#839 and do-not-repeat boundaries.
+- Why it is next: Project-control must match merged code/test state before the next working-core implementation slice.
 
-## 2. Parked implementation work
+## 2. Candidate next working-core PR
 
 - Priority order: 2
+- Mode: IMPLEMENTATION ONLY AFTER explicit authorization and a new scoped PR.
+- Candidate: add a local CLI / documented entry point around `verify_verification_package`.
+- Risk: Runtime/API/public UX claims if over-scoped; keep local-only and advisory-only.
+- Safe output: a small command or documented invocation that returns the existing verifier response without changing schema, validators, records, workflow, signing, federation, policy, generated artifacts, or trust-kernel indexes.
+- Why it is next: The package hash core exists; a local operator entry point makes it practically usable before signature/witness/QR/C2PA/OpenTimestamps layers.
+
+## 3. Parked larger implementation work
+
+- Priority order: 3
 - Mode: BLOCKED unless explicitly authorized.
 - Risk: Implementation expansion could affect runtime/API behavior, generated artifacts, validation semantics, public UX claims, bot boundaries, reviewer routing behavior, command-surface behavior, repository assistant behavior, or trust-kernel-adjacent surfaces.
+- Parked examples: signature verification, witness authority, QR canonical-domain binding, C2PA ingestion, OpenTimestamps verification, federation, dispute/governance implementation, production-readiness claims.
 - Safe output: None by default. Open a separate, explicit implementation proposal only if the Founder or authorized reviewer requests it.
-- Why it is parked: Current public explorer, public validator, HC Control Bot comment/reviewer-role, HC Engineer command-surface, repository assistant baseline, operator-entry-map, assistant-console rotation, and validator pipeline contract work is documentation/planning/test aligned. Implementation changes require a new scoped task.
 
 ## Stale-context guidance
 
