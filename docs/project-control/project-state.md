@@ -7,10 +7,10 @@ This file is the repository-native shift handoff summary for HC-TRUST-LAYER. Eve
 | Field | Status |
 | --- | --- |
 | Current phase | Post-runtime stabilization / operating-layer refinement |
-| Active focus | Public validator / explorer planning and navigation are synchronized through #821; HC Control Bot advisory comment governance/navigation and assistant-console rotation state are synchronized. Stay in evidence-triggered REPORT ONLY mode unless new repository evidence appears. |
-| Next up | Prefer docs-only navigation/index synchronization, or evidence-triggered report-only runtime, public validator/public explorer, or bot-governance follow-up only if new repository evidence appears. Do not reopen Public Validator MVP specification work after #820/#821 without new repository evidence. |
+| Active focus | Public validator / explorer planning and navigation are synchronized through #821/#822; HC Control Bot advisory comment governance/navigation, advisory reviewer-role suggestions, roadmap synchronization, and assistant-console rotation state are synchronized through #824. Stay in evidence-triggered REPORT ONLY mode unless new repository evidence appears. |
+| Next up | Prefer docs-only navigation/index synchronization, or evidence-triggered report-only runtime, public validator/public explorer, or bot-governance follow-up only if new repository evidence appears. Do not reopen Public Validator MVP specification work after #820/#821/#822 or HC Control Bot reviewer-role roadmap sync after #823/#824 without new repository evidence. |
 | Blocked / parked work | Workflow, runtime, schema, validator, record, policy, federation, signing, trust-kernel index, generated artifact, QR/hash, and governance-enforcement changes are parked unless explicitly authorized and validated. |
-| Do-not-repeat references | Treat #628, #629, #630, #631, #682, #683, #685, #686, #688, #701, #794, #795, #796, #811, #813, #814, #820, and #821 as completed review/navigation references. #812 remains the active HC Assistant Console v2 reference; #763 remains historical only. |
+| Do-not-repeat references | Treat #628, #629, #630, #631, #682, #683, #685, #686, #688, #701, #794, #795, #796, #811, #813, #814, #820, #821, #822, #823, and #824 as completed review/navigation references. #812 remains the active HC Assistant Console v2 reference; #763 remains historical only. |
 | Protected-path reminder | Do not modify `schema/**`, `validators/**`, `federation/**`, `signatures/**`, `canonical/**`, `policy/**`, `.github/workflows/**`, `records/**`, generated artifacts, QR/hash evidence, or trust-kernel indexes unless explicitly requested and approved. |
 | Source-of-truth priority | Repository markdown docs, merged files, checks, PR evidence, and human review decisions outrank chat memory and advisory machine-readable context. |
 
@@ -36,6 +36,7 @@ The `v0.1.0` tag remains the initial protected protocol infrastructure and relea
 - #682 linked public validator planning navigation.
 - #820 added the official documentation-only Public Validator MVP Specification.
 - #821 synchronized navigation and project-control references so the #820 specification is the primary planner entry and duplicate Public Validator MVP specification work is avoided.
+- #822 synchronized project-state and task-ledger references after #820/#821 public validator navigation.
 - #683 added the public explorer navigation map.
 - #685 completed the public explorer planning gap review.
 - #686 added the public explorer maturity checklist.
@@ -48,7 +49,9 @@ The `v0.1.0` tag remains the initial protected protocol infrastructure and relea
 - #794 documented the advisory comment lifecycle.
 - #795 documented the advisory comment template.
 - #796 linked the HC Control Bot reference chain in the Operator Entry Map.
-- HC Control Bot scanner, advisory comment, and `/hc` command surfaces remain advisory-only and do not create approval, rejection, merge, close, label, assignment, LLM review, production-readiness, certification, or truth-finality authority.
+- #823 added advisory human reviewer-role suggestions to HC Control Bot output and advisory comments while preserving advisory-only boundaries.
+- #824 synchronized the HC Control Bot MVP roadmap after #823 so reviewer-role suggestions are recorded as advisory-only implementation state.
+- HC Control Bot scanner, advisory comment, reviewer-role suggestions, and `/hc` command surfaces remain advisory-only and do not create approval, rejection, merge, close, label, assignment, reviewer request, LLM review, production-readiness, certification, or truth-finality authority.
 
 ## Recent completed assistant-console maintenance
 
@@ -63,7 +66,7 @@ The `v0.1.0` tag remains the initial protected protocol infrastructure and relea
 
 - Keep onboarding, navigation, and project-control documents synchronized with current repository state.
 - Use evidence-triggered report-only follow-up for runtime, public validator, public explorer, bot-governance, assistant-console, generated-artifact, QR/hash, or trust-kernel-adjacent questions.
-- Avoid repeating public validator/public explorer planning, HC Control Bot comment governance, assistant-console rotation, telemetry contract, replay / continuity, or runtime stabilization review unless new repository evidence appears.
+- Avoid repeating public validator/public explorer planning, HC Control Bot comment governance, HC Control Bot reviewer-role roadmap synchronization, assistant-console rotation, telemetry contract, replay / continuity, or runtime stabilization review unless new repository evidence appears.
 
 ## Next safe task
 
