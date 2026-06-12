@@ -1,7 +1,7 @@
 import hashlib
 import json
 
-from hc_trust.verification_package import verify_verification_package
+from hc_trust.verification_package import _is_within_directory, verify_verification_package
 
 
 def _write_json(path, value):
@@ -125,3 +125,34 @@ def test_verification_package_hash_core_requires_manifest(tmp_path):
     assert result["status"] == "INVALID"
     assert result["checks"]["manifest_present"] is False
     assert "manifest_json_missing" in result["missing_evidence"]
+
+
+def test_verification_package_hash_core_rejects_manifest_directory(tmp_path):
+    package = tmp_path / "package"
+    (package / "manifest.json").mkdir(parents=True)
+
+    result = verify_verification_package(package)
+
+    assert result["status"] == "INVALID"
+    assert "manifest_json_not_file" in result["conflicting_evidence"]
+
+
+def test_verification_package_hash_core_handles_non_utf8_manifest(tmp_path):
+    package = tmp_path / "package"
+    package.mkdir()
+    (package / "manifest.json").write_bytes(b"\xff\xfe\x00")
+
+    result = verify_verification_package(package)
+
+    assert result["status"] == "INVALID"
+    assert "manifest_json_unreadable" in result["conflicting_evidence"]
+
+
+def test_is_within_directory_rejects_sibling_paths(tmp_path):
+    package = tmp_path / "package"
+    sibling = tmp_path / "sibling" / "file.json"
+    package.mkdir()
+    sibling.parent.mkdir()
+    sibling.write_text("not package evidence", encoding="utf-8")
+
+    assert _is_within_directory(sibling.resolve(), package.resolve()) is False

@@ -74,6 +74,20 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
             warnings=warnings,
         )
 
+    try:
+        package_root_resolved = package_root.resolve(strict=True)
+    except OSError:
+        conflicting_evidence.append("package_path_unresolvable")
+        return _build_response(
+            status=VerificationPackageStatus.INVALID,
+            package_root=package_root,
+            manifest_path=manifest_path,
+            files=file_results,
+            missing_evidence=missing_evidence,
+            conflicting_evidence=conflicting_evidence,
+            warnings=warnings,
+        )
+
     manifest = _load_manifest(manifest_path, missing_evidence, conflicting_evidence)
     if manifest is None:
         return _build_response(
@@ -107,6 +121,7 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
         file_results.append(
             _verify_manifest_file_entry(
                 package_root=package_root,
+                package_root_resolved=package_root_resolved,
                 entry=entry,
                 missing_evidence=missing_evidence,
                 conflicting_evidence=conflicting_evidence,
@@ -142,11 +157,18 @@ def _load_manifest(
         missing_evidence.append("manifest_json_missing")
         return None
 
+    if not manifest_path.is_file():
+        conflicting_evidence.append("manifest_json_not_file")
+        return None
+
     try:
         with manifest_path.open("r", encoding="utf-8") as handle:
             manifest = json.load(handle)
     except json.JSONDecodeError:
         conflicting_evidence.append("manifest_json_invalid")
+        return None
+    except (OSError, UnicodeDecodeError):
+        conflicting_evidence.append("manifest_json_unreadable")
         return None
 
     if not isinstance(manifest, dict):
@@ -159,6 +181,7 @@ def _load_manifest(
 def _verify_manifest_file_entry(
     *,
     package_root: Path,
+    package_root_resolved: Path,
     entry: Any,
     missing_evidence: list[str],
     conflicting_evidence: list[str],
@@ -199,6 +222,28 @@ def _verify_manifest_file_entry(
             "status": "MISSING",
             "expected_sha256": digest,
             "actual_sha256": None,
+        }
+
+    try:
+        resolved_file_path = file_path.resolve(strict=True)
+    except OSError:
+        conflicting_evidence.append(f"manifest_file_unresolvable:{relative_path}")
+        return {
+            "path": relative_path,
+            "status": "INVALID",
+            "expected_sha256": digest.lower(),
+            "actual_sha256": None,
+            "reason": "file_unresolvable",
+        }
+
+    if not _is_within_directory(resolved_file_path, package_root_resolved):
+        conflicting_evidence.append(f"manifest_file_not_under_package:{relative_path}")
+        return {
+            "path": relative_path,
+            "status": "INVALID",
+            "expected_sha256": digest.lower(),
+            "actual_sha256": None,
+            "reason": "not_under_package",
         }
 
     if not file_path.is_file():
@@ -248,6 +293,14 @@ def _extract_sha256(entry: dict[str, Any]) -> str | None:
 def _is_unsafe_relative_path(value: str) -> bool:
     path = Path(value)
     return path.is_absolute() or ".." in path.parts
+
+
+def _is_within_directory(child: Path, parent: Path) -> bool:
+    try:
+        child.relative_to(parent)
+    except ValueError:
+        return False
+    return True
 
 
 def _looks_like_sha256(value: str) -> bool:
