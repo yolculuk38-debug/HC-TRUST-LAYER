@@ -6,17 +6,18 @@ This file is the repository-native shift handoff summary for HC-TRUST-LAYER. Eve
 
 | Field | Status |
 | --- | --- |
-| Current phase | Post-runtime stabilization / operating-layer refinement |
-| Active focus | Public validator / explorer planning and navigation are synchronized through #821/#822; HC Control Bot advisory comment governance/navigation, advisory reviewer-role suggestions, roadmap synchronization, assistant-console rotation state, HC Engineer command-surface status, repository assistant baseline status, and operator-entry-map navigation are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Stay in evidence-triggered REPORT ONLY mode unless new repository evidence appears. |
-| Next up | Prefer docs-only navigation/index synchronization, or evidence-triggered report-only runtime, public validator/public explorer, HC Engineer command-surface, repository assistant baseline, operator-entry-map, or bot-governance follow-up only if new repository evidence appears. Do not reopen Public Validator MVP specification work after #820/#821/#822, HC Control Bot reviewer-role roadmap sync after #823/#824, HC Engineer command-surface status checkpoint after #826, repository assistant baseline work after #828, operator-entry-map sync after #831, or validator pipeline nested response contract test work after #834 without new repository evidence. |
-| Blocked / parked work | Workflow, runtime, schema, validator, record, policy, federation, signing, trust-kernel index, generated artifact, QR/hash, and governance-enforcement changes are parked unless explicitly authorized and validated. |
-| Do-not-repeat references | Treat #628, #629, #630, #631, #682, #683, #685, #686, #688, #701, #794, #795, #796, #811, #813, #814, #820, #821, #822, #823, #824, #826, #828, #831, and #834 as completed review/navigation/test-hardening references. #812 remains the active HC Assistant Console v2 reference; #763 remains historical only. |
+| Current phase | Working verification core / post-runtime stabilization |
+| Active focus | Public validator / explorer planning and navigation are synchronized through #821/#822; HC Control Bot advisory comment governance/navigation, advisory reviewer-role suggestions, roadmap synchronization, assistant-console rotation state, HC Engineer command-surface status, repository assistant baseline status, and operator-entry-map navigation are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Verification package hash core was added in #838 and immediately hardened in #839. |
+| Next up | Continue the working core in small scoped PRs only. Candidate next work: a local CLI or documented public entry point around `verify_verification_package`, followed later by signature/witness/QR/C2PA/OpenTimestamps layers. Do not reopen #838/#839 hash-core work unless new repository evidence appears. |
+| Blocked / parked work | Workflow, schema, validator, record, policy, federation, signing, trust-kernel index, generated artifact, QR/hash evidence format, governance-enforcement, and production-readiness claims remain parked unless explicitly authorized and validated. |
+| Do-not-repeat references | Treat #628, #629, #630, #631, #682, #683, #685, #686, #688, #701, #794, #795, #796, #811, #813, #814, #820, #821, #822, #823, #824, #826, #828, #831, #834, #838, and #839 as completed references. #812 remains the active HC Assistant Console v2 reference; #763 remains historical only. |
+| Review / merge rule | Before merge: verify changed files, checks, Codex/review comments, and risk scope. If comments exist, fix first. Do not merge without explicit human merge approval. |
 | Protected-path reminder | Do not modify `schema/**`, `validators/**`, `federation/**`, `signatures/**`, `canonical/**`, `policy/**`, `.github/workflows/**`, `records/**`, generated artifacts, QR/hash evidence, or trust-kernel indexes unless explicitly requested and approved. |
 | Source-of-truth priority | Repository markdown docs, merged files, checks, PR evidence, and human review decisions outrank chat memory and advisory machine-readable context. |
 
 ## Current phase
 
-Post-runtime stabilization / operating-layer refinement.
+Working verification core / post-runtime stabilization.
 
 ## Repository status
 
@@ -31,6 +32,16 @@ The `v0.1.0` tag remains the initial protected protocol infrastructure and relea
 - #630 runtime stabilization review: RUNTIME CONDITIONALLY STABILIZED
 - #631 HC Operating Layer review: OPERATING LAYER CONDITIONALLY SUFFICIENT
 - #834 validator pipeline nested response contract coverage: merged test-only hardening for `ValidatorPipeline` nested response shapes.
+- #838 verification package hash core: added a local advisory verifier for manifest-listed file existence and SHA-256 digest matching.
+- #839 verification package hash core hardening: handled malformed manifest files without raising and enforced resolved package-path containment before hashing.
+
+## Completed verification package hash core sequence
+
+- #838 added `src/hc_trust/verification_package.py` and `tests/test_verification_package_hash_core.py`.
+- The core verifies local `manifest.json`, listed file existence, SHA-256 digest matches, missing evidence, conflicting evidence, advisory-only status, public-safe status, and `truth_guarantee=false` output.
+- #839 followed up on automated review findings and hardened manifest handling and path containment before treating a file as package evidence.
+- This is the first usable local verification-package integrity slice. It does not verify legal truth, QR authenticity, signatures, witnesses, C2PA assertions, OpenTimestamps attestations, federation state, or production readiness.
+- Do not repeat #838/#839 unless new repository evidence appears.
 
 ## Completed public validator / public explorer planning sequence
 
@@ -69,12 +80,17 @@ The `v0.1.0` tag remains the initial protected protocol infrastructure and relea
 ## Current focus
 
 - Keep onboarding, navigation, and project-control documents synchronized with current repository state.
-- Use evidence-triggered report-only follow-up for runtime, public validator, public explorer, bot-governance, assistant-console, HC Engineer command-surface, repository assistant baseline, operator-entry-map, generated-artifact, QR/hash, or trust-kernel-adjacent questions.
-- Avoid repeating public validator/public explorer planning, HC Control Bot comment governance, HC Control Bot reviewer-role roadmap synchronization, HC Engineer command-surface status checkpointing, repository assistant baseline work, operator-entry-map synchronization, assistant-console rotation, telemetry contract, replay / continuity, runtime stabilization review, or validator pipeline nested response contract test work unless new repository evidence appears.
+- Continue the working verification core in small, reviewable slices.
+- First practical layer is local package integrity: manifest + SHA-256 + missing/conflicting evidence.
+- Later layers are signature/witness verification, QR/canonical-domain binding, C2PA/OpenTimestamps references, federation, dispute/governance, and public UX.
+- Avoid repeating completed public validator/public explorer planning, HC Control Bot comment governance, HC Control Bot reviewer-role roadmap synchronization, HC Engineer command-surface status checkpointing, repository assistant baseline work, operator-entry-map synchronization, assistant-console rotation, telemetry contract, replay / continuity, runtime stabilization review, validator pipeline nested response contract work, or verification package hash-core work unless new repository evidence appears.
 
 ## Next safe task
 
-The next safe task is a small documentation-only navigation/index synchronization or a narrow evidence-triggered REPORT ONLY review. Protected paths still require explicit approval and human-supervised validation before modification.
+The next safe task is either:
+
+1. A documentation-only synchronization after #838/#839; or
+2. A small working-core PR that exposes `verify_verification_package` through a local CLI / documented entry point without changing protected paths.
 
 Recommended decision language after a navigation refresh is complete: **NAVIGATION REFRESH COMPLETE**.
 
