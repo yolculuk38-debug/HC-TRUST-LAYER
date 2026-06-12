@@ -19,6 +19,7 @@ VERIFICATION_PACKAGE_HASH_CORE_VERSION = "HC-VERIFICATION-PACKAGE-HASH-CORE-V1"
 SUPPORTED_DIGEST_ALGORITHMS = {"sha256"}
 ISSUER_PROOF_REQUIRED_FIELDS = ("issuer", "statement")
 TIMESTAMP_PROOF_REQUIRED_FIELDS = ("claimed_at", "subject_sha256")
+WITNESS_PROOF_REQUIRED_FIELDS = ("witness_id", "statement", "subject_sha256")
 
 
 class VerificationPackageStatus:
@@ -53,6 +54,12 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
           "timestamp_proof": {"path": "timestamp-proof.json", "sha256": "..."}
         }
 
+    Optional witness evidence shape::
+
+        {
+          "witness_proof": {"path": "witness-proof.json", "sha256": "..."}
+        }
+
     Supported file entries may use ``sha256``, ``digest`` with
     ``algorithm: sha256``, or ``hash`` with ``algorithm: sha256``.
     """
@@ -65,6 +72,7 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
     file_results: list[dict[str, Any]] = []
     issuer_proof = _issuer_proof_not_provided()
     timestamp_proof = _timestamp_proof_not_provided()
+    witness_proof = _witness_proof_not_provided()
 
     if not package_root.exists():
         missing_evidence.append("package_path_missing")
@@ -75,6 +83,7 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
             files=file_results,
             issuer_proof=issuer_proof,
             timestamp_proof=timestamp_proof,
+            witness_proof=witness_proof,
             missing_evidence=missing_evidence,
             conflicting_evidence=conflicting_evidence,
             warnings=warnings,
@@ -89,6 +98,7 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
             files=file_results,
             issuer_proof=issuer_proof,
             timestamp_proof=timestamp_proof,
+            witness_proof=witness_proof,
             missing_evidence=missing_evidence,
             conflicting_evidence=conflicting_evidence,
             warnings=warnings,
@@ -105,6 +115,7 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
             files=file_results,
             issuer_proof=issuer_proof,
             timestamp_proof=timestamp_proof,
+            witness_proof=witness_proof,
             missing_evidence=missing_evidence,
             conflicting_evidence=conflicting_evidence,
             warnings=warnings,
@@ -119,6 +130,7 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
             files=file_results,
             issuer_proof=issuer_proof,
             timestamp_proof=timestamp_proof,
+            witness_proof=witness_proof,
             missing_evidence=missing_evidence,
             conflicting_evidence=conflicting_evidence,
             warnings=warnings,
@@ -134,6 +146,7 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
             files=file_results,
             issuer_proof=issuer_proof,
             timestamp_proof=timestamp_proof,
+            witness_proof=witness_proof,
             missing_evidence=missing_evidence,
             conflicting_evidence=conflicting_evidence,
             warnings=warnings,
@@ -171,6 +184,15 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
         conflicting_evidence=conflicting_evidence,
         warnings=warnings,
     )
+    witness_proof = _verify_witness_proof_entry(
+        package_root=package_root,
+        package_root_resolved=package_root_resolved,
+        entry=manifest.get("witness_proof"),
+        local_subject_sha256s=_collect_local_subject_sha256s(manifest, file_results),
+        missing_evidence=missing_evidence,
+        conflicting_evidence=conflicting_evidence,
+        warnings=warnings,
+    )
 
     if conflicting_evidence or missing_evidence:
         status = VerificationPackageStatus.INVALID
@@ -186,6 +208,7 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
         files=file_results,
         issuer_proof=issuer_proof,
         timestamp_proof=timestamp_proof,
+        witness_proof=witness_proof,
         missing_evidence=missing_evidence,
         conflicting_evidence=conflicting_evidence,
         warnings=warnings,
@@ -473,12 +496,125 @@ def _verify_timestamp_proof_entry(
     return result
 
 
+def _verify_witness_proof_entry(
+    *,
+    package_root: Path,
+    package_root_resolved: Path,
+    entry: Any,
+    local_subject_sha256s: set[str],
+    missing_evidence: list[str],
+    conflicting_evidence: list[str],
+    warnings: list[str],
+) -> dict[str, Any]:
+    if entry is None:
+        return _witness_proof_not_provided()
+
+    if not isinstance(entry, dict):
+        conflicting_evidence.append("witness_proof_entry_not_object")
+        return {"status": "INVALID", "checked": True, "path": None, "reason": "entry_not_object"}
+
+    file_result = _verify_manifest_file_entry(
+        package_root=package_root,
+        package_root_resolved=package_root_resolved,
+        entry=entry,
+        missing_evidence=missing_evidence,
+        conflicting_evidence=conflicting_evidence,
+        warnings=warnings,
+    )
+    relative_path = file_result.get("path")
+    result: dict[str, Any] = {
+        "status": file_result["status"],
+        "checked": True,
+        "path": relative_path,
+        "file": file_result,
+        "signature_verified": False,
+    }
+
+    if file_result["status"] != "MATCH":
+        return result
+
+    proof_path = package_root / str(relative_path)
+    try:
+        with proof_path.open("r", encoding="utf-8") as handle:
+            proof = json.load(handle)
+    except json.JSONDecodeError:
+        conflicting_evidence.append(f"witness_proof_json_invalid:{relative_path}")
+        result.update({"status": "INVALID", "reason": "witness_proof_json_invalid"})
+        return result
+    except (OSError, UnicodeDecodeError):
+        conflicting_evidence.append(f"witness_proof_json_unreadable:{relative_path}")
+        result.update({"status": "INVALID", "reason": "witness_proof_json_unreadable"})
+        return result
+
+    if not isinstance(proof, dict):
+        conflicting_evidence.append(f"witness_proof_json_not_object:{relative_path}")
+        result.update({"status": "INVALID", "reason": "witness_proof_json_not_object"})
+        return result
+
+    missing_fields = [
+        field
+        for field in WITNESS_PROOF_REQUIRED_FIELDS
+        if not isinstance(proof.get(field), str) or not proof.get(field, "").strip()
+    ]
+    if missing_fields:
+        for field in missing_fields:
+            missing_evidence.append(f"witness_proof_field_missing:{relative_path}:{field}")
+        result.update({"status": "INVALID", "reason": "witness_proof_required_field_missing"})
+        return result
+
+    subject_sha256 = proof["subject_sha256"].lower()
+    if not _looks_like_sha256(subject_sha256):
+        conflicting_evidence.append(f"witness_proof_subject_sha256_invalid:{relative_path}")
+        result.update({"status": "INVALID", "reason": "witness_proof_subject_sha256_invalid"})
+        return result
+
+    if subject_sha256 not in local_subject_sha256s:
+        conflicting_evidence.append(f"witness_proof_subject_mismatch:{relative_path}")
+        result.update(
+            {
+                "status": "SUBJECT_MISMATCH",
+                "reason": "witness_proof_subject_mismatch",
+                "subject_sha256": subject_sha256,
+            }
+        )
+        return result
+
+    result.update(
+        {
+            "status": "PRESENT",
+            "witness_id": proof["witness_id"],
+            "statement": proof["statement"],
+            "subject_sha256": subject_sha256,
+        }
+    )
+    return result
+
+
 def _issuer_proof_not_provided() -> dict[str, Any]:
     return {"status": "NOT_PROVIDED", "checked": False, "path": None}
 
 
 def _timestamp_proof_not_provided() -> dict[str, Any]:
     return {"status": "NOT_PROVIDED", "checked": False, "path": None, "external_verified": False}
+
+
+def _witness_proof_not_provided() -> dict[str, Any]:
+    return {"status": "NOT_PROVIDED", "checked": False, "path": None, "signature_verified": False}
+
+
+def _collect_local_subject_sha256s(manifest: dict[str, Any], files: list[dict[str, Any]]) -> set[str]:
+    subjects: set[str] = set()
+    for key in ("subject_sha256", "content_sha256", "content_hash", "record_sha256", "record_hash", "package_sha256"):
+        value = manifest.get(key)
+        if isinstance(value, str) and _looks_like_sha256(value.lower()):
+            subjects.add(value.lower())
+
+    for file_result in files:
+        for key in ("expected_sha256", "actual_sha256"):
+            value = file_result.get(key)
+            if isinstance(value, str) and _looks_like_sha256(value.lower()):
+                subjects.add(value.lower())
+    return subjects
 
 
 def _extract_sha256(entry: dict[str, Any]) -> str | None:
@@ -536,6 +672,7 @@ def _build_response(
     files: list[dict[str, Any]],
     issuer_proof: dict[str, Any],
     timestamp_proof: dict[str, Any],
+    witness_proof: dict[str, Any],
     missing_evidence: list[str],
     conflicting_evidence: list[str],
     warnings: list[str],
@@ -563,12 +700,15 @@ def _build_response(
             "timestamp_proof_checked": timestamp_proof.get("checked", False),
             "timestamp_proof_present": timestamp_proof.get("status") == "PRESENT",
             "external_timestamp_verified": timestamp_proof.get("external_verified", False),
+            "witness_proof_checked": witness_proof.get("checked", False),
+            "witness_proof_present": witness_proof.get("status") == "PRESENT",
             "signatures_verified": False,
             "witnesses_verified": False,
         },
         "files": files,
         "issuer_proof": issuer_proof,
         "timestamp_proof": timestamp_proof,
+        "witness_proof": witness_proof,
         "missing_evidence": sorted(set(missing_evidence)),
         "conflicting_evidence": sorted(set(conflicting_evidence)),
         "warnings": sorted(set(warnings)),
