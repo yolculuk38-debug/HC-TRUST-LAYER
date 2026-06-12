@@ -251,6 +251,14 @@ What is the next safe action?
 
 It should not pretend to be a person, maintainer, judge, or truth engine.
 
-## 10. Next safe action
+## 10. Queue status
 
-Implement Stage A as a local fixture-based report generator with tests.
+Stage A is a future candidate, not the active queue by itself.
+
+Before starting implementation, check the canonical project-control queue in:
+
+- `docs/project-control/next-actions.md`
+- `docs/project-control/project-state.md`
+- `docs/project-control/task-ledger.md`
+
+If those files point to a different active task, follow the current queue first and update this plan through a separate reviewed PR when needed.
