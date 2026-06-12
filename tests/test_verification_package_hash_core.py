@@ -46,9 +46,12 @@ def test_verification_package_hash_core_verifies_manifest_files(tmp_path):
         "manifest_present": True,
         "manifest_files_checked": 1,
         "sha256_only": True,
+        "issuer_proof_checked": False,
+        "issuer_proof_present": False,
         "signatures_verified": False,
         "witnesses_verified": False,
     }
+    assert result["issuer_proof"] == {"status": "NOT_PROVIDED", "checked": False, "path": None}
     assert result["files"] == [
         {
             "path": "metadata/source-info.json",
@@ -146,6 +149,131 @@ def test_verification_package_hash_core_handles_non_utf8_manifest(tmp_path):
 
     assert result["status"] == "INVALID"
     assert "manifest_json_unreadable" in result["conflicting_evidence"]
+
+
+def test_verification_package_issuer_proof_present(tmp_path):
+    package = tmp_path / "package"
+    metadata = package / "metadata" / "source-info.json"
+    proof = package / "issuer-proof.json"
+    metadata.parent.mkdir(parents=True)
+    metadata.write_text("source-ok", encoding="utf-8")
+    proof_text = json.dumps({"issuer": "HC-SAMPLE-ISSUER", "statement": "sample package issued"}, sort_keys=True)
+    proof.write_text(proof_text, encoding="utf-8")
+
+    _write_json(
+        package / "manifest.json",
+        {
+            "package_id": "HC-PKG-ISSUER",
+            "record_id": "HC-RECORD-ISSUER",
+            "files": [
+                {
+                    "path": "metadata/source-info.json",
+                    "sha256": _sha256_text("source-ok"),
+                }
+            ],
+            "issuer_proof": {"path": "issuer-proof.json", "sha256": _sha256_text(proof_text)},
+        },
+    )
+
+    result = verify_verification_package(package)
+
+    assert result["status"] == "VERIFIED"
+    assert result["checks"]["issuer_proof_checked"] is True
+    assert result["checks"]["issuer_proof_present"] is True
+    assert result["issuer_proof"]["status"] == "PRESENT"
+    assert result["issuer_proof"]["issuer"] == "HC-SAMPLE-ISSUER"
+
+
+def test_verification_package_issuer_proof_missing(tmp_path):
+    package = tmp_path / "package"
+    metadata = package / "metadata" / "source-info.json"
+    metadata.parent.mkdir(parents=True)
+    metadata.write_text("source-ok", encoding="utf-8")
+
+    _write_json(
+        package / "manifest.json",
+        {
+            "package_id": "HC-PKG-ISSUER-MISSING",
+            "record_id": "HC-RECORD-ISSUER-MISSING",
+            "files": [
+                {
+                    "path": "metadata/source-info.json",
+                    "sha256": _sha256_text("source-ok"),
+                }
+            ],
+            "issuer_proof": {"path": "issuer-proof.json", "sha256": _sha256_text("missing")},
+        },
+    )
+
+    result = verify_verification_package(package)
+
+    assert result["status"] == "INVALID"
+    assert result["checks"]["issuer_proof_checked"] is True
+    assert result["checks"]["issuer_proof_present"] is False
+    assert result["issuer_proof"]["status"] == "MISSING"
+    assert "file_missing:issuer-proof.json" in result["missing_evidence"]
+
+
+def test_verification_package_issuer_proof_malformed(tmp_path):
+    package = tmp_path / "package"
+    metadata = package / "metadata" / "source-info.json"
+    proof = package / "issuer-proof.json"
+    metadata.parent.mkdir(parents=True)
+    metadata.write_text("source-ok", encoding="utf-8")
+    proof_text = "not-json"
+    proof.write_text(proof_text, encoding="utf-8")
+
+    _write_json(
+        package / "manifest.json",
+        {
+            "package_id": "HC-PKG-ISSUER-BAD",
+            "record_id": "HC-RECORD-ISSUER-BAD",
+            "files": [
+                {
+                    "path": "metadata/source-info.json",
+                    "sha256": _sha256_text("source-ok"),
+                }
+            ],
+            "issuer_proof": {"path": "issuer-proof.json", "sha256": _sha256_text(proof_text)},
+        },
+    )
+
+    result = verify_verification_package(package)
+
+    assert result["status"] == "INVALID"
+    assert result["issuer_proof"]["status"] == "INVALID"
+    assert result["issuer_proof"]["reason"] == "issuer_proof_json_invalid"
+    assert "issuer_proof_json_invalid:issuer-proof.json" in result["conflicting_evidence"]
+
+
+def test_verification_package_issuer_proof_mismatch(tmp_path):
+    package = tmp_path / "package"
+    metadata = package / "metadata" / "source-info.json"
+    proof = package / "issuer-proof.json"
+    metadata.parent.mkdir(parents=True)
+    metadata.write_text("source-ok", encoding="utf-8")
+    proof.write_text("changed", encoding="utf-8")
+
+    _write_json(
+        package / "manifest.json",
+        {
+            "package_id": "HC-PKG-ISSUER-MISMATCH",
+            "record_id": "HC-RECORD-ISSUER-MISMATCH",
+            "files": [
+                {
+                    "path": "metadata/source-info.json",
+                    "sha256": _sha256_text("source-ok"),
+                }
+            ],
+            "issuer_proof": {"path": "issuer-proof.json", "sha256": _sha256_text("original")},
+        },
+    )
+
+    result = verify_verification_package(package)
+
+    assert result["status"] == "INVALID"
+    assert result["issuer_proof"]["status"] == "MISMATCH"
+    assert "sha256_mismatch:issuer-proof.json" in result["conflicting_evidence"]
 
 
 def test_is_within_directory_rejects_sibling_paths(tmp_path):
