@@ -7,10 +7,10 @@ This file lists safe, advisory next work for HC-TRUST-LAYER. Each item is REPORT
 | Field | Status |
 | --- | --- |
 | Current phase | Post-runtime stabilization / operating-layer refinement |
-| Active focus | Public validator and public explorer planning/navigation sequence is complete, including #820 official Public Validator MVP Specification. HC Control Bot advisory comment governance/navigation and assistant-console rotation state are synchronized. Stay in evidence-triggered report-only mode unless new repository evidence appears. |
-| Next up | Docs-only navigation/index synchronization, or evidence-triggered report-only runtime, public validator/public explorer, or bot-governance follow-up only if new repository evidence appears; do not reopen Public Validator MVP specification work after #820 without new repository evidence. |
+| Active focus | Public validator and public explorer planning/navigation sequence is complete, including #820 official Public Validator MVP Specification. HC Control Bot advisory comment governance/navigation, advisory reviewer-role suggestions, roadmap synchronization, and assistant-console rotation state are synchronized through #824. Stay in evidence-triggered report-only mode unless new repository evidence appears. |
+| Next up | Docs-only navigation/index synchronization, or evidence-triggered report-only runtime, public validator/public explorer, or bot-governance follow-up only if new repository evidence appears; do not reopen Public Validator MVP specification work after #820/#821/#822 or HC Control Bot reviewer-role roadmap synchronization after #823/#824 without new repository evidence. |
 | Blocked / parked work | Do not modify runtime, code, tests, schemas, validators, workflows, governance rules, records, hashes, QR artifacts, generated artifacts, signing, federation, or policy for this next-actions list. |
-| Do-not-repeat references | #628 telemetry contract sufficient; #629 replay / continuity coverage merged; #630 runtime conditionally stabilized; #631 operating layer conditionally sufficient; public validator readiness/spec/implementation planning already exists; #820 added the official Public Validator MVP Specification; public validator navigation alignment completed in #682; public explorer navigation map completed in #683; public explorer gap review completed in #685; public explorer maturity checklist completed in #686; public explorer checklist navigation alignment completed in #688; HC Control Bot advisory comment boundary/lifecycle/template/navigation are covered by #701, #794, #795, and #796; assistant-console rotation plan/status/docs/tests/checklist sync is covered by #811, #813, and #814, with #812 active and #763 historical only. Avoid repeating those reviews unless new repository evidence appears. |
+| Do-not-repeat references | #628 telemetry contract sufficient; #629 replay / continuity coverage merged; #630 runtime conditionally stabilized; #631 operating layer conditionally sufficient; public validator readiness/spec/implementation planning already exists; #820 added the official Public Validator MVP Specification; public validator navigation alignment completed in #682; #821/#822 synchronized public validator project-control state; public explorer navigation map completed in #683; public explorer gap review completed in #685; public explorer maturity checklist completed in #686; public explorer checklist navigation alignment completed in #688; HC Control Bot advisory comment boundary/lifecycle/template/navigation are covered by #701, #794, #795, and #796; HC Control Bot advisory reviewer-role suggestions and roadmap state are covered by #823 and #824; assistant-console rotation plan/status/docs/tests/checklist sync is covered by #811, #813, and #814, with #812 active and #763 historical only. Avoid repeating those reviews unless new repository evidence appears. |
 | Protected-path reminder | Protected paths still require explicit approval and human-supervised validation before modification. |
 | Source-of-truth priority | Markdown project-control docs and repository evidence outrank `hc_context`, chat memory, and advisory summaries. AI output is advisory only; human reviewers retain final authority. |
 
@@ -38,6 +38,8 @@ Use `docs/project-control/active-work-registry.md` only for advisory shift-level
 
 - Public validator planning navigation was linked in #682.
 - #820 added the official Public Validator MVP Specification.
+- #821 synchronized navigation and project-control references so the #820 specification is the primary planner entry.
+- #822 synchronized project-state and task-ledger references after #820/#821 public validator navigation.
 - Public explorer navigation map was added in #683.
 - Public explorer planning gap review was completed in #685.
 - Public explorer maturity checklist was added in #686.
@@ -50,8 +52,10 @@ Use `docs/project-control/active-work-registry.md` only for advisory shift-level
 - Advisory comment lifecycle was documented in #794.
 - Advisory comment template was documented in #795.
 - Operator Entry Map linked the HC Control Bot reference chain in #796.
-- Do not create duplicate bot-comment governance, lifecycle, template, or navigation documents unless new repository evidence appears.
-- These documents do not enable comment automation, label application, assignment, LLM review, approval, rejection, merge, or close behavior.
+- Advisory human reviewer-role suggestions were added in #823 while preserving advisory-only boundaries.
+- The HC Control Bot MVP roadmap was synchronized after #823 in #824.
+- Do not create duplicate bot-comment governance, lifecycle, template, navigation, reviewer-role, or roadmap synchronization documents unless new repository evidence appears.
+- These documents and features do not enable comment authority, label application, assignment, reviewer requests, LLM review, approval, rejection, merge, close behavior, production readiness, certification, or truth-finality.
 
 ## Completed assistant-console rotation maintenance
 
@@ -67,17 +71,17 @@ Use `docs/project-control/active-work-registry.md` only for advisory shift-level
 
 - Priority order: 1
 - Mode: REPORT ONLY, and only if new repository evidence appears.
-- Risk: Runtime, validator, API, explorer, generated-artifact, bot-governance, assistant-console, and trust-kernel adjacency; do not repeat completed public validator/public explorer planning or Public Validator MVP specification work, runtime stabilization work, HC Control Bot comment governance work, or assistant-console rotation work without new evidence.
+- Risk: Runtime, validator, API, explorer, generated-artifact, bot-governance, assistant-console, and trust-kernel adjacency; do not repeat completed public validator/public explorer planning or Public Validator MVP specification work, runtime stabilization work, HC Control Bot comment governance/reviewer-role roadmap synchronization work, or assistant-console rotation work without new evidence.
 - Safe output: A narrow evidence report that cites the new trigger and explains whether further review, navigation refresh, or implementation planning is necessary.
-- Why it is next: The public validator, including the #820 official Public Validator MVP Specification, public explorer, HC Control Bot advisory comment governance/navigation, and assistant-console rotation sequences are complete; future work should be docs-only navigation/index synchronization or triggered by concrete repository evidence, not repeated planning.
+- Why it is next: The public validator, including the #820 official Public Validator MVP Specification, public explorer, HC Control Bot advisory comment governance/navigation/reviewer-role roadmap state, and assistant-console rotation sequences are complete; future work should be docs-only navigation/index synchronization or triggered by concrete repository evidence, not repeated planning.
 
 ## 2. Parked implementation work
 
 - Priority order: 2
 - Mode: BLOCKED unless explicitly authorized.
-- Risk: Implementation expansion could affect runtime/API behavior, generated artifacts, validation semantics, public UX claims, bot authority boundaries, or trust-kernel-adjacent surfaces.
+- Risk: Implementation expansion could affect runtime/API behavior, generated artifacts, validation semantics, public UX claims, bot authority boundaries, reviewer routing behavior, or trust-kernel-adjacent surfaces.
 - Safe output: None by default. Open a separate, explicit implementation proposal only if the Founder or authorized reviewer requests it.
-- Why it is parked: Current public explorer, public validator, including #820 official Public Validator MVP Specification, HC Control Bot comment, and assistant-console rotation work is documentation/planning aligned. Implementation changes require a new scoped task.
+- Why it is parked: Current public explorer, public validator, including #820 official Public Validator MVP Specification, HC Control Bot comment/reviewer-role, and assistant-console rotation work is documentation/planning aligned. Implementation changes require a new scoped task.
 
 ## Stale-context guidance
 
