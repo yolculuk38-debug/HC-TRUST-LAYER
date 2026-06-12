@@ -1,10 +1,12 @@
 import argparse
+import json
 import sys
 from pathlib import Path
 
 from .hashing import calculate_sha256
 from .qr_tools import generate_qr, find_verified_records
 from .verification import verify_record_hash, find_record_files
+from .verification_package import VerificationPackageStatus, verify_verification_package
 
 
 def cmd_verify(args):
@@ -61,6 +63,12 @@ def cmd_qr(args):
     return 0
 
 
+def cmd_verify_package(args):
+    result = verify_verification_package(args.package_path)
+    print(json.dumps(result, ensure_ascii=False, sort_keys=True, indent=2))
+    return 0 if result["status"] == VerificationPackageStatus.VERIFIED else 1
+
+
 def build_parser():
     parser = argparse.ArgumentParser(prog="hc-trust", description="HC Trust Layer CLI")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -79,6 +87,13 @@ def build_parser():
     p_qr.add_argument("archive_ref", nargs="?")
     p_qr.add_argument("--batch", action="store_true")
     p_qr.set_defaults(func=cmd_qr)
+
+    p_verify_package = sub.add_parser(
+        "verify-package",
+        help="Verify a local HC verification package manifest and SHA-256 file integrity",
+    )
+    p_verify_package.add_argument("package_path")
+    p_verify_package.set_defaults(func=cmd_verify_package)
     return parser
 
 
