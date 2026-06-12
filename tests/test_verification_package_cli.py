@@ -101,3 +101,32 @@ def test_verify_package_cli_returns_one_for_invalid_package(tmp_path, capsys):
     assert output["status"] == "INVALID"
     assert output["verified"] is False
     assert "sha256_mismatch:metadata/source-info.json" in output["conflicting_evidence"]
+
+
+def test_verify_package_cli_summary_returns_one_for_invalid_package(tmp_path, capsys):
+    package = tmp_path / "package"
+    artifact = package / "metadata" / "source-info.json"
+    artifact.parent.mkdir(parents=True)
+    artifact.write_text("changed", encoding="utf-8")
+    _write_manifest(
+        package,
+        [
+            {
+                "path": "metadata/source-info.json",
+                "sha256": _sha256_text("original"),
+            }
+        ],
+    )
+
+    exit_code = main(["verify-package", str(package), "--summary"])
+    output = capsys.readouterr().out
+
+    assert exit_code == 1
+    assert "HC verification package summary" in output
+    assert "status: INVALID" in output
+    assert "verified: false" in output
+    assert "human_review_required: true" in output
+    assert "advisory_only: true" in output
+    assert "public_safe: true" in output
+    assert "truth_guarantee: false" in output
+    assert "conflicting_evidence: sha256_mismatch:metadata/source-info.json" in output
