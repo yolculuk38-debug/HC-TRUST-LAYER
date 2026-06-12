@@ -7,10 +7,10 @@ This file is the repository-native shift handoff summary for HC-TRUST-LAYER. Eve
 | Field | Status |
 | --- | --- |
 | Current phase | Post-runtime stabilization / operating-layer refinement |
-| Active focus | Public validator / explorer planning and navigation are synchronized through #821/#822; HC Control Bot advisory comment governance/navigation, advisory reviewer-role suggestions, roadmap synchronization, assistant-console rotation state, HC Engineer command-surface status, repository assistant baseline status, and operator-entry-map navigation are synchronized through #831. Stay in evidence-triggered REPORT ONLY mode unless new repository evidence appears. |
-| Next up | Prefer docs-only navigation/index synchronization, or evidence-triggered report-only runtime, public validator/public explorer, HC Engineer command-surface, repository assistant baseline, operator-entry-map, or bot-governance follow-up only if new repository evidence appears. Do not reopen Public Validator MVP specification work after #820/#821/#822, HC Control Bot reviewer-role roadmap sync after #823/#824, HC Engineer command-surface status checkpoint after #826, repository assistant baseline work after #828, or operator-entry-map sync after #831 without new repository evidence. |
+| Active focus | Public validator / explorer planning and navigation are synchronized through #821/#822; HC Control Bot advisory comment governance/navigation, advisory reviewer-role suggestions, roadmap synchronization, assistant-console rotation state, HC Engineer command-surface status, repository assistant baseline status, and operator-entry-map navigation are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Stay in evidence-triggered REPORT ONLY mode unless new repository evidence appears. |
+| Next up | Prefer docs-only navigation/index synchronization, or evidence-triggered report-only runtime, public validator/public explorer, HC Engineer command-surface, repository assistant baseline, operator-entry-map, or bot-governance follow-up only if new repository evidence appears. Do not reopen Public Validator MVP specification work after #820/#821/#822, HC Control Bot reviewer-role roadmap sync after #823/#824, HC Engineer command-surface status checkpoint after #826, repository assistant baseline work after #828, operator-entry-map sync after #831, or validator pipeline nested response contract test work after #834 without new repository evidence. |
 | Blocked / parked work | Workflow, runtime, schema, validator, record, policy, federation, signing, trust-kernel index, generated artifact, QR/hash, and governance-enforcement changes are parked unless explicitly authorized and validated. |
-| Do-not-repeat references | Treat #628, #629, #630, #631, #682, #683, #685, #686, #688, #701, #794, #795, #796, #811, #813, #814, #820, #821, #822, #823, #824, #826, #828, and #831 as completed review/navigation references. #812 remains the active HC Assistant Console v2 reference; #763 remains historical only. |
+| Do-not-repeat references | Treat #628, #629, #630, #631, #682, #683, #685, #686, #688, #701, #794, #795, #796, #811, #813, #814, #820, #821, #822, #823, #824, #826, #828, #831, and #834 as completed review/navigation/test-hardening references. #812 remains the active HC Assistant Console v2 reference; #763 remains historical only. |
 | Protected-path reminder | Do not modify `schema/**`, `validators/**`, `federation/**`, `signatures/**`, `canonical/**`, `policy/**`, `.github/workflows/**`, `records/**`, generated artifacts, QR/hash evidence, or trust-kernel indexes unless explicitly requested and approved. |
 | Source-of-truth priority | Repository markdown docs, merged files, checks, PR evidence, and human review decisions outrank chat memory and advisory machine-readable context. |
 
@@ -30,6 +30,7 @@ The `v0.1.0` tag remains the initial protected protocol infrastructure and relea
 - #629 replay / continuity edge-case coverage: merged
 - #630 runtime stabilization review: RUNTIME CONDITIONALLY STABILIZED
 - #631 HC Operating Layer review: OPERATING LAYER CONDITIONALLY SUFFICIENT
+- #834 validator pipeline nested response contract coverage: merged test-only hardening for `ValidatorPipeline` nested response shapes.
 
 ## Completed public validator / public explorer planning sequence
 
@@ -69,7 +70,7 @@ The `v0.1.0` tag remains the initial protected protocol infrastructure and relea
 
 - Keep onboarding, navigation, and project-control documents synchronized with current repository state.
 - Use evidence-triggered report-only follow-up for runtime, public validator, public explorer, bot-governance, assistant-console, HC Engineer command-surface, repository assistant baseline, operator-entry-map, generated-artifact, QR/hash, or trust-kernel-adjacent questions.
-- Avoid repeating public validator/public explorer planning, HC Control Bot comment governance, HC Control Bot reviewer-role roadmap synchronization, HC Engineer command-surface status checkpointing, repository assistant baseline work, operator-entry-map synchronization, assistant-console rotation, telemetry contract, replay / continuity, or runtime stabilization review unless new repository evidence appears.
+- Avoid repeating public validator/public explorer planning, HC Control Bot comment governance, HC Control Bot reviewer-role roadmap synchronization, HC Engineer command-surface status checkpointing, repository assistant baseline work, operator-entry-map synchronization, assistant-console rotation, telemetry contract, replay / continuity, runtime stabilization review, or validator pipeline nested response contract test work unless new repository evidence appears.
 
 ## Next safe task
 
