@@ -7,10 +7,10 @@ This file is the repository-native shift handoff summary for HC-TRUST-LAYER. Eve
 | Field | Status |
 | --- | --- |
 | Current phase | Working verification core / post-runtime stabilization |
-| Active focus | Public validator / explorer planning and navigation are synchronized through #821/#822; HC Control Bot advisory comment governance/navigation, advisory reviewer-role suggestions, roadmap synchronization, assistant-console rotation state, HC Engineer command-surface status, repository assistant baseline status, and operator-entry-map navigation are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Verification package hash core was added in #838, hardened in #839, and exposed through the local CLI in #841. |
-| Next up | Continue the working core in small scoped PRs only. Candidate next work: a minimal quickstart / sample package for `hc-trust verify-package`, followed later by signature/witness/QR/C2PA/OpenTimestamps layers. Do not reopen #838/#839/#841 hash-core and CLI work unless new repository evidence appears. |
+| Active focus | Public validator / explorer planning and navigation are synchronized through #821/#822; HC Control Bot, assistant-console, repository assistant baseline, and operator-entry-map state are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Verification package hash core was added in #838, hardened in #839, exposed through the local CLI in #841, and documented with a sample package / quickstart in #843. |
+| Next up | Continue the working core in small scoped PRs only. Candidate next work: a narrow report or proposal for the next trust layer, likely signature/witness verification or QR/canonical-domain binding. Do not reopen #838/#839/#841/#843 hash-core, CLI, sample, or quickstart work unless new repository evidence appears. |
 | Blocked / parked work | Workflow, schema, validator, record, policy, federation, signing, trust-kernel index, generated artifact, QR/hash evidence format, governance-enforcement, and production-readiness claims remain parked unless explicitly authorized and validated. |
-| Do-not-repeat references | Treat #628, #629, #630, #631, #682, #683, #685, #686, #688, #701, #794, #795, #796, #811, #813, #814, #820, #821, #822, #823, #824, #826, #828, #831, #834, #838, #839, and #841 as completed references. #812 remains the active HC Assistant Console v2 reference; #763 remains historical only. |
+| Do-not-repeat references | Treat #628, #629, #630, #631, #682, #683, #685, #686, #688, #701, #794, #795, #796, #811, #813, #814, #820, #821, #822, #823, #824, #826, #828, #831, #834, #838, #839, #841, and #843 as completed references. #812 remains the active HC Assistant Console v2 reference; #763 remains historical only. |
 | Review / merge rule | Before merge: verify changed files, checks, Codex/review comments, and risk scope. If comments exist, fix first. Human final authority remains the governance boundary. |
 | Protected-path reminder | Do not modify `schema/**`, `validators/**`, `federation/**`, `signatures/**`, `canonical/**`, `policy/**`, `.github/workflows/**`, `records/**`, generated artifacts, QR/hash evidence, or trust-kernel indexes unless explicitly requested and approved. |
 | Source-of-truth priority | Repository markdown docs, merged files, checks, PR evidence, and human review decisions outrank chat memory and advisory machine-readable context. |
@@ -35,15 +35,17 @@ The `v0.1.0` tag remains the initial protected protocol infrastructure and relea
 - #838 verification package hash core: added a local advisory verifier for manifest-listed file existence and SHA-256 digest matching.
 - #839 verification package hash core hardening: handled malformed manifest files without raising and enforced resolved package-path containment before hashing.
 - #841 verification package CLI entry point: added `hc-trust verify-package <package_path>` around the local hash core.
+- #843 verification package sample / quickstart: added a minimal valid package, quickstart, and regression test for the CLI/core path.
 
 ## Completed verification package hash core sequence
 
 - #838 added `src/hc_trust/verification_package.py` and `tests/test_verification_package_hash_core.py`.
-- The core verifies local `manifest.json`, listed file existence, SHA-256 digest matches, missing evidence, conflicting evidence, advisory-only status, public-safe status, and `truth_guarantee=false` output.
 - #839 followed up on automated review findings and hardened manifest handling and path containment before treating a file as package evidence.
-- #841 exposed the core through the existing `hc-trust` CLI as `hc-trust verify-package <package_path>`, printing the advisory JSON result and returning non-zero for non-verified packages.
-- This is the first usable local verification-package integrity slice. It does not verify legal truth, QR authenticity, signatures, witnesses, C2PA assertions, OpenTimestamps attestations, federation state, or production readiness.
-- Do not repeat #838/#839/#841 unless new repository evidence appears.
+- #841 exposed the core through the existing `hc-trust` CLI as `hc-trust verify-package <package_path>`.
+- #843 added `examples/verification-package/valid/`, `docs/verification-package-cli-quickstart.md`, and `tests/test_verification_package_sample.py`.
+- This is the first usable local verification-package integrity slice: manifest, listed file existence, SHA-256 match, missing/conflicting evidence, CLI entry point, and sample package.
+- It does not verify legal truth, QR authenticity, signatures, witnesses, C2PA assertions, OpenTimestamps attestations, federation state, or production readiness.
+- Do not repeat #838/#839/#841/#843 unless new repository evidence appears.
 
 ## Completed public validator / public explorer planning sequence
 
@@ -71,11 +73,11 @@ The `v0.1.0` tag remains the initial protected protocol infrastructure and relea
 
 - #811 recorded the assistant console rotation plan as completed operating-layer planning evidence.
 - #812 is the active HC Assistant Console v2 reference for current assistant-console work.
-- #763 is closed and retained only as the historical first smoke-test trail; do not treat it as the active console or reopen it for rotation work.
+- #763 is closed and retained only as the historical first smoke-test trail.
 - #813 synchronized `/hc status`, command tests, and active-console documentation references with #812 as active.
 - #814 synchronized the assistant listener smoke-test checklist with the current rotation state.
-- #826 recorded the HC Engineer / HC Assistant command-surface status checkpoint, including implemented `/hc` commands, current safe boundaries, and staged expansion guidance.
-- #828 recorded the repository assistant baseline status, marking the current assistant foundation sufficient for advisory operating-layer use while parking future expansion behind separate scoped review.
+- #826 recorded the HC Engineer / HC Assistant command-surface status checkpoint.
+- #828 recorded the repository assistant baseline status.
 - #831 synchronized the Operator Entry Map after #826/#828 so command-surface and repository-assistant baseline references are current.
 - #811, #813, #814, #826, #828, and #831 are do-not-repeat references for assistant-console, command-surface, repository-assistant baseline, or operator-entry-map synchronization unless new repository evidence appears.
 
@@ -83,16 +85,16 @@ The `v0.1.0` tag remains the initial protected protocol infrastructure and relea
 
 - Keep onboarding, navigation, and project-control documents synchronized with current repository state.
 - Continue the working verification core in small, reviewable slices.
-- First practical layer is local package integrity: manifest + SHA-256 + missing/conflicting evidence + local CLI entry point.
+- First practical layer is local package integrity: manifest + SHA-256 + missing/conflicting evidence + local CLI entry point + sample package.
 - Later layers are signature/witness verification, QR/canonical-domain binding, C2PA/OpenTimestamps references, federation, dispute/governance, and public UX.
-- Avoid repeating completed public validator/public explorer planning, HC Control Bot comment governance, HC Control Bot reviewer-role roadmap synchronization, HC Engineer command-surface status checkpointing, repository assistant baseline work, operator-entry-map synchronization, assistant-console rotation, telemetry contract, replay / continuity, runtime stabilization review, validator pipeline nested response contract work, or verification package hash-core/CLI work unless new repository evidence appears.
+- Avoid repeating completed public validator/public explorer planning, HC Control Bot comment governance, HC Control Bot reviewer-role roadmap synchronization, HC Engineer command-surface status checkpointing, repository assistant baseline work, operator-entry-map synchronization, assistant-console rotation, telemetry contract, replay / continuity, runtime stabilization review, validator pipeline nested response contract work, or verification package hash-core/CLI/sample work unless new repository evidence appears.
 
 ## Next safe task
 
 The next safe task is either:
 
-1. A documentation-only synchronization after #841; or
-2. A small docs/test-only quickstart or sample package that demonstrates `hc-trust verify-package <package_path>` without changing protected paths.
+1. A documentation-only synchronization after #843; or
+2. A narrow evidence/report proposal for the next trust layer before implementation.
 
 Recommended decision language after a navigation refresh is complete: **NAVIGATION REFRESH COMPLETE**.
 
