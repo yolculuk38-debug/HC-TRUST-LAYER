@@ -48,6 +48,37 @@ def test_verify_package_cli_returns_zero_for_verified_package(tmp_path, capsys):
     assert output["truth_guarantee"] is False
 
 
+def test_verify_package_cli_summary_returns_zero_for_verified_package(tmp_path, capsys):
+    package = tmp_path / "package"
+    artifact = package / "metadata" / "source-info.json"
+    artifact.parent.mkdir(parents=True)
+    artifact.write_text("source-ok", encoding="utf-8")
+    _write_manifest(
+        package,
+        [
+            {
+                "path": "metadata/source-info.json",
+                "sha256": _sha256_text("source-ok"),
+            }
+        ],
+    )
+
+    exit_code = main(["verify-package", str(package), "--summary"])
+    output = capsys.readouterr().out
+
+    assert exit_code == 0
+    assert "HC verification package summary" in output
+    assert "status: VERIFIED" in output
+    assert "verified: true" in output
+    assert "package_id: HC-PKG-CLI" in output
+    assert "record_id: HC-RECORD-CLI" in output
+    assert "files_checked: 1" in output
+    assert "issuer_proof: NOT_PROVIDED" in output
+    assert "advisory_only: true" in output
+    assert "public_safe: true" in output
+    assert "truth_guarantee: false" in output
+
+
 def test_verify_package_cli_returns_one_for_invalid_package(tmp_path, capsys):
     package = tmp_path / "package"
     artifact = package / "metadata" / "source-info.json"
