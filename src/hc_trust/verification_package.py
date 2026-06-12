@@ -17,6 +17,7 @@ from typing import Any
 
 VERIFICATION_PACKAGE_HASH_CORE_VERSION = "HC-VERIFICATION-PACKAGE-HASH-CORE-V1"
 SUPPORTED_DIGEST_ALGORITHMS = {"sha256"}
+ISSUER_PROOF_REQUIRED_FIELDS = ("issuer", "statement")
 
 
 class VerificationPackageStatus:
@@ -39,6 +40,12 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
           ]
         }
 
+    Optional issuer evidence shape::
+
+        {
+          "issuer_proof": {"path": "issuer-proof.json", "sha256": "..."}
+        }
+
     Supported file entries may use ``sha256``, ``digest`` with
     ``algorithm: sha256``, or ``hash`` with ``algorithm: sha256``.
     """
@@ -49,6 +56,7 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
     missing_evidence: list[str] = []
     conflicting_evidence: list[str] = []
     file_results: list[dict[str, Any]] = []
+    issuer_proof = _issuer_proof_not_provided()
 
     if not package_root.exists():
         missing_evidence.append("package_path_missing")
@@ -57,6 +65,7 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
             package_root=package_root,
             manifest_path=manifest_path,
             files=file_results,
+            issuer_proof=issuer_proof,
             missing_evidence=missing_evidence,
             conflicting_evidence=conflicting_evidence,
             warnings=warnings,
@@ -69,6 +78,7 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
             package_root=package_root,
             manifest_path=manifest_path,
             files=file_results,
+            issuer_proof=issuer_proof,
             missing_evidence=missing_evidence,
             conflicting_evidence=conflicting_evidence,
             warnings=warnings,
@@ -83,6 +93,7 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
             package_root=package_root,
             manifest_path=manifest_path,
             files=file_results,
+            issuer_proof=issuer_proof,
             missing_evidence=missing_evidence,
             conflicting_evidence=conflicting_evidence,
             warnings=warnings,
@@ -95,6 +106,7 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
             package_root=package_root,
             manifest_path=manifest_path,
             files=file_results,
+            issuer_proof=issuer_proof,
             missing_evidence=missing_evidence,
             conflicting_evidence=conflicting_evidence,
             warnings=warnings,
@@ -108,6 +120,7 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
             package_root=package_root,
             manifest_path=manifest_path,
             files=file_results,
+            issuer_proof=issuer_proof,
             missing_evidence=missing_evidence,
             conflicting_evidence=conflicting_evidence,
             warnings=warnings,
@@ -129,6 +142,15 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
             )
         )
 
+    issuer_proof = _verify_issuer_proof_entry(
+        package_root=package_root,
+        package_root_resolved=package_root_resolved,
+        entry=manifest.get("issuer_proof"),
+        missing_evidence=missing_evidence,
+        conflicting_evidence=conflicting_evidence,
+        warnings=warnings,
+    )
+
     if conflicting_evidence or missing_evidence:
         status = VerificationPackageStatus.INVALID
     elif warnings or not files:
@@ -141,6 +163,7 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
         package_root=package_root,
         manifest_path=manifest_path,
         files=file_results,
+        issuer_proof=issuer_proof,
         missing_evidence=missing_evidence,
         conflicting_evidence=conflicting_evidence,
         warnings=warnings,
@@ -274,6 +297,84 @@ def _verify_manifest_file_entry(
     }
 
 
+def _verify_issuer_proof_entry(
+    *,
+    package_root: Path,
+    package_root_resolved: Path,
+    entry: Any,
+    missing_evidence: list[str],
+    conflicting_evidence: list[str],
+    warnings: list[str],
+) -> dict[str, Any]:
+    if entry is None:
+        return _issuer_proof_not_provided()
+
+    if not isinstance(entry, dict):
+        conflicting_evidence.append("issuer_proof_entry_not_object")
+        return {"status": "INVALID", "checked": True, "path": None, "reason": "entry_not_object"}
+
+    file_result = _verify_manifest_file_entry(
+        package_root=package_root,
+        package_root_resolved=package_root_resolved,
+        entry=entry,
+        missing_evidence=missing_evidence,
+        conflicting_evidence=conflicting_evidence,
+        warnings=warnings,
+    )
+    relative_path = file_result.get("path")
+    result: dict[str, Any] = {
+        "status": file_result["status"],
+        "checked": True,
+        "path": relative_path,
+        "file": file_result,
+    }
+
+    if file_result["status"] != "MATCH":
+        return result
+
+    proof_path = package_root / str(relative_path)
+    try:
+        with proof_path.open("r", encoding="utf-8") as handle:
+            proof = json.load(handle)
+    except json.JSONDecodeError:
+        conflicting_evidence.append(f"issuer_proof_json_invalid:{relative_path}")
+        result.update({"status": "INVALID", "reason": "issuer_proof_json_invalid"})
+        return result
+    except (OSError, UnicodeDecodeError):
+        conflicting_evidence.append(f"issuer_proof_json_unreadable:{relative_path}")
+        result.update({"status": "INVALID", "reason": "issuer_proof_json_unreadable"})
+        return result
+
+    if not isinstance(proof, dict):
+        conflicting_evidence.append(f"issuer_proof_json_not_object:{relative_path}")
+        result.update({"status": "INVALID", "reason": "issuer_proof_json_not_object"})
+        return result
+
+    missing_fields = [
+        field
+        for field in ISSUER_PROOF_REQUIRED_FIELDS
+        if not isinstance(proof.get(field), str) or not proof.get(field, "").strip()
+    ]
+    if missing_fields:
+        for field in missing_fields:
+            missing_evidence.append(f"issuer_proof_field_missing:{relative_path}:{field}")
+        result.update({"status": "INVALID", "reason": "issuer_proof_required_field_missing"})
+        return result
+
+    result.update(
+        {
+            "status": "PRESENT",
+            "issuer": proof["issuer"],
+            "statement": proof["statement"],
+        }
+    )
+    return result
+
+
+def _issuer_proof_not_provided() -> dict[str, Any]:
+    return {"status": "NOT_PROVIDED", "checked": False, "path": None}
+
+
 def _extract_sha256(entry: dict[str, Any]) -> str | None:
     if isinstance(entry.get("sha256"), str):
         return entry["sha256"]
@@ -327,6 +428,7 @@ def _build_response(
     package_root: Path,
     manifest_path: Path,
     files: list[dict[str, Any]],
+    issuer_proof: dict[str, Any],
     missing_evidence: list[str],
     conflicting_evidence: list[str],
     warnings: list[str],
@@ -349,10 +451,13 @@ def _build_response(
             "manifest_present": manifest is not None,
             "manifest_files_checked": len(files),
             "sha256_only": True,
+            "issuer_proof_checked": issuer_proof.get("checked", False),
+            "issuer_proof_present": issuer_proof.get("status") == "PRESENT",
             "signatures_verified": False,
             "witnesses_verified": False,
         },
         "files": files,
+        "issuer_proof": issuer_proof,
         "missing_evidence": sorted(set(missing_evidence)),
         "conflicting_evidence": sorted(set(conflicting_evidence)),
         "warnings": sorted(set(warnings)),
