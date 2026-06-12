@@ -11,5 +11,9 @@
   "issuer_proof": {
     "path": "issuer-proof.json",
     "sha256": "19e98a1581d0cd9a7a726e7de1e75e66781f437b6700a591de7f06a99427cd32"
+  },
+  "timestamp_proof": {
+    "path": "time-evidence.json",
+    "sha256": "80d18b97deb79dfbd8eb0eb2e6a3ac57558da9d5da840bbcc586f6180a0062a1"
   }
 }
