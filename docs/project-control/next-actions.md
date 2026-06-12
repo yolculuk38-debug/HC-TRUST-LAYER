@@ -7,10 +7,10 @@ This file lists safe, advisory next work for HC-TRUST-LAYER. Each item is REPORT
 | Field | Status |
 | --- | --- |
 | Current phase | Post-runtime stabilization / operating-layer refinement |
-| Active focus | Public validator and public explorer planning/navigation sequence is complete, including #820 official Public Validator MVP Specification. HC Control Bot advisory comment governance/navigation, advisory reviewer-role suggestions, roadmap synchronization, assistant-console rotation state, and HC Engineer command-surface status are synchronized through #826. Stay in evidence-triggered report-only mode unless new repository evidence appears. |
-| Next up | Docs-only navigation/index synchronization, or evidence-triggered report-only runtime, public validator/public explorer, HC Engineer command-surface, or bot-governance follow-up only if new repository evidence appears; do not reopen Public Validator MVP specification work after #820/#821/#822, HC Control Bot reviewer-role roadmap synchronization after #823/#824, or HC Engineer command-surface status checkpoint after #826 without new repository evidence. |
+| Active focus | Public validator and public explorer planning/navigation sequence is complete, including #820 official Public Validator MVP Specification. HC Control Bot advisory comment governance/navigation, advisory reviewer-role suggestions, roadmap synchronization, assistant-console rotation state, HC Engineer command-surface status, and repository assistant baseline status are synchronized through #828. Stay in evidence-triggered report-only mode unless new repository evidence appears. |
+| Next up | Docs-only navigation/index synchronization, or evidence-triggered report-only runtime, public validator/public explorer, HC Engineer command-surface, repository assistant baseline, or bot-governance follow-up only if new repository evidence appears; do not reopen Public Validator MVP specification work after #820/#821/#822, HC Control Bot reviewer-role roadmap synchronization after #823/#824, HC Engineer command-surface status checkpoint after #826, or repository assistant baseline work after #828 without new repository evidence. |
 | Blocked / parked work | Do not modify runtime, code, tests, schemas, validators, workflows, governance rules, records, hashes, QR artifacts, generated artifacts, signing, federation, or policy for this next-actions list. |
-| Do-not-repeat references | #628 telemetry contract sufficient; #629 replay / continuity coverage merged; #630 runtime conditionally stabilized; #631 operating layer conditionally sufficient; #820/#821/#822 completed public validator project-control state; #823/#824 completed HC Control Bot reviewer-role and roadmap state; #826 completed HC Engineer command-surface status checkpoint; #812 remains active console and #763 remains historical only. Avoid repeating those reviews unless new repository evidence appears. |
+| Do-not-repeat references | #628 telemetry contract sufficient; #629 replay / continuity coverage merged; #630 runtime conditionally stabilized; #631 operating layer conditionally sufficient; #820/#821/#822 completed public validator project-control state; #823/#824 completed HC Control Bot reviewer-role and roadmap state; #826 completed HC Engineer command-surface status checkpoint; #828 completed repository assistant baseline status; #812 remains active console and #763 remains historical only. Avoid repeating those reviews unless new repository evidence appears. |
 | Protected-path reminder | Protected paths still require explicit approval and human-supervised validation before modification. |
 | Source-of-truth priority | Markdown project-control docs and repository evidence outrank `hc_context`, chat memory, and advisory summaries. AI output is advisory only; human reviewers retain final authority. |
 
@@ -32,8 +32,9 @@ Before taking the next action, read:
 12. `docs/project-control/public-explorer-maturity-checklist.md`
 13. `docs/project-control/operator-entry-map.md`
 14. `docs/project-control/hc-engineer-command-surface-status.md`
+15. `docs/project-control/repository-assistant-baseline-status.md`
 
-Use `docs/project-control/active-work-registry.md` only for advisory shift-level coordination; this file remains the priority queue source. If `hc_context` files are useful for orientation, read them after the markdown project-control docs and treat them as advisory only.
+Use `docs/project-control/active-work-registry.md` only for advisory shift-level coordination; this file remains the priority queue source. If `hc_context` files are useful for orientation, read them after the markdown docs and treat them as advisory only.
 
 ## Completed public validator / public explorer planning sequence
 
@@ -66,24 +67,25 @@ Use `docs/project-control/active-work-registry.md` only for advisory shift-level
 - #813 synchronized `/hc status`, command tests, and active-console documentation references.
 - #814 synchronized the assistant listener smoke-test checklist.
 - #826 recorded the HC Engineer / HC Assistant command-surface status checkpoint.
-- Assistant-console rotation and command-surface status checkpointing should not be repeated unless new repository evidence appears.
+- #828 recorded the repository assistant baseline status.
+- Assistant-console rotation, command-surface status checkpointing, and repository assistant baseline work should not be repeated unless new repository evidence appears.
 - This is operating-layer documentation state only; it does not create implementation work, bot authority, runtime behavior, workflow behavior, or governance finality.
 
 ## 1. Evidence-triggered follow-up only if needed
 
 - Priority order: 1
 - Mode: REPORT ONLY, and only if new repository evidence appears.
-- Risk: Runtime, validator, API, explorer, generated-artifact, bot-governance, assistant-console, HC Engineer command-surface, and trust-kernel adjacency; do not repeat completed public validator/public explorer planning or Public Validator MVP specification work, runtime stabilization work, HC Control Bot comment governance/reviewer-role roadmap synchronization work, HC Engineer command-surface status checkpointing, or assistant-console rotation work without new evidence.
+- Risk: Runtime, validator, API, explorer, generated-artifact, bot-governance, assistant-console, HC Engineer command-surface, repository assistant baseline, and trust-kernel adjacency; do not repeat completed public validator/public explorer planning or Public Validator MVP specification work, runtime stabilization work, HC Control Bot comment governance/reviewer-role roadmap synchronization work, HC Engineer command-surface status checkpointing, repository assistant baseline work, or assistant-console rotation work without new evidence.
 - Safe output: A narrow evidence report that cites the new trigger and explains whether further review, navigation refresh, or implementation planning is necessary.
-- Why it is next: The public validator, public explorer, HC Control Bot advisory governance/navigation/reviewer-role roadmap state, HC Engineer command-surface status, and assistant-console rotation sequences are complete; future work should be docs-only navigation/index synchronization or triggered by concrete repository evidence, not repeated planning.
+- Why it is next: The public validator, public explorer, HC Control Bot advisory governance/navigation/reviewer-role roadmap state, HC Engineer command-surface status, repository assistant baseline, and assistant-console rotation sequences are complete; future work should be docs-only navigation/index synchronization or triggered by concrete repository evidence, not repeated planning.
 
 ## 2. Parked implementation work
 
 - Priority order: 2
 - Mode: BLOCKED unless explicitly authorized.
-- Risk: Implementation expansion could affect runtime/API behavior, generated artifacts, validation semantics, public UX claims, bot boundaries, reviewer routing behavior, command-surface behavior, or trust-kernel-adjacent surfaces.
+- Risk: Implementation expansion could affect runtime/API behavior, generated artifacts, validation semantics, public UX claims, bot boundaries, reviewer routing behavior, command-surface behavior, repository assistant behavior, or trust-kernel-adjacent surfaces.
 - Safe output: None by default. Open a separate, explicit implementation proposal only if the Founder or authorized reviewer requests it.
-- Why it is parked: Current public explorer, public validator, HC Control Bot comment/reviewer-role, HC Engineer command-surface, and assistant-console rotation work is documentation/planning aligned. Implementation changes require a new scoped task.
+- Why it is parked: Current public explorer, public validator, HC Control Bot comment/reviewer-role, HC Engineer command-surface, repository assistant baseline, and assistant-console rotation work is documentation/planning aligned. Implementation changes require a new scoped task.
 
 ## Stale-context guidance
 
