@@ -14,6 +14,11 @@ def test_sample_verification_package_is_verified():
     assert result["public_safe"] is True
     assert result["truth_guarantee"] is False
     assert result["human_review_required"] is False
+    assert result["checks"]["issuer_proof_checked"] is True
+    assert result["checks"]["issuer_proof_present"] is True
+    assert result["issuer_proof"]["status"] == "PRESENT"
+    assert result["issuer_proof"]["issuer"] == "HC-SAMPLE-ISSUER"
+    assert result["issuer_proof"]["statement"] == "sample package issued"
     assert result["files"] == [
         {
             "path": "metadata/source-info.txt",

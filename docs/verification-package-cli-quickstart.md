@@ -10,11 +10,12 @@ The repository includes a minimal sample package:
 
 ```text
 examples/verification-package/valid/
+├── issuer-proof.json
 ├── manifest.json
 └── metadata/source-info.txt
 ```
 
-The manifest lists the file path and expected SHA-256 digest.
+The manifest lists the file path and expected SHA-256 digest for package evidence. It also references optional issuer proof evidence.
 
 ## Run the verifier
 
@@ -32,7 +33,11 @@ For a valid package, the command returns exit code `0` and prints JSON with:
   "verified": true,
   "advisory_only": true,
   "public_safe": true,
-  "truth_guarantee": false
+  "truth_guarantee": false,
+  "issuer_proof": {
+    "status": "PRESENT",
+    "issuer": "HC-SAMPLE-ISSUER"
+  }
 }
 ```
 
@@ -40,7 +45,7 @@ If a listed file is missing, changed, malformed, or outside the package boundary
 
 ## What this proves
 
-This proves only that the local files still match the manifest SHA-256 digest.
+This proves only that the local files still match the manifest SHA-256 digest and that optional issuer proof evidence is present and well-formed.
 
 ## What this does not prove
 
