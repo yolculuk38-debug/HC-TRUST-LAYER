@@ -19,6 +19,12 @@ def test_sample_verification_package_is_verified():
     assert result["issuer_proof"]["status"] == "PRESENT"
     assert result["issuer_proof"]["issuer"] == "HC-SAMPLE-ISSUER"
     assert result["issuer_proof"]["statement"] == "sample package issued"
+    assert result["checks"]["timestamp_proof_checked"] is True
+    assert result["checks"]["timestamp_proof_present"] is True
+    assert result["checks"]["external_timestamp_verified"] is False
+    assert result["timestamp_proof"]["status"] == "PRESENT"
+    assert result["timestamp_proof"]["claimed_at"] == "2026-06-12T00:00:00Z"
+    assert result["timestamp_proof"]["subject_sha256"] == "4994673c753f193e845060f0ed8a3785c9293443584b8f1d192d6d17c44a5f71"
     assert result["files"] == [
         {
             "path": "metadata/source-info.txt",
