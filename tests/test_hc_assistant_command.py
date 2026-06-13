@@ -18,6 +18,7 @@ def test_help_command_lists_core_commands():
     assert "- /hc explain <topic-or-path>" in result["response_lines"]
     assert "- /hc risks" in result["response_lines"]
     assert "- /hc review" in result["response_lines"]
+    assert "- /hc engineer" in result["response_lines"]
 
 
 def test_empty_hc_command_defaults_to_help():
@@ -104,6 +105,7 @@ def test_explain_commands_topic_reflects_listener_connection():
     assert result["command"] == "explain"
     assert result["implemented"] is True
     assert any("connected to the /hc issue-comment listener" in line for line in result["response_lines"])
+    assert any("review, and engineer" in line for line in result["response_lines"])
     assert not any("not connected to issue comments yet" in line for line in result["response_lines"])
 
 
@@ -154,6 +156,27 @@ def test_review_command_returns_static_review_preparation_checklist():
         result["evidence_source"]
         == "static review preparation checklist from HC assistant command interface"
     )
+
+
+def test_engineer_command_returns_static_operating_sequence():
+    result = parse_hc_command("/hc engineer").to_dict()
+
+    assert result["command"] == "engineer"
+    assert result["implemented"] is True
+    assert result["advisory_only"] is True
+    assert result["public_safe"] is True
+    assert result["truth_guarantee"] is False
+    assert result["human_review_required"] is True
+    assert "HC Trust Engineer operating sequence:" in result["response_lines"]
+    assert any(line.startswith("- plan_task:") for line in result["response_lines"])
+    assert any(line.startswith("- handle_review:") for line in result["response_lines"])
+    assert any(line.startswith("- inspect_checks:") for line in result["response_lines"])
+    assert any(line.startswith("- cleanup_after_merge:") for line in result["response_lines"])
+    assert (
+        result["evidence_source"]
+        == "static HC Trust Engineer operating sequence"
+    )
+    assert "This local parser does not perform live GitHub state lookup." in result["warnings"]
 
 
 def test_unknown_command_is_ignored():
@@ -238,3 +261,17 @@ def test_cli_outputs_machine_readable_review_json(capsys):
     assert payload["implemented"] is True
     assert payload["advisory_only"] is True
     assert payload["human_review_required"] is True
+
+
+def test_cli_outputs_machine_readable_engineer_json(capsys):
+    exit_code = main(["/hc", "engineer"])
+
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+
+    assert exit_code == 0
+    assert payload["command"] == "engineer"
+    assert payload["implemented"] is True
+    assert payload["advisory_only"] is True
+    assert payload["human_review_required"] is True
+    assert payload["evidence_source"] == "static HC Trust Engineer operating sequence"
