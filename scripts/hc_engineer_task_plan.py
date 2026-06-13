@@ -179,6 +179,12 @@ def _merge_gate(
 ) -> dict[str, Any]:
     check_blockers = [condition for condition in stop_conditions if condition.startswith("checks_")]
     review_blockers = [condition for condition in stop_conditions if "review" in condition or "comments" in condition]
+    skipped_check_review_required = any(
+        check["conclusion"] in MANUAL_REVIEW_CONCLUSIONS for check in checks
+    )
+    merge_gate_human_review_required = bool(
+        human_review_required or protected_paths or skipped_check_review_required
+    )
     allowed = not stop_conditions and bool(checks) and all(
         check["status"] == "completed" and check["conclusion"] in SUCCESS_CONCLUSIONS
         for check in checks
@@ -189,7 +195,7 @@ def _merge_gate(
         "blocked_by": stop_conditions,
         "requires_checks_inspection": True,
         "requires_review_resolution_first": bool(unresolved_comments),
-        "requires_human_review": human_review_required,
+        "requires_human_review": merge_gate_human_review_required,
         "check_blockers": check_blockers,
         "review_blockers": review_blockers,
     }
