@@ -7,10 +7,10 @@ This file lists safe, advisory next work for HC-TRUST-LAYER. Each item is report
 | Field | Status |
 | --- | --- |
 | Current phase | Working verification core / post-runtime stabilization |
-| Active focus | Public validator and public explorer planning/navigation are synchronized through #821/#822. HC Control Bot, assistant-console, repository assistant baseline, and operator-entry-map state are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Verification package hash core and local CLI sequence is complete through #843. HC Trust Engineer report generator, import fix, status checkpoint, and quickstart examples are complete through #872/#873/#874/#875. HC Engineer task planner, skipped-check/manual-review hardening, operator quickstart, and state synchronization are complete through #888/#889/#890/#891. Signature/witness planning, GitHub issue/comment PR-flow diagnostic evidence, signature/witness fixture-format planning, and non-canonical signature/witness fixture package evidence are recorded through #892/#893/#894/#896/#898. |
-| Next up | Link or document the new non-canonical signature/witness fixture package from existing verification-package quickstart/example navigation. Do not repeat completed task-planner, report-generator, verification package, bot, public-validator, public-explorer, signature/witness proposal, fixture-format proposal, fixture-package, or PR-flow diagnostic work. |
+| Active focus | Public validator and public explorer planning/navigation are synchronized through #821/#822. HC Control Bot, assistant-console, repository assistant baseline, and operator-entry-map state are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Verification package hash core and local CLI sequence is complete through #843. HC Trust Engineer report generator, import fix, status checkpoint, and quickstart examples are complete through #872/#873/#874/#875. HC Engineer task planner, skipped-check/manual-review hardening, operator quickstart, and state synchronization are complete through #888/#889/#890/#891. Signature/witness planning, GitHub issue/comment PR-flow diagnostic evidence, signature/witness fixture-format planning, non-canonical signature/witness fixture package evidence, quickstart navigation, and fixture output-mode clarification are recorded through #892/#893/#894/#896/#898/#900/#949. |
+| Next up | Review source inventory, test inventory, and branch-count evidence before proposing any cleanup. Do not repeat completed task-planner, report-generator, verification package, bot, public-validator, public-explorer, signature/witness proposal, fixture-format proposal, fixture-package, quickstart navigation, fixture output-mode clarification, or PR-flow diagnostic work. |
 | Blocked / parked work | Larger trust layers, issue-comment based autonomous PR creation, GitHub Actions integration, VPS runners, GitHub App runners, label/assignment/reviewer-request automation, signing implementation, witness authority, and authority-changing automation remain parked unless explicitly authorized and reviewed. |
-| Do-not-repeat references | #628, #629, #630, #631, #820/#821/#822, #823/#824, #826, #828, #831, #834, #838, #839, #841, #843, #872, #873, #874, #875, #888, #889, #890, #891, #892, #893, #894, #896, and #898 are completed references. #812 remains active console and #763 remains historical only. |
+| Do-not-repeat references | #628, #629, #630, #631, #820/#821/#822, #823/#824, #826, #828, #831, #834, #838, #839, #841, #843, #872, #873, #874, #875, #888, #889, #890, #891, #892, #893, #894, #896, #898, #900, and #949 are completed references. #812 remains active console and #763 remains historical only. |
 | Review / merge rule | Before merge: verify changed files, checks, Codex/review comments, and risk scope. If comments exist, fix first. Human final authority remains the governance boundary. |
 | Source-of-truth priority | Markdown project-control docs and repository evidence outrank `hc_context`, chat memory, and advisory summaries. |
 
@@ -94,13 +94,20 @@ Use `docs/project-control/active-work-registry.md` only for advisory shift-level
 - Use controlled assistant/GitHub connector PR creation for new PRs and Codex primarily for PR-context review/fix assistance.
 - The signature/witness fixture-format proposal and example package are not signing implementation, witness authority, identity finality, C2PA/OpenTimestamps/W3C VC verification, federation, or production readiness.
 
+## Completed signature/witness fixture quickstart navigation
+
+- #900 linked the non-canonical signature/witness fixture package from the verification package CLI quickstart and recorded the local JSON verifier command for inspection.
+- #949 clarified that fixture-specific `signatures_verified=false` and `witnesses_verified=false` keys are visible in full JSON verifier output, while `--summary` remains a shorter operator summary view.
+- These updates are documentation-only navigation and output-mode clarification. They do not add signing implementation, witness authority, identity finality, federation, production readiness, certification, legal truth, or guaranteed correctness.
+- Do not repeat #900 or #949 unless new repository evidence appears.
+
 ## 1. Candidate next working-core PR
 
 - Priority order: 1
-- Mode: docs/test/sample only unless separately authorized.
-- Candidate: link or document the non-canonical signature/witness fixture package from existing verification-package quickstart/example navigation without changing protected areas.
-- Safe output: a small documentation update that preserves advisory-only, public-safe, and `truth_guarantee=false` boundaries.
-- Why it is next: report generator, task planner, signature/witness planning, PR-flow diagnostic evidence, fixture-format planning, and a non-canonical fixture package now exist; the next step should improve discoverability without authority expansion.
+- Mode: report/docs/test/sample only unless separately authorized.
+- Candidate: review source inventory output, test inventory evidence, and branch-count evidence before any cleanup or rewrite proposal.
+- Safe output: a small report, documentation update, or test/sample-only improvement that preserves advisory-only, public-safe, and `truth_guarantee=false` boundaries.
+- Why it is next: #900 and #949 completed the current signature/witness fixture quickstart navigation and output-mode clarification; remaining safe work should use inventory evidence before changing source, tests, branches, protected paths, or authority boundaries.
 
 ## 2. Parked larger implementation work
 
