@@ -1,12 +1,14 @@
-# HC Task Handoff Levels
+# HC Task Handoff Stages
 
 Status: project-control note.
 
-This note records the current HC task handoff levels.
+This note records the current HC task handoff stages.
 
-Current supported levels:
+These stages are a task-handoff taxonomy. They are separate from the authority levels defined in `docs/project-control/agent-operating-model.md`.
 
-- Level 0: prompt preparation.
-- Level 1: manual PR creation from a prepared diff.
+Current supported stages:
 
-Future levels require separate review before use.
+- Handoff Stage A: prompt preparation.
+- Handoff Stage B: manual PR creation from a prepared diff.
+
+Future stages require separate review before use.
