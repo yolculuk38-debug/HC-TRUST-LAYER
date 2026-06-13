@@ -21,6 +21,8 @@ SUPPORTED_COMMANDS: tuple[str, ...] = (
     "risks",
     "review",
     "engineer",
+    "bot",
+    "handoff",
 )
 
 HELP_LINES: tuple[str, ...] = (
@@ -33,6 +35,8 @@ HELP_LINES: tuple[str, ...] = (
     "- /hc risks",
     "- /hc review",
     "- /hc engineer",
+    "- /hc bot",
+    "- /hc handoff",
     "Boundary: advisory only. Human maintainers retain final authority.",
 )
 
@@ -43,6 +47,8 @@ STATUS_LINES: tuple[str, ...] = (
     "- command_interface: documented",
     "- assistant_console_guide: documented",
     "- command_parser: local deterministic parser",
+    "- bot_status_reporter: scripts/hc_bot_status.py",
+    "- task_handoff_helper: scripts/hc_task_handoff.py",
     "- automation_status: issue-comment listener connected for /hc commands",
     "- authority: advisory only; human maintainers retain final authority",
 )
@@ -113,6 +119,30 @@ ENGINEER_LINES: tuple[str, ...] = (
     "Boundary: advisory only. This sequence guides operation but does not perform repository actions.",
 )
 
+BOT_LINES: tuple[str, ...] = (
+    "HC Trust Engineer bot line status:",
+    "- status_reporter: scripts/hc_bot_status.py",
+    "- path_scanner: scripts/hc_control_bot.py",
+    "- report_workflow: .github/workflows/hc-control-bot-report.yml",
+    "- advisory_comment_workflow: .github/workflows/hc-control-bot-advisory-comment.yml",
+    "- command_parser: scripts/hc_assistant_command.py",
+    "- task_planner: scripts/hc_engineer_task_plan.py",
+    "- handoff_helper: scripts/hc_task_handoff.py",
+    "- parked: GitHub App, dashboard UI, live chat UI, LLM memory layer, automatic approval, automatic merge, automatic close, automatic label or assignment",
+    "Boundary: report-only advisory MVP. Human maintainers retain final authority.",
+)
+
+HANDOFF_LINES: tuple[str, ...] = (
+    "HC Trust Engineer handoff bridge:",
+    "- helper: scripts/hc_task_handoff.py",
+    "- input: local JSON task fixture",
+    "- output: machine-readable handoff package and prompt lines",
+    "- use: paste or provide the package to a coding assistant after human review",
+    "- does_not_do: no external-agent invocation, no PR creation, no repository write, no merge decision",
+    "- review_flow: generated PRs still require diff review, comments, review threads, checks, and human gates",
+    "Boundary: advisory only. Human maintainers retain final authority.",
+)
+
 EXPLAIN_TOPICS: dict[str, tuple[str, ...]] = {
     "advisory-only": (
         "HC advisory-only means the system can observe, explain, warn, and suggest.",
@@ -131,8 +161,13 @@ EXPLAIN_TOPICS: dict[str, tuple[str, ...]] = {
     ),
     "commands": (
         "HC Trust Engineer commands use the /hc prefix.",
-        "Implemented local commands include help, status, next, evidence, explain, risks, review, and engineer.",
+        "Implemented local commands include help, status, next, evidence, explain, risks, review, engineer, bot, and handoff.",
         "The parser is local, deterministic, non-LLM, and connected to the /hc issue-comment listener.",
+    ),
+    "handoff": (
+        "The handoff bridge prepares a safe task package for a coding assistant.",
+        "It does not invoke external tools or create PRs by itself.",
+        "Human review remains required before acting on generated work.",
     ),
 }
 
@@ -193,6 +228,7 @@ def _build_explain_lines(args: list[str]) -> tuple[list[str], list[str]]:
                 "- trust-kernel",
                 "- protected-paths",
                 "- commands",
+                "- handoff",
                 "Boundary: advisory only. Human maintainers retain final authority.",
             ],
             ["No topic was provided; returning available static topics."],
@@ -211,7 +247,7 @@ def _build_explain_lines(args: list[str]) -> tuple[list[str], list[str]]:
     return (
         [
             f"No static explanation is available for: {topic}",
-            "Use /hc explain with one of: advisory-only, trust-kernel, protected-paths, commands.",
+            "Use /hc explain with one of: advisory-only, trust-kernel, protected-paths, commands, handoff.",
             "Boundary: advisory only. Human maintainers retain final authority.",
         ],
         ["Unknown explain topic ignored; no repository action was taken."],
@@ -357,6 +393,42 @@ def parse_hc_command(raw_text: str) -> CommandResult:
                 "This operating sequence is not approval, rejection, merge authority, or a truth guarantee.",
             ],
             evidence_source="static HC Trust Engineer operating sequence",
+        )
+
+    if command == "bot":
+        return CommandResult(
+            advisory_only=True,
+            public_safe=True,
+            truth_guarantee=False,
+            human_review_required=True,
+            command_prefix="/hc",
+            command="bot",
+            implemented=True,
+            response_lines=list(BOT_LINES),
+            warnings=[
+                "This local parser does not perform live GitHub state lookup.",
+                "Use scripts/hc_bot_status.py for machine-readable bot-line status.",
+                "This command does not expand automation authority.",
+            ],
+            evidence_source="static bot-line status summary from HC assistant command interface",
+        )
+
+    if command == "handoff":
+        return CommandResult(
+            advisory_only=True,
+            public_safe=True,
+            truth_guarantee=False,
+            human_review_required=True,
+            command_prefix="/hc",
+            command="handoff",
+            implemented=True,
+            response_lines=list(HANDOFF_LINES),
+            warnings=[
+                "This local parser does not create or send a handoff package.",
+                "Use scripts/hc_task_handoff.py with a local task fixture when a handoff package is needed.",
+                "This command does not invoke an external tool, open a PR, or merge anything.",
+            ],
+            evidence_source="static handoff bridge summary from HC assistant command interface",
         )
 
     return CommandResult(
