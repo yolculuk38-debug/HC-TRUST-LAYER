@@ -148,23 +148,42 @@ def test_witness_proof_subject_mismatch(tmp_path):
     assert result["checks"]["witness_proof_present"] is False
 
 
-def test_witness_proof_ignores_unrelated_manifest_hash_field(tmp_path):
+def test_witness_proof_accepts_manifest_content_hash_subject(tmp_path):
     package = tmp_path / "package"
     package.mkdir()
-    unrelated_hash = _sha256_text("unrelated")
-    proof_text = _witness_text(subject_sha256=unrelated_hash)
+    content_hash = _sha256_text("content subject")
+    proof_text = _witness_text(subject_sha256=content_hash)
     _write_package(
         package,
         proof_entry={"path": "witness-proof.json", "sha256": _sha256_text(proof_text)},
         proof_text=proof_text,
-        manifest_extra={"content_hash": unrelated_hash},
+        manifest_extra={"content_hash": content_hash},
     )
 
     result = verify_verification_package(package)
 
-    assert result["status"] == "INVALID"
-    assert result["witness_proof"]["status"] == "SUBJECT_MISMATCH"
-    assert "witness_proof_subject_mismatch:witness-proof.json" in result["conflicting_evidence"]
+    assert result["status"] == "VERIFIED"
+    assert result["witness_proof"]["status"] == "PRESENT"
+    assert result["witness_proof"]["subject_sha256"] == content_hash
+
+
+def test_witness_proof_accepts_manifest_record_hash_subject(tmp_path):
+    package = tmp_path / "package"
+    package.mkdir()
+    record_hash = _sha256_text("record subject")
+    proof_text = _witness_text(subject_sha256=record_hash)
+    _write_package(
+        package,
+        proof_entry={"path": "witness-proof.json", "sha256": _sha256_text(proof_text)},
+        proof_text=proof_text,
+        manifest_extra={"record_hash": record_hash},
+    )
+
+    result = verify_verification_package(package)
+
+    assert result["status"] == "VERIFIED"
+    assert result["witness_proof"]["status"] == "PRESENT"
+    assert result["witness_proof"]["subject_sha256"] == record_hash
 
 
 def test_verify_package_summary_prints_witness_status(tmp_path, capsys):
