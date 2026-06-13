@@ -9,7 +9,7 @@ def _sha256_text(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
 
-def _write_package(package, proof_entry=None, proof_text=None):
+def _write_package(package, proof_entry=None, proof_text=None, manifest_extra=None):
     artifact = package / "metadata" / "source-info.json"
     artifact.parent.mkdir(parents=True)
     artifact.write_text("source-ok", encoding="utf-8")
@@ -23,6 +23,8 @@ def _write_package(package, proof_entry=None, proof_text=None):
             }
         ],
     }
+    if manifest_extra:
+        manifest.update(manifest_extra)
     if proof_entry is not None:
         manifest["witness_proof"] = proof_entry
     if proof_text is not None:
@@ -144,6 +146,25 @@ def test_witness_proof_subject_mismatch(tmp_path):
     assert result["witness_proof"]["status"] == "SUBJECT_MISMATCH"
     assert "witness_proof_subject_mismatch:witness-proof.json" in result["conflicting_evidence"]
     assert result["checks"]["witness_proof_present"] is False
+
+
+def test_witness_proof_ignores_unrelated_manifest_hash_field(tmp_path):
+    package = tmp_path / "package"
+    package.mkdir()
+    unrelated_hash = _sha256_text("unrelated")
+    proof_text = _witness_text(subject_sha256=unrelated_hash)
+    _write_package(
+        package,
+        proof_entry={"path": "witness-proof.json", "sha256": _sha256_text(proof_text)},
+        proof_text=proof_text,
+        manifest_extra={"content_hash": unrelated_hash},
+    )
+
+    result = verify_verification_package(package)
+
+    assert result["status"] == "INVALID"
+    assert result["witness_proof"]["status"] == "SUBJECT_MISMATCH"
+    assert "witness_proof_subject_mismatch:witness-proof.json" in result["conflicting_evidence"]
 
 
 def test_verify_package_summary_prints_witness_status(tmp_path, capsys):
