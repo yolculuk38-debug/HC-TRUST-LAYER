@@ -1,0 +1,98 @@
+name: HC Task Handoff
+about: Prepare a small advisory task package for reviewed implementation
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to prepare a small HC Trust Engineer task handoff.
+
+        This template does not approve, assign, label, merge, close, run an external assistant, or create implementation authority.
+
+  - type: input
+    id: task_title
+    attributes:
+      label: Task title
+      description: One small task only.
+      placeholder: Add a focused project-control note
+    validations:
+      required: true
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: State the intended outcome in one or two short paragraphs.
+    validations:
+      required: true
+
+  - type: textarea
+    id: allowed_scope
+    attributes:
+      label: Allowed path scope
+      description: List expected files or path prefixes. Use narrow scope.
+      placeholder: |
+        docs/project-control/example.md
+    validations:
+      required: true
+
+  - type: textarea
+    id: blocked_scope
+    attributes:
+      label: Blocked scope
+      description: List paths or actions that must not be touched.
+      placeholder: |
+        schema/**
+        validators/**
+        records/**
+        generated/**
+        .github/workflows/**
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence required
+      description: State what evidence must be included before review.
+      placeholder: |
+        Changed files list
+        CI/check status
+        Protected-path assessment
+        Advisory boundary confirmation
+    validations:
+      required: true
+
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation expected
+      description: State expected tests, checks, or docs-only validation.
+      placeholder: |
+        PR checks should run normally.
+        No protected path changes expected.
+    validations:
+      required: true
+
+  - type: textarea
+    id: handoff_package
+    attributes:
+      label: Handoff package
+      description: Paste output from scripts/hc_task_handoff.py if available.
+      render: json
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: boundary
+    attributes:
+      label: Boundary confirmation
+      options:
+        - label: This is advisory only.
+          required: true
+        - label: This does not claim truth guarantee.
+          required: true
+        - label: This does not authorize automatic merge, close, label, assignment, or approval.
+          required: true
+        - label: Human review remains required before implementation expansion.
+          required: true
