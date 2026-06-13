@@ -33,6 +33,49 @@ def test_build_source_inventory_classifies_repository_python_roots(tmp_path):
     assert "security_adjacent_review_recommended" in by_path["src/security/audit.py"]["notes"]
 
 
+def test_build_source_inventory_marks_experimental_and_archive_paths_for_manual_review(tmp_path):
+    (tmp_path / "src/experimental").mkdir(parents=True)
+    (tmp_path / "src/archive").mkdir(parents=True)
+    (tmp_path / "src/active").mkdir(parents=True)
+
+    (tmp_path / "src/experimental/prototype.py").write_text("", encoding="utf-8")
+    (tmp_path / "src/archive/legacy.py").write_text("", encoding="utf-8")
+    (tmp_path / "src/active/module.py").write_text("", encoding="utf-8")
+
+    report = build_source_inventory(tmp_path).to_dict()
+    by_path = {entry["path"]: entry for entry in report["files"]}
+
+    assert by_path["src/experimental/prototype.py"]["category"] == "experimental_or_archival"
+    assert by_path["src/archive/legacy.py"]["category"] == "experimental_or_archival"
+    assert by_path["src/experimental/prototype.py"]["notes"] == ["manual_review_recommended"]
+    assert by_path["src/archive/legacy.py"]["notes"] == ["manual_review_recommended"]
+    assert by_path["src/active/module.py"]["category"] == "source_implementation"
+    assert by_path["src/active/module.py"]["notes"] == []
+
+
+def test_build_source_inventory_respects_explicit_scan_roots(tmp_path):
+    (tmp_path / "src").mkdir()
+    (tmp_path / "scripts").mkdir()
+    (tmp_path / "docs").mkdir()
+
+    (tmp_path / "src/active.py").write_text("", encoding="utf-8")
+    (tmp_path / "scripts/operator.py").write_text("", encoding="utf-8")
+    (tmp_path / "docs/not_scanned.py").write_text("", encoding="utf-8")
+
+    report = build_source_inventory(tmp_path, scan_roots=("src",)).to_dict()
+
+    assert report["roots_scanned"] == ["src"]
+    assert report["python_file_count"] == 1
+    assert report["files"] == [
+        {
+            "path": "src/active.py",
+            "category": "source_implementation",
+            "status": "inventory_only",
+            "notes": [],
+        }
+    ]
+
+
 def test_main_prints_json_inventory_without_modifying_files(tmp_path, capsys):
     (tmp_path / "src").mkdir()
     source = tmp_path / "src/example.py"
