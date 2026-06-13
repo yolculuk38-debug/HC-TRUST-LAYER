@@ -38,6 +38,47 @@ _No response_
 """
 
 
+MARKDOWN_LIST_ISSUE_BODY = """### Task title
+
+- Add protected-path review note
+
+### Goal
+
+- Confirm that markdown list markers do not hide protected paths.
+
+### Allowed path scope
+
+- schema/record-v1.schema.json
+* validators/public_validator.py
++ docs/project-control/example-note.md
+1. records/example.json
+2) generated/example.json
+- [ ] signatures/example.sig
+- [x] federation/example.json
+
+### Blocked scope
+
+- schema/**
+- validators/**
+- records/**
+
+### Evidence required
+
+- Changed files list
+- CI/check status
+- Advisory boundary confirmation
+
+### Validation expected
+
+- PR checks should run normally.
+- Protected path changes must remain visible to the handoff gate.
+
+### Handoff package
+
+_No response_
+"""
+
+
 def test_issue_body_to_fixture_extracts_core_fields():
     fixture = issue_body_to_fixture(ISSUE_BODY)
 
@@ -57,6 +98,53 @@ def test_issue_body_to_fixture_extracts_core_fields():
     assert fixture["open_prs"] == []
     assert fixture["unresolved_review_comments"] == []
     assert fixture["checks"] == []
+
+
+def test_issue_body_to_fixture_strips_common_markdown_list_markers():
+    fixture = issue_body_to_fixture(MARKDOWN_LIST_ISSUE_BODY)
+
+    assert fixture["task_title"] == "Add protected-path review note"
+    assert fixture["goal"] == "Confirm that markdown list markers do not hide protected paths."
+    assert fixture["changed_files"] == [
+        "schema/record-v1.schema.json",
+        "validators/public_validator.py",
+        "docs/project-control/example-note.md",
+        "records/example.json",
+        "generated/example.json",
+        "signatures/example.sig",
+        "federation/example.json",
+    ]
+    assert fixture["blocked_scope"] == ["schema/**", "validators/**", "records/**"]
+    assert fixture["evidence_required"] == [
+        "Changed files list",
+        "CI/check status",
+        "Advisory boundary confirmation",
+    ]
+    assert fixture["validation_expected"] == [
+        "PR checks should run normally.",
+        "Protected path changes must remain visible to the handoff gate.",
+    ]
+
+
+def test_markdown_list_paths_reach_protected_path_handoff_gate():
+    payload = build_issue_handoff(MARKDOWN_LIST_ISSUE_BODY)
+
+    plan = payload["handoff"]["plan"]
+    assert plan["planned_prs"][0]["expected_files"] == [
+        "schema/record-v1.schema.json",
+        "validators/public_validator.py",
+        "docs/project-control/example-note.md",
+        "records/example.json",
+        "generated/example.json",
+        "signatures/example.sig",
+        "federation/example.json",
+    ]
+    assert plan["merge_gate"]["allowed"] is False
+    assert plan["merge_gate"]["human_review_required"] is True
+    assert any(
+        "Protected path touched" in condition and "schema/record-v1.schema.json" in condition
+        for condition in plan["stop_conditions"]
+    )
 
 
 def test_issue_body_handoff_is_advisory_and_does_not_invoke_external_agent():

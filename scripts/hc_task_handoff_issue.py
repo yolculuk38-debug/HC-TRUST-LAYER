@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -30,15 +31,23 @@ FIELD_ALIASES: dict[str, str] = {
     "handoff package": "handoff_package",
 }
 
+LIST_MARKER_PATTERN = re.compile(r"^(?:[-*+]|\d+[.)])\s+")
+CHECKBOX_PATTERN = re.compile(r"^\[(?: |x|X)\]\s+")
+
 
 def _normalize_heading(value: str) -> str:
     return value.strip().strip("#").strip().lower()
 
 
+def _strip_markdown_list_prefix(value: str) -> str:
+    line = LIST_MARKER_PATTERN.sub("", value.strip(), count=1).strip()
+    return CHECKBOX_PATTERN.sub("", line, count=1).strip()
+
+
 def _clean_lines(value: str) -> list[str]:
     lines: list[str] = []
     for raw_line in value.splitlines():
-        line = raw_line.strip()
+        line = _strip_markdown_list_prefix(raw_line)
         if not line or line == "_No response_":
             continue
         if line.startswith("```"):
