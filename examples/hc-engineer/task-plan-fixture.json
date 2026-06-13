@@ -1,0 +1,15 @@
+{
+  "task_title": "Document HC Engineer task-planning flow",
+  "changed_files": [
+    "docs/hc-engineer/task-planning.md"
+  ],
+  "open_prs": [],
+  "unresolved_review_comments": [],
+  "checks": [
+    {
+      "name": "docs",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ]
+}
