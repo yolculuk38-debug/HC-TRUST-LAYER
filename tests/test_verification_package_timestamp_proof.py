@@ -71,6 +71,27 @@ def test_timestamp_proof_present(tmp_path):
     assert result["truth_guarantee"] is False
 
 
+def test_timestamp_proof_rejects_invalid_claimed_at(tmp_path):
+    package = tmp_path / "package"
+    package.mkdir()
+    timestamp_text = json.dumps(
+        {"claimed_at": "not-a-timestamp", "subject_sha256": _sha256_text("source-ok")},
+        sort_keys=True,
+    )
+    _write_package(
+        package,
+        timestamp_entry={"path": "timestamp-proof.json", "sha256": _sha256_text(timestamp_text)},
+        timestamp_text=timestamp_text,
+    )
+
+    result = verify_verification_package(package)
+
+    assert result["status"] == "INVALID"
+    assert result["timestamp_proof"]["status"] == "INVALID"
+    assert result["timestamp_proof"]["reason"] == "timestamp_proof_claimed_at_invalid"
+    assert "timestamp_proof_claimed_at_invalid:timestamp-proof.json" in result["conflicting_evidence"]
+
+
 def test_timestamp_proof_missing(tmp_path):
     package = tmp_path / "package"
     package.mkdir()
