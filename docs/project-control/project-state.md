@@ -7,10 +7,10 @@ This file is the repository-native shift handoff summary for HC-TRUST-LAYER. Eve
 | Field | Status |
 | --- | --- |
 | Current phase | Working verification core / post-runtime stabilization |
-| Active focus | Public validator / explorer planning is synchronized through #821/#822. HC Control Bot, assistant-console, repository assistant baseline, and operator-entry-map state are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Verification package hash core, hardening, CLI, sample, and quickstart are complete through #838/#839/#841/#843. HC Trust Engineer report generator, direct CLI fix, status checkpoint, examples, and quickstart are complete through #872/#873/#874/#875. HC Engineer task planner, skipped-check/manual-review hardening, operator quickstart, and state sync are complete through #888/#889/#890/#891. Signature/witness verification planning, GitHub issue/comment PR-flow diagnostic note, signature/witness fixture-format proposal, non-canonical signature/witness fixture package, and quickstart navigation are complete through #892/#894/#896/#898/#900, with #893 closed as a completed diagnostic issue. |
-| Next up | Continue the working core in small scoped PRs only. Candidate next work: update example navigation or demo index references for the signature/witness fixture package without touching protected paths or adding uncontrolled automation. |
-| Blocked / parked work | Workflow, schema, validator, record, policy, federation, signing, trust-kernel index, generated artifact, QR/hash evidence format, governance-enforcement, authority-changing automation, and production-readiness claims remain parked unless explicitly authorized and validated. |
-| Do-not-repeat references | Treat #628, #629, #630, #631, #682, #683, #685, #686, #688, #701, #794, #795, #796, #811, #813, #814, #820, #821, #822, #823, #824, #826, #828, #831, #834, #838, #839, #841, #843, #872, #873, #874, #875, #888, #889, #890, #891, #892, #893, #894, #896, #898, and #900 as completed references. #812 remains the active HC Assistant Console v2 reference; #763 remains historical only. |
+| Active focus | Public validator / explorer planning is synchronized through #821/#822. HC Control Bot, assistant-console, repository assistant baseline, and operator-entry-map state are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Verification package hash core, hardening, CLI, sample, and quickstart are complete through #838/#839/#841/#843. HC Trust Engineer report generator, direct CLI fix, status checkpoint, examples, and quickstart are complete through #872/#873/#874/#875. HC Engineer task planner, skipped-check/manual-review hardening, operator quickstart, and state sync are complete through #888/#889/#890/#891. Signature/witness verification planning, GitHub issue/comment PR-flow diagnostic note, signature/witness fixture-format proposal, non-canonical signature/witness fixture package, and quickstart navigation are complete through #892/#894/#896/#898/#900, with #893 closed as a completed diagnostic issue. Outside-review follow-up, source inventory triage, normalizer safety tests, integration-test status, source-tree status, security-policy status, and task-ledger sync are complete through #905-#916. |
+| Next up | Continue the working core in small scoped PRs only. Candidate next work: run or review non-mutating source inventory output and test inventory evidence before any source cleanup, test rewrite, branch cleanup, protected-path change, or authority-changing automation. |
+| Blocked / parked work | Workflow, schema, validator, record, policy, federation, signing, trust-kernel index, generated artifact, QR/hash evidence format, governance-enforcement, authority-changing automation, source deletion/archival, and production-readiness claims remain parked unless explicitly authorized and validated. |
+| Do-not-repeat references | Treat #628, #629, #630, #631, #682, #683, #685, #686, #688, #701, #794, #795, #796, #811, #813, #814, #820, #821, #822, #823, #824, #826, #828, #831, #834, #838, #839, #841, #843, #872, #873, #874, #875, #888, #889, #890, #891, #892, #893, #894, #896, #898, #900, and #905-#916 as completed references. #812 remains the active HC Assistant Console v2 reference; #763 remains historical only. |
 | Review / merge rule | Before merge: verify changed files, checks, Codex/review comments, and risk scope. If comments exist, fix first. Human final authority remains the governance boundary. |
 | Protected-path reminder | Do not modify `schema/**`, `validators/**`, `federation/**`, `signatures/**`, `canonical/**`, `policy/**`, `.github/workflows/**`, `records/**`, generated artifacts, QR/hash evidence, or trust-kernel indexes unless explicitly requested and approved. |
 | Source-of-truth priority | Repository markdown docs, merged files, checks, PR evidence, and human review decisions outrank chat memory and advisory machine-readable context. |
@@ -49,6 +49,7 @@ The `v0.1.0` tag remains the initial protected protocol infrastructure and relea
 - #896 signature/witness fixture-format proposal: recorded a docs-only fixture shape for future `signature_proof` and existing local `witness_proof` evidence without implementing signing or changing protected paths.
 - #898 signature/witness fixture package: added a non-canonical example package and test that demonstrate local fixture evidence while keeping `signatures_verified=false`, `witnesses_verified=false`, and `truth_guarantee=false`.
 - #900 verification package quickstart update: linked the signature/witness fixture package from the CLI quickstart and recorded the local command to inspect it.
+- #905-#916 outside-review follow-up: triaged outside-review claims against repository evidence, added source inventory support, locked normalizer safety behavior, corrected integration-test status, recorded source-tree/security-policy finding status, and synchronized the task ledger.
 
 ## Completed verification package hash core sequence
 
@@ -84,6 +85,23 @@ The `v0.1.0` tag remains the initial protected protocol infrastructure and relea
 - The diagnostic outcome is that assistant-generated success claims must be checked against GitHub source-of-truth: branch visibility, PR visibility, changed files, checks, and merge state.
 - Do not treat issue/comment based new-PR creation as reliable without repository evidence. Use PR-context review/fix assistance only after a real GitHub PR exists.
 - Do not treat the signature fixture proposal, example package, or quickstart navigation as signing implementation, witness authority, identity finality, C2PA/OpenTimestamps/W3C VC verification, federation, or production readiness.
+
+## Completed outside-review follow-up sequence
+
+- #905 added the initial outside-review triage and separated confirmed evidence from unverified findings.
+- #906 added source inventory triage after direct repository searches.
+- #907 added the non-mutating source inventory reporter and tests.
+- #908 updated finding status after early verification.
+- #909 locked `src/normalize_records.py` safe-write behavior with tests.
+- #910 added the initial test inventory note.
+- #911 corrected the root-level integration test note after `test_integration.py` was found.
+- #912 added integration-test finding status.
+- #913 synchronized the main triage table.
+- #914 added source-tree finding status.
+- #915 added security-policy finding status.
+- #916 added the external audit follow-up checkpoint and synchronized the task ledger.
+- The completed decision is: do not treat outside-review claims as repository truth without GitHub evidence; do not delete, move, archive, or rewrite source/tests from name-based assumptions; use inventory evidence first.
+- Remaining care items are source inventory review, test inventory review, and branch-count confirmation through reliable branch listing or manual GitHub UI verification.
 
 ## Completed public validator / public explorer planning sequence
 
@@ -126,18 +144,20 @@ The `v0.1.0` tag remains the initial protected protocol infrastructure and relea
 - First practical layer is local package integrity: manifest + SHA-256 + missing/conflicting evidence + local CLI entry point + sample package.
 - HC Trust Engineer report and task-planning helpers now provide local operator evidence and planning discipline for small PR flow.
 - Signature/witness planning, signature/witness fixture-format planning, a non-canonical signature/witness fixture package, and quickstart navigation now exist as documentation/example next-layer boundaries; implementation remains parked unless explicitly authorized.
+- Outside-review follow-up is synchronized through #916. Use repository evidence first; do not act on unverified outside-review claims.
 - GitHub issue/comment assisted PR creation was tested as diagnostic evidence; do not rely on reported success until GitHub source-of-truth confirms branch, PR, changed files, and checks.
 - Later layers are example navigation, demo index references, QR/canonical-domain binding, C2PA/OpenTimestamps references, federation, dispute/governance, and public UX.
-- Avoid repeating completed public validator/public explorer planning, HC Control Bot comment governance, HC Control Bot reviewer-role roadmap synchronization, HC Engineer command-surface status checkpointing, repository assistant baseline work, operator-entry-map synchronization, assistant-console rotation, telemetry contract, replay / continuity, runtime stabilization review, validator pipeline nested response contract work, verification package hash-core/CLI/sample work, report-generator work, task-planner work, signature/witness proposal work, signature/witness fixture-format proposal work, signature/witness example-package work, signature/witness quickstart navigation work, or GitHub PR-flow diagnostic work unless new repository evidence appears.
+- Avoid repeating completed public validator/public explorer planning, HC Control Bot comment governance, HC Control Bot reviewer-role roadmap synchronization, HC Engineer command-surface status checkpointing, repository assistant baseline work, operator-entry-map synchronization, assistant-console rotation, telemetry contract, replay / continuity, runtime stabilization review, validator pipeline nested response contract work, verification package hash-core/CLI/sample work, report-generator work, task-planner work, signature/witness proposal work, signature/witness fixture-format proposal work, signature/witness example-package work, signature/witness quickstart navigation work, GitHub PR-flow diagnostic work, or outside-review follow-up triage unless new repository evidence appears.
 
 ## Next safe task
 
 The next safe task is either:
 
-1. Link the signature/witness fixture package from existing example/demo navigation where appropriate; or
-2. Add a small documentation note that distinguishes `examples/verification-package/` local verifier packages from `examples/verification-packages/` MVP-1 viewer fixtures without changing validators, schemas, records, signing, federation, policy, runtime code, or workflows.
+1. Review source inventory output and classify current source files before any cleanup; or
+2. Inventory current tests and root-level integration scripts before changing test behavior; or
+3. Confirm branch count through reliable branch listing or GitHub UI before any branch cleanup.
 
-Recommended decision language after this synchronization is complete: **SIGNATURE-WITNESS QUICKSTART STATE SYNCHRONIZED**.
+Do not delete, move, archive, or rewrite source files from name-based assumptions alone.
 
 ## Shift-change checklist
 
