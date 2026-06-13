@@ -76,21 +76,23 @@ A second non-canonical example package is available at:
 examples/verification-package/signature-witness-fixture/
 ```
 
-Run it with:
+Run the full JSON verifier output for this fixture package:
 
 ```bash
-hc-trust verify-package examples/verification-package/signature-witness-fixture --summary
+hc-trust verify-package examples/verification-package/signature-witness-fixture
 ```
 
-This package demonstrates local fixture files for `signature-proof.json` and `witness-proof.json` without granting new verification authority. The expected boundary remains:
+This package demonstrates local fixture files for `signature-proof.json` and `witness-proof.json` without granting new verification authority. In the full JSON output, inspect the fixture-related checks for the expected boundary:
 
 ```text
 advisory_only: true
 public_safe: true
 truth_guarantee: false
-signatures_verified: false
-witnesses_verified: false
+checks.signatures_verified: false
+checks.witnesses_verified: false
 ```
+
+Use `--summary` only when you need the shorter operator summary fields; the fixture-specific signature and witness check keys are visible in the full JSON output.
 
 If a listed file is missing, changed, malformed, or outside the package boundary, the command returns non-zero and reports `missing_evidence` or `conflicting_evidence`.
 
