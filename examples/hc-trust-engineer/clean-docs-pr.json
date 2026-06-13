@@ -1,0 +1,20 @@
+{
+  "repository": "yolculuk38-debug/HC-TRUST-LAYER",
+  "event_type": "pull_request",
+  "target_number": 1000,
+  "base_sha": "example-base-sha",
+  "head_sha": "example-head-sha",
+  "open_prs": [1000],
+  "changed_files": [
+    "docs/demo/example.md"
+  ],
+  "checks": [
+    {
+      "name": "HC-TRUST-LAYER Validation",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "unresolved_threads": [],
+  "missing_evidence": []
+}
