@@ -20,6 +20,7 @@ SUPPORTED_COMMANDS: tuple[str, ...] = (
     "explain",
     "risks",
     "review",
+    "engineer",
 )
 
 HELP_LINES: tuple[str, ...] = (
@@ -31,6 +32,7 @@ HELP_LINES: tuple[str, ...] = (
     "- /hc explain <topic-or-path>",
     "- /hc risks",
     "- /hc review",
+    "- /hc engineer",
     "Boundary: advisory only. Human maintainers retain final authority.",
 )
 
@@ -96,6 +98,21 @@ REVIEW_LINES: tuple[str, ...] = (
     "Boundary: advisory only. This checklist prepares human review but does not perform review decisions.",
 )
 
+ENGINEER_LINES: tuple[str, ...] = (
+    "HC Trust Engineer operating sequence:",
+    "- plan_task: split the request into the minimum number of small scoped PRs",
+    "- check_open_prs: do not start new work while another PR is open",
+    "- check_duplicates: inspect stale branches, duplicate PRs, and completed references before opening work",
+    "- open_small_pr: prefer docs-only, test-only, or narrow implementation slices",
+    "- handle_review: read Codex and human review comments before checks or merge",
+    "- resolve_threads: fix valid comments and confirm review threads are resolved",
+    "- inspect_checks: wait for queued or pending checks; inspect failures before continuing",
+    "- merge_when_clean: merge only when scope, comments, threads, checks, and protected-path assessment are clean",
+    "- cleanup_after_merge: verify PR closure, open PR count, duplicate PRs, and project-control recording needs",
+    "- never_claim_authority: no approval, rejection, merge guarantee, legal truth, production readiness, or truth finality from this command",
+    "Boundary: advisory only. This sequence guides operation but does not perform repository actions.",
+)
+
 EXPLAIN_TOPICS: dict[str, tuple[str, ...]] = {
     "advisory-only": (
         "HC advisory-only means the system can observe, explain, warn, and suggest.",
@@ -114,7 +131,7 @@ EXPLAIN_TOPICS: dict[str, tuple[str, ...]] = {
     ),
     "commands": (
         "HC Trust Engineer commands use the /hc prefix.",
-        "Implemented local commands include help, status, next, evidence, explain, risks, and review.",
+        "Implemented local commands include help, status, next, evidence, explain, risks, review, and engineer.",
         "The parser is local, deterministic, non-LLM, and connected to the /hc issue-comment listener.",
     ),
 }
@@ -183,7 +200,11 @@ def _build_explain_lines(args: list[str]) -> tuple[list[str], list[str]]:
 
     if topic in EXPLAIN_TOPICS:
         return (
-            [f"HC Trust Engineer explanation: {topic}", *EXPLAIN_TOPICS[topic], "Boundary: advisory only. Human maintainers retain final authority."],
+            [
+                f"HC Trust Engineer explanation: {topic}",
+                *EXPLAIN_TOPICS[topic],
+                "Boundary: advisory only. Human maintainers retain final authority.",
+            ],
             [],
         )
 
@@ -318,6 +339,24 @@ def parse_hc_command(raw_text: str) -> CommandResult:
                 "This checklist is not approval, rejection, merge authority, or a truth guarantee.",
             ],
             evidence_source="static review preparation checklist from HC assistant command interface",
+        )
+
+    if command == "engineer":
+        return CommandResult(
+            advisory_only=True,
+            public_safe=True,
+            truth_guarantee=False,
+            human_review_required=True,
+            command_prefix="/hc",
+            command="engineer",
+            implemented=True,
+            response_lines=list(ENGINEER_LINES),
+            warnings=[
+                "This local parser does not perform live GitHub state lookup.",
+                "Use live PR, checks, comments, and review-thread evidence before acting.",
+                "This operating sequence is not approval, rejection, merge authority, or a truth guarantee.",
+            ],
+            evidence_source="static HC Trust Engineer operating sequence",
         )
 
     return CommandResult(
