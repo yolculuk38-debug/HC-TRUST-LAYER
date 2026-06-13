@@ -8,7 +8,7 @@ This file lists safe, advisory next work for HC-TRUST-LAYER. Each item is report
 | --- | --- |
 | Current phase | Working verification core / post-runtime stabilization |
 | Active focus | Public validator and public explorer planning/navigation are synchronized through #821/#822. HC Control Bot, assistant-console, repository assistant baseline, and operator-entry-map state are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Verification package hash core and local CLI sequence is complete through #843. HC Trust Engineer report generator, import fix, status checkpoint, and quickstart examples are complete through #872/#873/#874/#875. |
-| Next up | Docs-only synchronization after #875, then a narrow fixture/example improvement or a separately reviewed trust-layer proposal. |
+| Next up | #875 project-control sync is being completed by this PR. After merge, the next candidate is a narrow fixture/example improvement or a separately reviewed trust-layer proposal. |
 | Blocked / parked work | Larger trust layers and authority-changing automation remain parked unless explicitly authorized and reviewed. |
 | Do-not-repeat references | #628, #629, #630, #631, #820/#821/#822, #823/#824, #826, #828, #831, #834, #838, #839, #841, #843, #872, #873, #874, and #875 are completed references. #812 remains active console and #763 remains historical only. |
 | Review / merge rule | Before merge: verify changed files, checks, Codex/review comments, and risk scope. If comments exist, fix first. Human final authority remains the governance boundary. |
@@ -73,16 +73,16 @@ Use `docs/project-control/active-work-registry.md` only for advisory shift-level
 - It does not create approval, rejection, merge, close, label, assignment, reviewer-request, external network, or truth-finality authority.
 - Do not repeat #872/#873/#874/#875 unless new repository evidence appears.
 
-## 1. Docs-only synchronization after #875
+## 1. Project-control synchronization after #875
 
-- Priority order: 1
+- Priority order: completed by #881 when merged.
 - Mode: docs only.
 - Safe output: project-control docs reflect #872/#873/#874/#875 and do-not-repeat boundaries.
-- Why it is next: project-control must match merged report-generator state before the next working-core slice.
+- After #881 merges, do not schedule another #875 sync unless new repository evidence appears.
 
 ## 2. Candidate next working-core PR
 
-- Priority order: 2
+- Priority order: 1 after #881 merges.
 - Mode: docs/test/sample only unless separately authorized.
 - Candidate: add a narrow fixture/example improvement for `scripts/hc_trust_engineer_report.py`, or prepare the next trust-layer proposal.
 - Safe output: a small example, test, or proposal that demonstrates existing behavior without changing protected areas.
@@ -90,7 +90,7 @@ Use `docs/project-control/active-work-registry.md` only for advisory shift-level
 
 ## 3. Parked larger implementation work
 
-- Priority order: 3
+- Priority order: parked.
 - Mode: blocked unless explicitly authorized.
 - Parked examples: issue comment integration, GitHub Actions integration for this generator, VPS runner, GitHub App runner, label application, assignment, reviewer requests, witness authority, QR/canonical-domain binding, C2PA ingestion, OpenTimestamps verification, federation, dispute/governance implementation, and production-readiness claims.
 
