@@ -12,14 +12,15 @@ This note starts the source-inventory pass requested after the external audit tr
 | CLI entry point | `src/hc_trust/cli.py` | Active implementation | Exposes `hc-trust verify-package`. |
 | Verification package tests | `tests/test_verification_package_hash_core.py`, `tests/test_verification_package_sample.py`, `tests/test_verification_package_witness_proof.py`, `tests/test_verification_package_timestamp_proof.py` | Active tests | Cover local package core, sample package, witness proof, timestamp proof, and fixture behavior. |
 | Runtime telemetry surface | `src/hc_runtime/routes/health.py`, `tests/runtime/test_telemetry_payload_contract.py`, `tests/test_hc_runtime_app.py`, `tests/test_hc_runtime_response_contracts.py` | Active / needs focused review | Telemetry and runtime response contracts already have source and test anchors. |
+| Record normalizer | `src/normalize_records.py`, `tests/test_normalize_records.py` | Active utility with focused tests | Current main includes explicit normalizer safety controls and archived-path marker coverage. |
+| Root integration script | `test_integration.py` | Existing root-level script | Evaluate coverage against the current file and broader tests tree before changing behavior. |
 
 ## Not confirmed during this pass
 
 | External finding | Current triage result | Next action |
 | --- | --- | --- |
-| `normalize_records.py` silently rewrites records. | Not found by root-path lookup or content search in this pass. | Search workflow references and archive-related docs before opening any fix PR. |
 | Large number of stub or experimental source files. | Not classified yet. | Create a non-mutating source inventory table before moving or deleting anything. |
-| Integration tests cover only narrow examples. | Not classified yet. | Inventory current tests before editing test behavior. |
+| Integration tests cover only narrow examples. | Partially classified. | Inventory current tests before editing test behavior. |
 | Shortened historical or genesis hashes. | Not classified yet. | Identify exact files and evidence source before editing historical records. |
 | Excess branch count. | Not confirmed by current branch search tooling. | Verify in GitHub UI or reliable branch listing before cleanup. |
 
@@ -34,6 +35,6 @@ Do not start by deleting, moving, or archiving source files. The safe sequence i
 
 ## Next safe action
 
-Continue with a source inventory note or script that lists repository Python files and their rough category without changing implementation behavior.
+Continue with source inventory output and small follow-up PRs that are based on current repository evidence.
 
 Human final authority remains required for deletion, archival, or protected-path changes.
