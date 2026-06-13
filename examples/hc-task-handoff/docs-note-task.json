@@ -1,0 +1,15 @@
+{
+  "task_title": "Add focused project-control note",
+  "changed_files": [
+    "docs/project-control/example-note.md"
+  ],
+  "checks": [
+    {
+      "name": "ci",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "open_prs": [],
+  "unresolved_review_comments": []
+}
