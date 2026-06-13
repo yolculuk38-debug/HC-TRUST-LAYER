@@ -1,0 +1,24 @@
+{
+  "package_id": "HC-SAMPLE-SIGNATURE-WITNESS-001",
+  "record_id": "HC-SAMPLE-RECORD-SIGNATURE-WITNESS",
+  "schema_version": "verification-package-fixture-v1",
+  "subject_sha256": "219be39a3ef201d61c23b11f91a69bc4f0793291aa2405347fab3a4534a60046",
+  "files": [
+    {
+      "path": "metadata/source-info.txt",
+      "sha256": "219be39a3ef201d61c23b11f91a69bc4f0793291aa2405347fab3a4534a60046"
+    },
+    {
+      "path": "signature-proof.json",
+      "sha256": "622ddaba8d79249b9f85ed9310b0e86aad654fc6212606755b300a8d1d6b3d2c"
+    }
+  ],
+  "signature_proof": {
+    "path": "signature-proof.json",
+    "sha256": "622ddaba8d79249b9f85ed9310b0e86aad654fc6212606755b300a8d1d6b3d2c"
+  },
+  "witness_proof": {
+    "path": "witness-proof.json",
+    "sha256": "fd70126524b24e872e5aed2580677349390d8f60f64fa8384aa0f0f7e134508a"
+  }
+}
