@@ -10,9 +10,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 from scripts.hc_control_bot import scan_changed_paths
 
@@ -109,7 +114,9 @@ def _normalize_checks(value: Any) -> list[dict[str, Any]]:
                     "conclusion": None if conclusion is None else str(conclusion),
                 }
             )
-    return sorted(checks, key=lambda entry: (entry["name"], entry["status"], str(entry["conclusion"])))
+    return sorted(
+        checks, key=lambda entry: (entry["name"], entry["status"], str(entry["conclusion"]))
+    )
 
 
 def _build_stop_reasons(
