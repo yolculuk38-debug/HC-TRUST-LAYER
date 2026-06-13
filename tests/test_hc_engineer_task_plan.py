@@ -113,3 +113,35 @@ def test_output_always_preserves_advisory_public_truth_boundaries(tmp_path, caps
     assert payload["advisory_only"] is True
     assert payload["public_safe"] is True
     assert payload["truth_guarantee"] is False
+
+
+def test_scanner_human_review_path_without_protected_path_blocks_clean_merge_gate():
+    plan = build_plan(
+        {
+            "task_title": "Align package version notes",
+            "changed_files": ["pyproject.toml"],
+            "checks": [{"name": "tests", "status": "completed", "conclusion": "success"}],
+        }
+    ).to_dict()
+
+    assert "protected_paths_require_human_review" not in plan["stop_conditions"]
+    assert "scanner_human_review_required" in plan["stop_conditions"]
+    assert plan["planned_prs"][0]["human_review_required"] is True
+    assert plan["merge_gate"]["requires_human_review"] is True
+    assert plan["merge_gate"]["allowed"] is False
+    assert plan["merge_gate"]["state"] != "allowed_after_checks"
+    assert any("human review" in step for step in plan["review_order"])
+
+
+def test_completed_skipped_check_does_not_count_as_success():
+    plan = build_plan(
+        {
+            "task_title": "Skipped check task",
+            "changed_files": ["docs/skipped.md"],
+            "checks": [{"name": "docs", "status": "completed", "conclusion": "skipped"}],
+        }
+    ).to_dict()
+
+    assert "checks_skipped_require_human_review" in plan["stop_conditions"]
+    assert plan["merge_gate"]["allowed"] is False
+    assert plan["merge_gate"]["state"] != "allowed_after_checks"
