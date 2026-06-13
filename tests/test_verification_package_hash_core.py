@@ -48,10 +48,21 @@ def test_verification_package_hash_core_verifies_manifest_files(tmp_path):
         "sha256_only": True,
         "issuer_proof_checked": False,
         "issuer_proof_present": False,
+        "issuer_identity_verified": False,
+        "timestamp_proof_checked": False,
+        "timestamp_proof_present": False,
+        "external_timestamp_verified": False,
+        "witness_proof_checked": False,
+        "witness_proof_present": False,
         "signatures_verified": False,
         "witnesses_verified": False,
     }
-    assert result["issuer_proof"] == {"status": "NOT_PROVIDED", "checked": False, "path": None}
+    assert result["issuer_proof"] == {
+        "status": "NOT_PROVIDED",
+        "checked": False,
+        "path": None,
+        "identity_verified": False,
+    }
     assert result["files"] == [
         {
             "path": "metadata/source-info.json",
@@ -180,8 +191,10 @@ def test_verification_package_issuer_proof_present(tmp_path):
     assert result["status"] == "VERIFIED"
     assert result["checks"]["issuer_proof_checked"] is True
     assert result["checks"]["issuer_proof_present"] is True
+    assert result["checks"]["issuer_identity_verified"] is False
     assert result["issuer_proof"]["status"] == "PRESENT"
     assert result["issuer_proof"]["issuer"] == "HC-SAMPLE-ISSUER"
+    assert result["issuer_proof"]["identity_verified"] is False
 
 
 def test_verification_package_issuer_proof_missing(tmp_path):
@@ -210,7 +223,9 @@ def test_verification_package_issuer_proof_missing(tmp_path):
     assert result["status"] == "INVALID"
     assert result["checks"]["issuer_proof_checked"] is True
     assert result["checks"]["issuer_proof_present"] is False
+    assert result["checks"]["issuer_identity_verified"] is False
     assert result["issuer_proof"]["status"] == "MISSING"
+    assert result["issuer_proof"]["identity_verified"] is False
     assert "file_missing:issuer-proof.json" in result["missing_evidence"]
 
 
@@ -241,7 +256,9 @@ def test_verification_package_issuer_proof_malformed(tmp_path):
     result = verify_verification_package(package)
 
     assert result["status"] == "INVALID"
+    assert result["checks"]["issuer_identity_verified"] is False
     assert result["issuer_proof"]["status"] == "INVALID"
+    assert result["issuer_proof"]["identity_verified"] is False
     assert result["issuer_proof"]["reason"] == "issuer_proof_json_invalid"
     assert "issuer_proof_json_invalid:issuer-proof.json" in result["conflicting_evidence"]
 
@@ -272,7 +289,9 @@ def test_verification_package_issuer_proof_mismatch(tmp_path):
     result = verify_verification_package(package)
 
     assert result["status"] == "INVALID"
+    assert result["checks"]["issuer_identity_verified"] is False
     assert result["issuer_proof"]["status"] == "MISMATCH"
+    assert result["issuer_proof"]["identity_verified"] is False
     assert "sha256_mismatch:issuer-proof.json" in result["conflicting_evidence"]
 
 

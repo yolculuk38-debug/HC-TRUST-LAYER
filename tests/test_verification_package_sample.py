@@ -17,9 +17,11 @@ def test_sample_verification_package_is_verified():
     assert result["human_review_required"] is False
     assert result["checks"]["issuer_proof_checked"] is True
     assert result["checks"]["issuer_proof_present"] is True
+    assert result["checks"]["issuer_identity_verified"] is False
     assert result["issuer_proof"]["status"] == "PRESENT"
     assert result["issuer_proof"]["issuer"] == "HC-SAMPLE-ISSUER"
     assert result["issuer_proof"]["statement"] == "sample package issued"
+    assert result["issuer_proof"]["identity_verified"] is False
     assert result["checks"]["timestamp_proof_checked"] is True
     assert result["checks"]["timestamp_proof_present"] is True
     assert result["checks"]["external_timestamp_verified"] is False
