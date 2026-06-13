@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 
 RECORDS_DIR = Path("records")
-PROTECTED_PARTS = {"archive", "verified"}
+PROTECTED_PARTS = {"archive", "archived", "verified"}
 
 
 def is_protected_record(record_path: Path) -> bool:
