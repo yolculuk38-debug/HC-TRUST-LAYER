@@ -28,6 +28,17 @@ python3 scripts/validate_verification_package_examples.py
 
 Expected behavior is `PASS` output per file when JSON parsing succeeds and all required MVP-1 fields are present. Any `FAIL` output indicates fixture issues that should be resolved before demo review usage.
 
+## Local verifier package examples
+
+The repository also contains local CLI verifier packages under `examples/verification-package/`.
+
+These are separate from the MVP-1 viewer fixtures in `examples/verification-packages/`:
+
+- `examples/verification-package/valid/` is the minimal local verifier package.
+- `examples/verification-package/signature-witness-fixture/` is a non-canonical local fixture package for the documented signature/witness evidence shape.
+
+Use `docs/verification-package-cli-quickstart.md` for the local verifier commands. These packages remain local-only, advisory-only, and do not change MVP-1 viewer bundle behavior.
+
 ## PASS / WARNING / FAIL interpretation
 
 Use the following interpretation pattern in MVP-1 review surfaces.
@@ -92,6 +103,7 @@ To support mobile readability in MVP-1:
 - `docs/mvp-1-cli-viewer.md`
 - `docs/static-viewer.md`
 - `docs/verification-viewer.html`
+- `docs/verification-package-cli-quickstart.md`
 
 
 ## Package copy and download controls
