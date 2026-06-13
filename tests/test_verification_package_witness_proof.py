@@ -81,6 +81,48 @@ def test_witness_proof_present_with_subject_binding(tmp_path):
     assert result["truth_guarantee"] is False
 
 
+def test_witness_proof_accepts_content_hash_subject(tmp_path):
+    package = tmp_path / "package"
+    package.mkdir()
+    content_hash = _sha256_text("content subject")
+    proof_text = _witness_text(subject_sha256=content_hash)
+    _write_package(
+        package,
+        proof_entry={"path": "witness-proof.json", "sha256": _sha256_text(proof_text)},
+        proof_text=proof_text,
+        manifest_extra={"content_hash": content_hash},
+    )
+
+    result = verify_verification_package(package)
+
+    assert result["status"] == "VERIFIED"
+    assert result["witness_proof"]["status"] == "PRESENT"
+    assert result["witness_proof"]["subject_sha256"] == content_hash
+    assert result["checks"]["witness_proof_present"] is True
+    assert result["truth_guarantee"] is False
+
+
+def test_witness_proof_accepts_record_hash_subject(tmp_path):
+    package = tmp_path / "package"
+    package.mkdir()
+    record_hash = _sha256_text("record subject")
+    proof_text = _witness_text(subject_sha256=record_hash)
+    _write_package(
+        package,
+        proof_entry={"path": "witness-proof.json", "sha256": _sha256_text(proof_text)},
+        proof_text=proof_text,
+        manifest_extra={"record_hash": record_hash},
+    )
+
+    result = verify_verification_package(package)
+
+    assert result["status"] == "VERIFIED"
+    assert result["witness_proof"]["status"] == "PRESENT"
+    assert result["witness_proof"]["subject_sha256"] == record_hash
+    assert result["checks"]["witness_proof_present"] is True
+    assert result["truth_guarantee"] is False
+
+
 def test_witness_proof_missing(tmp_path):
     package = tmp_path / "package"
     package.mkdir()
@@ -148,7 +190,7 @@ def test_witness_proof_subject_mismatch(tmp_path):
     assert result["checks"]["witness_proof_present"] is False
 
 
-def test_witness_proof_ignores_unrelated_manifest_hash_field(tmp_path):
+def test_witness_proof_ignores_unrelated_manifest_field(tmp_path):
     package = tmp_path / "package"
     package.mkdir()
     unrelated_hash = _sha256_text("unrelated")
@@ -157,7 +199,7 @@ def test_witness_proof_ignores_unrelated_manifest_hash_field(tmp_path):
         package,
         proof_entry={"path": "witness-proof.json", "sha256": _sha256_text(proof_text)},
         proof_text=proof_text,
-        manifest_extra={"content_hash": unrelated_hash},
+        manifest_extra={"unrelated_hash": unrelated_hash},
     )
 
     result = verify_verification_package(package)
