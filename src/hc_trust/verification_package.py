@@ -357,7 +357,13 @@ def _verify_issuer_proof_entry(
 
     if not isinstance(entry, dict):
         conflicting_evidence.append("issuer_proof_entry_not_object")
-        return {"status": "INVALID", "checked": True, "path": None, "reason": "entry_not_object"}
+        return {
+            "status": "INVALID",
+            "checked": True,
+            "path": None,
+            "identity_verified": False,
+            "reason": "entry_not_object",
+        }
 
     file_result = _verify_manifest_file_entry(
         package_root=package_root,
@@ -373,6 +379,7 @@ def _verify_issuer_proof_entry(
         "checked": True,
         "path": relative_path,
         "file": file_result,
+        "identity_verified": False,
     }
 
     if file_result["status"] != "MATCH":
@@ -412,6 +419,7 @@ def _verify_issuer_proof_entry(
             "status": "PRESENT",
             "issuer": proof["issuer"],
             "statement": proof["statement"],
+            "identity_verified": False,
         }
     )
     return result
@@ -597,7 +605,7 @@ def _verify_witness_proof_entry(
 
 
 def _issuer_proof_not_provided() -> dict[str, Any]:
-    return {"status": "NOT_PROVIDED", "checked": False, "path": None}
+    return {"status": "NOT_PROVIDED", "checked": False, "path": None, "identity_verified": False}
 
 
 def _timestamp_proof_not_provided() -> dict[str, Any]:
@@ -712,6 +720,7 @@ def _build_response(
             "sha256_only": True,
             "issuer_proof_checked": issuer_proof.get("checked", False),
             "issuer_proof_present": issuer_proof.get("status") == "PRESENT",
+            "issuer_identity_verified": issuer_proof.get("identity_verified", False),
             "timestamp_proof_checked": timestamp_proof.get("checked", False),
             "timestamp_proof_present": timestamp_proof.get("status") == "PRESENT",
             "external_timestamp_verified": timestamp_proof.get("external_verified", False),
