@@ -19,6 +19,8 @@ def test_help_command_lists_core_commands():
     assert "- /hc risks" in result["response_lines"]
     assert "- /hc review" in result["response_lines"]
     assert "- /hc engineer" in result["response_lines"]
+    assert "- /hc bot" in result["response_lines"]
+    assert "- /hc handoff" in result["response_lines"]
 
 
 def test_empty_hc_command_defaults_to_help():
@@ -37,6 +39,8 @@ def test_status_command_is_static_and_advisory():
     assert result["truth_guarantee"] is False
     assert "- assistant_console_issue: #812" in result["response_lines"]
     assert "- historical_console_issue: #763" in result["response_lines"]
+    assert "- bot_status_reporter: scripts/hc_bot_status.py" in result["response_lines"]
+    assert "- task_handoff_helper: scripts/hc_task_handoff.py" in result["response_lines"]
     assert (
         "- automation_status: issue-comment listener connected for /hc commands"
         in result["response_lines"]
@@ -83,6 +87,7 @@ def test_explain_command_lists_topics_when_no_topic_is_provided():
     assert result["truth_guarantee"] is False
     assert "HC Trust Engineer explain topics:" in result["response_lines"]
     assert "- advisory-only" in result["response_lines"]
+    assert "- handoff" in result["response_lines"]
     assert "No topic was provided; returning available static topics." in result["warnings"]
 
 
@@ -105,8 +110,18 @@ def test_explain_commands_topic_reflects_listener_connection():
     assert result["command"] == "explain"
     assert result["implemented"] is True
     assert any("connected to the /hc issue-comment listener" in line for line in result["response_lines"])
-    assert any("review, and engineer" in line for line in result["response_lines"])
+    assert any("review, engineer, bot, and handoff" in line for line in result["response_lines"])
     assert not any("not connected to issue comments yet" in line for line in result["response_lines"])
+
+
+def test_explain_handoff_topic_describes_bridge_boundary():
+    result = parse_hc_command("/hc explain handoff").to_dict()
+
+    assert result["command"] == "explain"
+    assert result["implemented"] is True
+    assert any("safe task package" in line for line in result["response_lines"])
+    assert any("does not invoke external tools" in line for line in result["response_lines"])
+    assert result["truth_guarantee"] is False
 
 
 def test_explain_unknown_topic_is_advisory_only():
@@ -177,6 +192,34 @@ def test_engineer_command_returns_static_operating_sequence():
         == "static HC Trust Engineer operating sequence"
     )
     assert "This local parser does not perform live GitHub state lookup." in result["warnings"]
+
+
+def test_bot_command_returns_static_bot_line_status():
+    result = parse_hc_command("/hc bot").to_dict()
+
+    assert result["command"] == "bot"
+    assert result["implemented"] is True
+    assert result["advisory_only"] is True
+    assert result["public_safe"] is True
+    assert result["truth_guarantee"] is False
+    assert result["human_review_required"] is True
+    assert "HC Trust Engineer bot line status:" in result["response_lines"]
+    assert "- status_reporter: scripts/hc_bot_status.py" in result["response_lines"]
+    assert "- handoff_helper: scripts/hc_task_handoff.py" in result["response_lines"]
+    assert any("does not expand automation authority" in warning for warning in result["warnings"])
+
+
+def test_handoff_command_returns_static_bridge_summary():
+    result = parse_hc_command("/hc handoff").to_dict()
+
+    assert result["command"] == "handoff"
+    assert result["implemented"] is True
+    assert result["advisory_only"] is True
+    assert result["truth_guarantee"] is False
+    assert result["human_review_required"] is True
+    assert "HC Trust Engineer handoff bridge:" in result["response_lines"]
+    assert "- helper: scripts/hc_task_handoff.py" in result["response_lines"]
+    assert any("does not create or send" in warning for warning in result["warnings"])
 
 
 def test_unknown_command_is_ignored():
@@ -275,3 +318,29 @@ def test_cli_outputs_machine_readable_engineer_json(capsys):
     assert payload["advisory_only"] is True
     assert payload["human_review_required"] is True
     assert payload["evidence_source"] == "static HC Trust Engineer operating sequence"
+
+
+def test_cli_outputs_machine_readable_bot_json(capsys):
+    exit_code = main(["/hc", "bot"])
+
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+
+    assert exit_code == 0
+    assert payload["command"] == "bot"
+    assert payload["implemented"] is True
+    assert payload["advisory_only"] is True
+    assert "- status_reporter: scripts/hc_bot_status.py" in payload["response_lines"]
+
+
+def test_cli_outputs_machine_readable_handoff_json(capsys):
+    exit_code = main(["/hc", "handoff"])
+
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+
+    assert exit_code == 0
+    assert payload["command"] == "handoff"
+    assert payload["implemented"] is True
+    assert payload["advisory_only"] is True
+    assert "- helper: scripts/hc_task_handoff.py" in payload["response_lines"]
