@@ -7,10 +7,10 @@ This file lists safe, advisory next work for HC-TRUST-LAYER. Each item is report
 | Field | Status |
 | --- | --- |
 | Current phase | Working verification core / post-runtime stabilization |
-| Active focus | Public validator and public explorer planning/navigation are synchronized through #821/#822. HC Control Bot, assistant-console, repository assistant baseline, and operator-entry-map state are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Verification package hash core and local CLI sequence is complete through #843. HC Trust Engineer report generator, import fix, status checkpoint, and quickstart examples are complete through #872/#873/#874/#875. HC Engineer task planner, skipped-check/manual-review hardening, operator quickstart, and state synchronization are complete through #888/#889/#890/#891. Signature/witness planning and GitHub issue/comment PR-flow diagnostic evidence are recorded through #892/#893/#894. |
-| Next up | A narrow signature/witness fixture-format proposal or a small verification-package fixture/example improvement. Do not repeat completed task-planner, report-generator, verification package, bot, public-validator, public-explorer, signature/witness proposal, or PR-flow diagnostic work. |
-| Blocked / parked work | Larger trust layers, issue-comment based autonomous PR creation, GitHub Actions integration, VPS runners, GitHub App runners, label/assignment/reviewer-request automation, and authority-changing automation remain parked unless explicitly authorized and reviewed. |
-| Do-not-repeat references | #628, #629, #630, #631, #820/#821/#822, #823/#824, #826, #828, #831, #834, #838, #839, #841, #843, #872, #873, #874, #875, #888, #889, #890, #891, #892, #893, and #894 are completed references. #812 remains active console and #763 remains historical only. |
+| Active focus | Public validator and public explorer planning/navigation are synchronized through #821/#822. HC Control Bot, assistant-console, repository assistant baseline, and operator-entry-map state are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Verification package hash core and local CLI sequence is complete through #843. HC Trust Engineer report generator, import fix, status checkpoint, and quickstart examples are complete through #872/#873/#874/#875. HC Engineer task planner, skipped-check/manual-review hardening, operator quickstart, and state synchronization are complete through #888/#889/#890/#891. Signature/witness planning, GitHub issue/comment PR-flow diagnostic evidence, and signature/witness fixture-format planning are recorded through #892/#893/#894/#896. |
+| Next up | A non-canonical verification-package fixture/example that demonstrates the documented `signature_proof` and `witness_proof` fixture shapes without claiming real signing or witness verification. Do not repeat completed task-planner, report-generator, verification package, bot, public-validator, public-explorer, signature/witness proposal, fixture-format proposal, or PR-flow diagnostic work. |
+| Blocked / parked work | Larger trust layers, issue-comment based autonomous PR creation, GitHub Actions integration, VPS runners, GitHub App runners, label/assignment/reviewer-request automation, signing implementation, witness authority, and authority-changing automation remain parked unless explicitly authorized and reviewed. |
+| Do-not-repeat references | #628, #629, #630, #631, #820/#821/#822, #823/#824, #826, #828, #831, #834, #838, #839, #841, #843, #872, #873, #874, #875, #888, #889, #890, #891, #892, #893, #894, and #896 are completed references. #812 remains active console and #763 remains historical only. |
 | Review / merge rule | Before merge: verify changed files, checks, Codex/review comments, and risk scope. If comments exist, fix first. Human final authority remains the governance boundary. |
 | Source-of-truth priority | Markdown project-control docs and repository evidence outrank `hc_context`, chat memory, and advisory summaries. |
 
@@ -88,22 +88,24 @@ Use `docs/project-control/active-work-registry.md` only for advisory shift-level
 - #892 added a docs-only signature/witness verification proposal.
 - #893 tested GitHub issue/comment based new-PR creation as diagnostic evidence and is closed as completed.
 - #894 added a docs-only GitHub PR-flow note.
+- #896 added a docs-only signature/witness fixture-format proposal.
 - The diagnostic outcome: assistant or Codex claims about branch/commit/PR creation must be verified against GitHub source-of-truth. If the branch or PR is not visible in GitHub, it is not complete.
 - Use controlled assistant/GitHub connector PR creation for new PRs and Codex primarily for PR-context review/fix assistance.
+- The signature/witness fixture-format proposal is not signing implementation, witness authority, identity finality, C2PA/OpenTimestamps/W3C VC verification, federation, or production readiness.
 
 ## 1. Candidate next working-core PR
 
 - Priority order: 1
 - Mode: docs/test/sample only unless separately authorized.
-- Candidate: prepare a narrow signature/witness fixture-format proposal or add a small verification-package fixture/example improvement only if it demonstrates existing behavior without changing protected areas.
+- Candidate: add a non-canonical verification-package fixture/example that demonstrates the documented `signature_proof` and `witness_proof` fixture shapes without changing protected areas.
 - Safe output: a small example, test, or proposal that preserves advisory-only, public-safe, and `truth_guarantee=false` boundaries.
-- Why it is next: report generator, task planner, signature/witness planning, and PR-flow diagnostic evidence now exist; any next step should keep the same small scoped discipline and avoid authority expansion.
+- Why it is next: report generator, task planner, signature/witness planning, PR-flow diagnostic evidence, and fixture-format planning now exist; any next step should keep the same small scoped discipline and avoid authority expansion.
 
 ## 2. Parked larger implementation work
 
 - Priority order: 2
 - Mode: blocked unless explicitly authorized.
-- Parked examples: issue-comment based autonomous PR creation, GitHub Actions integration for this generator, VPS runner, GitHub App runner, label application, assignment, reviewer requests, witness authority, QR/canonical-domain binding, C2PA ingestion, OpenTimestamps verification, federation, dispute/governance implementation, and production-readiness claims.
+- Parked examples: issue-comment based autonomous PR creation, GitHub Actions integration for this generator, VPS runner, GitHub App runner, label application, assignment, reviewer requests, signing implementation, witness authority, QR/canonical-domain binding, C2PA ingestion, OpenTimestamps verification, federation, dispute/governance implementation, and production-readiness claims.
 
 ## Stale-context guidance
 

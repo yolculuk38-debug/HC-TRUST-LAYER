@@ -7,10 +7,10 @@ This file is the repository-native shift handoff summary for HC-TRUST-LAYER. Eve
 | Field | Status |
 | --- | --- |
 | Current phase | Working verification core / post-runtime stabilization |
-| Active focus | Public validator / explorer planning is synchronized through #821/#822. HC Control Bot, assistant-console, repository assistant baseline, and operator-entry-map state are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Verification package hash core, hardening, CLI, sample, and quickstart are complete through #838/#839/#841/#843. HC Trust Engineer report generator, direct CLI fix, status checkpoint, examples, and quickstart are complete through #872/#873/#874/#875. HC Engineer task planner, skipped-check/manual-review hardening, operator quickstart, and state sync are complete through #888/#889/#890/#891. Signature/witness verification planning and the GitHub issue/comment PR-flow diagnostic note are complete through #892/#894, with #893 closed as a completed diagnostic issue. |
-| Next up | Continue the working core in small scoped PRs only. Candidate next work: a narrow fixture/example or proposal that builds on the signature/witness planning layer without touching protected paths or adding uncontrolled automation. |
+| Active focus | Public validator / explorer planning is synchronized through #821/#822. HC Control Bot, assistant-console, repository assistant baseline, and operator-entry-map state are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Verification package hash core, hardening, CLI, sample, and quickstart are complete through #838/#839/#841/#843. HC Trust Engineer report generator, direct CLI fix, status checkpoint, examples, and quickstart are complete through #872/#873/#874/#875. HC Engineer task planner, skipped-check/manual-review hardening, operator quickstart, and state sync are complete through #888/#889/#890/#891. Signature/witness verification planning, GitHub issue/comment PR-flow diagnostic note, and signature/witness fixture-format proposal are complete through #892/#894/#896, with #893 closed as a completed diagnostic issue. |
+| Next up | Continue the working core in small scoped PRs only. Candidate next work: a non-canonical verification-package fixture/example that demonstrates the documented signature/witness fixture shape without touching protected paths or adding uncontrolled automation. |
 | Blocked / parked work | Workflow, schema, validator, record, policy, federation, signing, trust-kernel index, generated artifact, QR/hash evidence format, governance-enforcement, authority-changing automation, and production-readiness claims remain parked unless explicitly authorized and validated. |
-| Do-not-repeat references | Treat #628, #629, #630, #631, #682, #683, #685, #686, #688, #701, #794, #795, #796, #811, #813, #814, #820, #821, #822, #823, #824, #826, #828, #831, #834, #838, #839, #841, #843, #872, #873, #874, #875, #888, #889, #890, #891, #892, #893, and #894 as completed references. #812 remains the active HC Assistant Console v2 reference; #763 remains historical only. |
+| Do-not-repeat references | Treat #628, #629, #630, #631, #682, #683, #685, #686, #688, #701, #794, #795, #796, #811, #813, #814, #820, #821, #822, #823, #824, #826, #828, #831, #834, #838, #839, #841, #843, #872, #873, #874, #875, #888, #889, #890, #891, #892, #893, #894, and #896 as completed references. #812 remains the active HC Assistant Console v2 reference; #763 remains historical only. |
 | Review / merge rule | Before merge: verify changed files, checks, Codex/review comments, and risk scope. If comments exist, fix first. Human final authority remains the governance boundary. |
 | Protected-path reminder | Do not modify `schema/**`, `validators/**`, `federation/**`, `signatures/**`, `canonical/**`, `policy/**`, `.github/workflows/**`, `records/**`, generated artifacts, QR/hash evidence, or trust-kernel indexes unless explicitly requested and approved. |
 | Source-of-truth priority | Repository markdown docs, merged files, checks, PR evidence, and human review decisions outrank chat memory and advisory machine-readable context. |
@@ -46,6 +46,7 @@ The `v0.1.0` tag remains the initial protected protocol infrastructure and relea
 - #891 project-control synchronization: recorded the task-planner quickstart sequence after #888/#889/#890.
 - #892 signature/witness verification proposal: added a documentation-only planning layer for future signature and witness verification without touching protected implementation paths.
 - #893/#894 GitHub issue/comment PR-flow diagnostic: tested the issue/comment assisted PR path, recorded that GitHub source-of-truth must still verify actual branches and PRs, and merged a docs-only operations note through #894.
+- #896 signature/witness fixture-format proposal: recorded a docs-only fixture shape for future `signature_proof` and existing local `witness_proof` evidence without implementing signing or changing protected paths.
 
 ## Completed verification package hash core sequence
 
@@ -75,8 +76,10 @@ The `v0.1.0` tag remains the initial protected protocol infrastructure and relea
 - #892 added `docs/verification/signature-witness-verification-proposal.md` as a documentation-only planning layer for future signature and witness verification.
 - #893 tested whether a GitHub issue/comment request could drive a branch, commit, and PR flow. It is closed as completed diagnostic evidence, not as implementation authority.
 - #894 added `docs/operations/github-pr-flow-note.md`, recording the controlled assistant GitHub PR-flow note and preserving human final authority.
+- #896 added `docs/verification/signature-witness-fixture-format-proposal.md`, recording a fixture-format proposal for future `signature_proof` and existing local `witness_proof` evidence.
 - The diagnostic outcome is that assistant-generated success claims must be checked against GitHub source-of-truth: branch visibility, PR visibility, changed files, checks, and merge state.
 - Do not treat issue/comment based new-PR creation as reliable without repository evidence. Use PR-context review/fix assistance only after a real GitHub PR exists.
+- Do not treat the signature fixture proposal as signing implementation, witness authority, identity finality, C2PA/OpenTimestamps/W3C VC verification, federation, or production readiness.
 
 ## Completed public validator / public explorer planning sequence
 
@@ -118,19 +121,19 @@ The `v0.1.0` tag remains the initial protected protocol infrastructure and relea
 - Continue the working verification core in small, reviewable slices.
 - First practical layer is local package integrity: manifest + SHA-256 + missing/conflicting evidence + local CLI entry point + sample package.
 - HC Trust Engineer report and task-planning helpers now provide local operator evidence and planning discipline for small PR flow.
-- Signature/witness planning now exists as a documentation-only next-layer boundary; implementation remains parked unless explicitly authorized.
+- Signature/witness planning and signature/witness fixture-format planning now exist as documentation-only next-layer boundaries; implementation remains parked unless explicitly authorized.
 - GitHub issue/comment assisted PR creation was tested as diagnostic evidence; do not rely on reported success until GitHub source-of-truth confirms branch, PR, changed files, and checks.
-- Later layers are signature/witness verification fixtures, QR/canonical-domain binding, C2PA/OpenTimestamps references, federation, dispute/governance, and public UX.
-- Avoid repeating completed public validator/public explorer planning, HC Control Bot comment governance, HC Control Bot reviewer-role roadmap synchronization, HC Engineer command-surface status checkpointing, repository assistant baseline work, operator-entry-map synchronization, assistant-console rotation, telemetry contract, replay / continuity, runtime stabilization review, validator pipeline nested response contract work, verification package hash-core/CLI/sample work, report-generator work, task-planner work, signature/witness proposal work, or GitHub PR-flow diagnostic work unless new repository evidence appears.
+- Later layers are non-canonical signature/witness fixture examples, QR/canonical-domain binding, C2PA/OpenTimestamps references, federation, dispute/governance, and public UX.
+- Avoid repeating completed public validator/public explorer planning, HC Control Bot comment governance, HC Control Bot reviewer-role roadmap synchronization, HC Engineer command-surface status checkpointing, repository assistant baseline work, operator-entry-map synchronization, assistant-console rotation, telemetry contract, replay / continuity, runtime stabilization review, validator pipeline nested response contract work, verification package hash-core/CLI/sample work, report-generator work, task-planner work, signature/witness proposal work, signature/witness fixture-format proposal work, or GitHub PR-flow diagnostic work unless new repository evidence appears.
 
 ## Next safe task
 
 The next safe task is either:
 
-1. A narrow signature/witness fixture-format proposal that remains docs-only and does not touch protected implementation paths; or
+1. A non-canonical verification-package fixture/example that demonstrates the documented `signature_proof` and `witness_proof` fixture shapes without touching protected implementation paths; or
 2. A small verification-package fixture/example improvement that demonstrates existing behavior without changing validators, schemas, records, signing, federation, policy, runtime code, or workflows.
 
-Recommended decision language after this synchronization is complete: **PR-FLOW DIAGNOSTIC STATE SYNCHRONIZED**.
+Recommended decision language after this synchronization is complete: **SIGNATURE-WITNESS FIXTURE STATE SYNCHRONIZED**.
 
 ## Shift-change checklist
 
