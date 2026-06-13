@@ -15,6 +15,7 @@ This document helps human contributors, AI assistants, and agentic tools quickly
 - HC Trust Engineer command surface is implemented as a narrow deterministic `/hc` command interface and recorded by the #826 status checkpoint.
 - Repository assistant baseline status is recorded by #828.
 - HC Control Bot advisory observation and reviewer-role suggestion behavior is implemented as advisory-only operating-layer support.
+- Local verifier example navigation status is recorded by `docs/project-control/local-verifier-example-navigation-status.md`.
 
 ## Operating Layer Quick Path
 
@@ -71,8 +72,9 @@ Boundary: advisory only. Human maintainers retain final authority.
 9. docs/project-control/hc-trust-engineer-command-interface.md
 10. docs/project-control/hc-engineer-command-surface-status.md
 11. docs/project-control/repository-assistant-baseline-status.md
-12. docs/project-control/hc-assistant-console-issue-template.md
-13. docs/terminology-audit.md
+12. docs/project-control/local-verifier-example-navigation-status.md
+13. docs/project-control/hc-assistant-console-issue-template.md
+14. docs/terminology-audit.md
 
 ## Public Validator Planning Reference
 
@@ -144,6 +146,7 @@ Historical provenance records must not be silently rewritten.
 - assistant console discoverability only if new evidence appears
 - command-surface follow-up only if new evidence appears
 - repository assistant baseline follow-up only if new evidence appears
+- local verifier example navigation only when repository evidence changes
 - navigation improvements
 - onboarding improvements
 - public validator navigation refreshes only when repository evidence changes
