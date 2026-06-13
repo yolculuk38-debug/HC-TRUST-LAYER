@@ -7,10 +7,10 @@ This file is the repository-native shift handoff summary for HC-TRUST-LAYER. Eve
 | Field | Status |
 | --- | --- |
 | Current phase | Working verification core / post-runtime stabilization |
-| Active focus | Public validator / explorer planning and navigation are synchronized through #821/#822; HC Control Bot, assistant-console, repository assistant baseline, and operator-entry-map state are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Verification package hash core was added in #838, hardened in #839, exposed through the local CLI in #841, and documented with a sample package / quickstart in #843. |
-| Next up | Continue the working core in small scoped PRs only. Candidate next work: a narrow report or proposal for the next trust layer, likely signature/witness verification or QR/canonical-domain binding. Do not reopen #838/#839/#841/#843 hash-core, CLI, sample, or quickstart work unless new repository evidence appears. |
-| Blocked / parked work | Workflow, schema, validator, record, policy, federation, signing, trust-kernel index, generated artifact, QR/hash evidence format, governance-enforcement, and production-readiness claims remain parked unless explicitly authorized and validated. |
-| Do-not-repeat references | Treat #628, #629, #630, #631, #682, #683, #685, #686, #688, #701, #794, #795, #796, #811, #813, #814, #820, #821, #822, #823, #824, #826, #828, #831, #834, #838, #839, #841, and #843 as completed references. #812 remains the active HC Assistant Console v2 reference; #763 remains historical only. |
+| Active focus | Public validator / explorer planning is synchronized through #821/#822. HC Control Bot, assistant-console, repository assistant baseline, and operator-entry-map state are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Verification package hash core, hardening, CLI, sample, and quickstart are complete through #838/#839/#841/#843. HC Trust Engineer report generator, direct CLI fix, status checkpoint, examples, and quickstart are complete through #872/#873/#874/#875. HC Engineer task planner, skipped-check/manual-review hardening, and operator quickstart are complete through #888/#889/#890. |
+| Next up | Continue the working core in small scoped PRs only. Candidate next work: a narrow next trust-layer proposal or fixture/example improvement that does not reopen completed task-planner, report-generator, hash-core, CLI, sample, quickstart, bot, or public-validator planning work. |
+| Blocked / parked work | Workflow, schema, validator, record, policy, federation, signing, trust-kernel index, generated artifact, QR/hash evidence format, governance-enforcement, authority-changing automation, and production-readiness claims remain parked unless explicitly authorized and validated. |
+| Do-not-repeat references | Treat #628, #629, #630, #631, #682, #683, #685, #686, #688, #701, #794, #795, #796, #811, #813, #814, #820, #821, #822, #823, #824, #826, #828, #831, #834, #838, #839, #841, #843, #872, #873, #874, #875, #888, #889, and #890 as completed references. #812 remains the active HC Assistant Console v2 reference; #763 remains historical only. |
 | Review / merge rule | Before merge: verify changed files, checks, Codex/review comments, and risk scope. If comments exist, fix first. Human final authority remains the governance boundary. |
 | Protected-path reminder | Do not modify `schema/**`, `validators/**`, `federation/**`, `signatures/**`, `canonical/**`, `policy/**`, `.github/workflows/**`, `records/**`, generated artifacts, QR/hash evidence, or trust-kernel indexes unless explicitly requested and approved. |
 | Source-of-truth priority | Repository markdown docs, merged files, checks, PR evidence, and human review decisions outrank chat memory and advisory machine-readable context. |
@@ -36,6 +36,13 @@ The `v0.1.0` tag remains the initial protected protocol infrastructure and relea
 - #839 verification package hash core hardening: handled malformed manifest files without raising and enforced resolved package-path containment before hashing.
 - #841 verification package CLI entry point: added `hc-trust verify-package <package_path>` around the local hash core.
 - #843 verification package sample / quickstart: added a minimal valid package, quickstart, and regression test for the CLI/core path.
+- #872 HC Trust Engineer report generator: added local deterministic report-only advisory JSON generation from local fixtures.
+- #873 report generator CLI import fix: preserved direct script execution.
+- #874 report generator status checkpoint: recorded report-only boundaries and direct CLI behavior.
+- #875 report generator quickstart/examples: added clean-docs and protected-path fixtures plus quickstart instructions.
+- #888 HC Engineer task planner: added deterministic advisory task planning, review order, merge gates, and post-merge cleanup.
+- #889 task planner hardening: treated skipped checks and scanner human-review signals as manual-review merge blockers.
+- #890 task planner quickstart: documented operator usage, output fields, and required blocker examples.
 
 ## Completed verification package hash core sequence
 
@@ -46,6 +53,18 @@ The `v0.1.0` tag remains the initial protected protocol infrastructure and relea
 - This is the first usable local verification-package integrity slice: manifest, listed file existence, SHA-256 match, missing/conflicting evidence, CLI entry point, and sample package.
 - It does not verify legal truth, QR authenticity, signatures, witnesses, C2PA assertions, OpenTimestamps attestations, federation state, or production readiness.
 - Do not repeat #838/#839/#841/#843 unless new repository evidence appears.
+
+## Completed HC Trust Engineer report generator and task planner sequence
+
+- #872 added `scripts/hc_trust_engineer_report.py` and tests for local deterministic report-only advisory JSON generation from local fixtures.
+- #873 fixed direct script execution import behavior for the report generator.
+- #874 recorded the report generator status checkpoint and locked report-only, local-only, public-safe, and advisory-only boundaries.
+- #875 added clean-docs and protected-path report fixtures plus quickstart instructions for the report generator.
+- #888 added `scripts/hc_engineer_task_plan.py`, a task-plan fixture, and tests for deterministic advisory PR planning, one-open-PR discipline, review order, merge gates, and post-merge cleanup.
+- #889 hardened the task planner so scanner human-review signals and skipped checks block merge guidance and set `merge_gate.requires_human_review=true`.
+- #890 added `docs/hc-engineer/task-planner-quickstart.md` documenting planner usage, output fields, clean docs-only, open PR, unresolved review/Codex, skipped-check, and scanner-marked human-review examples.
+- The report generator and task planner remain local, deterministic, report-only/operator-aid surfaces. They do not create approval, rejection, merge, close, label, assignment, reviewer-request, external network, LLM, truth-finality, or production-readiness authority.
+- Do not repeat #872/#873/#874/#875/#888/#889/#890 unless new repository evidence appears.
 
 ## Completed public validator / public explorer planning sequence
 
@@ -86,17 +105,18 @@ The `v0.1.0` tag remains the initial protected protocol infrastructure and relea
 - Keep onboarding, navigation, and project-control documents synchronized with current repository state.
 - Continue the working verification core in small, reviewable slices.
 - First practical layer is local package integrity: manifest + SHA-256 + missing/conflicting evidence + local CLI entry point + sample package.
+- HC Trust Engineer report and task-planning helpers now provide local operator evidence and planning discipline for small PR flow.
 - Later layers are signature/witness verification, QR/canonical-domain binding, C2PA/OpenTimestamps references, federation, dispute/governance, and public UX.
-- Avoid repeating completed public validator/public explorer planning, HC Control Bot comment governance, HC Control Bot reviewer-role roadmap synchronization, HC Engineer command-surface status checkpointing, repository assistant baseline work, operator-entry-map synchronization, assistant-console rotation, telemetry contract, replay / continuity, runtime stabilization review, validator pipeline nested response contract work, or verification package hash-core/CLI/sample work unless new repository evidence appears.
+- Avoid repeating completed public validator/public explorer planning, HC Control Bot comment governance, HC Control Bot reviewer-role roadmap synchronization, HC Engineer command-surface status checkpointing, repository assistant baseline work, operator-entry-map synchronization, assistant-console rotation, telemetry contract, replay / continuity, runtime stabilization review, validator pipeline nested response contract work, verification package hash-core/CLI/sample work, report-generator work, or task-planner work unless new repository evidence appears.
 
 ## Next safe task
 
 The next safe task is either:
 
-1. A documentation-only synchronization after #843; or
+1. A documentation-only synchronization after #890; or
 2. A narrow evidence/report proposal for the next trust layer before implementation.
 
-Recommended decision language after a navigation refresh is complete: **NAVIGATION REFRESH COMPLETE**.
+Recommended decision language after this synchronization is complete: **TASK PLANNER STATE SYNCHRONIZED**.
 
 ## Shift-change checklist
 

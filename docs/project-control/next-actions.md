@@ -7,10 +7,10 @@ This file lists safe, advisory next work for HC-TRUST-LAYER. Each item is report
 | Field | Status |
 | --- | --- |
 | Current phase | Working verification core / post-runtime stabilization |
-| Active focus | Public validator and public explorer planning/navigation are synchronized through #821/#822. HC Control Bot, assistant-console, repository assistant baseline, and operator-entry-map state are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Verification package hash core and local CLI sequence is complete through #843. HC Trust Engineer report generator, import fix, status checkpoint, quickstart examples, and project-control sync are complete through #872/#873/#874/#875/#876. |
-| Next up | A narrow fixture/example improvement or a separately reviewed trust-layer proposal. Do not repeat the #875/#876 project-control synchronization unless new repository evidence appears. |
+| Active focus | Public validator and public explorer planning/navigation are synchronized through #821/#822. HC Control Bot, assistant-console, repository assistant baseline, and operator-entry-map state are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Verification package hash core and local CLI sequence is complete through #843. HC Trust Engineer report generator, import fix, status checkpoint, and quickstart examples are complete through #872/#873/#874/#875. HC Engineer task planner, skipped-check/manual-review hardening, and operator quickstart are complete through #888/#889/#890. |
+| Next up | A documentation-only synchronization after #890, then a narrow next trust-layer proposal or fixture/example improvement if new repository evidence justifies it. Do not repeat completed task-planner, report-generator, verification package, bot, public-validator, or public-explorer planning work. |
 | Blocked / parked work | Larger trust layers and authority-changing automation remain parked unless explicitly authorized and reviewed. |
-| Do-not-repeat references | #628, #629, #630, #631, #820/#821/#822, #823/#824, #826, #828, #831, #834, #838, #839, #841, #843, #872, #873, #874, #875, and #876 are completed references. #812 remains active console and #763 remains historical only. |
+| Do-not-repeat references | #628, #629, #630, #631, #820/#821/#822, #823/#824, #826, #828, #831, #834, #838, #839, #841, #843, #872, #873, #874, #875, #888, #889, and #890 are completed references. #812 remains active console and #763 remains historical only. |
 | Review / merge rule | Before merge: verify changed files, checks, Codex/review comments, and risk scope. If comments exist, fix first. Human final authority remains the governance boundary. |
 | Source-of-truth priority | Markdown project-control docs and repository evidence outrank `hc_context`, chat memory, and advisory summaries. |
 
@@ -69,18 +69,26 @@ Use `docs/project-control/active-work-registry.md` only for advisory shift-level
 - #873 fixed direct script execution import behavior.
 - #874 recorded the generator status and locked report-only boundaries.
 - #875 added clean-docs and protected-path example fixtures plus a quickstart.
-- #876 synchronized project-control next-actions and task-ledger state after the completed generator and quickstart sequence.
 - The generator remains local, deterministic, report-only, public-safe, and advisory-only.
 - It does not create approval, rejection, merge, close, label, assignment, reviewer-request, external network, or truth-finality authority.
-- Do not repeat #872/#873/#874/#875/#876 unless new repository evidence appears.
+- Do not repeat #872/#873/#874/#875 unless new repository evidence appears.
+
+## Completed HC Engineer task planner slice
+
+- #888 added a local deterministic advisory task planner for one-open-PR discipline, review order, merge gates, and post-merge cleanup.
+- #889 hardened the planner after Codex review so skipped checks and scanner human-review signals require human review and block merge guidance.
+- #890 added the operator quickstart for planner usage, output fields, and required blocker examples.
+- The planner remains local, deterministic, public-safe, advisory-only, and `truth_guarantee=false`.
+- It does not create approval, rejection, merge, close, label, assignment, reviewer-request, external network, LLM, or truth-finality authority.
+- Do not repeat #888/#889/#890 unless new repository evidence appears.
 
 ## 1. Candidate next working-core PR
 
 - Priority order: 1
 - Mode: docs/test/sample only unless separately authorized.
-- Candidate: add a narrow fixture/example improvement for `scripts/hc_trust_engineer_report.py`, or prepare the next trust-layer proposal.
-- Safe output: a small example, test, or proposal that demonstrates existing behavior without changing protected areas.
-- Why it is next: the report generator and quickstart now exist; any next step should keep the same small scoped discipline.
+- Candidate: after #890 state synchronization, prepare a narrow next trust-layer proposal or add a small fixture/example improvement only if it demonstrates existing behavior without changing protected areas.
+- Safe output: a small example, test, or proposal that preserves advisory-only, public-safe, and `truth_guarantee=false` boundaries.
+- Why it is next: report generator and task planner helper surfaces now exist; any next step should keep the same small scoped discipline and avoid authority expansion.
 
 ## 2. Parked larger implementation work
 
