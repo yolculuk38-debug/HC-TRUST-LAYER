@@ -10,6 +10,7 @@ authority, or production readiness.
 
 from __future__ import annotations
 
+from datetime import datetime
 import hashlib
 import json
 from pathlib import Path
@@ -481,6 +482,11 @@ def _verify_timestamp_proof_entry(
         result.update({"status": "INVALID", "reason": "timestamp_proof_required_field_missing"})
         return result
 
+    if not _is_valid_claimed_at(proof["claimed_at"]):
+        conflicting_evidence.append(f"timestamp_proof_claimed_at_invalid:{relative_path}")
+        result.update({"status": "INVALID", "reason": "timestamp_proof_claimed_at_invalid"})
+        return result
+
     if not _looks_like_sha256(proof["subject_sha256"]):
         conflicting_evidence.append(f"timestamp_proof_subject_sha256_invalid:{relative_path}")
         result.update({"status": "INVALID", "reason": "timestamp_proof_subject_sha256_invalid"})
@@ -604,16 +610,16 @@ def _witness_proof_not_provided() -> dict[str, Any]:
 
 def _collect_local_subject_sha256s(manifest: dict[str, Any], files: list[dict[str, Any]]) -> set[str]:
     subjects: set[str] = set()
-    for key in ("subject_sha256", "content_sha256", "content_hash", "record_sha256", "record_hash", "package_sha256"):
-        value = manifest.get(key)
-        if isinstance(value, str) and _looks_like_sha256(value.lower()):
-            subjects.add(value.lower())
+    explicit_subject = manifest.get("subject_sha256")
+    if isinstance(explicit_subject, str) and _looks_like_sha256(explicit_subject.lower()):
+        subjects.add(explicit_subject.lower())
 
     for file_result in files:
-        for key in ("expected_sha256", "actual_sha256"):
-            value = file_result.get(key)
-            if isinstance(value, str) and _looks_like_sha256(value.lower()):
-                subjects.add(value.lower())
+        if file_result.get("status") != "MATCH":
+            continue
+        value = file_result.get("actual_sha256")
+        if isinstance(value, str) and _looks_like_sha256(value.lower()):
+            subjects.add(value.lower())
     return subjects
 
 
@@ -654,6 +660,15 @@ def _looks_like_sha256(value: str) -> bool:
     except ValueError:
         return False
     return True
+
+
+def _is_valid_claimed_at(value: str) -> bool:
+    normalized = value[:-1] + "+00:00" if value.endswith("Z") else value
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError:
+        return False
+    return parsed.tzinfo is not None and parsed.tzinfo.utcoffset(parsed) is not None
 
 
 def _sha256_file(file_path: Path) -> str:
