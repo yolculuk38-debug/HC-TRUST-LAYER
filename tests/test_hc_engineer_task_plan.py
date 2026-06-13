@@ -143,5 +143,6 @@ def test_completed_skipped_check_does_not_count_as_success():
     ).to_dict()
 
     assert "checks_skipped_require_human_review" in plan["stop_conditions"]
+    assert plan["merge_gate"]["requires_human_review"] is True
     assert plan["merge_gate"]["allowed"] is False
     assert plan["merge_gate"]["state"] != "allowed_after_checks"
