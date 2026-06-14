@@ -618,9 +618,10 @@ def _witness_proof_not_provided() -> dict[str, Any]:
 
 def _collect_local_subject_sha256s(manifest: dict[str, Any], files: list[dict[str, Any]]) -> set[str]:
     subjects: set[str] = set()
-    explicit_subject = manifest.get("subject_sha256")
-    if isinstance(explicit_subject, str) and _looks_like_sha256(explicit_subject.lower()):
-        subjects.add(explicit_subject.lower())
+    for key in ("subject_sha256", "content_hash", "record_hash"):
+        value = manifest.get(key)
+        if isinstance(value, str) and _looks_like_sha256(value.lower()):
+            subjects.add(value.lower())
 
     for file_result in files:
         if file_result.get("status") != "MATCH":
