@@ -122,7 +122,7 @@ Use these HC:// Public Validator demo entry points for a fast, public-safe, advi
 
 1. **Start here:** This file
 2. **Then read:** [`docs/vision/source-and-social-verification.md`](vision/source-and-social-verification.md) — future source, account, media, and social verification direction; vision/planning only.
-3. **Then read:** [`docs/vision/identity-layer-concept.md`](vision/identity-layer-concept.md) — future identity-layer concept for account identity, claimed identity, authority scope, and identity evidence; not implemented.
+3. **Then read:** [`docs/vision/identity-layer-concept.md`](vision/identity-layer-concept.md) — future identity-layer concept for account identity, authority scope, and identity evidence; not implemented.
 4. **Then cross-check:** [`docs/trust-graph.md`](trust-graph.md), [`docs/validator-identity-architecture.md`](validator-identity-architecture.md), and [`docs/future/signed-validator-identity.md`](future/signed-validator-identity.md).
 
 **Boundary:** Vision documents do not implement runtime behavior, schemas, validators, records, QR behavior, signing, federation, policy, or governance enforcement.
@@ -320,7 +320,7 @@ If you cannot run checks in your environment, **state that in the PR** and do no
 
 | PR Type | Merge Requirement |
 |---------|------------------|
-| Docs-only | Auto-merge after checks pass (if labeled `docs-auto`) |
+| Docs-only | Human review and human merge required after checks pass |
 | Code, schema, workflows, src/ | Manual review required (labeled `manual-review`) |
 | Mixed docs + sensitive | Manual review (escalates to `manual-review` by default) |
 | Trust-kernel-adjacent | Explicit justification + human-supervised validation |
@@ -437,7 +437,7 @@ These files intentionally use legacy project names ("Humanity Chain", "Insanlik-
 ### Q: Who decides whether my PR merges?
 
 **A:** The repository owner (`@yolculuk38-debug`). Review requirements are:
-- Docs-only: Auto-merge if checks pass and labeled `docs-auto`
+- Docs-only: Human review and human merge required after checks pass
 - Code/schemas/workflows: Manual review required
 - Trust-kernel-adjacent: Explicit justification + human-supervised validation
 
