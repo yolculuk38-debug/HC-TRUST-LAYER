@@ -143,8 +143,12 @@ def build_parser():
 def main(argv=None):
     parser = build_parser()
     args = parser.parse_args(argv)
+    if args.command == "qr" and not args.batch and not (args.record_id and args.content_hash and args.archive_ref):
+        parser.error("qr için <record_id> <content_hash> <archive_ref> veya --batch gerekli")
+    if args.command == "qr" and args.batch and (args.record_id or args.content_hash or args.archive_ref):
+        parser.error("--batch positional parametrelerle birlikte kullanılamaz.")
     return args.func(args)
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    sys.exit(main())
