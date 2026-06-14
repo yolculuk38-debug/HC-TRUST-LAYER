@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
-"""Local, advisory GitHub ruleset readiness reporter for HC-TRUST-LAYER.
-
-This checker does not call the GitHub API and does not mutate repository
-settings. It reports whether expected local workflow files exist for checks
-that a human may choose to enforce through GitHub branch protection or rulesets.
-"""
+"""Local, advisory GitHub ruleset readiness reporter for HC-TRUST-LAYER."""
 
 from __future__ import annotations
 
@@ -13,16 +8,24 @@ import json
 from pathlib import Path
 from typing import Any
 
-EXPECTED_REQUIRED_CHECKS = [
-    {"name": "validate", "workflow": ".github/workflows/validate.yml"},
+REQUIRED_CHECK_CANDIDATES = [
     {"name": "terminology", "workflow": ".github/workflows/terminology.yml"},
     {"name": "docs-drift", "workflow": ".github/workflows/docs-drift.yml"},
     {"name": "canonical-artifacts", "workflow": ".github/workflows/canonical-artifacts.yml"},
     {"name": "governance-preflight", "workflow": ".github/workflows/governance-preflight.yml"},
-    {"name": "pr-scope-guard", "workflow": ".github/workflows/pr-scope-guard.yml"},
+]
+
+NOT_REQUIRED_READY_CHECKS = [
+    {"name": "validate", "workflow": ".github/workflows/validate.yml", "status": "path_filtered"},
+    {"name": "pr-scope-guard", "workflow": ".github/workflows/pr-scope-guard.yml", "status": "advisory_continue_on_error"},
 ]
 
 PROTECTED_SURFACES = [
+    ".github/CODEOWNERS",
+    "CODEOWNERS",
+    "protocol-graph.json",
+    "verification-map.json",
+    "trust-kernel-index.json",
     ".github/workflows/",
     "docs/project-control/",
     "docs/governance/",
@@ -38,17 +41,21 @@ PROTECTED_SURFACES = [
 ]
 
 
+def _workflow_entries(repo_root: Path, checks: list[dict[str, str]]) -> list[dict[str, Any]]:
+    return [
+        {
+            "name": check["name"],
+            "workflow": check["workflow"],
+            "workflow_exists": (repo_root / check["workflow"]).is_file(),
+            **({"status": check["status"]} if "status" in check else {}),
+        }
+        for check in checks
+    ]
+
+
 def build_report(repo_root: Path) -> dict[str, Any]:
-    workflows = []
-    for check in EXPECTED_REQUIRED_CHECKS:
-        workflow = check["workflow"]
-        workflows.append(
-            {
-                "name": check["name"],
-                "workflow": workflow,
-                "workflow_exists": (repo_root / workflow).is_file(),
-            }
-        )
+    required_candidates = _workflow_entries(repo_root, REQUIRED_CHECK_CANDIDATES)
+    not_required_ready = _workflow_entries(repo_root, NOT_REQUIRED_READY_CHECKS)
     return {
         "advisory_only": True,
         "public_safe": True,
@@ -57,9 +64,10 @@ def build_report(repo_root: Path) -> dict[str, Any]:
         "settings_verified_locally": False,
         "github_api_called": False,
         "mutates_repository_settings": False,
-        "expected_required_checks": workflows,
+        "required_check_candidates": required_candidates,
+        "not_required_ready_checks": not_required_ready,
         "protected_surfaces": PROTECTED_SURFACES,
-        "missing_workflow_files": [item["workflow"] for item in workflows if not item["workflow_exists"]],
+        "missing_workflow_files": [item["workflow"] for item in required_candidates if not item["workflow_exists"]],
         "note": "GitHub branch protection and ruleset enforcement cannot be verified or changed by this local checker.",
     }
 
@@ -74,13 +82,16 @@ def render_markdown(report: dict[str, Any]) -> str:
         f"- human_review_required={str(report['human_review_required']).lower()}",
         f"- settings_verified_locally={str(report['settings_verified_locally']).lower()}",
         "",
-        "## Expected required checks",
+        "## Required-check candidates",
         "",
         "| Check | Workflow | Exists |",
         "| --- | --- | --- |",
     ]
-    for item in report["expected_required_checks"]:
+    for item in report["required_check_candidates"]:
         lines.append(f"| {item['name']} | `{item['workflow']}` | {str(item['workflow_exists']).lower()} |")
+    lines.extend(["", "## Not required-ready checks", "", "| Check | Workflow | Status |", "| --- | --- | --- |"])
+    for item in report["not_required_ready_checks"]:
+        lines.append(f"| {item['name']} | `{item['workflow']}` | {item['status']} |")
     lines.extend(["", "## Protected surfaces", ""])
     lines.extend(f"- `{surface}`" for surface in report["protected_surfaces"])
     if report["missing_workflow_files"]:

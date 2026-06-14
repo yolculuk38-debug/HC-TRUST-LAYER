@@ -38,14 +38,22 @@ jobs:
         run: sed -n '1,80p' hc-repo-inventory.md
 
       - name: Attest repository inventory JSON
+        if: github.event_name != 'pull_request'
         uses: actions/attest-build-provenance@v3
         with:
           subject-path: hc-repo-inventory.json
 
       - name: Attest repository inventory Markdown
+        if: github.event_name != 'pull_request'
         uses: actions/attest-build-provenance@v3
         with:
           subject-path: hc-repo-inventory.md
+
+      - name: Record attestation skip for pull requests
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "Inventory artifact attestations are skipped on pull_request runs." >> "$GITHUB_STEP_SUMMARY"
+          echo "Attestations run on push to main and workflow_dispatch trusted contexts." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload repository inventory artifacts
         uses: actions/upload-artifact@v4
