@@ -4,26 +4,29 @@ This document records a small docs-only pull request used to validate the curren
 
 ## Purpose
 
-Confirm that the repository ruleset and branch protection behavior remain aligned with HC-TRUST-LAYER governance expectations.
+Confirm that the repository ruleset and branch protection behavior remain aligned with HC-TRUST-LAYER governance expectations for a low-risk docs-only pull request.
 
 ## Expected checks
 
-The pull request is expected to exercise the current required checks without touching trust-critical implementation surfaces.
+The pull request is expected to exercise the current required checks that apply to this docs-only scope without touching trust-critical implementation surfaces.
 
 Required baseline under test:
 
-- Validation
 - governance-preflight
-- Automation Gate
+- gate
 - Advisory PR scope boundary guard
-- Docs Drift
+- docs-drift
+- validate-verification-package-example
+
+Note: the path-filtered `HC-TRUST-LAYER Validation` workflow is not expected to run for this docs-only change unless its configured paths are touched. This smoke test uses the required check context selected in the repository ruleset rather than treating every validation workflow as applicable to every docs-only PR.
 
 ## Expected repository behavior
 
 - Pull request targets `main`.
 - Merge method remains squash-only.
 - Conversations must be resolved before merge.
-- No autonomous approval, rejection, merge, close, label write, or reviewer request is introduced by this test.
+- Existing automation may add or remove non-merge risk labels according to repository policy.
+- No autonomous approval, rejection, merge, close, reviewer request, or auto-merge enablement is introduced by this test.
 
 ## Scope boundary
 
