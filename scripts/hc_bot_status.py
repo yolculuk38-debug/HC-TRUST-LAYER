@@ -3,7 +3,10 @@
 
 This script is local, deterministic, and report-only. It does not call a network,
 LLM, GitHub API, workflow API, or repository write API. It records the current
-bot line as a capability map with explicit parked components.
+bot line as a capability map with explicit parked components. Capability
+boundaries are component-scoped: local scripts remain no-network/no-write, while
+active GitHub workflow components may use GitHub APIs or issue-comment writes
+within their existing advisory-only workflow permissions.
 """
 
 from __future__ import annotations
@@ -40,8 +43,12 @@ BOUNDARIES: tuple[str, ...] = (
     "public_safe=true",
     "truth_guarantee=false",
     "human_final_authority=true",
-    "no_repository_writes=true",
-    "no_network_calls=true",
+    "component_scoped_network_boundary=true",
+    "component_scoped_write_boundary=true",
+    "local_scripts_no_network_calls=true",
+    "local_scripts_no_repository_writes=true",
+    "workflow_components_may_use_github_api=true",
+    "workflow_comment_writes_are_advisory_only=true",
     "no_llm_calls=true",
     "no_approval_or_merge_authority=true",
 )
