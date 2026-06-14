@@ -18,6 +18,7 @@ from typing import Any
 RELEASE_EVIDENCE_FILES = ["CHANGELOG.md", "VERSION", "docs/project-control/task-ledger.md"]
 RELEASE_PATH_PATTERNS = ("CHANGELOG.md", "VERSION", "docs/project-control/", ".github/workflows/release")
 PR_REFERENCE_RE = re.compile(r"#\d+|pull/\d+")
+PR_REFERENCE_EVIDENCE_PATHS = ("CHANGELOG.md", "docs/project-control/task-ledger.md")
 
 
 def _run_git(repo_root: Path, args: list[str]) -> list[str]:
@@ -41,14 +42,28 @@ def _changed_files(repo_root: Path, base_ref: str | None = None, head_ref: str |
     return sorted(files)
 
 
-def _changed_added_lines(repo_root: Path, base_ref: str | None = None, head_ref: str | None = None) -> str:
+def _diff_lines(repo_root: Path, base_ref: str | None = None, head_ref: str | None = None) -> list[str]:
     if base_ref and head_ref:
-        diff_lines = _run_git(repo_root, ["diff", "--unified=0", f"{base_ref}...{head_ref}"])
-    else:
-        diff_lines = _run_git(repo_root, ["diff", "--unified=0", "HEAD"])
-        diff_lines.extend(_run_git(repo_root, ["diff", "--cached", "--unified=0"]))
+        return _run_git(repo_root, ["diff", "--unified=0", f"{base_ref}...{head_ref}"])
+    diff_lines = _run_git(repo_root, ["diff", "--unified=0", "HEAD"])
+    diff_lines.extend(_run_git(repo_root, ["diff", "--cached", "--unified=0"]))
+    return diff_lines
 
-    added_lines = [line[1:] for line in diff_lines if line.startswith("+") and not line.startswith("+++")]
+
+def _release_evidence_added_lines(repo_root: Path, base_ref: str | None = None, head_ref: str | None = None) -> str:
+    added_lines: list[str] = []
+    current_path: str | None = None
+    for line in _diff_lines(repo_root, base_ref=base_ref, head_ref=head_ref):
+        if line.startswith("+++ b/"):
+            current_path = line.removeprefix("+++ b/")
+            continue
+        if line.startswith("+++ "):
+            current_path = None
+            continue
+        if not line.startswith("+") or line.startswith("+++"):
+            continue
+        if current_path in PR_REFERENCE_EVIDENCE_PATHS:
+            added_lines.append(line[1:])
     return "\n".join(added_lines)
 
 
@@ -72,11 +87,11 @@ def build_report(
     release_files_changed = [path for path in changed if _is_release_path(path)]
     changelog_text = _read_text(repo_root / "CHANGELOG.md")
     task_ledger_text = _read_text(repo_root / "docs/project-control/task-ledger.md")
-    changed_added_lines = _changed_added_lines(repo_root, base_ref=base_ref, head_ref=head_ref)
+    release_evidence_added_lines = _release_evidence_added_lines(repo_root, base_ref=base_ref, head_ref=head_ref)
 
     changelog_evidence = bool(changelog_text.strip())
     task_ledger_evidence = bool(task_ledger_text.strip())
-    pr_reference_evidence = bool(pr_number) or bool(PR_REFERENCE_RE.search(changed_added_lines))
+    pr_reference_evidence = bool(pr_number) or bool(PR_REFERENCE_RE.search(release_evidence_added_lines))
 
     missing_evidence = []
     for evidence_file in RELEASE_EVIDENCE_FILES:
@@ -101,6 +116,7 @@ def build_report(
         "head_ref": head_ref,
         "pr_number": pr_number,
         "diff_mode": "ref_range" if base_ref and head_ref else "worktree",
+        "pr_reference_evidence_paths": list(PR_REFERENCE_EVIDENCE_PATHS),
         "release_files_changed": release_files_changed,
         "changelog_evidence": changelog_evidence,
         "task_ledger_evidence": task_ledger_evidence,
