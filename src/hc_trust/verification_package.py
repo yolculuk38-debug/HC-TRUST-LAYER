@@ -32,6 +32,35 @@ class VerificationPackageStatus:
 def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
     """Verify a local verification package directory against manifest digests.
 
+    Expected minimal manifest shape::
+
+        {
+          "package_id": "HC-PKG-...",
+          "schema_version": "...",
+          "record_id": "HC-...",
+          "files": [
+            {"path": "metadata/source-info.json", "sha256": "..."}
+          ]
+        }
+
+    Optional issuer evidence shape::
+
+        {
+          "issuer_proof": {"path": "issuer-proof.json", "sha256": "..."}
+        }
+
+    Optional timestamp evidence shape::
+
+        {
+          "timestamp_proof": {"path": "timestamp-proof.json", "sha256": "..."}
+        }
+
+    Optional witness evidence shape::
+
+        {
+          "witness_proof": {"path": "witness-proof.json", "sha256": "..."}
+        }
+
     Supported file entries may use ``sha256``, ``digest`` with
     ``algorithm: sha256``, or ``hash`` with ``algorithm: sha256``.
     """
