@@ -12,7 +12,8 @@ Keep a generated, reviewable inventory of repository surfaces so the operator ca
 - source files and matching test anchors, including name-based or reference-based anchors;
 - protected surfaces;
 - reviewer-role suggestions;
-- files that are active, test support, docs/example support, or review-needed.
+- files that are active, test support, docs/example support, or review-needed;
+- actor and PR trace evidence from local Git metadata when available.
 
 The inventory is evidence. It is not permission for structural repository changes.
 
@@ -34,7 +35,10 @@ The generator scans repository roots and emits an advisory ledger ordered by las
 - `owner_role`;
 - `protected_surface`;
 - `direct_test_anchor`;
-- last commit timestamp, SHA, and subject when Git history is available.
+- last commit timestamp, SHA, and subject when Git history is available;
+- last commit author and committer names from local Git metadata;
+- best-effort PR number inferred only from squash-merge style subjects such as `Some subject (#123)`;
+- best-effort commit URL when `remote.origin.url` points to GitHub.
 
 ## Markdown views
 
@@ -48,7 +52,7 @@ Markdown output includes these advisory sections:
 6. Records / schema / protected — newest first
 7. Review-needed — priority first
 
-The first six views keep the newest-first ordering from `review_order`. The review-needed view prioritizes protected review before other files that need human review. These views are for review triage only and do not authorize changes.
+The first six views keep the newest-first ordering from `review_order`. The review-needed view prioritizes protected review before other files that need human review. Entry tables include operator-friendly `Actor`, `PR`, and `Last commit` columns. These views are for review triage only and do not authorize changes.
 
 ## Categories
 
@@ -75,6 +79,21 @@ The first six views keep the newest-first ordering from `review_order`. The revi
 | `protected_review_required` | Protected or trust-kernel-adjacent surface. |
 | `review_needed_without_direct_test_anchor` | Source or script needs evidence review before any structural proposal. |
 | `inventory_only_review_needed` | File is only classified for review; no action is authorized. |
+
+## Actor and PR trace fields
+
+The inventory separates responsibility from authorship. `owner_role` is a CODEOWNERS-like review responsibility hint. It is not the author of a file and does not grant merge authority.
+
+Trace fields are local Git evidence for operator review:
+
+| Field | Meaning | Boundary |
+| --- | --- | --- |
+| `last_commit_author_name` | Name recorded as the author of the last Git change for the file. | Git metadata only; not identity finality. |
+| `last_commit_committer_name` | Name recorded as the committer of the last Git change for the file. | Git metadata only; may differ from author. |
+| `last_commit_pr_number` | Best-effort PR number parsed from a subject ending like `(#123)`. | `null` when the subject does not expose a number. |
+| `last_commit_url` | Best-effort GitHub commit URL built from `remote.origin.url` and the commit SHA. | `null` when the remote is missing or not a GitHub URL. |
+
+The generator uses local Git history only and does not call the GitHub API. These fields provide audit evidence for HC:// review workflows. They are not legal truth, identity finality, certification, production readiness, or guaranteed correctness. Human final authority remains required.
 
 ## Automation boundary
 

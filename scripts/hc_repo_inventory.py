@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
@@ -67,6 +68,10 @@ class InventoryEntry:
     last_commit_iso: str | None
     last_commit_sha: str | None
     last_commit_subject: str | None
+    last_commit_author_name: str | None
+    last_commit_committer_name: str | None
+    last_commit_pr_number: int | None
+    last_commit_url: str | None
     review_order: int
 
     def to_dict(self) -> dict[str, Any]:
@@ -80,6 +85,10 @@ class InventoryEntry:
             "last_commit_iso": self.last_commit_iso,
             "last_commit_sha": self.last_commit_sha,
             "last_commit_subject": self.last_commit_subject,
+            "last_commit_author_name": self.last_commit_author_name,
+            "last_commit_committer_name": self.last_commit_committer_name,
+            "last_commit_pr_number": self.last_commit_pr_number,
+            "last_commit_url": self.last_commit_url,
             "review_order": self.review_order,
         }
 
@@ -107,10 +116,12 @@ def _iter_inventory_files(repo_root: Path, roots: tuple[str, ...]) -> list[Path]
     return sorted(files, key=lambda path: _repo_relative(repo_root, path))
 
 
-def _git_last_commit(repo_root: Path, relative_path: str) -> tuple[str | None, str | None, str | None]:
+def _git_remote_commit_url(repo_root: Path, sha: str | None) -> str | None:
+    if not sha:
+        return None
     try:
         result = subprocess.run(
-            ["git", "log", "-1", "--format=%cI%x09%H%x09%s", "--", relative_path],
+            ["git", "config", "--get", "remote.origin.url"],
             cwd=repo_root,
             check=False,
             capture_output=True,
@@ -118,14 +129,56 @@ def _git_last_commit(repo_root: Path, relative_path: str) -> tuple[str | None, s
             timeout=10,
         )
     except (OSError, subprocess.TimeoutExpired):
-        return None, None, None
+        return None
+    remote = result.stdout.strip()
+    if result.returncode != 0 or not remote:
+        return None
+    match = re.match(r"(?:https://github\.com/|git@github\.com:)([^/]+)/([^/]+?)(?:\.git)?$", remote)
+    if not match:
+        return None
+    owner, repo = match.groups()
+    return f"https://github.com/{owner}/{repo}/commit/{sha}"
+
+
+def _infer_pr_number(subject: str | None) -> int | None:
+    if not subject:
+        return None
+    match = re.search(r"\(#(\d+)\)\s*$", subject)
+    if not match:
+        return None
+    return int(match.group(1))
+
+
+def _git_last_commit(
+    repo_root: Path, relative_path: str
+) -> tuple[str | None, str | None, str | None, str | None, str | None, int | None, str | None]:
+    try:
+        result = subprocess.run(
+            ["git", "log", "-1", "--format=%cI%x1f%H%x1f%s%x1f%an%x1f%cn", "--", relative_path],
+            cwd=repo_root,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None, None, None, None, None, None, None
     output = result.stdout.strip()
     if result.returncode != 0 or not output:
-        return None, None, None
-    parts = output.split("\t", 2)
-    if len(parts) != 3:
-        return None, None, None
-    return parts[0], parts[1], parts[2]
+        return None, None, None, None, None, None, None
+    parts = output.split("\x1f", 4)
+    if len(parts) != 5:
+        return None, None, None, None, None, None, None
+    commit_iso, sha, subject, author_name, committer_name = parts
+    return (
+        commit_iso,
+        sha,
+        subject,
+        author_name,
+        committer_name,
+        _infer_pr_number(subject),
+        _git_remote_commit_url(repo_root, sha),
+    )
 
 
 def _protected_surface(relative_path: str) -> bool:
@@ -261,7 +314,15 @@ def build_inventory(repo_root: Path, roots: tuple[str, ...] = DEFAULT_ROOTS) -> 
         protected = _protected_surface(relative_path)
         direct_test_anchor = _test_anchor(resolved_root, relative_path, all_paths)
         lifecycle = _lifecycle(category, protected, direct_test_anchor)
-        last_commit_iso, last_commit_sha, last_commit_subject = _git_last_commit(resolved_root, relative_path)
+        (
+            last_commit_iso,
+            last_commit_sha,
+            last_commit_subject,
+            last_commit_author_name,
+            last_commit_committer_name,
+            last_commit_pr_number,
+            last_commit_url,
+        ) = _git_last_commit(resolved_root, relative_path)
         categories[category] = categories.get(category, 0) + 1
         lifecycles[lifecycle] = lifecycles.get(lifecycle, 0) + 1
         raw_entries.append(
@@ -277,6 +338,10 @@ def build_inventory(repo_root: Path, roots: tuple[str, ...] = DEFAULT_ROOTS) -> 
                     last_commit_iso=last_commit_iso,
                     last_commit_sha=last_commit_sha,
                     last_commit_subject=last_commit_subject,
+                    last_commit_author_name=last_commit_author_name,
+                    last_commit_committer_name=last_commit_committer_name,
+                    last_commit_pr_number=last_commit_pr_number,
+                    last_commit_url=last_commit_url,
                     review_order=0,
                 ),
             )
@@ -313,7 +378,7 @@ def _entries_for_view(files: list[dict[str, Any]], view: str) -> list[dict[str, 
         return [
             entry
             for entry in files
-            if entry["category"] in {"source", "runtime_source", "trust_layer_source"}
+            if entry["category"] in {"source", "runtime_source", "trust_layer_source", "operator_script"}
         ]
     if view == "workflows":
         return [entry for entry in files if entry["category"] == "github_workflow"]
@@ -354,19 +419,24 @@ def _entries_for_view(files: list[dict[str, Any]], view: str) -> list[dict[str, 
 def _append_entries_table(lines: list[str], entries: list[dict[str, Any]]) -> None:
     lines.extend([
         "",
-        "| Order | Path | Category | Lifecycle | Protected | Test anchor | Last commit |",
-        "| ---: | --- | --- | --- | --- | --- | --- |",
+        "| Order | Path | Category | Lifecycle | Protected | Test anchor | Actor | PR | Last commit |",
+        "| ---: | --- | --- | --- | --- | --- | --- | --- | --- |",
     ])
     if not entries:
-        lines.append("|  | _No files in this view._ |  |  |  |  |  |")
+        lines.append("|  | _No files in this view._ |  |  |  |  |  |  |  |")
         return
     for entry in entries:
         test_anchor = entry["direct_test_anchor"] or ""
+        actor = entry["last_commit_author_name"] or ""
+        pr_number = entry["last_commit_pr_number"]
+        pr = f"#{pr_number}" if pr_number is not None else ""
         last_commit = entry["last_commit_iso"] or ""
+        if entry["last_commit_sha"]:
+            last_commit = f"{last_commit} `{entry['last_commit_sha'][:12]}`".strip()
         lines.append(
             f"| {entry['review_order']} | `{entry['path']}` | {entry['category']} | "
             f"{entry['lifecycle']} | {str(entry['protected_surface']).lower()} | "
-            f"`{test_anchor}` | {last_commit} |"
+            f"`{test_anchor}` | {actor} | {pr} | {last_commit} |"
         )
 
 
