@@ -54,7 +54,13 @@ PROTECTED_PREFIXES = (
     "federation/",
     "canonical/",
 )
-PROTECTED_FILES = {"CODEOWNERS", "protocol-graph.json", "verification-map.json", "trust-kernel-index.json"}
+PROTECTED_FILES = {
+    "CODEOWNERS",
+    ".github/CODEOWNERS",
+    "protocol-graph.json",
+    "verification-map.json",
+    "trust-kernel-index.json",
+}
 
 
 @dataclass(frozen=True)
