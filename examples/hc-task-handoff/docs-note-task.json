@@ -1,7 +1,7 @@
 {
-  "task_title": "Add focused project-control note",
+  "task_title": "Add focused docs note",
   "changed_files": [
-    "docs/project-control/example-note.md"
+    "docs/examples/example-note.md"
   ],
   "checks": [
     {

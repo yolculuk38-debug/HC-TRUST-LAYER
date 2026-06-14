@@ -11,8 +11,21 @@ def test_bot_status_is_report_only_and_public_safe():
     assert status["public_safe"] is True
     assert status["truth_guarantee"] is False
     assert status["human_review_required"] is True
-    assert "no_repository_writes=true" in status["boundaries"]
+    assert "local_scripts_no_repository_writes=true" in status["boundaries"]
     assert "no_approval_or_merge_authority=true" in status["boundaries"]
+
+
+def test_bot_status_separates_component_scoped_network_and_write_boundaries():
+    status = build_bot_status().to_dict()
+
+    assert "component_scoped_network_boundary=true" in status["boundaries"]
+    assert "component_scoped_write_boundary=true" in status["boundaries"]
+    assert "local_scripts_no_network_calls=true" in status["boundaries"]
+    assert "local_scripts_no_repository_writes=true" in status["boundaries"]
+    assert "workflow_components_may_use_github_api=true" in status["boundaries"]
+    assert "workflow_comment_writes_are_advisory_only=true" in status["boundaries"]
+    assert "no_network_calls=true" not in status["boundaries"]
+    assert "no_repository_writes=true" not in status["boundaries"]
 
 
 def test_bot_status_separates_active_and_parked_components():
@@ -45,5 +58,6 @@ def test_cli_outputs_machine_readable_bot_status(capsys):
     assert payload["status"] == "report_only_advisory_mvp"
     assert payload["advisory_only"] is True
     assert payload["truth_guarantee"] is False
+    assert "workflow_comment_writes_are_advisory_only=true" in payload["boundaries"]
     assert "hc_engineer_task_planner" in payload["active_components"]
     assert "semantic_llm_review" in payload["parked_components"]
