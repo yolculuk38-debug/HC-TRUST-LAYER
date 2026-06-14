@@ -1,5 +1,7 @@
 name: Safe Auto Merge
 # Security hardening defaults: least-privilege token scopes, deterministic concurrency, and bounded runtime.
+# Governance boundary: this workflow must never enable or perform a PR merge.
+# It may only report eligibility and disable an existing auto-merge request.
 
 on:
   pull_request:
@@ -9,7 +11,7 @@ on:
     types: [completed]
 
 permissions:
-  contents: write
+  contents: read
   pull-requests: write
 
 
@@ -19,13 +21,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  enable:
+  guard:
     # Bound workflow runtime to reduce abuse/DoS risk from stalled jobs.
     timeout-minutes: 20
     runs-on: ubuntu-22.04
     if: github.event_name == 'pull_request'
     steps:
-      - name: Enable low-risk auto merge
+      - name: Report auto-merge eligibility without merging
         env:
           GH_TOKEN: ${{ github.token }}
           PR_URL: ${{ github.event.pull_request.html_url }}
@@ -78,24 +80,25 @@ jobs:
           }
 
           if [ "$IS_DRAFT" = "true" ]; then
-            echo "Draft PR: auto merge disabled."
+            echo "Draft PR: auto-merge disabled."
             disable_auto_merge
             exit 0
           fi
           # Tier-1 restriction: manual-review always wins over auto-merge, including label conflicts.
           if has_label "manual-review"; then
-            echo "manual-review label present: auto merge disabled."
+            echo "manual-review label present: auto-merge disabled."
             disable_auto_merge
             exit 0
           fi
           # Tier-1 protected surfaces require human-supervised validation and must not auto-merge.
           if protected_path_touched; then
-            echo "Protected path touched: auto merge disabled."
+            echo "Protected path touched: auto-merge disabled."
             disable_auto_merge
             exit 0
           fi
           if has_label "auto-merge"; then
-            gh pr merge "$PR_URL" --auto --squash
+            echo "auto-merge label present: automatic merge is disabled by HC governance. Human merge is required."
+            disable_auto_merge
           else
-            echo "auto-merge label missing: no action."
+            echo "auto-merge label missing: no action. Human merge is required."
           fi
