@@ -3,13 +3,12 @@ name: Docs Review Policy
 # Governance boundary: this workflow is read-only and report-only. It must never label, comment, approve, close, enable auto-merge, or perform merge actions.
 
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
   contents: read
   pull-requests: read
-  issues: read
 
 concurrency:
   # Cancel superseded runs on the same ref to prevent duplicate executions and non-deterministic outcomes.
@@ -79,4 +78,3 @@ jobs:
             core.info(`Changed scope / review classification: ${classification}`);
             core.info('Human review required.');
             core.info('Human merge required.');
-            core.info('Report-only boundary: no labels, comments, reviewers, approvals, closures, auto-merge, or merge actions were requested.');
