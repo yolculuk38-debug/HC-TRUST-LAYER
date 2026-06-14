@@ -51,6 +51,7 @@ def test_protected_paths_are_high_risk_never_auto_merge_and_require_human_review
         "src/hc_runtime/pipeline.py",
         "records/example.json",
         "CODEOWNERS",
+        ".github/CODEOWNERS",
         "protocol-graph.json",
         "verification-map.json",
         "trust-kernel-index.json",
@@ -69,6 +70,7 @@ def test_tier_1_protected_paths_report_required_governance_controls(capsys):
     protected_paths = [
         "records/example.json",
         "CODEOWNERS",
+        ".github/CODEOWNERS",
         "protocol-graph.json",
         "verification-map.json",
         "trust-kernel-index.json",
@@ -96,6 +98,7 @@ def test_tier_1_exact_protected_files_do_not_overmatch_similar_paths():
     non_matching_paths = [
         "CODEOWNERS.extra",
         "docs/CODEOWNERS",
+        ".github/CODEOWNERS.bak",
         "protocol-graph.json.bak",
         "docs/protocol-graph.json",
         "verification-map.json.bak",
