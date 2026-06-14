@@ -18,6 +18,8 @@ from typing import Iterable
 
 
 PROTECTED_PATTERNS: tuple[str, ...] = (
+    "CODEOWNERS",
+    ".github/CODEOWNERS",
     ".github/workflows/**",
     "schema/**",
     "validators/**",
@@ -34,8 +36,6 @@ PROTECTED_PATTERNS: tuple[str, ...] = (
 GOVERNANCE_ADJACENT_PATTERNS: tuple[str, ...] = (
     "AGENTS.md",
     "HC_BOOTSTRAP.md",
-    "CODEOWNERS",
-    ".github/CODEOWNERS",
     "docs/branch-protection.md",
     "docs/START_HERE.md",
     "README.md",
@@ -63,6 +63,8 @@ VERSION_ALIGNMENT_PATTERNS: tuple[str, ...] = (
 )
 
 REVIEW_ROUTE_PATTERNS: tuple[tuple[str, str], ...] = (
+    ("CODEOWNERS", "governance-review"),
+    (".github/CODEOWNERS", "governance-review"),
     (".github/workflows/**", "workflow-automation-review"),
     ("src/hc_runtime/**", "runtime-contract-review"),
     ("validators/**", "validator-review"),
@@ -80,6 +82,8 @@ REVIEW_ROUTE_PATTERNS: tuple[tuple[str, str], ...] = (
 )
 
 SUGGESTED_LABEL_PATTERNS: tuple[tuple[str, str], ...] = (
+    ("CODEOWNERS", "area:governance"),
+    (".github/CODEOWNERS", "area:governance"),
     (".github/workflows/**", "risk:workflow"),
     ("src/hc_runtime/**", "area:runtime"),
     ("validators/**", "area:validator"),
@@ -95,6 +99,8 @@ SUGGESTED_LABEL_PATTERNS: tuple[tuple[str, str], ...] = (
 )
 
 SUGGESTED_REVIEWER_PATTERNS: tuple[tuple[str, str], ...] = (
+    ("CODEOWNERS", "human-maintainer:governance"),
+    (".github/CODEOWNERS", "human-maintainer:governance"),
     (".github/workflows/**", "human-maintainer:workflow-automation"),
     ("src/hc_runtime/**", "human-maintainer:runtime-contract"),
     ("validators/**", "human-maintainer:validator"),
@@ -203,6 +209,8 @@ def _build_review_priority(
     generated_artifacts: list[str],
     version_alignment_paths: list[str],
 ) -> str:
+    if any(path in {"CODEOWNERS", ".github/CODEOWNERS"} for path in protected_paths):
+        return "high"
     if any(path.startswith(".github/workflows/") for path in protected_paths):
         return "high"
     if any(path.startswith("src/hc_runtime/") for path in protected_paths):
