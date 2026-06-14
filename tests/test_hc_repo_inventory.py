@@ -47,3 +47,41 @@ def test_inventory_orders_entries_and_renders_markdown(tmp_path: Path) -> None:
     assert "# HC Repository Inventory Ledger" in markdown
     assert "## Files, newest first" in markdown
     assert "`src/b.py`" in markdown or "`docs/a.md`" in markdown
+
+
+def test_inventory_matches_prefix_test_anchor(tmp_path: Path) -> None:
+    repo = tmp_path
+    (repo / "src" / "hc_trust").mkdir(parents=True)
+    (repo / "tests").mkdir()
+
+    (repo / "src" / "hc_trust" / "verification_package.py").write_text("", encoding="utf-8")
+    (repo / "tests" / "test_verification_package_hash_core.py").write_text("", encoding="utf-8")
+
+    report = build_inventory(repo)
+    by_path = {entry["path"]: entry for entry in report["files"]}
+
+    assert (
+        by_path["src/hc_trust/verification_package.py"]["direct_test_anchor"]
+        == "tests/test_verification_package_hash_core.py"
+    )
+
+
+def test_inventory_matches_reference_test_anchor(tmp_path: Path) -> None:
+    repo = tmp_path
+    (repo / "scripts").mkdir()
+    (repo / "tests").mkdir()
+
+    (repo / "scripts" / "check_pr_governance.py").write_text("", encoding="utf-8")
+    (repo / "tests" / "test_pr_governance_preflight.py").write_text(
+        'from importlib.util import spec_from_file_location\n'
+        'SPEC = spec_from_file_location("check_pr_governance", MODULE_PATH)\n',
+        encoding="utf-8",
+    )
+
+    report = build_inventory(repo)
+    by_path = {entry["path"]: entry for entry in report["files"]}
+
+    assert (
+        by_path["scripts/check_pr_governance.py"]["direct_test_anchor"]
+        == "tests/test_pr_governance_preflight.py"
+    )

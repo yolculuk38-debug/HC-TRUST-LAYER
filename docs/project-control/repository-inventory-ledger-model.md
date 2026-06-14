@@ -9,7 +9,7 @@ This model defines how HC-TRUST-LAYER classifies repository files, tests, docs, 
 Keep a generated, reviewable inventory of repository surfaces so the operator can see:
 
 - newest changed items first;
-- source files and matching test anchors;
+- source files and matching test anchors, including name-based or reference-based anchors;
 - protected surfaces;
 - reviewer-role suggestions;
 - files that are active, test support, docs/example support, or review-needed.
@@ -55,7 +55,7 @@ The generator scans repository roots and emits an advisory ledger ordered by las
 
 | Lifecycle | Meaning |
 | --- | --- |
-| `active_with_test_anchor` | Source file has an obvious matching test file. |
+| `active_with_test_anchor` | Source or script file has an obvious matching test file by name or test-file reference. |
 | `test_support` | Test file or integration script. |
 | `docs_or_example_support` | Documentation or example surface. |
 | `protected_review_required` | Protected or trust-kernel-adjacent surface. |
@@ -92,7 +92,7 @@ Human final authority remains.
 
 - A new test file should appear near the top after merge and be categorized as `test` with lifecycle `test_support`.
 - A workflow change should be categorized as `github_workflow`, marked `protected_surface=true`, and routed to `protected-surface-reviewer`.
-- A source file without a direct test anchor should be classified as review-needed, not as an action target.
+- A source or script file without a direct test anchor should be classified as review-needed, not as an action target. Test anchors may be name-based, such as `tests/test_<source>_*.py`, or reference-based when a test imports or references the source module or script name.
 - A record/schema/policy/signature/federation file should never be changed based on inventory output alone.
 
 ## Next improvement path

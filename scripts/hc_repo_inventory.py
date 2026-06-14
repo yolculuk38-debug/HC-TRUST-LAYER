@@ -202,18 +202,48 @@ def _lifecycle(category: str, protected: bool, direct_test_anchor: str | None) -
     return "inventory_only_review_needed"
 
 
-def _test_anchor(relative_path: str, all_paths: set[str]) -> str | None:
+def _reference_tokens(relative_path: str) -> set[str]:
+    path = Path(relative_path)
+    stem = path.stem
+    tokens = {stem}
+    if relative_path.startswith("src/"):
+        tokens.add(".".join(path.with_suffix("").parts[1:]))
+    return tokens
+
+
+def _test_anchor(repo_root: Path, relative_path: str, all_paths: set[str]) -> str | None:
     if not relative_path.endswith(".py") or relative_path.startswith("tests/"):
         return None
     stem = Path(relative_path).stem
-    candidates = [
+    exact_candidates = [
         f"tests/test_{stem}.py",
         f"tests/runtime/test_{stem}.py",
         f"tests/test_{stem}_core.py",
     ]
-    for candidate in candidates:
+    for candidate in exact_candidates:
         if candidate in all_paths:
             return candidate
+
+    prefix_candidates = sorted(
+        path
+        for path in all_paths
+        if path.startswith("tests/") and Path(path).name.startswith(f"test_{stem}_") and path.endswith(".py")
+    )
+    if prefix_candidates:
+        return prefix_candidates[0]
+
+    reference_tokens = _reference_tokens(relative_path)
+    reference_candidates: list[tuple[int, str]] = []
+    for test_path in sorted(path for path in all_paths if path.startswith("tests/") and path.endswith(".py")):
+        try:
+            test_text = (repo_root / test_path).read_text(encoding="utf-8")
+        except OSError:
+            continue
+        reference_count = sum(test_text.count(token) for token in reference_tokens)
+        if reference_count:
+            reference_candidates.append((-reference_count, test_path))
+    if reference_candidates:
+        return sorted(reference_candidates)[0][1]
     return None
 
 
@@ -229,7 +259,7 @@ def build_inventory(repo_root: Path, roots: tuple[str, ...] = DEFAULT_ROOTS) -> 
         relative_path = _repo_relative(resolved_root, path)
         category = _category(relative_path)
         protected = _protected_surface(relative_path)
-        direct_test_anchor = _test_anchor(relative_path, all_paths)
+        direct_test_anchor = _test_anchor(resolved_root, relative_path, all_paths)
         lifecycle = _lifecycle(category, protected, direct_test_anchor)
         last_commit_iso, last_commit_sha, last_commit_subject = _git_last_commit(resolved_root, relative_path)
         categories[category] = categories.get(category, 0) + 1
