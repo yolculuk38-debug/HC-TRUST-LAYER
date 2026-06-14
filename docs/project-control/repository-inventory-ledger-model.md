@@ -25,7 +25,7 @@ python scripts/hc_repo_inventory.py . --format json
 python scripts/hc_repo_inventory.py . --format md
 ```
 
-The generator scans repository roots and emits an advisory ledger ordered by last Git commit metadata when available. Each file receives:
+The generator scans repository roots and emits an advisory ledger ordered by last Git commit metadata when available. JSON output remains the compatibility surface for automation consumers. Markdown output adds operator-facing category views so humans can review current changes by surface without changing the underlying inventory data. Each file receives:
 
 - `review_order`;
 - `path`;
@@ -35,6 +35,20 @@ The generator scans repository roots and emits an advisory ledger ordered by las
 - `protected_surface`;
 - `direct_test_anchor`;
 - last commit timestamp, SHA, and subject when Git history is available.
+
+## Markdown views
+
+Markdown output includes these advisory sections:
+
+1. Latest changes — all files
+2. Tests — newest first
+3. Source — newest first
+4. Workflows — newest first
+5. Docs — newest first
+6. Records / schema / protected — newest first
+7. Review-needed — priority first
+
+The first six views keep the newest-first ordering from `review_order`. The review-needed view prioritizes protected review before other files that need human review. These views are for review triage only and do not authorize changes.
 
 ## Categories
 

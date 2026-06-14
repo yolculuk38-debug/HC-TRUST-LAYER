@@ -304,6 +304,72 @@ def build_inventory(repo_root: Path, roots: tuple[str, ...] = DEFAULT_ROOTS) -> 
     }
 
 
+def _entries_for_view(files: list[dict[str, Any]], view: str) -> list[dict[str, Any]]:
+    if view == "all":
+        return files
+    if view == "tests":
+        return [entry for entry in files if entry["category"] == "test"]
+    if view == "source":
+        return [
+            entry
+            for entry in files
+            if entry["category"] in {"source", "runtime_source", "trust_layer_source"}
+        ]
+    if view == "workflows":
+        return [entry for entry in files if entry["category"] == "github_workflow"]
+    if view == "docs":
+        return [
+            entry
+            for entry in files
+            if entry["category"] in {"documentation", "project_control_doc", "root_documentation", "example"}
+        ]
+    if view == "protected":
+        return [
+            entry
+            for entry in files
+            if entry["protected_surface"]
+            or entry["category"] in {"record", "schema", "validator", "policy", "signature_material", "federation"}
+        ]
+    if view == "review_needed":
+        return sorted(
+            (
+                entry
+                for entry in files
+                if entry["lifecycle"]
+                in {
+                    "protected_review_required",
+                    "review_needed_without_direct_test_anchor",
+                    "inventory_only_review_needed",
+                }
+            ),
+            key=lambda entry: (
+                0 if entry["lifecycle"] == "protected_review_required" else 1,
+                0 if entry["protected_surface"] else 1,
+                entry["review_order"],
+            ),
+        )
+    raise ValueError(f"Unknown inventory view: {view}")
+
+
+def _append_entries_table(lines: list[str], entries: list[dict[str, Any]]) -> None:
+    lines.extend([
+        "",
+        "| Order | Path | Category | Lifecycle | Protected | Test anchor | Last commit |",
+        "| ---: | --- | --- | --- | --- | --- | --- |",
+    ])
+    if not entries:
+        lines.append("|  | _No files in this view._ |  |  |  |  |  |")
+        return
+    for entry in entries:
+        test_anchor = entry["direct_test_anchor"] or ""
+        last_commit = entry["last_commit_iso"] or ""
+        lines.append(
+            f"| {entry['review_order']} | `{entry['path']}` | {entry['category']} | "
+            f"{entry['lifecycle']} | {str(entry['protected_surface']).lower()} | "
+            f"`{test_anchor}` | {last_commit} |"
+        )
+
+
 def render_markdown(report: dict[str, Any]) -> str:
     lines = [
         "# HC Repository Inventory Ledger",
@@ -326,21 +392,18 @@ def render_markdown(report: dict[str, Any]) -> str:
         "| --- | ---: |",
     ])
     lines.extend(f"| {lifecycle} | {count} |" for lifecycle, count in report["lifecycles"].items())
-    lines.extend([
-        "",
-        "## Files, newest first",
-        "",
-        "| Order | Path | Category | Lifecycle | Protected | Test anchor | Last commit |",
-        "| ---: | --- | --- | --- | --- | --- | --- |",
-    ])
-    for entry in report["files"]:
-        test_anchor = entry["direct_test_anchor"] or ""
-        last_commit = entry["last_commit_iso"] or ""
-        lines.append(
-            f"| {entry['review_order']} | `{entry['path']}` | {entry['category']} | "
-            f"{entry['lifecycle']} | {str(entry['protected_surface']).lower()} | "
-            f"`{test_anchor}` | {last_commit} |"
-        )
+    view_sections = [
+        ("Latest changes — all files", "all"),
+        ("Tests — newest first", "tests"),
+        ("Source — newest first", "source"),
+        ("Workflows — newest first", "workflows"),
+        ("Docs — newest first", "docs"),
+        ("Records / schema / protected — newest first", "protected"),
+        ("Review-needed — priority first", "review_needed"),
+    ]
+    for heading, view in view_sections:
+        lines.extend(["", f"## {heading}"])
+        _append_entries_table(lines, _entries_for_view(report["files"], view))
     lines.append("")
     return "\n".join(lines)
 
