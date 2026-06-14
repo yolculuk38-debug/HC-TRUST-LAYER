@@ -32,35 +32,6 @@ class VerificationPackageStatus:
 def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
     """Verify a local verification package directory against manifest digests.
 
-    Expected minimal manifest shape::
-
-        {
-          "package_id": "HC-PKG-...",
-          "schema_version": "...",
-          "record_id": "HC-...",
-          "files": [
-            {"path": "metadata/source-info.json", "sha256": "..."}
-          ]
-        }
-
-    Optional issuer evidence shape::
-
-        {
-          "issuer_proof": {"path": "issuer-proof.json", "sha256": "..."}
-        }
-
-    Optional timestamp evidence shape::
-
-        {
-          "timestamp_proof": {"path": "timestamp-proof.json", "sha256": "..."}
-        }
-
-    Optional witness evidence shape::
-
-        {
-          "witness_proof": {"path": "witness-proof.json", "sha256": "..."}
-        }
-
     Supported file entries may use ``sha256``, ``digest`` with
     ``algorithm: sha256``, or ``hash`` with ``algorithm: sha256``.
     """
@@ -169,6 +140,8 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
             )
         )
 
+    local_subject_sha256s = _collect_local_subject_sha256s(manifest, file_results)
+
     issuer_proof = _verify_issuer_proof_entry(
         package_root=package_root,
         package_root_resolved=package_root_resolved,
@@ -181,6 +154,7 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
         package_root=package_root,
         package_root_resolved=package_root_resolved,
         entry=manifest.get("timestamp_proof"),
+        local_subject_sha256s=local_subject_sha256s,
         missing_evidence=missing_evidence,
         conflicting_evidence=conflicting_evidence,
         warnings=warnings,
@@ -189,7 +163,7 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
         package_root=package_root,
         package_root_resolved=package_root_resolved,
         entry=manifest.get("witness_proof"),
-        local_subject_sha256s=_collect_local_subject_sha256s(manifest, file_results),
+        local_subject_sha256s=local_subject_sha256s,
         missing_evidence=missing_evidence,
         conflicting_evidence=conflicting_evidence,
         warnings=warnings,
@@ -430,6 +404,7 @@ def _verify_timestamp_proof_entry(
     package_root: Path,
     package_root_resolved: Path,
     entry: Any,
+    local_subject_sha256s: set[str],
     missing_evidence: list[str],
     conflicting_evidence: list[str],
     warnings: list[str],
@@ -495,16 +470,28 @@ def _verify_timestamp_proof_entry(
         result.update({"status": "INVALID", "reason": "timestamp_proof_claimed_at_invalid"})
         return result
 
-    if not _looks_like_sha256(proof["subject_sha256"]):
+    subject_sha256 = proof["subject_sha256"].lower()
+    if not _looks_like_sha256(subject_sha256):
         conflicting_evidence.append(f"timestamp_proof_subject_sha256_invalid:{relative_path}")
         result.update({"status": "INVALID", "reason": "timestamp_proof_subject_sha256_invalid"})
+        return result
+
+    if subject_sha256 not in local_subject_sha256s:
+        conflicting_evidence.append(f"timestamp_proof_subject_mismatch:{relative_path}")
+        result.update(
+            {
+                "status": "SUBJECT_MISMATCH",
+                "reason": "timestamp_proof_subject_mismatch",
+                "subject_sha256": subject_sha256,
+            }
+        )
         return result
 
     result.update(
         {
             "status": "PRESENT",
             "claimed_at": proof["claimed_at"],
-            "subject_sha256": proof["subject_sha256"].lower(),
+            "subject_sha256": subject_sha256,
         }
     )
     return result
