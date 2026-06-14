@@ -25,10 +25,20 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Build release audit JSON
+      - name: Build release audit JSON for pull request
+        if: github.event_name == 'pull_request'
+        run: python scripts/hc_release_audit.py . --format json --base-ref "origin/${{ github.base_ref }}" --head-ref HEAD --pr-number "${{ github.event.pull_request.number }}" > hc-release-audit.json
+
+      - name: Build release audit Markdown for pull request
+        if: github.event_name == 'pull_request'
+        run: python scripts/hc_release_audit.py . --format md --base-ref "origin/${{ github.base_ref }}" --head-ref HEAD --pr-number "${{ github.event.pull_request.number }}" > hc-release-audit.md
+
+      - name: Build release audit JSON for manual context
+        if: github.event_name != 'pull_request'
         run: python scripts/hc_release_audit.py . --format json > hc-release-audit.json
 
-      - name: Build release audit Markdown
+      - name: Build release audit Markdown for manual context
+        if: github.event_name != 'pull_request'
         run: python scripts/hc_release_audit.py . --format md > hc-release-audit.md
 
       - name: Print release audit summary
