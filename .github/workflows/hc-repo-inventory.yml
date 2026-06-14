@@ -11,6 +11,8 @@ on:
 
 permissions:
   contents: read
+  id-token: write
+  attestations: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -34,6 +36,16 @@ jobs:
 
       - name: Print newest inventory entries
         run: sed -n '1,80p' hc-repo-inventory.md
+
+      - name: Attest repository inventory JSON
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: hc-repo-inventory.json
+
+      - name: Attest repository inventory Markdown
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: hc-repo-inventory.md
 
       - name: Upload repository inventory artifacts
         uses: actions/upload-artifact@v4

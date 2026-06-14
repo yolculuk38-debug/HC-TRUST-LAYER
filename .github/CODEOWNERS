@@ -1,0 +1,19 @@
+# HC-TRUST-LAYER CODEOWNERS baseline
+# Boundary: CODEOWNERS maps review responsibility only.
+# It is not authorship, identity proof, merge authority, approval authority, or truth finality.
+# Real code-owner approval enforcement still requires GitHub branch protection or ruleset settings.
+
+* @yolculuk38-debug
+
+.github/workflows/ @yolculuk38-debug
+docs/project-control/ @yolculuk38-debug
+docs/governance/ @yolculuk38-debug
+scripts/ @yolculuk38-debug
+src/ @yolculuk38-debug
+tests/ @yolculuk38-debug
+records/ @yolculuk38-debug
+schema/ @yolculuk38-debug
+validators/ @yolculuk38-debug
+policy/ @yolculuk38-debug
+signatures/ @yolculuk38-debug
+federation/ @yolculuk38-debug

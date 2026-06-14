@@ -148,3 +148,28 @@ Use these boundaries when summarizing this model:
 - `truth_guarantee=false` stays explicit.
 - `advisory_only=true` stays explicit.
 - Human final authority remains required.
+
+## Implemented safe automation baseline
+
+This phase converts the model into bounded repository automation where a pull request can safely carry the change:
+
+- CODEOWNERS baseline through `.github/CODEOWNERS`, using `@yolculuk38-debug` as the default reviewer until real teams exist.
+- Ruleset readiness through `docs/governance/github-ruleset-readiness.md` and `scripts/check_ruleset_readiness.py`.
+- Artifact provenance for HC repository inventory artifacts through the existing inventory workflow using GitHub-native build provenance attestations when the platform supports `id-token: write` and `attestations: write`.
+- OpenSSF Scorecard advisory signals through a report-only workflow that uploads JSON evidence and does not upload SARIF in this baseline.
+- Release audit evidence through `scripts/hc_release_audit.py`, tests, documentation, and a report-only workflow.
+
+These automation pieces remain advisory evidence. They do not create authorship, identity proof, approval, rejection, close, label, assignment, reviewer-request, merge, release, production, legal-truth, identity-finality, forensic-certainty, certification, or guaranteed-correctness authority.
+
+## Still manual or parked
+
+The following remain manual or parked:
+
+- real GitHub branch protection, code-owner approval enforcement, and ruleset settings that cannot be changed by PR alone;
+- fully autonomous issue -> Codex -> PR bridge;
+- auto-merge authority;
+- approve, reject, close, label, assign, or reviewer-request authority;
+- authority-changing automation;
+- release publication, tag creation, and release approval.
+
+Human final authority remains required for protected surfaces and release decisions.

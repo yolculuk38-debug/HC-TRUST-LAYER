@@ -1,0 +1,47 @@
+name: HC Release Audit
+
+# Governance boundary: local report-only release evidence. This workflow does not
+# publish releases, create tags, mutate changelogs, or grant merge authority.
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release-audit:
+    timeout-minutes: 10
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Build release audit JSON
+        run: python scripts/hc_release_audit.py . --format json > hc-release-audit.json
+
+      - name: Build release audit Markdown
+        run: python scripts/hc_release_audit.py . --format md > hc-release-audit.md
+
+      - name: Print release audit summary
+        run: sed -n '1,120p' hc-release-audit.md
+
+      - name: Append release audit summary
+        run: cat hc-release-audit.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload release audit artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: hc-release-audit
+          path: |
+            hc-release-audit.json
+            hc-release-audit.md
+          retention-days: 14
