@@ -45,7 +45,13 @@ def test_inventory_orders_entries_and_renders_markdown(tmp_path: Path) -> None:
 
     assert orders == [1, 2]
     assert "# HC Repository Inventory Ledger" in markdown
-    assert "## Files, newest first" in markdown
+    assert "## Latest changes — all files" in markdown
+    assert "## Tests — newest first" in markdown
+    assert "## Source — newest first" in markdown
+    assert "## Workflows — newest first" in markdown
+    assert "## Docs — newest first" in markdown
+    assert "## Records / schema / protected — newest first" in markdown
+    assert "## Review-needed — priority first" in markdown
     assert "`src/b.py`" in markdown or "`docs/a.md`" in markdown
 
 
