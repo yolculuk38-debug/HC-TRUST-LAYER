@@ -1,5 +1,6 @@
-name: Docs Auto Merge Policy
+name: Docs Review Policy
 # Security hardening defaults: least-privilege token scopes, deterministic concurrency, and bounded runtime.
+# Governance boundary: this workflow must never enable or perform auto-merge.
 
 on:
   pull_request_target:
@@ -7,7 +8,8 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
+  pull-requests: read
+  issues: write
 
 
 concurrency:
@@ -32,7 +34,7 @@ jobs:
               {
                 name: 'docs-auto',
                 color: '0E8A16',
-                description: 'Documentation-only changes; safe for auto-merge after checks pass.'
+                description: 'Documentation-only changes; advisory classification for human review.'
               },
               {
                 name: 'manual-review',
@@ -53,14 +55,13 @@ jobs:
               }
             }
 
-      - name: Classify PR, apply labels, and set auto-merge policy
+      - name: Classify PR and apply review labels without auto-merge
         uses: actions/github-script@v9
         with:
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const prNumber = context.payload.pull_request.number;
-            const prNodeId = context.payload.pull_request.node_id;
 
             const files = await github.paginate(github.rest.pulls.listFiles, {
               owner,
@@ -108,10 +109,10 @@ jobs:
                 : ['manual-review'];
 
             const toRemove = docsOnly
-              ? ['manual-review']
+              ? ['manual-review', 'auto-merge']
               : mixedDocsAndManual
-                ? []
-                : ['docs-auto'];
+                ? ['auto-merge']
+                : ['docs-auto', 'auto-merge'];
 
             await github.rest.issues.addLabels({
               owner,
@@ -130,26 +131,8 @@ jobs:
               }
             }
 
-            if (!docsOnly) {
-              core.info('Manual review required: auto-merge is disabled for non-docs-only PRs.');
-              return;
-            }
-
-            try {
-              await github.graphql(
-                `mutation($pullRequestId: ID!) {
-                  enablePullRequestAutoMerge(input: {pullRequestId: $pullRequestId, mergeMethod: SQUASH}) {
-                    pullRequest {
-                      number
-                      autoMergeRequest {
-                        enabledAt
-                      }
-                    }
-                  }
-                }`,
-                { pullRequestId: prNodeId }
-              );
-              core.info('Docs-only PR detected: auto-merge enabled (will merge after required checks pass).');
-            } catch (error) {
-              core.warning(`Could not enable auto-merge automatically: ${error.message}`);
+            if (docsOnly) {
+              core.info('Docs-only PR detected: docs-auto label applied for advisory classification only. Human merge is required.');
+            } else {
+              core.info('Manual review required: auto-merge is not enabled by this workflow.');
             }

@@ -1,5 +1,6 @@
 name: PR Risk Labeler
 # Security hardening defaults: least-privilege token scopes, deterministic concurrency, and bounded runtime.
+# Governance boundary: this workflow must never add an auto-merge label or enable merge automation.
 
 on:
   pull_request:
@@ -26,14 +27,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Classify PR risk and labels
+      - name: Classify PR risk and labels without auto-merge
         env:
           GH_TOKEN: ${{ github.token }}
           PR_URL: ${{ github.event.pull_request.html_url }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          gh label create auto-merge --color 0E8A16 --description "Safe automatic merge candidate" --force || true
           gh label create manual-review --color B60205 --description "Requires human review" --force || true
 
           git diff --name-only "$BASE_SHA" "$HEAD_SHA" > changed_files.txt
@@ -41,21 +41,21 @@ jobs:
 
           if grep -Eq '^(schema/|validators/|signatures/|policy/|federation/|records/|\.github/workflows/|src/hc_runtime/|deploy/|keys/|secrets/)' changed_files.txt; then
             gh pr edit "$PR_URL" --add-label manual-review --remove-label auto-merge || true
-            echo "High risk path detected. manual-review applied."
+            echo "High risk path detected. manual-review applied; auto-merge label removed if present."
             exit 0
           fi
 
           if grep -Eq '^(CODEOWNERS|protocol-graph\.json|verification-map\.json|trust-kernel-index\.json)$' changed_files.txt; then
             gh pr edit "$PR_URL" --add-label manual-review --remove-label auto-merge || true
-            echo "High risk protected file detected. manual-review applied."
+            echo "High risk protected file detected. manual-review applied; auto-merge label removed if present."
             exit 0
           fi
 
           if grep -Eqi '(token|secret|password|private_key|permission|workflow)' changed_files.txt; then
             gh pr edit "$PR_URL" --add-label manual-review --remove-label auto-merge || true
-            echo "High risk keyword detected. manual-review applied."
+            echo "High risk keyword detected. manual-review applied; auto-merge label removed if present."
             exit 0
           fi
 
-          gh pr edit "$PR_URL" --add-label auto-merge --remove-label manual-review || true
-          echo "Low risk PR. auto-merge applied."
+          gh pr edit "$PR_URL" --remove-label auto-merge --remove-label manual-review || true
+          echo "Low risk PR detected. Automatic merge labels are not applied; human merge is required."
