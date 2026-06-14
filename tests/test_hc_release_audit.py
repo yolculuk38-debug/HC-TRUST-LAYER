@@ -91,6 +91,24 @@ def test_release_audit_accepts_explicit_current_pr_number(tmp_path: Path) -> Non
     assert "pr_reference_evidence" not in report["missing_evidence"]
 
 
+def test_release_audit_ignores_unrelated_added_pr_references(tmp_path: Path) -> None:
+    repo = tmp_path
+    _write_release_files(repo, "# Changelog\n")
+    (repo / "docs").mkdir(exist_ok=True)
+    (repo / "docs" / "note.md").write_text("# Note\n", encoding="utf-8")
+    _init_repo(repo)
+    base_sha = _commit(repo, "baseline")
+    (repo / "CHANGELOG.md").write_text("# Changelog\n\n- Current release note.\n", encoding="utf-8")
+    (repo / "docs" / "note.md").write_text("# Note\n\n- Unrelated #999.\n", encoding="utf-8")
+    head_sha = _commit(repo, "release note with unrelated ref")
+
+    report = build_report(repo, base_ref=base_sha, head_ref=head_sha)
+
+    assert report["release_files_changed"] == ["CHANGELOG.md"]
+    assert report["pr_reference_evidence"] is False
+    assert "pr_reference_evidence" in report["missing_evidence"]
+
+
 def test_release_audit_markdown_is_operator_readable(tmp_path: Path) -> None:
     report = build_report(tmp_path)
     markdown = render_markdown(report)
