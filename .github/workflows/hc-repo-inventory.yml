@@ -1,0 +1,45 @@
+name: HC Repository Inventory
+
+# Security hardening defaults: least-privilege token scopes, deterministic concurrency, and bounded runtime.
+# Governance boundary: report-only. This workflow must not mutate repository state or PR state.
+
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  inventory:
+    timeout-minutes: 20
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Build repository inventory JSON
+        run: python scripts/hc_repo_inventory.py . --format json > hc-repo-inventory.json
+
+      - name: Build repository inventory Markdown
+        run: python scripts/hc_repo_inventory.py . --format md > hc-repo-inventory.md
+
+      - name: Print newest inventory entries
+        run: sed -n '1,80p' hc-repo-inventory.md
+
+      - name: Upload repository inventory artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: hc-repo-inventory
+          path: |
+            hc-repo-inventory.json
+            hc-repo-inventory.md
+          retention-days: 14
