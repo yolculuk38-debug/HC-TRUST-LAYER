@@ -20,6 +20,7 @@ PROTECTED_PREFIXES: tuple[str, ...] = (
 )
 PROTECTED_FILES: tuple[str, ...] = (
     "CODEOWNERS",
+    ".github/CODEOWNERS",
     "protocol-graph.json",
     "verification-map.json",
     "trust-kernel-index.json",

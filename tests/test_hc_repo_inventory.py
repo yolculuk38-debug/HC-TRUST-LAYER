@@ -18,6 +18,7 @@ def test_inventory_classifies_source_test_docs_and_workflow(tmp_path: Path) -> N
     (repo / "tests" / "test_verification_package.py").write_text("", encoding="utf-8")
     (repo / "docs" / "project-control" / "state.md").write_text("", encoding="utf-8")
     (repo / ".github" / "workflows" / "inventory.yml").write_text("", encoding="utf-8")
+    (repo / ".github" / "CODEOWNERS").write_text("* @yolculuk38-debug\n", encoding="utf-8")
 
     report = build_inventory(repo)
     by_path = {entry["path"]: entry for entry in report["files"]}
@@ -31,6 +32,9 @@ def test_inventory_classifies_source_test_docs_and_workflow(tmp_path: Path) -> N
     assert by_path["docs/project-control/state.md"]["category"] == "project_control_doc"
     assert by_path[".github/workflows/inventory.yml"]["protected_surface"] is True
     assert by_path[".github/workflows/inventory.yml"]["owner_role"] == "protected-surface-reviewer"
+    assert by_path[".github/CODEOWNERS"]["protected_surface"] is True
+    assert by_path[".github/CODEOWNERS"]["lifecycle"] == "protected_review_required"
+    assert by_path[".github/CODEOWNERS"]["owner_role"] == "protected-surface-reviewer"
 
 
 def test_inventory_orders_entries_and_renders_markdown(tmp_path: Path) -> None:

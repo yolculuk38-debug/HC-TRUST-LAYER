@@ -45,7 +45,7 @@ jobs:
             exit 0
           fi
 
-          if grep -Eq '^(CODEOWNERS|protocol-graph\.json|verification-map\.json|trust-kernel-index\.json)$' changed_files.txt; then
+          if grep -Eq '^(CODEOWNERS|\.github/CODEOWNERS|protocol-graph\.json|verification-map\.json|trust-kernel-index\.json)$' changed_files.txt; then
             gh pr edit "$PR_URL" --add-label manual-review --remove-label auto-merge || true
             echo "High risk protected file detected. manual-review applied; auto-merge label removed if present."
             exit 0
