@@ -80,6 +80,8 @@ HC-TRUST-LAYER uses a **security-first default** for pull requests:
 - Documentation-only PRs may be classified as lower risk, but they are not automatically merged.
 - PRs that touch code, schemas, automation/workflows, source, or tooling paths are labeled `manual-review` and must be reviewed by a maintainer before merge.
 
+Before treating a PR as ready, use [`docs/project-control/review-evidence-checklist.md`](docs/project-control/review-evidence-checklist.md) to confirm PR number, latest head SHA, changed files, checks, comments, review threads, duplicate PR state, and post-acceptance verification.
+
 ### Docs-Only Review and Merge
 
 Documentation-only pull requests remain human-merge required:
