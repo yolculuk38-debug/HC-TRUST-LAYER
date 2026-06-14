@@ -7,12 +7,29 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 from hc_release_audit import build_report, render_markdown
 
 
-def test_release_audit_reports_boundaries_without_mutation(tmp_path: Path) -> None:
-    repo = tmp_path
+def _init_repo(repo: Path) -> None:
+    subprocess.run(["git", "init"], cwd=repo, check=True, capture_output=True, text=True)
+    subprocess.run(["git", "config", "user.name", "HC Test"], cwd=repo, check=True)
+    subprocess.run(["git", "config", "user.email", "hc@example.invalid"], cwd=repo, check=True)
+
+
+def _commit(repo: Path, message: str) -> str:
+    subprocess.run(["git", "add", "."], cwd=repo, check=True)
+    subprocess.run(["git", "commit", "-m", message], cwd=repo, check=True, capture_output=True, text=True)
+    result = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, check=True, capture_output=True, text=True)
+    return result.stdout.strip()
+
+
+def _write_release_files(repo: Path, changelog: str) -> None:
     (repo / "docs" / "project-control").mkdir(parents=True)
-    (repo / "CHANGELOG.md").write_text("# Changelog\n\n- See #123.\n", encoding="utf-8")
+    (repo / "CHANGELOG.md").write_text(changelog, encoding="utf-8")
     (repo / "VERSION").write_text("0.1.0\n", encoding="utf-8")
     (repo / "docs" / "project-control" / "task-ledger.md").write_text("# Task Ledger\n", encoding="utf-8")
+
+
+def test_release_audit_reports_boundaries_without_mutation(tmp_path: Path) -> None:
+    repo = tmp_path
+    _write_release_files(repo, "# Changelog\n\n- See #123.\n")
 
     report = build_report(repo)
 
@@ -26,27 +43,52 @@ def test_release_audit_reports_boundaries_without_mutation(tmp_path: Path) -> No
     assert report["merge_ready"] is False
     assert report["changelog_evidence"] is True
     assert report["task_ledger_evidence"] is True
-    assert report["pr_reference_evidence"] is True
+    assert report["pr_reference_evidence"] is False
 
 
-def test_release_audit_detects_changed_release_files_and_missing_pr_reference(tmp_path: Path) -> None:
+def test_release_audit_detects_worktree_release_file_without_current_reference(tmp_path: Path) -> None:
     repo = tmp_path
-    (repo / "docs" / "project-control").mkdir(parents=True)
-    (repo / "CHANGELOG.md").write_text("# Changelog\n", encoding="utf-8")
-    (repo / "VERSION").write_text("0.1.0\n", encoding="utf-8")
-    (repo / "docs" / "project-control" / "task-ledger.md").write_text("# Task Ledger\n", encoding="utf-8")
-    subprocess.run(["git", "init"], cwd=repo, check=True, capture_output=True, text=True)
-    subprocess.run(["git", "config", "user.name", "HC Test"], cwd=repo, check=True)
-    subprocess.run(["git", "config", "user.email", "hc@example.invalid"], cwd=repo, check=True)
-    subprocess.run(["git", "add", "."], cwd=repo, check=True)
-    subprocess.run(["git", "commit", "-m", "baseline"], cwd=repo, check=True, capture_output=True, text=True)
-    (repo / "CHANGELOG.md").write_text("# Changelog\n\n- Release note without PR reference.\n", encoding="utf-8")
+    _write_release_files(repo, "# Changelog\n")
+    _init_repo(repo)
+    _commit(repo, "baseline")
+    (repo / "CHANGELOG.md").write_text("# Changelog\n\n- Current release note.\n", encoding="utf-8")
 
     report = build_report(repo)
 
     assert report["release_files_changed"] == ["CHANGELOG.md"]
     assert report["pr_reference_evidence"] is False
     assert "pr_reference_evidence" in report["missing_evidence"]
+
+
+def test_release_audit_detects_committed_pr_range_without_current_reference(tmp_path: Path) -> None:
+    repo = tmp_path
+    _write_release_files(repo, "# Changelog\n\n- Historical #123.\n")
+    _init_repo(repo)
+    base_sha = _commit(repo, "baseline")
+    (repo / "CHANGELOG.md").write_text("# Changelog\n\n- Historical #123.\n- Current release note.\n", encoding="utf-8")
+    head_sha = _commit(repo, "release note")
+
+    report = build_report(repo, base_ref=base_sha, head_ref=head_sha)
+
+    assert report["diff_mode"] == "ref_range"
+    assert report["release_files_changed"] == ["CHANGELOG.md"]
+    assert report["pr_reference_evidence"] is False
+    assert "pr_reference_evidence" in report["missing_evidence"]
+
+
+def test_release_audit_accepts_explicit_current_pr_number(tmp_path: Path) -> None:
+    repo = tmp_path
+    _write_release_files(repo, "# Changelog\n")
+    _init_repo(repo)
+    base_sha = _commit(repo, "baseline")
+    (repo / "CHANGELOG.md").write_text("# Changelog\n\n- Current release note.\n", encoding="utf-8")
+    head_sha = _commit(repo, "release note")
+
+    report = build_report(repo, base_ref=base_sha, head_ref=head_sha, pr_number="975")
+
+    assert report["release_files_changed"] == ["CHANGELOG.md"]
+    assert report["pr_reference_evidence"] is True
+    assert "pr_reference_evidence" not in report["missing_evidence"]
 
 
 def test_release_audit_markdown_is_operator_readable(tmp_path: Path) -> None:
