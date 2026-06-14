@@ -7,7 +7,7 @@ def test_handoff_is_report_only_and_does_not_invoke_external_agent():
     package = build_handoff(
         {
             "task_title": "Add docs note",
-            "changed_files": ["docs/project-control/example.md"],
+            "changed_files": ["docs/examples/example.md"],
             "checks": [{"name": "ci", "status": "completed", "conclusion": "success"}],
         }
     ).to_dict()
@@ -25,7 +25,7 @@ def test_handoff_wraps_engineer_plan_and_prompt_lines():
     package = build_handoff(
         {
             "task_title": "Add docs note",
-            "changed_files": ["docs/project-control/example.md"],
+            "changed_files": ["docs/examples/example.md"],
             "checks": [{"name": "ci", "status": "completed", "conclusion": "success"}],
         }
     ).to_dict()
@@ -35,14 +35,14 @@ def test_handoff_wraps_engineer_plan_and_prompt_lines():
     assert package["stop_conditions"] == []
     assert "HC Trust Engineer task handoff package." in package["handoff_prompt_lines"]
     assert any("Open one small PR only." == line for line in package["handoff_prompt_lines"])
-    assert any("Expected files: docs/project-control/example.md" == line for line in package["handoff_prompt_lines"])
+    assert any("Expected files: docs/examples/example.md" == line for line in package["handoff_prompt_lines"])
 
 
 def test_handoff_preserves_stop_conditions_for_existing_open_prs():
     package = build_handoff(
         {
             "task_title": "Blocked task",
-            "changed_files": ["docs/project-control/example.md"],
+            "changed_files": ["docs/examples/example.md"],
             "open_prs": ["#1"],
             "checks": [{"name": "ci", "status": "completed", "conclusion": "success"}],
         }
@@ -58,7 +58,7 @@ def test_handoff_cli_outputs_json(tmp_path, capsys):
         json.dumps(
             {
                 "task_title": "Add docs note",
-                "changed_files": ["docs/project-control/example.md"],
+                "changed_files": ["docs/examples/example.md"],
                 "checks": [{"name": "ci", "status": "completed", "conclusion": "success"}],
             }
         ),
