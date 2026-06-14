@@ -81,7 +81,7 @@ def test_witness_proof_present_with_subject_binding(tmp_path):
     assert result["truth_guarantee"] is False
 
 
-def test_witness_proof_accepts_content_hash_subject(tmp_path):
+def test_witness_proof_rejects_manifest_only_content_hash_subject(tmp_path):
     package = tmp_path / "package"
     package.mkdir()
     content_hash = _sha256_text("content subject")
@@ -95,14 +95,15 @@ def test_witness_proof_accepts_content_hash_subject(tmp_path):
 
     result = verify_verification_package(package)
 
-    assert result["status"] == "VERIFIED"
-    assert result["witness_proof"]["status"] == "PRESENT"
+    assert result["status"] == "INVALID"
+    assert result["witness_proof"]["status"] == "SUBJECT_MISMATCH"
     assert result["witness_proof"]["subject_sha256"] == content_hash
-    assert result["checks"]["witness_proof_present"] is True
+    assert "witness_proof_subject_mismatch:witness-proof.json" in result["conflicting_evidence"]
+    assert result["checks"]["witness_proof_present"] is False
     assert result["truth_guarantee"] is False
 
 
-def test_witness_proof_accepts_record_hash_subject(tmp_path):
+def test_witness_proof_rejects_manifest_only_record_hash_subject(tmp_path):
     package = tmp_path / "package"
     package.mkdir()
     record_hash = _sha256_text("record subject")
@@ -116,10 +117,11 @@ def test_witness_proof_accepts_record_hash_subject(tmp_path):
 
     result = verify_verification_package(package)
 
-    assert result["status"] == "VERIFIED"
-    assert result["witness_proof"]["status"] == "PRESENT"
+    assert result["status"] == "INVALID"
+    assert result["witness_proof"]["status"] == "SUBJECT_MISMATCH"
     assert result["witness_proof"]["subject_sha256"] == record_hash
-    assert result["checks"]["witness_proof_present"] is True
+    assert "witness_proof_subject_mismatch:witness-proof.json" in result["conflicting_evidence"]
+    assert result["checks"]["witness_proof_present"] is False
     assert result["truth_guarantee"] is False
 
 

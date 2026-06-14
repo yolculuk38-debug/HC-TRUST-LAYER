@@ -633,11 +633,9 @@ def _witness_proof_not_provided() -> dict[str, Any]:
 
 def _collect_local_subject_sha256s(manifest: dict[str, Any], files: list[dict[str, Any]]) -> set[str]:
     subjects: set[str] = set()
-    for key in ("subject_sha256", "content_hash", "record_hash"):
-        value = manifest.get(key)
-        if isinstance(value, str) and _looks_like_sha256(value.lower()):
-            subjects.add(value.lower())
-
+    # Only verified local file hashes are local subject evidence. Top-level manifest
+    # hashes are claims and must not bind timestamp or witness subjects unless they
+    # are also backed by a matched local file entry.
     for file_result in files:
         if file_result.get("status") != "MATCH":
             continue

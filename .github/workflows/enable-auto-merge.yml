@@ -1,8 +1,9 @@
 name: Enable PR Auto-merge
 # Security hardening defaults: least-privilege token scopes, deterministic concurrency, and bounded runtime.
+# Governance boundary: automatic merge enablement is disabled. This workflow is report-only.
 
 on:
-  pull_request_target:
+  pull_request:
     types:
       - opened
       - reopened
@@ -12,103 +13,25 @@ on:
       - unlabeled
 
 permissions:
-  contents: write
-  pull-requests: write
-
+  contents: read
+  pull-requests: read
 
 concurrency:
-  # Keep one execution lane per PR, but do not cancel in-flight runs.
-  # Cancelled runs can leave auto-merge disabled even when required checks later pass.
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
-  enable-auto-merge:
-    # Bound workflow runtime to reduce abuse/DoS risk from stalled jobs.
-    timeout-minutes: 20
+  report-auto-merge-disabled:
+    timeout-minutes: 10
     runs-on: ubuntu-22.04
-
     steps:
-      - name: Evaluate auto-merge eligibility
-        id: auto_merge_gate
+      - name: Report manual merge requirement
         env:
-          GH_TOKEN: ${{ github.token }}
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
           LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
           IS_DRAFT: ${{ github.event.pull_request.draft }}
         run: |
-          echo "eligible=false" >> "$GITHUB_OUTPUT"
           echo "Labels: $LABELS"
-
-          has_label() {
-            local needle="$1"
-            LABELS_CSV="$LABELS" python - "$needle" <<'PY'
-          import os
-          import sys
-
-          needle = sys.argv[1]
-          labels = [label.strip() for label in os.environ.get("LABELS_CSV", "").split(",") if label.strip()]
-          raise SystemExit(0 if needle in labels else 1)
-          PY
-          }
-
-          disable_auto_merge() {
-            if [ "$(gh pr view "$PR_URL" --json autoMergeRequest --jq '.autoMergeRequest != null')" = "true" ]; then
-              gh pr merge "$PR_URL" --disable-auto
-            else
-              echo "Auto-merge already disabled."
-            fi
-          }
-
-          protected_path_touched() {
-            local files
-            local path
-            files="$(mktemp)"
-            if ! gh api --paginate "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files" --jq '.[].filename' > "$files"; then
-              echo "Unable to inspect PR files; disabling auto-merge eligibility."
-              rm -f "$files"
-              return 0
-            fi
-            while IFS= read -r path; do
-              case "$path" in
-                CODEOWNERS|protocol-graph.json|verification-map.json|trust-kernel-index.json|schema/*|validators/*|signatures/*|policy/*|federation/*|records/*|.github/workflows/*|src/hc_runtime/*)
-                  echo "$path"
-                  rm -f "$files"
-                  return 0
-                  ;;
-              esac
-            done < "$files"
-            rm -f "$files"
-            return 1
-          }
-
-          if [ "$IS_DRAFT" = "true" ]; then
-            echo "Draft PR: auto-merge disabled."
-            disable_auto_merge
-            exit 0
-          fi
-          # Tier-1 restriction: manual-review always wins over auto-merge, including label conflicts.
-          if has_label "manual-review"; then
-            echo "manual-review label present: auto-merge disabled."
-            disable_auto_merge
-            exit 0
-          fi
-          # Tier-1 protected surfaces require human-supervised validation and must not auto-merge.
-          if protected_path_touched; then
-            echo "Protected path touched: auto-merge disabled."
-            disable_auto_merge
-            exit 0
-          fi
-          if has_label "auto-merge"; then
-            echo "eligible=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "auto-merge label missing: no action."
-          fi
-
-      - name: Enable auto-merge when labeled
-        if: steps.auto_merge_gate.outputs.eligible == 'true'
-        uses: peter-evans/enable-pull-request-automerge@v3
-        with:
-          pull-request-number: ${{ github.event.pull_request.number }}
-          merge-method: squash
+          echo "Draft: $IS_DRAFT"
+          echo "Automatic merge enablement is disabled by HC-TRUST-LAYER governance."
+          echo "Human review required."
+          echo "Human merge required."

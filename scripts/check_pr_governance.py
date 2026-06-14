@@ -233,6 +233,9 @@ def main() -> int:
         "ADVISORY: This preflight is a governance control-layer signal only; "
         "human-supervised validation retains merge authority."
     )
+    if summary.human_review_required:
+        print("REVIEW_REQUIRED: manual-only paths require human-supervised validation before merge.")
+        return 1
     return 0
 
 

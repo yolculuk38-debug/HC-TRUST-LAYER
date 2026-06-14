@@ -31,8 +31,9 @@ jobs:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          set -euo pipefail
+          set -uo pipefail
           python scripts/check_pr_governance.py --base-ref "$BASE_SHA" --head-ref "$HEAD_SHA" | tee governance_preflight.log
+          preflight_status="${PIPESTATUS[0]}"
 
           echo "Governance summary:"
           grep -E '^(RISK|AUTO_MERGE_ELIGIBLE|HUMAN_REVIEW_REQUIRED|PROTECTED_PATHS_TOUCHED):' governance_preflight.log
@@ -58,3 +59,4 @@ jobs:
           fi
 
           echo "Advisory: governance preflight is control-layer only; merge authority remains human-supervised."
+          exit "$preflight_status"
