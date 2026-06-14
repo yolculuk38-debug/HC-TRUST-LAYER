@@ -177,10 +177,12 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
         conflicting_evidence=conflicting_evidence,
         warnings=warnings,
     )
+    local_subject_sha256s = _collect_local_subject_sha256s(manifest, file_results)
     timestamp_proof = _verify_timestamp_proof_entry(
         package_root=package_root,
         package_root_resolved=package_root_resolved,
         entry=manifest.get("timestamp_proof"),
+        local_subject_sha256s=local_subject_sha256s,
         missing_evidence=missing_evidence,
         conflicting_evidence=conflicting_evidence,
         warnings=warnings,
@@ -189,7 +191,7 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
         package_root=package_root,
         package_root_resolved=package_root_resolved,
         entry=manifest.get("witness_proof"),
-        local_subject_sha256s=_collect_local_subject_sha256s(manifest, file_results),
+        local_subject_sha256s=local_subject_sha256s,
         missing_evidence=missing_evidence,
         conflicting_evidence=conflicting_evidence,
         warnings=warnings,
@@ -430,6 +432,7 @@ def _verify_timestamp_proof_entry(
     package_root: Path,
     package_root_resolved: Path,
     entry: Any,
+    local_subject_sha256s: set[str],
     missing_evidence: list[str],
     conflicting_evidence: list[str],
     warnings: list[str],
@@ -500,11 +503,23 @@ def _verify_timestamp_proof_entry(
         result.update({"status": "INVALID", "reason": "timestamp_proof_subject_sha256_invalid"})
         return result
 
+    subject_sha256 = proof["subject_sha256"].lower()
+    if subject_sha256 not in local_subject_sha256s:
+        conflicting_evidence.append(f"timestamp_proof_subject_sha256_mismatch:{relative_path}")
+        result.update(
+            {
+                "status": "INVALID",
+                "reason": "timestamp_proof_subject_sha256_mismatch",
+                "subject_sha256": subject_sha256,
+            }
+        )
+        return result
+
     result.update(
         {
             "status": "PRESENT",
             "claimed_at": proof["claimed_at"],
-            "subject_sha256": proof["subject_sha256"].lower(),
+            "subject_sha256": subject_sha256,
         }
     )
     return result
@@ -618,11 +633,9 @@ def _witness_proof_not_provided() -> dict[str, Any]:
 
 def _collect_local_subject_sha256s(manifest: dict[str, Any], files: list[dict[str, Any]]) -> set[str]:
     subjects: set[str] = set()
-    for key in ("subject_sha256", "content_hash", "record_hash"):
-        value = manifest.get(key)
-        if isinstance(value, str) and _looks_like_sha256(value.lower()):
-            subjects.add(value.lower())
-
+    # Only verified local file hashes are local subject evidence. Top-level manifest
+    # hashes are claims and must not bind timestamp or witness subjects unless they
+    # are also backed by a matched local file entry.
     for file_result in files:
         if file_result.get("status") != "MATCH":
             continue

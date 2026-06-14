@@ -92,6 +92,59 @@ def test_timestamp_proof_rejects_invalid_claimed_at(tmp_path):
     assert "timestamp_proof_claimed_at_invalid:timestamp-proof.json" in result["conflicting_evidence"]
 
 
+def test_timestamp_proof_rejects_unrelated_subject_hash(tmp_path):
+    package = tmp_path / "package"
+    package.mkdir()
+    unrelated_hash = _sha256_text("unrelated-subject")
+    timestamp_text = json.dumps(
+        {"claimed_at": "2026-06-12T00:00:00Z", "subject_sha256": unrelated_hash},
+        sort_keys=True,
+    )
+    _write_package(
+        package,
+        timestamp_entry={"path": "timestamp-proof.json", "sha256": _sha256_text(timestamp_text)},
+        timestamp_text=timestamp_text,
+    )
+
+    result = verify_verification_package(package)
+
+    assert result["status"] == "INVALID"
+    assert result["timestamp_proof"]["status"] == "INVALID"
+    assert result["timestamp_proof"]["reason"] == "timestamp_proof_subject_sha256_mismatch"
+    assert result["timestamp_proof"]["subject_sha256"] == unrelated_hash
+    assert "timestamp_proof_subject_sha256_mismatch:timestamp-proof.json" in result["conflicting_evidence"]
+
+
+def test_timestamp_proof_rejects_manifest_only_subject_hash(tmp_path):
+    package = tmp_path / "package"
+    package.mkdir()
+    manifest_only_hash = _sha256_text("manifest-only-subject")
+    timestamp_text = json.dumps(
+        {"claimed_at": "2026-06-12T00:00:00Z", "subject_sha256": manifest_only_hash},
+        sort_keys=True,
+    )
+    _write_package(
+        package,
+        timestamp_entry={"path": "timestamp-proof.json", "sha256": _sha256_text(timestamp_text)},
+        timestamp_text=timestamp_text,
+    )
+
+    manifest_path = package / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["subject_sha256"] = manifest_only_hash
+    manifest["content_hash"] = manifest_only_hash
+    manifest["record_hash"] = manifest_only_hash
+    manifest_path.write_text(json.dumps(manifest, sort_keys=True), encoding="utf-8")
+
+    result = verify_verification_package(package)
+
+    assert result["status"] == "INVALID"
+    assert result["timestamp_proof"]["status"] == "INVALID"
+    assert result["timestamp_proof"]["reason"] == "timestamp_proof_subject_sha256_mismatch"
+    assert result["timestamp_proof"]["subject_sha256"] == manifest_only_hash
+    assert "timestamp_proof_subject_sha256_mismatch:timestamp-proof.json" in result["conflicting_evidence"]
+
+
 def test_timestamp_proof_missing(tmp_path):
     package = tmp_path / "package"
     package.mkdir()

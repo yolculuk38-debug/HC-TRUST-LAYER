@@ -13,6 +13,7 @@ RiskLevel = MODULE.RiskLevel
 render_summary = MODULE.render_summary
 summarize_governance = MODULE.summarize_governance
 apply_label_overrides = MODULE.apply_label_overrides
+main = MODULE.main
 
 
 def test_docs_only_is_low_risk_and_auto_merge_eligible():
@@ -184,3 +185,37 @@ def test_blocked_human_review_with_auto_merge_forces_human_review():
     assert result.human_review_required is True
     assert result.override_reason is not None
     assert "blocked-human-review disallows auto-merge" in result.override_reason
+
+
+def test_main_reports_manual_review_paths_without_failing(monkeypatch, capsys):
+    monkeypatch.setattr(sys, "argv", ["check_pr_governance.py", "--files", ".github/workflows/ci.yml"])
+
+    assert main() == 0
+
+    output = capsys.readouterr().out
+    assert "HUMAN_REVIEW_REQUIRED: yes" in output
+    assert "PROTECTED_PATHS_TOUCHED: yes" in output
+    assert "REVIEW_REQUIRED: manual-only paths require human-supervised validation before merge." in output
+
+
+def test_main_allows_low_risk_report(monkeypatch, capsys):
+    monkeypatch.setattr(sys, "argv", ["check_pr_governance.py", "--files", "docs/index.md"])
+
+    assert main() == 0
+
+    output = capsys.readouterr().out
+    assert "HUMAN_REVIEW_REQUIRED: no" in output
+
+
+def test_main_fails_for_forbidden_auto_merge_label_conflict(monkeypatch, capsys):
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["check_pr_governance.py", "--files", "docs/index.md", "--labels", "manual-review", "auto-merge"],
+    )
+
+    assert main() == 1
+
+    output = capsys.readouterr().out
+    assert "HUMAN_REVIEW_REQUIRED: yes" in output
+    assert "POLICY_VIOLATION: forbidden auto-merge conflict requires correction before merge." in output
