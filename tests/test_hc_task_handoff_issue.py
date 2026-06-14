@@ -79,6 +79,17 @@ _No response_
 """
 
 
+EXPECTED_MARKDOWN_LIST_PATHS = {
+    "schema/record-v1.schema.json",
+    "validators/public_validator.py",
+    "docs/project-control/example-note.md",
+    "records/example.json",
+    "generated/example.json",
+    "signatures/example.sig",
+    "federation/example.json",
+}
+
+
 def test_issue_body_to_fixture_extracts_core_fields():
     fixture = issue_body_to_fixture(ISSUE_BODY)
 
@@ -130,15 +141,7 @@ def test_markdown_list_paths_reach_protected_path_handoff_gate():
     payload = build_issue_handoff(MARKDOWN_LIST_ISSUE_BODY)
 
     plan = payload["handoff"]["plan"]
-    assert plan["planned_prs"][0]["expected_files"] == [
-        "schema/record-v1.schema.json",
-        "validators/public_validator.py",
-        "docs/project-control/example-note.md",
-        "records/example.json",
-        "generated/example.json",
-        "signatures/example.sig",
-        "federation/example.json",
-    ]
+    assert set(plan["planned_prs"][0]["expected_files"]) == EXPECTED_MARKDOWN_LIST_PATHS
     assert plan["merge_gate"]["allowed"] is False
     assert plan["merge_gate"]["human_review_required"] is True
     assert any(

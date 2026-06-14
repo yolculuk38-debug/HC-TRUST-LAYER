@@ -76,16 +76,18 @@ Structures, workflows, and standards may evolve over time.
 
 HC-TRUST-LAYER uses a **security-first default** for pull requests:
 
-- PRs are treated as **manual-review required** unless they are clearly documentation-only.
+- All PRs require passing checks and human-supervised merge.
+- Documentation-only PRs may be classified as lower risk, but they are not automatically merged.
 - PRs that touch code, schemas, automation/workflows, source, or tooling paths are labeled `manual-review` and must be reviewed by a maintainer before merge.
 
-### Docs-Only Auto-Merge
+### Docs-Only Review and Merge
 
-Documentation-only pull requests are eligible for automatic merge:
+Documentation-only pull requests remain human-merge required:
 
-- Eligible PRs are labeled `docs-auto`.
-- Auto-merge is enabled only after GitHub required checks pass.
-- Merge method is squash merge.
+- The Docs Review Policy workflow is report-only and read-only.
+- Docs-only classification is advisory; it does not approve or merge the PR.
+- Required checks must pass before merge.
+- A maintainer must perform the final merge.
 
 ### Manual Review Triggers
 
@@ -98,7 +100,7 @@ Any PR that changes sensitive or executable surfaces is labeled `manual-review`,
 - `CODEOWNERS`
 - dependency/runtime files (`requirements.txt`, `package.json`, `pnpm-lock.yaml`)
 
-If a PR includes both documentation changes and protected-path changes, `manual-review` takes precedence and the PR must not be auto-merged.
+If a PR includes both documentation changes and protected-path changes, `manual-review` takes precedence and the PR must remain human-reviewed and human-merged.
 
 If there is uncertainty, the policy defaults to `manual-review`.
 
