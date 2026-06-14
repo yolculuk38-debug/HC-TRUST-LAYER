@@ -7,10 +7,10 @@ This file lists safe, advisory next work for HC-TRUST-LAYER. Each item is report
 | Field | Status |
 | --- | --- |
 | Current phase | Working verification core / post-runtime stabilization |
-| Active focus | Public validator and public explorer planning/navigation are synchronized through #821/#822. HC Control Bot, assistant-console, repository assistant baseline, and operator-entry-map state are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Verification package hash core and local CLI sequence is complete through #843. HC Trust Engineer report generator, import fix, status checkpoint, and quickstart examples are complete through #872/#873/#874/#875. HC Engineer task planner, skipped-check/manual-review hardening, operator quickstart, and state synchronization are complete through #888/#889/#890/#891. Signature/witness planning, GitHub issue/comment PR-flow diagnostic evidence, signature/witness fixture-format planning, non-canonical signature/witness fixture package evidence, quickstart navigation, and fixture output-mode clarification are recorded through #892/#893/#894/#896/#898/#900/#949. |
-| Next up | Review source inventory, test inventory, and branch-count evidence before proposing any cleanup. Do not repeat completed task-planner, report-generator, verification package, bot, public-validator, public-explorer, signature/witness proposal, fixture-format proposal, fixture-package, quickstart navigation, fixture output-mode clarification, or PR-flow diagnostic work. |
-| Blocked / parked work | Larger trust layers, issue-comment based autonomous PR creation, GitHub Actions integration, VPS runners, GitHub App runners, label/assignment/reviewer-request automation, signing implementation, witness authority, and authority-changing automation remain parked unless explicitly authorized and reviewed. |
-| Do-not-repeat references | #628, #629, #630, #631, #820/#821/#822, #823/#824, #826, #828, #831, #834, #838, #839, #841, #843, #872, #873, #874, #875, #888, #889, #890, #891, #892, #893, #894, #896, #898, #900, and #949 are completed references. #812 remains active console and #763 remains historical only. |
+| Active focus | Public validator and public explorer planning/navigation are synchronized through #821/#822. HC Control Bot, assistant-console, repository assistant baseline, and operator-entry-map state are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Verification package hash core and local CLI sequence is complete through #843. HC Trust Engineer report generator, import fix, status checkpoint, and quickstart examples are complete through #872/#873/#874/#875. HC Engineer task planner, skipped-check/manual-review hardening, operator quickstart, and state synchronization are complete through #888/#889/#890/#891. Signature/witness planning, GitHub issue/comment PR-flow diagnostic evidence, signature/witness fixture-format planning, non-canonical signature/witness fixture package evidence, quickstart navigation, and fixture output-mode clarification are recorded through #892/#893/#894/#896/#898/#900/#949. Repository inventory ledger, test-anchor detection, and category-specific Markdown inventory views are complete through #967/#968/#970. |
+| Next up | Use generated repository inventory artifacts to review test inventory evidence and branch-count evidence before proposing any cleanup. Do not repeat completed task-planner, report-generator, verification package, bot, public-validator, public-explorer, signature/witness proposal, fixture-format proposal, fixture-package, quickstart navigation, fixture output-mode clarification, PR-flow diagnostic work, or repository inventory ledger/category-view work. |
+| Blocked / parked work | Larger trust layers, issue-comment based autonomous PR creation, VPS runners, GitHub App runners, label/assignment/reviewer-request automation, signing implementation, witness authority, and authority-changing automation remain parked unless explicitly authorized and reviewed. |
+| Do-not-repeat references | #628, #629, #630, #631, #820/#821/#822, #823/#824, #826, #828, #831, #834, #838, #839, #841, #843, #872, #873, #874, #875, #888, #889, #890, #891, #892, #893, #894, #896, #898, #900, #949, #967, #968, and #970 are completed references. #812 remains active console and #763 remains historical only. |
 | Review / merge rule | Before merge: verify changed files, checks, Codex/review comments, and risk scope. If comments exist, fix first. Human final authority remains the governance boundary. |
 | Source-of-truth priority | Markdown project-control docs and repository evidence outrank `hc_context`, chat memory, and advisory summaries. |
 
@@ -31,6 +31,7 @@ Before taking the next action, read:
 11. `docs/project-control/hc-engineer-command-surface-status.md`
 12. `docs/project-control/repository-assistant-baseline-status.md`
 13. `docs/project-control/hc-trust-engineer-report-generator-status.md`
+14. `docs/project-control/inventory-ledger-completion-status.md`
 
 Use `docs/project-control/active-work-registry.md` only for advisory shift-level coordination.
 
@@ -101,19 +102,27 @@ Use `docs/project-control/active-work-registry.md` only for advisory shift-level
 - These updates are documentation-only navigation and output-mode clarification. They do not add signing implementation, witness authority, identity finality, federation, production readiness, certification, legal truth, or guaranteed correctness.
 - Do not repeat #900 or #949 unless new repository evidence appears.
 
+## Completed repository inventory ledger slice
+
+- #967 added `scripts/hc_repo_inventory.py`, tests, documentation, and a read-only report workflow that uploads JSON/Markdown repository inventory artifacts.
+- #968 improved test-anchor detection so inventory entries can link source and script files to exact, prefix-style, or reference-based tests.
+- #970 added category-specific Markdown views for latest changes, tests, source, workflows, docs, records/schema/protected, and review-needed entries while keeping JSON output backward compatible.
+- The inventory ledger remains advisory-only, public-safe, `truth_guarantee=false`, inventory-only, and non-mutating.
+- Do not repeat #967/#968/#970 unless new repository evidence appears.
+
 ## 1. Candidate next working-core PR
 
 - Priority order: 1
 - Mode: report/docs/test/sample only unless separately authorized.
-- Candidate: review source inventory output, test inventory evidence, and branch-count evidence before any cleanup or rewrite proposal.
+- Candidate: review generated repository inventory artifacts for test inventory evidence and branch-count evidence before any cleanup or rewrite proposal.
 - Safe output: a small report, documentation update, or test/sample-only improvement that preserves advisory-only, public-safe, and `truth_guarantee=false` boundaries.
-- Why it is next: #900 and #949 completed the current signature/witness fixture quickstart navigation and output-mode clarification; remaining safe work should use inventory evidence before changing source, tests, branches, protected paths, or authority boundaries.
+- Why it is next: #967/#968/#970 completed the repository inventory ledger, smarter test-anchor detection, and category-specific Markdown views. Remaining safe work should use generated evidence before changing source, tests, branches, protected paths, or authority boundaries.
 
 ## 2. Parked larger implementation work
 
 - Priority order: 2
 - Mode: blocked unless explicitly authorized.
-- Parked examples: issue-comment based autonomous PR creation, GitHub Actions integration for this generator, VPS runner, GitHub App runner, label application, assignment, reviewer requests, signing implementation, witness authority, QR/canonical-domain binding, C2PA ingestion, OpenTimestamps verification, federation, dispute/governance implementation, and production-readiness claims.
+- Parked examples: issue-comment based autonomous PR creation, VPS runner, GitHub App runner, label application, assignment, reviewer requests, signing implementation, witness authority, QR/canonical-domain binding, C2PA ingestion, OpenTimestamps verification, federation, dispute/governance implementation, and production-readiness claims.
 
 ## Stale-context guidance
 
