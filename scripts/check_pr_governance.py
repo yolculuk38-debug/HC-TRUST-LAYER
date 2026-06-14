@@ -235,6 +235,8 @@ def main() -> int:
     )
     if summary.human_review_required:
         print("REVIEW_REQUIRED: manual-only paths require human-supervised validation before merge.")
+    if summary.override_reason:
+        print("POLICY_VIOLATION: forbidden auto-merge conflict requires correction before merge.")
         return 1
     return 0
 

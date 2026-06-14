@@ -187,13 +187,14 @@ def test_blocked_human_review_with_auto_merge_forces_human_review():
     assert "blocked-human-review disallows auto-merge" in result.override_reason
 
 
-def test_main_blocks_manual_review_paths(monkeypatch, capsys):
+def test_main_reports_manual_review_paths_without_failing(monkeypatch, capsys):
     monkeypatch.setattr(sys, "argv", ["check_pr_governance.py", "--files", ".github/workflows/ci.yml"])
 
-    assert main() == 1
+    assert main() == 0
 
     output = capsys.readouterr().out
     assert "HUMAN_REVIEW_REQUIRED: yes" in output
+    assert "PROTECTED_PATHS_TOUCHED: yes" in output
     assert "REVIEW_REQUIRED: manual-only paths require human-supervised validation before merge." in output
 
 
@@ -204,3 +205,17 @@ def test_main_allows_low_risk_report(monkeypatch, capsys):
 
     output = capsys.readouterr().out
     assert "HUMAN_REVIEW_REQUIRED: no" in output
+
+
+def test_main_fails_for_forbidden_auto_merge_label_conflict(monkeypatch, capsys):
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["check_pr_governance.py", "--files", "docs/index.md", "--labels", "manual-review", "auto-merge"],
+    )
+
+    assert main() == 1
+
+    output = capsys.readouterr().out
+    assert "HUMAN_REVIEW_REQUIRED: yes" in output
+    assert "POLICY_VIOLATION: forbidden auto-merge conflict requires correction before merge." in output
