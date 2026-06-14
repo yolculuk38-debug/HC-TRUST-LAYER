@@ -1,5 +1,5 @@
 name: HC Task Handoff
-about: Prepare a small advisory task package for reviewed implementation
+description: Prepare a small advisory task package for reviewed implementation
 labels: []
 body:
   - type: markdown
