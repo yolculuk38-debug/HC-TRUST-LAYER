@@ -1,0 +1,55 @@
+name: OpenSSF Scorecard Advisory
+
+# Governance boundary: advisory evidence only. No auto-remediation, no auto-merge,
+# no label/assignment/reviewer-request authority, and no repository mutation.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "23 6 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scorecard:
+    timeout-minutes: 20
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Run OpenSSF Scorecard advisory scan
+        uses: ossf/scorecard-action@v2.4.2
+        with:
+          results_file: scorecard-results.json
+          results_format: json
+          publish_results: false
+
+      - name: Write advisory summary
+        run: |
+          {
+            echo "# OpenSSF Scorecard advisory evidence"
+            echo
+            echo "- advisory_only=true"
+            echo "- public_safe=true"
+            echo "- truth_guarantee=false"
+            echo "- auto_remediation=false"
+            echo "- auto_merge=false"
+            echo "- authority_changing_behavior=false"
+            echo
+            echo "SARIF upload is intentionally not enabled in this report-only baseline."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload Scorecard advisory artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: scorecard-advisory-results
+          path: scorecard-results.json
+          retention-days: 14
