@@ -2,7 +2,7 @@
 
 Status: advisory checkpoint.
 
-The external report correctly notes that issuer proof presence is not the same as external issuer identity verification.
+This checkpoint records the current repository-confirmed issuer identity boundary for local verification packages.
 
 Current verification-package behavior validates local issuer-proof file presence, file hash integrity, JSON readability, and required local fields such as `issuer` and `statement`.
 
