@@ -72,13 +72,23 @@ def cmd_verify_package(args):
     return 0 if result["status"] == VerificationPackageStatus.VERIFIED else 1
 
 
+def _summary_value(value):
+    if value is None:
+        return "None"
+    return str(value).encode("unicode_escape").decode("ascii")
+
+
+def _summary_list(values):
+    return ", ".join(_summary_value(value) for value in values)
+
+
 def _format_verify_package_summary(result):
     lines = [
         "HC verification package summary",
         f"status: {result['status']}",
         f"verified: {str(result['verified']).lower()}",
-        f"package_id: {result.get('package_id')}",
-        f"record_id: {result.get('record_id')}",
+        f"package_id: {_summary_value(result.get('package_id'))}",
+        f"record_id: {_summary_value(result.get('record_id'))}",
         f"files_checked: {result.get('checks', {}).get('manifest_files_checked')}",
         f"issuer_proof: {result.get('issuer_proof', {}).get('status', 'NOT_PROVIDED')}",
         f"timestamp_proof: {result.get('timestamp_proof', {}).get('status', 'NOT_PROVIDED')}",
@@ -89,11 +99,11 @@ def _format_verify_package_summary(result):
         "truth_guarantee: false",
     ]
     if result.get("missing_evidence"):
-        lines.append("missing_evidence: " + ", ".join(result["missing_evidence"]))
+        lines.append("missing_evidence: " + _summary_list(result["missing_evidence"]))
     if result.get("conflicting_evidence"):
-        lines.append("conflicting_evidence: " + ", ".join(result["conflicting_evidence"]))
+        lines.append("conflicting_evidence: " + _summary_list(result["conflicting_evidence"]))
     if result.get("warnings"):
-        lines.append("warnings: " + ", ".join(result["warnings"]))
+        lines.append("warnings: " + _summary_list(result["warnings"]))
     return "\n".join(lines)
 
 

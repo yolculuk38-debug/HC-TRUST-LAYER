@@ -8,12 +8,12 @@ def _sha256_text(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
 
-def _write_manifest(package, files):
+def _write_manifest(package, files, package_id="HC-PKG-CLI", record_id="HC-RECORD-CLI"):
     (package / "manifest.json").write_text(
         json.dumps(
             {
-                "package_id": "HC-PKG-CLI",
-                "record_id": "HC-RECORD-CLI",
+                "package_id": package_id,
+                "record_id": record_id,
                 "files": files,
             },
             sort_keys=True,
@@ -130,3 +130,31 @@ def test_verify_package_cli_summary_returns_one_for_invalid_package(tmp_path, ca
     assert "public_safe: true" in output
     assert "truth_guarantee: false" in output
     assert "conflicting_evidence: sha256_mismatch:metadata/source-info.json" in output
+
+
+def test_verify_package_cli_summary_escapes_manifest_control_characters(tmp_path, capsys):
+    package = tmp_path / "package"
+    artifact = package / "metadata" / "source-info.json"
+    artifact.parent.mkdir(parents=True)
+    artifact.write_text("changed", encoding="utf-8")
+    _write_manifest(
+        package,
+        [
+            {
+                "path": "metadata/source-info.json",
+                "sha256": _sha256_text("original"),
+            }
+        ],
+        package_id="HC-PKG\nstatus: VERIFIED",
+        record_id="HC-RECORD\r\nverified: true",
+    )
+
+    exit_code = main(["verify-package", str(package), "--summary"])
+    output = capsys.readouterr().out
+
+    assert exit_code == 1
+    assert "status: INVALID" in output
+    assert "package_id: HC-PKG\\nstatus: VERIFIED" in output
+    assert "record_id: HC-RECORD\\r\\nverified: true" in output
+    assert "\nstatus: VERIFIED" not in output
+    assert "\nverified: true" not in output
