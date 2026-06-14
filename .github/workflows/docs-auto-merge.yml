@@ -1,6 +1,6 @@
 name: Docs Review Policy
 # Security hardening defaults: least-privilege token scopes, deterministic concurrency, and bounded runtime.
-# Governance boundary: this workflow must never enable or perform auto-merge.
+# Governance boundary: this workflow is read-only and report-only. It must never label, comment, approve, close, enable auto-merge, or perform merge actions.
 
 on:
   pull_request_target:
@@ -9,8 +9,7 @@ on:
 permissions:
   contents: read
   pull-requests: read
-  issues: write
-
+  issues: read
 
 concurrency:
   # Cancel superseded runs on the same ref to prevent duplicate executions and non-deterministic outcomes.
@@ -18,44 +17,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  classify-and-label:
+  classify-and-report:
     # Bound workflow runtime to reduce abuse/DoS risk from stalled jobs.
     timeout-minutes: 20
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-22.04
     steps:
-      - name: Ensure required labels exist
-        uses: actions/github-script@v9
-        with:
-          script: |
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const labels = [
-              {
-                name: 'docs-auto',
-                color: '0E8A16',
-                description: 'Documentation-only changes; advisory classification for human review.'
-              },
-              {
-                name: 'manual-review',
-                color: 'B60205',
-                description: 'Touches code/schema/workflows/src or other sensitive areas; manual review required.'
-              }
-            ];
-
-            for (const label of labels) {
-              try {
-                await github.rest.issues.getLabel({ owner, repo, name: label.name });
-              } catch (error) {
-                if (error.status === 404) {
-                  await github.rest.issues.createLabel({ owner, repo, ...label });
-                } else {
-                  throw error;
-                }
-              }
-            }
-
-      - name: Classify PR and apply review labels without auto-merge
+      - name: Classify PR and report review requirements
         uses: actions/github-script@v9
         with:
           script: |
@@ -101,38 +69,14 @@ jobs:
             const docsOnly = allInDocsScope && !touchesManualArea;
             const hasDocsChanges = changedFiles.some(path => docsOnlyPatterns.some(pattern => pattern.test(path)));
             const mixedDocsAndManual = touchesManualArea && hasDocsChanges;
-
-            const toAdd = docsOnly
-              ? ['docs-auto']
+            const classification = docsOnly
+              ? 'docs-only advisory scope'
               : mixedDocsAndManual
-                ? ['manual-review', 'docs-auto']
-                : ['manual-review'];
+                ? 'mixed documentation and manual-review scope'
+                : 'manual-review scope';
 
-            const toRemove = docsOnly
-              ? ['manual-review', 'auto-merge']
-              : mixedDocsAndManual
-                ? ['auto-merge']
-                : ['docs-auto', 'auto-merge'];
-
-            await github.rest.issues.addLabels({
-              owner,
-              repo,
-              issue_number: prNumber,
-              labels: toAdd
-            });
-
-            for (const label of toRemove) {
-              try {
-                await github.rest.issues.removeLabel({ owner, repo, issue_number: prNumber, name: label });
-              } catch (error) {
-                if (error.status !== 404) {
-                  throw error;
-                }
-              }
-            }
-
-            if (docsOnly) {
-              core.info('Docs-only PR detected: docs-auto label applied for advisory classification only. Human merge is required.');
-            } else {
-              core.info('Manual review required: auto-merge is not enabled by this workflow.');
-            }
+            core.info(`Changed files: ${changedFiles.length ? changedFiles.join(', ') : '(none reported)'}`);
+            core.info(`Changed scope / review classification: ${classification}`);
+            core.info('Human review required.');
+            core.info('Human merge required.');
+            core.info('Report-only boundary: no labels, comments, reviewers, approvals, closures, auto-merge, or merge actions were requested.');
