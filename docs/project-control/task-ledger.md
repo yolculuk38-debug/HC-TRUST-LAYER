@@ -16,6 +16,12 @@ Shared factory model:
 
 Operating boundaries remain: `advisory_only=true`, `public_safe=true`, `truth_guarantee=false`; human final authority remains required. CI/checks are evidence, not trust authority. Generated artifacts are advisory evidence, not canonical records.
 
+## Planned simplification
+
+Future simplification should keep phase/milestone records and high-risk governance/security checkpoints. It must not become a record of every small docs/test PR.
+
+Boundaries remain: `advisory_only=true`, `public_safe=true`, `truth_guarantee=false`; human final authority remains required. CI/checks are evidence, not trust authority. Generated artifacts are advisory evidence, not canonical records.
+
 ## Shift-ledger table
 
 | Task ID | Status | Operator / Agent | Tool / Machine | PR / Commit Barcode | Risk | Evidence | Notes | Next action |

@@ -16,6 +16,20 @@ Shared factory model:
 
 Operating boundaries remain: `advisory_only=true`, `public_safe=true`, `truth_guarantee=false`; human final authority remains required. CI/checks are evidence, not trust authority. Generated artifacts are advisory evidence, not canonical records.
 
+## Planned simplification
+
+Future simplification should keep only:
+
+- current phase
+- 1-3 next safe actions
+- immediate do-not-repeat reminders
+- parked work
+- merge/review rule
+
+Long historical explanations should not remain here long-term, but no deletion is performed in this PR.
+
+Boundaries remain: `advisory_only=true`, `public_safe=true`, `truth_guarantee=false`; human final authority remains required. CI/checks are evidence, not trust authority. Generated artifacts are advisory evidence, not canonical records.
+
 ## Operator Status Card
 
 | Field | Status |
