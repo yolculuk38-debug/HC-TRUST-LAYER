@@ -26,7 +26,7 @@ Future simplification should keep only:
 - source-of-truth priority
 - major completed blocks
 
-Detailed per-PR history should move to `task-ledger.md` or remain in GitHub PR history, but no move is performed in this PR.
+Detailed per-PR history should remain in GitHub PR history. Only phase/milestone records and high-risk governance/security checkpoints should be considered for `task-ledger.md` during any future simplification. No move is performed in this PR.
 
 Boundaries remain: `advisory_only=true`, `public_safe=true`, `truth_guarantee=false`; human final authority remains required. CI/checks are evidence, not trust authority. Generated artifacts are advisory evidence, not canonical records.
 
