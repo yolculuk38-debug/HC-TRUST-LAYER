@@ -7,10 +7,10 @@ This file lists safe, advisory next work for HC-TRUST-LAYER. Each item is report
 | Field | Status |
 | --- | --- |
 | Current phase | Working verification core / post-runtime stabilization |
-| Active focus | Public validator and public explorer planning/navigation are synchronized through #821/#822. HC Control Bot, assistant-console, repository assistant baseline, and operator-entry-map state are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Verification package hash core and local CLI sequence is complete through #843. HC Trust Engineer report generator, import fix, status checkpoint, and quickstart examples are complete through #872/#873/#874/#875. HC Engineer task planner, skipped-check/manual-review hardening, operator quickstart, and state synchronization are complete through #888/#889/#890/#891. Signature/witness planning, GitHub issue/comment PR-flow diagnostic evidence, signature/witness fixture-format planning, non-canonical signature/witness fixture package evidence, quickstart navigation, and fixture output-mode clarification are recorded through #892/#893/#894/#896/#898/#900/#949. Repository inventory ledger, test-anchor detection, category-specific Markdown inventory views, actor/PR trace evidence, large-repo governance automation baseline, governance automation review findings follow-up, CODEOWNERS protected governance ownership metadata classification, AI Agent Supply-Chain Threat Model work, and #978 late-review follow-up are complete through #967/#968/#970/#973/#976/#977/#978/#979 and this phase. |
-| Next up | Use generated repository inventory artifacts, ruleset readiness reports, Scorecard advisory signals, and release audit reports as human-reviewed evidence before proposing any cleanup or authority change. Do not repeat completed task-planner, report-generator, verification package, bot, public-validator, public-explorer, signature/witness proposal, fixture-format proposal, fixture-package, quickstart navigation, fixture output-mode clarification, PR-flow diagnostic work, or repository inventory ledger/category-view work. |
+| Active focus | Public validator and public explorer planning/navigation are synchronized through #821/#822. HC Control Bot, assistant-console, repository assistant baseline, and operator-entry-map state are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Verification package hash core and local CLI sequence is complete through #843. HC Trust Engineer report generator, import fix, status checkpoint, and quickstart examples are complete through #872/#873/#874/#875. HC Engineer task planner, skipped-check/manual-review hardening, operator quickstart, and state synchronization are complete through #888/#889/#890/#891. Signature/witness planning, GitHub issue/comment PR-flow diagnostic evidence, signature/witness fixture-format planning, non-canonical signature/witness fixture package evidence, quickstart navigation, and fixture output-mode clarification are recorded through #892/#893/#894/#896/#898/#900/#949. Repository inventory ledger, test-anchor detection, category-specific Markdown inventory views, actor/PR trace evidence, HC Large-Repo Operating Model, large-repo governance automation baseline, governance automation review findings follow-up, CODEOWNERS protected governance ownership metadata classification, AI Agent Supply-Chain Threat Model work, #978 late-review follow-up, Governance Evidence Review Checklist, and Governance Evidence Checklist State note are complete through #967/#968/#970/#973/#974/#975/#976/#977/#978/#979/#980/#981/#982 and this phase. |
+| Next up | Use `docs/project-control/governance-evidence-review-checklist.md` and generated repository inventory artifacts, ruleset readiness reports, Scorecard advisory signals, and release audit reports as human-reviewed evidence before proposing any cleanup or authority change. Do not repeat completed task-planner, report-generator, verification package, bot, public-validator, public-explorer, signature/witness proposal, fixture-format proposal, fixture-package, quickstart navigation, fixture output-mode clarification, PR-flow diagnostic work, or repository inventory ledger/category-view work. |
 | Blocked / parked work | Larger trust layers, issue-comment based autonomous PR creation, fully autonomous issue -> Codex -> PR bridge, VPS runners, GitHub App runners, auto-merge authority, label/assignment/reviewer-request automation, approval/rejection/close authority, signing implementation, witness authority, real GitHub settings enforcement by administrators, and authority-changing automation remain parked unless explicitly authorized and reviewed. |
-| Do-not-repeat references | #628, #629, #630, #631, #820/#821/#822, #823/#824, #826, #828, #831, #834, #838, #839, #841, #843, #872, #873, #874, #875, #888, #889, #890, #891, #892, #893, #894, #896, #898, #900, #949, #967, #968, #970, #973, #976, #977, #978, and #979 are completed references. #812 remains active console and #763 remains historical only. |
+| Do-not-repeat references | #628, #629, #630, #631, #820/#821/#822, #823/#824, #826, #828, #831, #834, #838, #839, #841, #843, #872, #873, #874, #875, #888, #889, #890, #891, #892, #893, #894, #896, #898, #900, #949, #967, #968, #970, #973, #974, #975, #976, #977, #978, #979, #980, #981, and #982 are completed references. #812 remains active console and #763 remains historical only. |
 | Review / merge rule | Before merge: verify changed files, checks, Codex/review comments, and risk scope. If comments exist, fix first. Human final authority remains the governance boundary. |
 | Source-of-truth priority | Markdown project-control docs and repository evidence outrank `hc_context`, chat memory, and advisory summaries. |
 
@@ -32,6 +32,8 @@ Before taking the next action, read:
 12. `docs/project-control/repository-assistant-baseline-status.md`
 13. `docs/project-control/hc-trust-engineer-report-generator-status.md`
 14. `docs/project-control/inventory-ledger-completion-status.md`
+15. `docs/project-control/governance-evidence-review-checklist.md`
+16. `docs/project-control/governance-evidence-review-handoff.md`
 
 Use `docs/project-control/active-work-registry.md` only for advisory shift-level coordination.
 
@@ -113,11 +115,14 @@ Use `docs/project-control/active-work-registry.md` only for advisory shift-level
 
 ## Completed governance/security hardening follow-up
 
+- #974 completed the HC Large-Repo Operating Model.
+- #975 completed the large-repo governance automation baseline.
 - #976 completed governance automation review findings follow-up.
 - #977 completed `.github/CODEOWNERS` protected governance ownership metadata classification.
 - #978 added the AI Agent Supply-Chain Threat Model at `docs/security/ai-agent-supply-chain-threat-model.md`.
 - #979 completed the late-review follow-up for #978.
-- Treat #976/#977/#978/#979 as do-not-repeat references unless new repository evidence appears.
+- #980 completed project-control security hardening synchronization.
+- Treat #974/#975/#976/#977/#978/#979/#980/#981/#982 as do-not-repeat references unless new repository evidence appears.
 - This state remains `advisory_only=true`, `public_safe=true`, `truth_guarantee=false`, and subject to human final authority. It does not claim complete security, production readiness, objective truth, autonomous governance authority, or runtime/security feature readiness.
 
 
@@ -133,9 +138,9 @@ Use `docs/project-control/active-work-registry.md` only for advisory shift-level
 
 - Priority order: 1
 - Mode: report/docs/test/sample only unless separately authorized.
-- Candidate: review generated repository inventory artifacts for test inventory evidence and branch-count evidence before any cleanup or rewrite proposal.
+- Candidate: review generated repository inventory artifacts, test inventory evidence, branch-count evidence, ruleset readiness reports, Scorecard advisory signals, and release audit reports using `docs/project-control/governance-evidence-review-checklist.md` and `docs/project-control/governance-evidence-review-handoff.md` before any cleanup or rewrite proposal.
 - Safe output: a small report, documentation update, or test/sample-only improvement that preserves advisory-only, public-safe, and `truth_guarantee=false` boundaries.
-- Why it is next: #967/#968/#970/#973 completed the repository inventory ledger, smarter test-anchor detection, category-specific Markdown views, and actor/PR trace evidence. Remaining safe work should use generated evidence before changing source, tests, branches, protected paths, or authority boundaries.
+- Why it is next: #967/#968/#970/#973 completed the repository inventory ledger, smarter test-anchor detection, category-specific Markdown views, and actor/PR trace evidence; #981/#982 completed the governance evidence checklist and state note. Remaining safe work should use generated evidence before changing source, tests, branches, protected paths, workflows, rulesets, releases, or authority boundaries.
 
 ## 2. Parked larger implementation work
 
