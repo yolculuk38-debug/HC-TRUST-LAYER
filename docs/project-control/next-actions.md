@@ -10,8 +10,18 @@ Working verification core / post-runtime stabilization.
 
 ## Next safe actions
 
-1. Record a small documentation note or report only if a human reviewer identifies a concrete gap after the completed governance evidence review and evidence artifact inspection sequence.
-2. Keep any follow-up scoped to active operator-view clarity unless a reviewer supplies new repository evidence for a different action.
+Cleanup navigation now follows the repository cleanup audit from #993. Use `repository-cleanup-audit-2026-06-15.md` as the cleanup source-of-truth, this file for active shift work, `project-state.md` for current project state, `task-ledger.md` for milestone history, and GitHub PR history for detailed completed PR history. Cleanup candidates remain advisory only and are not permission to delete files, close issues, delete branches, disable workflows, move files, rename files, archive files, or change repository authority.
+
+Active cleanup sequence:
+
+A. docs navigation cleanup
+B. test duplicate inventory
+C. workflow cleanup recommendation
+D. issue cleanup with human approval
+E. branch cleanup with human approval
+
+1. Complete the docs navigation cleanup from #993 item A without deleting, moving, renaming, archiving, or changing files outside the allowed project-control docs.
+2. Park test duplicate inventory, workflow cleanup recommendations, issue cleanup, and branch cleanup until their separate scoped review steps.
 3. Before proposing new work, cross-check `project-state.md`, `task-ledger.md`, current GitHub PR history, and repository evidence.
 
 ## Parked work
