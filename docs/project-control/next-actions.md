@@ -10,18 +10,18 @@ Working verification core / post-runtime stabilization.
 
 ## Next safe actions
 
-Cleanup navigation now follows the repository cleanup audit from #993. Use `repository-cleanup-audit-2026-06-15.md` as the cleanup source-of-truth, this file for active shift work, `project-state.md` for current project state, `task-ledger.md` for milestone history, and GitHub PR history for detailed completed PR history. Cleanup candidates remain advisory only and are not permission to delete files, close issues, delete branches, disable workflows, move files, rename files, archive files, or change repository authority.
+Cleanup navigation follows the repository cleanup audit from #993. Use `repository-cleanup-audit-2026-06-15.md` as the cleanup source-of-truth, this file for active shift work, `project-state.md` for current project state, `task-ledger.md` for milestone history, and GitHub PR history for detailed completed PR history. Cleanup candidates remain advisory only and are not permission to delete files, close issues, delete branches, disable workflows, move files, rename files, archive files, or change repository authority.
 
-Active cleanup sequence:
+Cleanup sequence status:
 
-A. docs navigation cleanup
-B. test duplicate inventory
-C. workflow cleanup recommendation
-D. issue cleanup with human approval
-E. branch cleanup with human approval
+A. docs navigation cleanup — completed by PR #994 after merge
+B. test duplicate inventory — next scoped report-only step
+C. workflow cleanup recommendation — parked for human-reviewed workflow review
+D. issue cleanup with human approval — parked
+E. branch cleanup with human approval — parked
 
-1. Complete the docs navigation cleanup from #993 item A without deleting, moving, renaming, archiving, or changing files outside the allowed project-control docs.
-2. Park test duplicate inventory, workflow cleanup recommendations, issue cleanup, and branch cleanup until their separate scoped review steps.
+1. After PR #994 is merged, move to the report-only test duplicate inventory step only if no other PR is open.
+2. Keep workflow cleanup recommendations, issue cleanup, and branch cleanup parked until their separate scoped review steps.
 3. Before proposing new work, cross-check `project-state.md`, `task-ledger.md`, current GitHub PR history, and repository evidence.
 
 ## Parked work
