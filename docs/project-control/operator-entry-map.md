@@ -26,7 +26,9 @@ Use this path for a new human, AI assistant, or agent taking over HC:// operatin
 3. Completed and do-not-repeat work: [`docs/project-control/task-ledger.md`](task-ledger.md)
 4. Active shift coordination: [`docs/project-control/active-work-registry.md`](active-work-registry.md)
 5. Navigation map and protected areas: [`docs/project-control/operator-entry-map.md`](operator-entry-map.md)
-6. Active assistant console: [#812 HC Assistant Console v2](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/812)
+6. Governance evidence review checklist: [`docs/project-control/governance-evidence-review-checklist.md`](governance-evidence-review-checklist.md)
+7. Governance evidence review handoff: [`docs/project-control/governance-evidence-review-handoff.md`](governance-evidence-review-handoff.md)
+8. Active assistant console: [#812 HC Assistant Console v2](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/812)
 
 Do not repeat #811, #813, #814, #826, #828, or assistant-console / command-surface / repository-assistant-baseline synchronization work unless new repository evidence appears. Treat #763 as closed historical evidence only.
 
@@ -74,7 +76,9 @@ Boundary: advisory only. Human maintainers retain final authority.
 11. docs/project-control/repository-assistant-baseline-status.md
 12. docs/project-control/local-verifier-example-navigation-status.md
 13. docs/project-control/hc-assistant-console-issue-template.md
-14. docs/terminology-audit.md
+14. docs/project-control/governance-evidence-review-checklist.md
+15. docs/project-control/governance-evidence-review-handoff.md
+16. docs/terminology-audit.md
 
 ## Public Validator Planning Reference
 
