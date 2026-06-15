@@ -16,6 +16,20 @@ Shared factory model:
 
 Operating boundaries remain: `advisory_only=true`, `public_safe=true`, `truth_guarantee=false`; human final authority remains required. CI/checks are evidence, not trust authority. Generated artifacts are advisory evidence, not canonical records.
 
+## Planned simplification
+
+Future simplification should keep only:
+
+- current phase
+- active focus
+- protected boundaries
+- source-of-truth priority
+- major completed blocks
+
+Detailed per-PR history should remain in GitHub PR history. Only phase/milestone records and high-risk governance/security checkpoints should be considered for `task-ledger.md` during any future simplification. No move is performed in this PR.
+
+Boundaries remain: `advisory_only=true`, `public_safe=true`, `truth_guarantee=false`; human final authority remains required. CI/checks are evidence, not trust authority. Generated artifacts are advisory evidence, not canonical records.
+
 ## Operator Status Card
 
 | Field | Status |
