@@ -14,15 +14,16 @@ Cleanup navigation follows the repository cleanup audit from #993. Use `reposito
 
 Cleanup sequence status:
 
-A. docs navigation cleanup — completed by PR #994 after merge
-B. test duplicate inventory — next scoped report-only step
-C. workflow cleanup recommendation — parked for human-reviewed workflow review
-D. issue cleanup with human approval — parked
-E. branch cleanup with human approval — parked
+A. docs navigation cleanup — completed by PR #994.
+B. report-only test duplicate inventory — completed by PR #995.
+C. report-only workflow cleanup recommendation — completed by PR #996.
+D. issue cleanup status — live operator review found only #812 HC Assistant Console v2 remains open and it stays `ACTIVE_KEEP`; no other open issue cleanup action is currently available. Closed issues are not deletion targets because they preserve audit/history context.
+E. branch cleanup status — live operator review found no current `codex/cleanup` branch candidates. Branch deletion remains parked unless a future branch is proven merged, stale, unused by open PRs, and human-approved.
 
-1. After PR #994 is merged, move to the report-only test duplicate inventory step only if no other PR is open.
-2. Keep workflow cleanup recommendations, issue cleanup, and branch cleanup parked until their separate scoped review steps.
-3. Before proposing new work, cross-check `project-state.md`, `task-ledger.md`, current GitHub PR history, and repository evidence.
+1. Do not perform destructive cleanup work.
+2. Only start future cleanup work when new repository evidence triggers a report-only review.
+3. If maintainers want more cleanup, create a targeted docs/report-only issue or PR first.
+4. Before proposing new work, cross-check `project-state.md`, `task-ledger.md`, current GitHub PR history, and repository evidence.
 
 ## Parked work
 
