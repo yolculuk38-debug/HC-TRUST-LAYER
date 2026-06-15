@@ -2,6 +2,20 @@
 
 This file is the repository-native shift handoff summary for HC-TRUST-LAYER. Every agent must read this file before proposing work.
 
+## Core file role
+
+This file is the factory general status report / shift handoff summary. It summarizes the current phase, active focus, protected boundaries, source-of-truth priority, and major completed blocks only. It must not become a detailed per-PR history.
+
+Shared factory model:
+
+- `project-state.md` = factory general status report
+- `next-actions.md` = short shift board
+- `task-ledger.md` = phase/milestone ledger
+- GitHub PR history = detailed work record
+- Issues = work orders when needed
+
+Operating boundaries remain: `advisory_only=true`, `public_safe=true`, `truth_guarantee=false`; human final authority remains required. CI/checks are evidence, not trust authority. Generated artifacts are advisory evidence, not canonical records.
+
 ## Operator Status Card
 
 | Field | Status |
