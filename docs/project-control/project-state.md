@@ -16,32 +16,17 @@ Shared factory model:
 
 Operating boundaries remain: `advisory_only=true`, `public_safe=true`, `truth_guarantee=false`; human final authority remains required. CI/checks are evidence, not trust authority. Generated artifacts are advisory evidence, not canonical records.
 
-## Planned simplification
-
-Future simplification should keep only:
-
-- current phase
-- active focus
-- protected boundaries
-- source-of-truth priority
-- major completed blocks
-
-Detailed per-PR history should remain in GitHub PR history. Only phase/milestone records and high-risk governance/security checkpoints should be considered for `task-ledger.md` during any future simplification. No move is performed in this PR.
-
-Boundaries remain: `advisory_only=true`, `public_safe=true`, `truth_guarantee=false`; human final authority remains required. CI/checks are evidence, not trust authority. Generated artifacts are advisory evidence, not canonical records.
-
 ## Operator Status Card
 
 | Field | Status |
 | --- | --- |
 | Current phase | Working verification core / post-runtime stabilization |
-| Active focus | Public validator / explorer planning is synchronized through #821/#822. HC Control Bot, assistant-console, repository assistant baseline, and operator-entry-map state are synchronized through #831. Validator pipeline nested response contract coverage is locked by #834. Verification package hash core, hardening, CLI, sample, and quickstart are complete through #838/#839/#841/#843. HC Trust Engineer report generator, direct CLI fix, status checkpoint, examples, and quickstart are complete through #872/#873/#874/#875. HC Engineer task planner, skipped-check/manual-review hardening, operator quickstart, and state sync are complete through #888/#889/#890/#891. Signature/witness verification planning, GitHub issue/comment PR-flow diagnostic note, signature/witness fixture-format proposal, non-canonical signature/witness fixture package, and quickstart navigation are complete through #892/#894/#896/#898/#900, with #893 closed as a completed diagnostic issue. Outside-review follow-up, source inventory triage, normalizer safety tests, integration-test status, source-tree status, security-policy status, task-ledger sync, branch-count finding status, and source-inventory review checklist are complete through #905-#919. Governance automation review findings follow-up, CODEOWNERS protected governance ownership metadata classification, AI Agent Supply-Chain Threat Model work, its late-review follow-up, Governance Evidence Review Checklist, Governance Evidence Checklist State note, generated governance evidence review, and evidence artifact inspection guidance are complete through #974/#975/#976/#977/#978/#979/#980/#981/#982/#985/#987. |
-| Next up | Continue the working core in small scoped PRs only. Candidate next work is human-reviewed follow-up only: record a small documentation note or report if a reviewer identifies a concrete gap after the completed governance evidence review / artifact inspection sequence. |
+| Active focus | Active operator views now point to current safe follow-up only. Completed verification, planner, inventory, governance, and evidence-inspection blocks are historical references, not active work. Candidate current work is limited to small human-reviewed documentation follow-up when new repository evidence or reviewer direction identifies a concrete gap. |
+| Next up | Keep the next action scoped, documentation-first, and reviewable. Cross-check GitHub PR history and `task-ledger.md` before reopening any completed topic. |
 | Blocked / parked work | Workflow, schema, validator, record, policy, federation, signing, trust-kernel index, generated artifact, QR/hash evidence format, governance-enforcement, authority-changing automation, source deletion/archival, and production-readiness claims remain parked unless explicitly authorized and validated. |
-| Do-not-repeat references | Treat #628, #629, #630, #631, #682, #683, #685, #686, #688, #701, #794, #795, #796, #811, #813, #814, #820, #821, #822, #823, #824, #826, #828, #831, #834, #838, #839, #841, #843, #872, #873, #874, #875, #888, #889, #890, #891, #892, #893, #894, #896, #898, #900, #905-#919, #974, #975, #976, #977, #978, #979, #980, #981, #982, #985, and #987 as completed references. #812 remains the active HC Assistant Console v2 reference; #763 remains historical only. |
-| Review / merge rule | Before merge: verify changed files, checks, Codex/review comments, and risk scope. If comments exist, fix first. Human final authority remains the governance boundary. |
-| Protected-path reminder | Do not modify `schema/**`, `validators/**`, `federation/**`, `signatures/**`, `canonical/**`, `policy/**`, `.github/workflows/**`, `records/**`, generated artifacts, QR/hash evidence, or trust-kernel indexes unless explicitly requested and approved. |
-| Source-of-truth priority | Repository markdown docs, merged files, checks, PR evidence, and human review decisions outrank chat memory and advisory machine-readable context. |
+| Do-not-repeat summary | Completed public-validator/explorer, HC Control Bot, assistant-console, validator pipeline, verification package, HC Trust Engineer, HC Engineer planner, signature/witness planning, PR-flow diagnostic, repository inventory, governance automation, governance evidence review, and evidence artifact inspection work should not be repeated without new evidence or reviewer direction. |
+| Review / merge rule | Before merge: verify changed files, checks, review comments, and risk scope. Human final authority remains the governance boundary. |
+| Source-of-truth priority | Markdown project-control docs and repository evidence outrank `hc_context`, chat memory, and advisory summaries. |
 
 ## Current phase
 
