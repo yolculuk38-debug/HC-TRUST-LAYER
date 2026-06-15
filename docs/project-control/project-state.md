@@ -28,6 +28,13 @@ Operating boundaries remain: `advisory_only=true`, `public_safe=true`, `truth_gu
 | Review / merge rule | Before merge: verify changed files, checks, review comments, and risk scope. Human final authority remains the governance boundary. |
 | Source-of-truth priority | Markdown project-control docs and repository evidence outrank `hc_context`, chat memory, and advisory summaries. |
 
+
+## Cleanup navigation status
+
+The #993 repository cleanup audit is the cleanup source-of-truth: [`repository-cleanup-audit-2026-06-15.md`](repository-cleanup-audit-2026-06-15.md). Use [`next-actions.md`](next-actions.md) for active shift work, this file for current project state, [`task-ledger.md`](task-ledger.md) for milestone history, and GitHub PR history for detailed completed PR history. Cleanup candidates are advisory only; they are not permission to delete files, close issues, delete branches, disable workflows, move files, rename files, archive files, or change repository authority. Issue #812 HC Assistant Console v2 remains `ACTIVE_KEEP` unless explicitly superseded by human review.
+
+Active cleanup sequence: A. docs navigation cleanup; B. test duplicate inventory; C. workflow cleanup recommendation; D. issue cleanup with human approval; E. branch cleanup with human approval. Full cleanup is not complete.
+
 ## Current phase
 
 Working verification core / post-runtime stabilization.

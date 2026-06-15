@@ -2,6 +2,13 @@
 
 This shift ledger is an advisory repository-state record for HC-TRUST-LAYER work orders, task barcodes, evidence, and do-not-repeat notes. It does not grant bot authority, approval authority, implementation completion, or governance finality. Use it to cross-check PR records, commit history, changed files, checks, and human-supervised validation notes before proposing related work.
 
+
+## Cleanup audit navigation
+
+Use [`repository-cleanup-audit-2026-06-15.md`](repository-cleanup-audit-2026-06-15.md) as the cleanup source-of-truth, [`next-actions.md`](next-actions.md) for active shift work, [`project-state.md`](project-state.md) for current project state, this file for milestone history, and GitHub PR history for detailed completed PR history. Cleanup candidates are advisory only and do not authorize file deletion, issue closure, branch deletion, workflow disablement, file moves, file renames, archiving, or authority-changing automation. Issue #812 HC Assistant Console v2 remains `ACTIVE_KEEP` unless explicitly superseded by human review.
+
+Active cleanup sequence: A. docs navigation cleanup; B. test duplicate inventory; C. workflow cleanup recommendation; D. issue cleanup with human approval; E. branch cleanup with human approval. Do not remove audit history or completed records, and do not claim full cleanup is complete.
+
 ## Core file role
 
 This file is the phase / milestone ledger. It records phase completions, high-risk governance/security milestones, and major operating-model checkpoints. It must not record every small docs/test PR.

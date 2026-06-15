@@ -19,7 +19,22 @@ This document helps human contributors, AI assistants, and agentic tools quickly
 
 ## Operating Layer Quick Path
 
-Use this path for a new human, AI assistant, or agent taking over HC:// operating-layer work. This path is advisory only; it preserves `public_safe: true`, `truth_guarantee: false`, and human final authority boundaries.
+Use this path for a new human, AI assistant, or agent taking over HC:// operating-layer work. This path is advisory only; it preserves `advisory_only=true`, `public_safe=true`, `truth_guarantee=false`, and human final authority boundaries. CI/checks are evidence, not trust authority. Generated artifacts are advisory evidence, not canonical records.
+
+## Cleanup Navigation Note
+
+For repository cleanup work, use [`repository-cleanup-audit-2026-06-15.md`](repository-cleanup-audit-2026-06-15.md) as the cleanup source-of-truth, [`next-actions.md`](next-actions.md) for active shift work, [`project-state.md`](project-state.md) for current project state, and [`task-ledger.md`](task-ledger.md) for milestone history. Use GitHub PR history for detailed completed PR history.
+
+Cleanup candidates are advisory only. They are not permission to delete files, close issues, delete branches, disable workflows, move files, rename files, archive files, or change repository authority. Issue #812 HC Assistant Console v2 remains `ACTIVE_KEEP` unless explicitly superseded by human review.
+
+Active cleanup sequence:
+
+A. docs navigation cleanup
+B. test duplicate inventory
+C. workflow cleanup recommendation
+D. issue cleanup with human approval
+E. branch cleanup with human approval
+
 
 1. Current project state: [`docs/project-control/project-state.md`](project-state.md)
 2. Next safe work: [`docs/project-control/next-actions.md`](next-actions.md)
