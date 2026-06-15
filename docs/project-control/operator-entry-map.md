@@ -28,7 +28,8 @@ Use this path for a new human, AI assistant, or agent taking over HC:// operatin
 5. Navigation map and protected areas: [`docs/project-control/operator-entry-map.md`](operator-entry-map.md)
 6. Governance evidence review checklist: [`docs/project-control/governance-evidence-review-checklist.md`](governance-evidence-review-checklist.md)
 7. Governance evidence review handoff: [`docs/project-control/governance-evidence-review-handoff.md`](governance-evidence-review-handoff.md)
-8. Active assistant console: [#812 HC Assistant Console v2](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/812)
+8. Evidence artifact inspection guide: [`docs/project-control/evidence-artifact-inspection-guide.md`](evidence-artifact-inspection-guide.md)
+9. Active assistant console: [#812 HC Assistant Console v2](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/812)
 
 Do not repeat #811, #813, #814, #826, #828, or assistant-console / command-surface / repository-assistant-baseline synchronization work unless new repository evidence appears. Treat #763 as closed historical evidence only.
 
@@ -78,7 +79,8 @@ Boundary: advisory only. Human maintainers retain final authority.
 13. docs/project-control/hc-assistant-console-issue-template.md
 14. docs/project-control/governance-evidence-review-checklist.md
 15. docs/project-control/governance-evidence-review-handoff.md
-16. docs/terminology-audit.md
+16. docs/project-control/evidence-artifact-inspection-guide.md
+17. docs/terminology-audit.md
 
 ## Public Validator Planning Reference
 
