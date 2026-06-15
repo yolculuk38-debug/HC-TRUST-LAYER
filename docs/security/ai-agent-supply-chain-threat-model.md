@@ -112,7 +112,9 @@ Use this checklist for GitHub Actions review:
 
 ## 6. PR review checklist for AI-generated or AI-assisted work
 
-Use this checklist for AI-generated or AI-assisted PRs:
+Use these checklists for AI-generated or AI-assisted PRs. They are advisory review aids and do not create merge authority, production readiness, or a truth guarantee.
+
+### Pre-merge review checklist
 
 - [ ] Changed files reviewed.
 - [ ] Protected path touched?
@@ -124,12 +126,17 @@ Use this checklist for AI-generated or AI-assisted PRs:
 - [ ] Generated artifacts claimed as canonical?
 - [ ] `advisory_only`, `public_safe`, and `truth_guarantee` markers preserved?
 - [ ] PR body claims checked against diff?
-- [ ] Review threads resolved?
-- [ ] Codex/human late comments checked?
-- [ ] Post-merge review/comment check completed?
-- [ ] No bot/self-approval accepted as authority?
-- [ ] No secrets or credentials exposed?
-- [ ] No production-readiness or truth guarantee added?
+- [ ] Review threads resolved.
+- [ ] Codex/human late comments checked.
+- [ ] No bot/self-approval accepted as authority.
+- [ ] No secrets or credentials exposed.
+- [ ] No production-readiness or truth guarantee added.
+
+### Post-merge follow-up checklist
+
+- [ ] Post-merge review/comment check completed.
+- [ ] Any late security, governance, or production-risk concern routed back to human maintainers.
+- [ ] Follow-up issue or PR created only when maintainers decide one is needed.
 
 ## 7. Protected surfaces
 
@@ -183,6 +190,8 @@ If suspected AI-agent supply-chain abuse occurs:
 - Inspect changed files.
 - Inspect workflow permissions.
 - Inspect secrets exposure risk.
+- If credentials, tokens, secrets, signing material, deployment credentials, private keys, or related operational access may have been exposed, revoke and rotate the affected material immediately.
+- Apply the existing secret-exposure behavior in `docs/security/production-risk-checklist.md`; do not duplicate, weaken, or bypass that checklist when production-risk handling is required.
 - Inspect generated artifacts.
 - Inspect dependency changes.
 - Disable affected bot/workflow if needed.
