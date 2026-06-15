@@ -27,13 +27,13 @@ For repository cleanup work, use [`repository-cleanup-audit-2026-06-15.md`](repo
 
 Cleanup candidates are advisory only. They are not permission to delete files, close issues, delete branches, disable workflows, move files, rename files, archive files, or change repository authority. Issue #812 HC Assistant Console v2 remains `ACTIVE_KEEP` unless explicitly superseded by human review.
 
-Active cleanup sequence:
+Cleanup sequence status after #993 through #996:
 
-A. docs navigation cleanup
-B. test duplicate inventory
-C. workflow cleanup recommendation
-D. issue cleanup with human approval
-E. branch cleanup with human approval
+A. docs navigation cleanup — completed by #994.
+B. report-only test duplicate inventory — completed by #995.
+C. report-only workflow cleanup recommendation — completed by #996.
+D. issue cleanup — checked; only #812 HC Assistant Console v2 remains open and it must stay `ACTIVE_KEEP`. Closed issues are audit/history records and must not be deletion targets.
+E. branch cleanup remains open for complete branch-list triage. A previous connector check only confirmed no current `codex/cleanup` prefix candidates; it was prefix-specific only and was not a full remote branch cleanup review. Branch deletion remains parked unless a future complete branch-list review proves a branch is merged, stale, unused by open PRs, and human-approved.
 
 
 1. Current project state: [`docs/project-control/project-state.md`](project-state.md)
