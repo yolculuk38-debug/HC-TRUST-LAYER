@@ -18,7 +18,7 @@ A. docs navigation cleanup — completed by PR #994.
 B. report-only test duplicate inventory — completed by PR #995.
 C. report-only workflow cleanup recommendation — completed by PR #996.
 D. issue cleanup status — live operator review found only #812 HC Assistant Console v2 remains open and it stays `ACTIVE_KEEP`; no other open issue cleanup action is currently available. Closed issues are not deletion targets because they preserve audit/history context.
-E. branch cleanup status — live operator review found no current `codex/cleanup` branch candidates. Branch deletion remains parked unless a future branch is proven merged, stale, unused by open PRs, and human-approved.
+E. branch cleanup status — full branch-list triage remains open. A prefix-specific connector check found no current `codex/cleanup` branch candidates, but that is not a complete remote branch cleanup review. Branch deletion remains parked unless a future complete branch-list review proves a branch is merged, stale, unused by open PRs, and human-approved.
 
 1. Do not perform destructive cleanup work.
 2. Only start future cleanup work when new repository evidence triggers a report-only review.
