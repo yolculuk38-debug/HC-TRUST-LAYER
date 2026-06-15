@@ -4,9 +4,9 @@ This docs-only audit is advisory evidence for HC-TRUST-LAYER cleanup planning. I
 
 ## 1. Executive summary
 
-- **Current open PR status:** Could not be verified from this container. The local checkout has no configured Git remote, `gh` is unavailable, and direct shell access to GitHub API returned a network 403. STOP: before acting on cleanup, a human maintainer must verify the GitHub open PR list.
-- **Current open issue status:** Could not be verified from this container for the same access reasons. Issue #812 must remain open if it is still the active HC Assistant Console v2.
-- **Whether cleanup is safe now:** Cleanup implementation is **not safe now**. Only this audit report is safe because it is docs-only and changes no protected behavior.
+- **Codex/local environment limitation:** Codex could not independently verify remote GitHub state from this container. The local checkout has no configured Git remote, `gh` is unavailable, and direct shell access to the GitHub API returned a network 403.
+- **Maintainer/operator verification note:** Live maintainer/operator review identified current open PR #993 during this audit review and current open issue #812, `HC Assistant Console v2`. Issue #812 must remain ACTIVE_KEEP unless explicitly superseded by human review.
+- **Whether cleanup is safe now:** Cleanup implementation is **not safe now**. Only this audit report is safe because it is docs-only and changes no protected behavior. Do not close issues, delete branches, or change workflows, tests, source, generated artifacts, or protected files as part of this audit.
 - **What must remain active:** Governance, security, release audit, branch protection, code scanning/advisory security, validation, terminology, canonical-artifact, policy, PR guard, inventory, and active assistant/control workflows must remain active pending human review.
 - **What is parked:** Branch deletion, issue closure, workflow disable/delete actions, test deletion, orphan-file deletion, generated artifact cleanup, and notification cleanup are PARKED until current GitHub state is reviewed by a human maintainer.
 - **What needs human review:** Any cleanup touching protected paths, workflow authority, test coverage, active PRs, active issues, branches not proven merged into `main`, provenance records, generated evidence, or repository-facing operator state.
@@ -74,7 +74,7 @@ Manual GitHub UI steps after human review:
 
 ## 5. Issue cleanup review
 
-Open issues could not be inspected from this container. Do not close issues from this PR.
+Codex/local container could not independently inspect all open issues. Live operator review identified #812 as the active HC Assistant Console v2; it must remain ACTIVE_KEEP. Any other issue cleanup requires separate human-reviewed issue audit. Do not close issues from this PR.
 
 | Classification | Issue | Title | Reason | Evidence | Proposed closing comment | State reason |
 |---|---|---|---|---|---|---|
