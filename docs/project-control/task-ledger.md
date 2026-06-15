@@ -2,6 +2,20 @@
 
 This shift ledger is an advisory repository-state record for HC-TRUST-LAYER work orders, task barcodes, evidence, and do-not-repeat notes. It does not grant bot authority, approval authority, implementation completion, or governance finality. Use it to cross-check PR records, commit history, changed files, checks, and human-supervised validation notes before proposing related work.
 
+## Core file role
+
+This file is the phase / milestone ledger. It records phase completions, high-risk governance/security milestones, and major operating-model checkpoints. It must not record every small docs/test PR.
+
+Shared factory model:
+
+- `project-state.md` = factory general status report
+- `next-actions.md` = short shift board
+- `task-ledger.md` = phase/milestone ledger
+- GitHub PR history = detailed work record
+- Issues = work orders when needed
+
+Operating boundaries remain: `advisory_only=true`, `public_safe=true`, `truth_guarantee=false`; human final authority remains required. CI/checks are evidence, not trust authority. Generated artifacts are advisory evidence, not canonical records.
+
 ## Shift-ledger table
 
 | Task ID | Status | Operator / Agent | Tool / Machine | PR / Commit Barcode | Risk | Evidence | Notes | Next action |

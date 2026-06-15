@@ -2,6 +2,20 @@
 
 This file lists safe, advisory next work for HC-TRUST-LAYER. Each item is report-only unless the Founder or an authorized reviewer explicitly changes the mode.
 
+## Core file role
+
+This file is the short shift board. It should contain only the current phase, 1-3 safe next actions, immediate do-not-repeat reminders, parked work, and the merge/review rule. It must not become a long archive or detailed historical ledger.
+
+Shared factory model:
+
+- `project-state.md` = factory general status report
+- `next-actions.md` = short shift board
+- `task-ledger.md` = phase/milestone ledger
+- GitHub PR history = detailed work record
+- Issues = work orders when needed
+
+Operating boundaries remain: `advisory_only=true`, `public_safe=true`, `truth_guarantee=false`; human final authority remains required. CI/checks are evidence, not trust authority. Generated artifacts are advisory evidence, not canonical records.
+
 ## Operator Status Card
 
 | Field | Status |
