@@ -32,12 +32,12 @@ runtime entry -> validator pipeline -> canonical bridge -> schema/hash checks ->
 | Runtime service layer | FastAPI/runtime entry points and advisory runtime responses. | Runtime contract changes require tests. |
 | Telemetry layer | Health, runtime, and queue telemetry with explicit advisory/public-safe markers. | Response keys must stay deterministic. |
 | Validator pipeline layer | Advisory pipeline hooks for canonical bridge, schema, hash, trust assignment, and escalation routing. | No truth guarantee. Human review stays visible. |
-| Canonical bridge layer | Lookup and compare local canonical records where configured. | Missing/malformed/mismatch states must remain visible. |
-| Schema/hash layer | Local schema-like checks and SHA-256 content-hash comparison. | Must not imply legal, forensic, or absolute truth. |
+| Canonical bridge layer | Lookup and compare local canonical records where configured. | Missing, malformed, and mismatch states must remain visible. |
+| Schema/hash layer | Local schema-like checks and SHA-256 content-hash comparison. | Must not imply final correctness beyond recorded evidence. |
 | QR safety layer | QR parsing, record bridge, spoof protection, and public validator QR boundaries. | Security-adjacent. High review before consolidation. |
 | Public validator layer | Local/demo public verification behavior and public-safe result formatting. | Demo/local first unless explicit deployment PR changes scope. |
-| Redaction layer | Public-safe redaction for secret-like or sensitive values. | Must not regress privacy/safety behavior. |
-| Event/state layer | Runtime event store, queue store, replay/degraded visibility. | Append-only/traceable behavior must be preserved. |
+| Redaction layer | Public-safe redaction helper behavior. | Must not regress public-safe output behavior. |
+| Event/state layer | Runtime event store, queue store, replay/degraded visibility. | Append-only and traceable behavior must be preserved. |
 | Package verification layer | Local verification package hash/proof checks and CLI-facing verification behavior. | Advisory-only local verification; no production guarantee. |
 
 ## Known module anchors
@@ -50,9 +50,9 @@ These source anchors were verified from current repository content during this i
 | `src/hc_runtime/routes/health.py` | `ACTIVE_IMPLEMENTATION` | Health and telemetry routes for advisory runtime prototype, including `/health`, `/telemetry/health`, `/telemetry/runtime`, and `/telemetry/queues`. |
 | `src/hc_runtime/state.py` | `ACTIVE_IMPLEMENTATION` | Shared runtime stores used by telemetry and runtime behavior. |
 | `src/hc_runtime/redaction.py` | `ACTIVE_IMPLEMENTATION` | Public-safe redaction helper layer used by runtime behavior. |
-| `src/hc_runtime/events.py` | `ACTIVE_IMPLEMENTATION` | Runtime event store / traceability layer. |
+| `src/hc_runtime/events.py` | `ACTIVE_IMPLEMENTATION` | Runtime event store and traceability layer. |
 | `src/hc_runtime/decision_engine.py` | `ACTIVE_IMPLEMENTATION` | Trust-state decision helper layer. |
-| `src/hc_runtime/canonical_record_loader.py` | `ACTIVE_IMPLEMENTATION` | Canonical record loading / malformed record boundary. |
+| `src/hc_runtime/canonical_record_loader.py` | `ACTIVE_IMPLEMENTATION` | Canonical record loading and malformed record boundary. |
 | `src/hc_runtime/qr_spoof_protection.py` | `ACTIVE_IMPLEMENTATION` | QR spoof and canonical-source risk inspection. |
 
 This is not an exhaustive file inventory. It is the first source-purpose map. Future PRs may add a generated or complete source inventory if needed.
@@ -82,19 +82,6 @@ A source cleanup or consolidation PR requires:
 5. targeted tests updated or run;
 6. no advisory/public/truth boundary weakening;
 7. post-merge audit if behavior changes.
-
-## Do not do in source cleanup PRs
-
-Do not combine source cleanup with:
-
-- workflow changes;
-- dependency upgrades;
-- schema changes;
-- record/hash/QR artifact edits;
-- governance authority changes;
-- broad refactors;
-- generated artifact rewrites;
-- production deployment claims.
 
 ## Immediate next index work
 
