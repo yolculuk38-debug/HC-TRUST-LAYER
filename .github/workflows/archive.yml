@@ -3,6 +3,8 @@ name: HC-TRUST-LAYER Archive Automation
 
 on:
   push:
+    branches:
+      - main
     paths:
       - 'records/**'
       - 'src/**'
