@@ -6,6 +6,12 @@ on:
   push:
     branches:
       - main
+    paths:
+      # Keep pull_request coverage broad, but limit post-merge main-push runs to files inspected by this schema/example check.
+      - schema/verification-package-v1.schema.json
+      - examples/verification-package-example.json
+      - scripts/check_verification_package_schema.py
+      - .github/workflows/verification-package-schema.yml
 
 permissions:
   contents: read
