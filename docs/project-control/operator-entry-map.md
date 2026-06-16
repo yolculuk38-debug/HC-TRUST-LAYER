@@ -16,6 +16,7 @@ This document helps human contributors, AI assistants, and agentic tools quickly
 - Repository assistant baseline status is recorded by #828.
 - HC Control Bot advisory observation and reviewer-role suggestion behavior is implemented as advisory-only operating-layer support.
 - Local verifier example navigation status is recorded by `docs/project-control/local-verifier-example-navigation-status.md`.
+- Repository cleanup phase 1 mapping is completed and recorded by `docs/project-control/repository-cleanup-phase1-checkpoint-2026-06-16.md`.
 
 ## Operating Layer Quick Path
 
@@ -23,7 +24,7 @@ Use this path for a new human, AI assistant, or agent taking over HC:// operatin
 
 ## Cleanup Navigation Note
 
-For repository cleanup work, use [`repository-cleanup-audit-2026-06-15.md`](repository-cleanup-audit-2026-06-15.md) as the cleanup source-of-truth, [`repository-structure-triage-2026-06-16.md`](repository-structure-triage-2026-06-16.md) for root/docs/test structure classification, [`next-actions.md`](next-actions.md) for active shift work, [`project-state.md`](project-state.md) for current project state, and [`task-ledger.md`](task-ledger.md) for milestone history. Use GitHub PR history for detailed completed PR history.
+For repository cleanup work, use [`repository-cleanup-audit-2026-06-15.md`](repository-cleanup-audit-2026-06-15.md) as the cleanup source-of-truth, [`repository-structure-triage-2026-06-16.md`](repository-structure-triage-2026-06-16.md) for root/docs/test structure classification, [`repository-index-chain-2026-06-16.md`](repository-index-chain-2026-06-16.md) for the completed purpose-index chain, [`repository-cleanup-phase1-checkpoint-2026-06-16.md`](repository-cleanup-phase1-checkpoint-2026-06-16.md) for phase 1 completion, [`next-actions.md`](next-actions.md) for active shift work, [`project-state.md`](project-state.md) for current project state, and [`task-ledger.md`](task-ledger.md) for milestone history. Use GitHub PR history for detailed completed PR history.
 
 Cleanup candidates are advisory only. They are not permission to delete files, close issues, delete branches, disable workflows, move files, rename files, archive files, or change repository authority. Issue #812 HC Assistant Console v2 remains `ACTIVE_KEEP` unless explicitly superseded by human review.
 
@@ -42,10 +43,12 @@ E. branch cleanup remains open for complete branch-list triage. A previous conne
 4. Active shift coordination: [`docs/project-control/active-work-registry.md`](active-work-registry.md)
 5. Navigation map and protected areas: [`docs/project-control/operator-entry-map.md`](operator-entry-map.md)
 6. Repository structure triage: [`docs/project-control/repository-structure-triage-2026-06-16.md`](repository-structure-triage-2026-06-16.md)
-7. Governance evidence review checklist: [`docs/project-control/governance-evidence-review-checklist.md`](governance-evidence-review-checklist.md)
-8. Governance evidence review handoff: [`docs/project-control/governance-evidence-review-handoff.md`](governance-evidence-review-handoff.md)
-9. Evidence artifact inspection guide: [`docs/project-control/evidence-artifact-inspection-guide.md`](evidence-artifact-inspection-guide.md)
-10. Active assistant console: [#812 HC Assistant Console v2](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/812)
+7. Repository index chain: [`docs/project-control/repository-index-chain-2026-06-16.md`](repository-index-chain-2026-06-16.md)
+8. Cleanup phase 1 checkpoint: [`docs/project-control/repository-cleanup-phase1-checkpoint-2026-06-16.md`](repository-cleanup-phase1-checkpoint-2026-06-16.md)
+9. Governance evidence review checklist: [`docs/project-control/governance-evidence-review-checklist.md`](governance-evidence-review-checklist.md)
+10. Governance evidence review handoff: [`docs/project-control/governance-evidence-review-handoff.md`](governance-evidence-review-handoff.md)
+11. Evidence artifact inspection guide: [`docs/project-control/evidence-artifact-inspection-guide.md`](evidence-artifact-inspection-guide.md)
+12. Active assistant console: [#812 HC Assistant Console v2](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/812)
 
 Do not repeat #811, #813, #814, #826, #828, or assistant-console / command-surface / repository-assistant-baseline synchronization work unless new repository evidence appears. Treat #763 as closed historical evidence only.
 
@@ -97,7 +100,9 @@ Boundary: advisory only. Human maintainers retain final authority.
 15. docs/project-control/governance-evidence-review-handoff.md
 16. docs/project-control/evidence-artifact-inspection-guide.md
 17. docs/project-control/repository-structure-triage-2026-06-16.md
-18. docs/terminology-audit.md
+18. docs/project-control/repository-index-chain-2026-06-16.md
+19. docs/project-control/repository-cleanup-phase1-checkpoint-2026-06-16.md
+20. docs/terminology-audit.md
 
 ## Public Validator Planning Reference
 
@@ -166,11 +171,11 @@ Historical provenance records must not be silently rewritten.
 
 ## Safe Next Work
 
+- phase 2 cleanup work only if small, reversible, and evidence-backed
 - assistant console discoverability only if new evidence appears
 - command-surface follow-up only if new evidence appears
 - repository assistant baseline follow-up only if new evidence appears
 - local verifier example navigation only when repository evidence changes
-- repository structure indexing
 - navigation improvements
 - onboarding improvements
 - public validator navigation refreshes only when repository evidence changes
