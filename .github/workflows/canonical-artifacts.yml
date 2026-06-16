@@ -6,6 +6,16 @@ on:
   push:
     branches:
       - main
+    paths:
+      # Keep pull_request coverage broad; limit trusted main-push runs to files inspected by the canonical boundary guard.
+      - records/**
+      - generated/**
+      - docs/generated/**
+      - docs/canonical-record-boundary.md
+      - docs/ai-collaboration-workflow.md
+      - docs/capability-status.md
+      - scripts/check_canonical_artifacts.py
+      - .github/workflows/canonical-artifacts.yml
 
 permissions:
   contents: read
