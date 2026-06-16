@@ -6,6 +6,14 @@ on:
   push:
     branches:
       - main
+    paths:
+      # Keep pull_request coverage broad, but limit post-merge main-push runs to files inspected by the terminology guard.
+      - README.md
+      - docs/**/*.md
+      - .github/**/*.md
+      - .terminology_allowlist
+      - scripts/check_terminology.py
+      - .github/workflows/terminology.yml
 
 permissions:
   contents: read
