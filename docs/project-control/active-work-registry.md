@@ -31,10 +31,10 @@ Do not use this registry to override Project State, Task Ledger, Next Actions, r
 
 | Field | Status |
 | --- | --- |
-| Current phase | Use `docs/project-control/project-state.md`. |
+| Current phase | Repository cleanup phase 1 mapping completed; phase 2 must stay small, reversible, evidence-backed, and human-reviewed. |
 | Current focus | Use `docs/project-control/project-state.md`. |
 | Current active work | Record short advisory entries under Current Work during check-in. |
-| Next work | Use `docs/project-control/next-actions.md` as the priority queue. |
+| Next work | Use `docs/project-control/next-actions.md`, `docs/project-control/repository-index-chain-2026-06-16.md`, and `docs/project-control/repository-cleanup-phase1-checkpoint-2026-06-16.md` before proposing phase 2 cleanup. |
 | Blocked work | Record shift-visible blockers under Blocked Work; do not treat this as approval routing. |
 | Parked work | Record parked items under Parked Work and cross-check Project State. |
 | Completed references | Use `docs/project-control/task-ledger.md` as the history and do-not-repeat source. |
@@ -57,7 +57,7 @@ Recommended entry format:
 
 Current entries:
 
-- No standing current-work entry is asserted by this registry. Use Project State and Next Actions for current phase, current focus, and priority queue.
+- No standing current-work entry is asserted by this registry. Use Project State, Next Actions, the repository index chain, and the cleanup phase 1 checkpoint for current phase, current focus, and priority queue.
 
 ## Next Work
 
@@ -72,7 +72,7 @@ Recommended entry format:
 
 Current entries:
 
-- Use `docs/project-control/next-actions.md` before starting the next item.
+- Use `docs/project-control/next-actions.md`, `docs/project-control/repository-index-chain-2026-06-16.md`, and `docs/project-control/repository-cleanup-phase1-checkpoint-2026-06-16.md` before starting the next item.
 
 ## Blocked Work
 
@@ -186,4 +186,6 @@ This registry may lag behind repository evidence. When it conflicts with Project
 - `docs/project-control/agent-operating-model.md` — agent operating guidance.
 - `docs/project-control/task-ledger.md` — task history and do-not-repeat source.
 - `docs/project-control/next-actions.md` — safe next-work priority queue.
+- `docs/project-control/repository-index-chain-2026-06-16.md` — cleanup purpose-index and inventory-pass chain.
+- `docs/project-control/repository-cleanup-phase1-checkpoint-2026-06-16.md` — cleanup phase 1 completion checkpoint.
 - `docs/project-control/shift-change-checklist.md` — check-in and checkout handoff checklist.
