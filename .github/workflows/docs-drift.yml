@@ -7,13 +7,16 @@ on:
     branches:
       - main
     paths:
-      # Keep pull_request coverage broad, but limit post-merge main-push runs to files inspected by the drift checker.
+      # Keep pull_request coverage broad, but limit post-merge main-push runs to files inspected by the drift checker
+      # or to evidence path groups whose existence can be validated from implementation/capability docs.
       - README.md
-      - docs/implementation-map.md
-      - docs/capability-status.md
-      - docs/master-architecture.md
+      - docs/**/*.md
       - scripts/check_docs_drift.py
-      - .github/workflows/docs-drift.yml
+      - src/**/*.py
+      - tests/test_*.py
+      - schema/**
+      - examples/**
+      - .github/workflows/*.yml
 
 permissions:
   contents: read
