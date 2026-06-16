@@ -1,5 +1,8 @@
 name: Docs Review Policy
 # Security hardening defaults: least-privilege token scopes, deterministic concurrency, and bounded runtime.
+# Boundary: advisory_only=true; public_safe=true; truth_guarantee=false.
+# CI/checks are evidence, not trust authority; human final authority remains required.
+# Report-only/advisory-only: must not approve, merge, close, bypass human review, or create autonomous authority.
 # Governance boundary: this workflow is read-only and report-only. It must never label, comment, approve, close, enable auto-merge, or perform merge actions.
 
 on:
