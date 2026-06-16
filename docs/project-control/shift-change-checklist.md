@@ -6,9 +6,9 @@ This checklist gives HC-TRUST-LAYER operators a compact handoff path for shift c
 
 | Field | Status |
 | --- | --- |
-| Current phase | Phase 2 — Trust Kernel Enforcement |
+| Current phase | Repository cleanup phase 1 mapping completed; phase 2 must stay small, reversible, evidence-backed, and human-reviewed. |
 | Active focus | Use `docs/project-control/project-state.md` for the current focus list. |
-| Next up | Use `docs/project-control/next-actions.md` and preserve REPORT ONLY mode unless explicitly changed by the Founder or an authorized reviewer. |
+| Next up | Use `docs/project-control/next-actions.md`, `docs/project-control/repository-index-chain-2026-06-16.md`, and `docs/project-control/repository-cleanup-phase1-checkpoint-2026-06-16.md` before proposing phase 2 cleanup. |
 | Blocked / parked work | Protected-path and trust-kernel-impacting work remains parked unless explicitly authorized and routed through human-supervised validation. |
 | Do-not-repeat references | Check `docs/project-control/task-ledger.md` before repeating or reviving closed, merged, superseded, or abandoned work. |
 | Protected-path reminder | Treat `schema/**`, `validators/**`, `federation/**`, `signatures/**`, `canonical/**`, `policy/**`, `.github/workflows/**`, `records/**`, and trust-kernel indexes as protected. |
@@ -24,8 +24,10 @@ Read these files before proposing or continuing work:
 4. `docs/project-control/agent-operating-model.md`
 5. `docs/project-control/task-ledger.md`
 6. `docs/project-control/next-actions.md`
-7. `docs/project-control/active-work-registry.md`
-8. `docs/project-control/shift-change-checklist.md`
+7. `docs/project-control/repository-index-chain-2026-06-16.md`
+8. `docs/project-control/repository-cleanup-phase1-checkpoint-2026-06-16.md`
+9. `docs/project-control/active-work-registry.md`
+10. `docs/project-control/shift-change-checklist.md`
 
 After the markdown control files, optional advisory context may include `hc_context/project_state.json`, `hc_context/agent_rules.json`, `hc_context/protected_surfaces.json`, `hc_context/next_tasks.json`, and `hc_context/evidence_rules.json`.
 
@@ -33,7 +35,7 @@ After the markdown control files, optional advisory context may include `hc_cont
 
 At shift start:
 
-1. Compare the current branch, changed files, and recent commits or PR references against the project-state, active-work registry, and task-ledger notes.
+1. Compare the current branch, changed files, and recent commits or PR references against the project-state, active-work registry, task-ledger notes, repository index chain, and cleanup phase 1 checkpoint.
 2. Confirm whether the requested mode is REPORT ONLY, docs-only, tests-only, implementation, or protected-path work.
 3. Identify protected-path adjacency before making changes.
 4. Check whether any task appears merged, closed, superseded, abandoned, or already parked.
