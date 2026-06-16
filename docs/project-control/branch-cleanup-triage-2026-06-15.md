@@ -8,6 +8,11 @@ No branches are deleted by this report. No PRs are closed. No issues are closed.
 
 Human review is required before any future branch deletion. This report does not claim branch cleanup completion because a complete remote branch list was not available from the Codex environment.
 
+Live PR metadata for #999 at the time of this correction:
+
+- PR head branch: `codex/create-docs-only-branch-cleanup-triage-report`
+- PR head SHA: `9a6517a1c2530317df8d6a549c4a78a046e7b441`
+
 Boundary values preserved by this triage:
 
 - advisory_only=true
@@ -48,7 +53,7 @@ This table lists only observed non-main branches from the available branch evide
 | Branch name | Apparent source or purpose if identifiable | Linked PR or issue if identifiable | Merged/open/unknown status | Stale risk | Deletion risk | Recommendation |
 | --- | --- | --- | --- | --- | --- | --- |
 | `work` | Local checkout branch containing recent `main` history through #998 in this Codex environment. | Recent local history includes merged PR references through #998, but no branch-specific linked PR was identifiable. | Unknown as a branch; recent commits appear to mirror current cleanup sequence history, but no remote branch evidence was available. | Unknown. | High; it may be the active local task base and is not proven safe to delete. | DO_NOT_TOUCH |
-| `codex/branch-cleanup-triage` | Current docs-only report branch for this triage task. | This PR branch, once opened. | Open/current work. | Low while this PR is active. | High while current work is active. | KEEP_ACTIVE |
+| `codex/create-docs-only-branch-cleanup-triage-report` | Live PR #999 head branch for this docs-only branch cleanup triage report. | PR #999. | Open/current PR work per live PR metadata provided for this correction. | Low while this PR is active. | High while current work is active. | KEEP_ACTIVE |
 
 ## 4. Known branch examples to check if visible
 
@@ -60,9 +65,9 @@ The following known branch examples were checked against the available branch ev
 | `codex/create-cleanup-sequence-status-docs-pr` | not observed in available branch evidence | UNKNOWN_NEEDS_EVIDENCE |
 | `codex/sync-cleanup-sequence-status` | not observed in available branch evidence | UNKNOWN_NEEDS_EVIDENCE |
 | `chatgpt/sync-evidence-artifact-review-state` | not observed in available branch evidence | UNKNOWN_NEEDS_EVIDENCE |
-| any other `codex/*` branches | Only `codex/branch-cleanup-triage` was observed after creating the current report branch. No complete remote `codex/*` list was available. | UNKNOWN_NEEDS_EVIDENCE for unobserved branches; KEEP_ACTIVE for the current report branch |
+| any other `codex/*` branches | The live PR #999 head branch is `codex/create-docs-only-branch-cleanup-triage-report`. A previous `codex/branch-cleanup-triage` reference was only a local Codex branch name from an earlier environment and is not treated as live remote branch evidence. No complete remote `codex/*` list was available. | UNKNOWN_NEEDS_EVIDENCE for unobserved branches; KEEP_ACTIVE for the current report branch |
 | any `chatgpt/*` branches | not observed in available branch evidence | UNKNOWN_NEEDS_EVIDENCE |
-| any cleanup-related branches | `codex/branch-cleanup-triage` was observed as current work; no complete remote cleanup-related list was available. | KEEP_ACTIVE for current work; UNKNOWN_NEEDS_EVIDENCE for unobserved branches |
+| any cleanup-related branches | The current report branch is `codex/create-docs-only-branch-cleanup-triage-report` for PR #999. No complete remote cleanup-related list was available. | KEEP_ACTIVE for current work; UNKNOWN_NEEDS_EVIDENCE for unobserved branches |
 
 ## 5. Deletion gate
 
