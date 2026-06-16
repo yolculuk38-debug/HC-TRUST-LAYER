@@ -34,6 +34,16 @@ map first -> link the map -> propose one small safe change -> run CI -> human re
 6. Historical evidence index: [`historical-evidence-index-2026-06-16.md`](historical-evidence-index-2026-06-16.md)
 7. Public demo docs index: [`public-demo-docs-index-2026-06-16.md`](public-demo-docs-index-2026-06-16.md)
 
+## Inventory pass chain
+
+Use these inventory passes after the purpose indexes when a later PR needs path-level evidence:
+
+1. Generated artifact inventory pass: [`generated-artifact-inventory-pass-2026-06-16.md`](generated-artifact-inventory-pass-2026-06-16.md)
+2. Historical path inventory pass: [`historical-path-inventory-pass-2026-06-16.md`](historical-path-inventory-pass-2026-06-16.md)
+3. Public demo inventory pass: [`public-demo-inventory-pass-2026-06-16.md`](public-demo-inventory-pass-2026-06-16.md)
+
+These passes are verified anchor lists, not complete tree listings.
+
 ## Surface summary
 
 | Surface | Current index | Review posture |
