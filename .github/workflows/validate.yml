@@ -3,6 +3,8 @@ name: HC-TRUST-LAYER Validation
 
 on:
   push:
+    branches:
+      - main
     paths:
       - 'records/**'
       - 'schema/**'
