@@ -5,6 +5,17 @@ on:
   push:
     branches:
       - main
+    paths:
+      - README.md
+      - LICENSE
+      - GENESIS_BLOCK.md
+      - docs/**
+      - halkalar/**
+      - hash/**
+      - records/**
+      - schema/**
+      - src/**
+      - .github/workflows/verify-archive.yml
 
 permissions:
   contents: read
