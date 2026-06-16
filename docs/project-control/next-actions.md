@@ -6,13 +6,13 @@ Operating boundaries remain: `advisory_only=true`, `public_safe=true`, `truth_gu
 
 ## Current phase
 
-Working verification core / post-runtime stabilization.
+Repository cleanup phase 1 mapping completed; phase 2 must stay small, reversible, and evidence-backed.
 
 ## Next safe actions
 
 Cleanup navigation follows the repository cleanup audit from #993. Use `repository-cleanup-audit-2026-06-15.md` as the cleanup source-of-truth, this file for active shift work, `project-state.md` for current project state, `task-ledger.md` for milestone history, and GitHub PR history for detailed completed PR history. Cleanup candidates remain advisory only and are not permission to delete files, close issues, delete branches, disable workflows, move files, rename files, archive files, or change repository authority.
 
-Repository structure cleanup now has a completed purpose-index chain. Use `repository-index-chain-2026-06-16.md` before proposing structure work, and use `first-safe-repo-plan-2026-06-16.md` for the first safe follow-up path.
+Repository structure cleanup now has a completed purpose-index chain. Use `repository-index-chain-2026-06-16.md` before proposing structure work, use `first-safe-repo-plan-2026-06-16.md` for the first safe follow-up path, and use `repository-cleanup-phase1-checkpoint-2026-06-16.md` as the phase 1 completion checkpoint.
 
 Workflow noise-reduction status after #1005 through #1009:
 
@@ -26,10 +26,11 @@ Current immediate operator path:
 
 1. Treat #1005, #1006, #1007, #1008, and #1009 as completed workflow noise-reduction follow-up, not active work.
 2. Use `repository-index-chain-2026-06-16.md` to locate the root, docs, src, scripts, generated/reference, historical/evidence, and public/demo indexes.
-3. Use `first-safe-repo-plan-2026-06-16.md` before proposing any structure change.
-4. Do not widen workflow permissions, enable auto-merge, delete workflows, remove checks, or change authority boundaries from cleanup candidates.
-5. Keep write-capable or authority-adjacent workflows parked unless a future human-reviewed PR has a concrete reason, narrow diff, green checks, and no unresolved review comments.
-6. Before proposing new work, cross-check `project-state.md`, `task-ledger.md`, current GitHub PR history, and repository evidence.
+3. Use `repository-cleanup-phase1-checkpoint-2026-06-16.md` to confirm phase 1 completion before proposing phase 2 work.
+4. Use `first-safe-repo-plan-2026-06-16.md` before proposing any structure change.
+5. Do not widen workflow permissions, enable auto-merge, delete workflows, remove checks, or change authority boundaries from cleanup candidates.
+6. Keep write-capable or authority-adjacent workflows parked unless a future human-reviewed PR has a concrete reason, narrow diff, green checks, and no unresolved review comments.
+7. Before proposing new work, cross-check `project-state.md`, `task-ledger.md`, current GitHub PR history, and repository evidence.
 
 ## Parked work
 
@@ -41,7 +42,7 @@ The following remain parked unless explicitly authorized, scoped, reviewed, and 
 
 ## Immediate do-not-repeat summary
 
-Completed public-validator, public-explorer, HC Control Bot, assistant-console, validator pipeline, verification package, HC Trust Engineer, HC Engineer planner, signature/witness planning, PR-flow diagnostic, repository inventory, governance automation, governance evidence review, evidence artifact inspection, workflow noise-reduction, repository purpose-index, repository index-chain, and first safe repository plan work should not be repeated unless new repository evidence or human reviewer direction identifies a concrete gap.
+Completed public-validator, public-explorer, HC Control Bot, assistant-console, validator pipeline, verification package, HC Trust Engineer, HC Engineer planner, signature/witness planning, PR-flow diagnostic, repository inventory, governance automation, governance evidence review, evidence artifact inspection, workflow noise-reduction, repository purpose-index, repository index-chain, inventory passes, first safe repository plan, and cleanup phase 1 checkpoint work should not be repeated unless new repository evidence or human reviewer direction identifies a concrete gap.
 
 Use GitHub PR history for detailed completed-work history and `task-ledger.md` for milestone references. Do not list completed work as active next work in this file.
 
