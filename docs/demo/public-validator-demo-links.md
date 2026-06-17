@@ -26,7 +26,7 @@ These links are useful for simple QR-style demo navigation. They select fixture 
 
 ## Demo record IDs
 
-The viewer also includes a local demo `record_id` form. A supported demo `record_id` can be pasted into the page to render the matching bundled fixture scenario.
+The viewer also includes a local demo `record_id` form. A supported demo `record_id` can be pasted into the page or passed through a `record_id` query parameter to render the matching bundled fixture scenario.
 
 Supported demo IDs:
 
@@ -37,6 +37,15 @@ HC-DEMO-PV-FIXTURE-NEWS-0001       -> news
 HC-DEMO-PV-FIXTURE-QR-0001         -> qr-spoof
 ```
 
+Supported demo Record ID links:
+
+```text
+public-validator-static-viewer.html?record_id=HC-DEMO-PV-FIXTURE-FOOD-0001
+public-validator-static-viewer.html?record_id=HC-DEMO-PV-FIXTURE-CONCRETE-0001
+public-validator-static-viewer.html?record_id=HC-DEMO-PV-FIXTURE-NEWS-0001
+public-validator-static-viewer.html?record_id=HC-DEMO-PV-FIXTURE-QR-0001
+```
+
 This is fixture matching only, not canonical record lookup.
 
 ## Current boundary
@@ -44,12 +53,12 @@ This is fixture matching only, not canonical record lookup.
 Current supported link behavior:
 
 ```text
-scenario query parameter -> supported
-record_id form input     -> supported
-record_id query parameter -> not yet supported
+scenario query parameter  -> supported
+record_id form input      -> supported
+record_id query parameter -> supported for bundled demo fixtures only
 ```
 
-A future implementation PR may add `record_id` query-string support so a QR/link can open a demo result directly by `record_id`. That future change must stay static, public-safe, advisory-only, and fixture-only unless a separate backend/canonical verification layer is explicitly added later.
+The `record_id` query-string path opens a bundled fixture scenario directly by demo `record_id`. It stays static, public-safe, advisory-only, and fixture-only unless a separate backend/canonical verification layer is explicitly added later.
 
 ## Non-goals
 

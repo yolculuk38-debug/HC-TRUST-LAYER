@@ -29,6 +29,18 @@ def test_static_viewer_maps_demo_record_ids() -> None:
         assert f'"{record_id}": "{scenario}"' in html
 
 
+def test_static_viewer_supports_record_id_query_entry() -> None:
+    html = _html()
+
+    assert "?record_id=HC-DEMO-PV-FIXTURE-FOOD-0001" in html
+    assert 'params.get("record_id")' in html
+    assert "selectionFromQueryString" in html
+    assert "Matched demo record_id query parameter" in html
+    assert "unsupported demo record_id query parameter" in html
+    assert "updateRecordIdUrl" in html
+    assert 'url.searchParams.set("record_id", recordId)' in html
+
+
 def test_static_viewer_keeps_core_result_fields_visible() -> None:
     html = _html()
 
