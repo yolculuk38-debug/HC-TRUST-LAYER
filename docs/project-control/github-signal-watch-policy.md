@@ -168,6 +168,11 @@ This policy does not:
 - change workflows, branch protection, permissions, runtime behavior, schemas, validators, records, policy, federation, signing, or canonical artifacts;
 - treat social signals as proof of trust.
 
+## Related usage
+
+- `docs/project-control/github-signal-watch-usage.md` explains how to run the local report-only script and how to provide operator-collected GitHub Home, Changelog, pull request, or check-annotation signals.
+- `scripts/hc_signal_watch_report.py` builds the local JSON or markdown report.
+
 ## Initial operating rule
 
 Until a dedicated signal-watch workflow exists, every shift must begin with:
