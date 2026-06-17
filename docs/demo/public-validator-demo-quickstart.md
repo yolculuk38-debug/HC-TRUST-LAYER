@@ -15,9 +15,9 @@ The runner is local-only. It does not make external network calls, contact live 
 
 ## Static browser viewer
 
-Open [`docs/demo/public-validator-static-viewer.html`](public-validator-static-viewer.html) in a browser to view the same public-safe demo scenario shape as a static HC result card. The viewer accepts static query-string demo entry links for the bundled scenarios: `public-validator-static-viewer.html?scenario=banana`, `public-validator-static-viewer.html?scenario=building`, `public-validator-static-viewer.html?scenario=news`, and `public-validator-static-viewer.html?scenario=qr-spoof`. Unsupported or missing scenario values fall back to the `banana` demo scenario.
+Open [`docs/demo/public-validator-static-viewer.html`](public-validator-static-viewer.html) in a browser to view the same public-safe demo scenario shape as a static HC result card. The viewer accepts static query-string demo entry links for the bundled scenarios: `public-validator-static-viewer.html?scenario=banana`, `public-validator-static-viewer.html?scenario=building`, `public-validator-static-viewer.html?scenario=news`, and `public-validator-static-viewer.html?scenario=qr-spoof`. It also accepts supported demo Record ID links such as `public-validator-static-viewer.html?record_id=HC-DEMO-PV-FIXTURE-FOOD-0001`. Unsupported or missing scenario values fall back to the `banana` demo scenario.
 
-The compact link-pattern reference is [`docs/demo/public-validator-demo-links.md`](public-validator-demo-links.md). It records the current scenario-link and demo `record_id` boundaries, including that `record_id` query-string support is not yet implemented.
+The compact link-pattern reference is [`docs/demo/public-validator-demo-links.md`](public-validator-demo-links.md). It records the current scenario-link and demo `record_id` boundaries, including supported `record_id` query-string links for bundled demo fixtures.
 
 The viewer also includes a demo Record ID input. Supported fixture IDs map to bundled scenarios only: `HC-DEMO-PV-FIXTURE-FOOD-0001` maps to `banana`, `HC-DEMO-PV-FIXTURE-CONCRETE-0001` maps to `building`, `HC-DEMO-PV-FIXTURE-NEWS-0001` maps to `news`, and `HC-DEMO-PV-FIXTURE-QR-0001` maps to `qr-spoof`. Unsupported IDs show a public-safe warning and do not trigger any backend, external service, canonical record lookup, database lookup, production verification, truth verification, QR authenticity check, or signed payload verification.
 
@@ -29,7 +29,7 @@ This demo:
 
 - prints a deterministic JSON result for one selected public validator scenario;
 - shows how a public-safe validation summary might expose provenance, responsibility, evidence, missing evidence, conflicts, and warnings;
-- lets users type supported demo `record_id` values to select matching bundled fixture scenarios;
+- lets users type supported demo `record_id` values or open supported demo `record_id` query links to select matching bundled fixture scenarios;
 - keeps the output advisory-only and human-review-required;
 - uses local fixture data only;
 - helps reviewers compare the command-line output with the static demo documentation.
