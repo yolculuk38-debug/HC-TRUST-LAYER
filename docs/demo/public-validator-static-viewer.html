@@ -289,9 +289,9 @@
       <h1>HC:// Public Validator Static Viewer MVP</h1>
       <p class="muted">Demo-only static page for browser-readable HC:// Public Validator fixture results.</p>
       <div class="notice">
-        This viewer is advisory-only, public-safe, deterministic, local-only, and human-review-required. It does not claim production readiness, food/building/news/legal certification, forensic certainty, truth guarantees, or autonomous AI authority.
+        This viewer is advisory-only, public-safe, deterministic, local-only, and human-review-required. It does not claim production readiness, food/building/news/legal certification, forensic certainty, truth guarantees, or autonomous machine decision-making authority.
       </div>
-      <p class="muted">QR/link-style demo URLs may select a bundled scenario with <code>?scenario=banana</code>, <code>?scenario=building</code>, <code>?scenario=news</code>, or <code>?scenario=qr-spoof</code>. This is static demo navigation only, not QR authenticity or signed payload verification.</p>
+      <p class="muted">QR/link-style demo URLs may select a bundled scenario with <code>?scenario=banana</code>, <code>?scenario=building</code>, <code>?scenario=news</code>, <code>?scenario=qr-spoof</code>, or a supported demo Record ID with <code>?record_id=HC-DEMO-PV-FIXTURE-FOOD-0001</code>. This is static demo navigation only, not QR authenticity or signed payload verification.</p>
       <nav class="scenario-picker" aria-label="Demo scenarios">
         <button type="button" data-scenario="banana" aria-pressed="true">banana</button>
         <button type="button" data-scenario="building" aria-pressed="false">building</button>
@@ -560,6 +560,14 @@
     function updateScenarioUrl(key) {
       const url = new URL(window.location.href);
       url.searchParams.set("scenario", key);
+      url.searchParams.delete("record_id");
+      window.history.replaceState(null, "", url);
+    }
+
+    function updateRecordIdUrl(recordId, key) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("record_id", recordId);
+      url.searchParams.set("scenario", key);
       window.history.replaceState(null, "", url);
     }
 
@@ -595,15 +603,35 @@
       renderList("warnings", result.warnings);
     }
 
-    function scenarioFromQueryString() {
+    function selectionFromQueryString() {
       const params = new URLSearchParams(window.location.search);
+      const requestedRecordId = (params.get("record_id") || "").trim().toUpperCase();
+
+      if (requestedRecordId) {
+        const key = recordIdScenarioMap[requestedRecordId];
+
+        if (key) {
+          return {
+            key,
+            message: `Matched demo record_id query parameter to bundled scenario '${key}' for advisory fixture display only.`,
+            isWarning: false
+          };
+        }
+
+        return {
+          key: "banana",
+          message: "Public-safe demo warning: unsupported demo record_id query parameter. This static viewer does not call a backend, perform canonical lookup, verify truth, prove QR authenticity, or validate signed payloads.",
+          isWarning: true
+        };
+      }
+
       const requestedScenario = params.get("scenario");
 
       if (Object.prototype.hasOwnProperty.call(scenarios, requestedScenario)) {
-        return requestedScenario;
+        return { key: requestedScenario, message: null, isWarning: false };
       }
 
-      return "banana";
+      return { key: "banana", message: null, isWarning: false };
     }
 
     document.querySelectorAll("[data-scenario]").forEach((button) => {
@@ -629,11 +657,15 @@
       }
 
       renderScenario(key);
-      updateScenarioUrl(key);
+      updateRecordIdUrl(requestedRecordId, key);
       setRecordIdMessage(`Matched demo record_id to bundled scenario '${key}' for advisory fixture display only.`);
     });
 
-    renderScenario(scenarioFromQueryString());
+    const initialSelection = selectionFromQueryString();
+    renderScenario(initialSelection.key);
+    if (initialSelection.message) {
+      setRecordIdMessage(initialSelection.message, initialSelection.isWarning);
+    }
   </script>
 </body>
 </html>
