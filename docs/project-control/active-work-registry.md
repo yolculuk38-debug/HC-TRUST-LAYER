@@ -38,6 +38,7 @@ Do not use this registry to override Project State, Task Ledger, Next Actions, r
 | Blocked work | Record shift-visible blockers under Blocked Work; do not treat this as approval routing. |
 | Parked work | Record parked items under Parked Work and cross-check Project State. |
 | Completed references | Use `docs/project-control/task-ledger.md` as the history and do-not-repeat source. |
+| Repository signal review | Use `docs/project-control/github-signal-watch-policy.md` before claiming the repository is clean, dependency updates are current, or platform signals have no HC impact. |
 | Protected-path reminder | Do not modify workflows, runtime code, schemas, validators, records, policy, federation, signing, trust-kernel indexes, `hc_context`, or agents unless explicitly authorized. |
 | Evidence expectation | Every entry should point to repository evidence or name the evidence gap. |
 
@@ -154,8 +155,9 @@ At shift check-in, use this registry to record only the active coordination snap
 1. Confirm the current phase and current focus from `docs/project-control/project-state.md`.
 2. Confirm the priority queue from `docs/project-control/next-actions.md`.
 3. Cross-check completed or do-not-repeat work in `docs/project-control/task-ledger.md`.
-4. Add or update a Current Work entry with role, scope, mode, intended files, protected-path assessment, expected checks, and evidence gaps.
-5. Keep claims advisory and reversible.
+4. Confirm repository-wide pull requests, dependency updates, check annotations, and platform signals using `docs/project-control/github-signal-watch-policy.md`.
+5. Add or update a Current Work entry with role, scope, mode, intended files, protected-path assessment, expected checks, and evidence gaps.
+6. Keep claims advisory and reversible.
 
 ## Checkout Use
 
@@ -186,6 +188,7 @@ This registry may lag behind repository evidence. When it conflicts with Project
 - `docs/project-control/agent-operating-model.md` — agent operating guidance.
 - `docs/project-control/task-ledger.md` — task history and do-not-repeat source.
 - `docs/project-control/next-actions.md` — safe next-work priority queue.
+- `docs/project-control/github-signal-watch-policy.md` — repository-wide PR, dependency, platform, code scanning, workflow warning, and community visibility signal triage policy.
 - `docs/project-control/repository-index-chain-2026-06-16.md` — cleanup purpose-index and inventory-pass chain.
 - `docs/project-control/repository-cleanup-phase1-checkpoint-2026-06-16.md` — cleanup phase 1 completion checkpoint.
 - `docs/project-control/shift-change-checklist.md` — check-in and checkout handoff checklist.
