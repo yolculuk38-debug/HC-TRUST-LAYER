@@ -13,6 +13,8 @@ The examples are based on fictional demo fixtures. They are not canonical HC:// 
 
 Each result is intentionally written like a public result screen: short labels, visible evidence status, clear warnings, and a direct reminder that HC-TRUST-LAYER supports human-supervised validation rather than replacing reviewer judgment.
 
+For static viewer scenario-link and demo `record_id` boundaries, see the [Public Validator Demo Links](public-validator-demo-links.md) guide.
+
 ## Demo Navigation
 
 Use these demo result cards to compare common public validation scenarios:
