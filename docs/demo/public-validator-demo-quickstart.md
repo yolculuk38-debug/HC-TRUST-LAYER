@@ -9,13 +9,15 @@
 
 This quickstart helps a new user run the local HC:// Public Validator demo and read the JSON output quickly.
 
-The demo runner is [`scripts/run_public_validator_demo.py`](../../scripts/run_public_validator_demo.py). It prints deterministic, public-safe fixture results for the demo scenarios described in the [Public Validator Static Demo](public-validator-static-demo.md), the [Public Validator Static Viewer MVP](public-validator-static-viewer.html), and the [Public Validator Demo Fixtures](fixtures/public-validator-demo-fixtures.md).
+The demo runner is [`scripts/run_public_validator_demo.py`](../../scripts/run_public_validator_demo.py). It prints deterministic, public-safe fixture results for the demo scenarios described in the [Public Validator Static Demo](public-validator-static-demo.md), the [Public Validator Static Viewer MVP](public-validator-static-viewer.html), the [Public Validator Demo Links](public-validator-demo-links.md), and the [Public Validator Demo Fixtures](fixtures/public-validator-demo-fixtures.md).
 
 The runner is local-only. It does not make external network calls, contact live HC:// services, fetch remote evidence, validate signatures, or certify real-world claims.
 
 ## Static browser viewer
 
 Open [`docs/demo/public-validator-static-viewer.html`](public-validator-static-viewer.html) in a browser to view the same public-safe demo scenario shape as a static HC result card. The viewer accepts static query-string demo entry links for the bundled scenarios: `public-validator-static-viewer.html?scenario=banana`, `public-validator-static-viewer.html?scenario=building`, `public-validator-static-viewer.html?scenario=news`, and `public-validator-static-viewer.html?scenario=qr-spoof`. Unsupported or missing scenario values fall back to the `banana` demo scenario.
+
+The compact link-pattern reference is [`docs/demo/public-validator-demo-links.md`](public-validator-demo-links.md). It records the current scenario-link and demo `record_id` boundaries, including that `record_id` query-string support is not yet implemented.
 
 The viewer also includes a demo Record ID input. Supported fixture IDs map to bundled scenarios only: `HC-DEMO-PV-FIXTURE-FOOD-0001` maps to `banana`, `HC-DEMO-PV-FIXTURE-CONCRETE-0001` maps to `building`, `HC-DEMO-PV-FIXTURE-NEWS-0001` maps to `news`, and `HC-DEMO-PV-FIXTURE-QR-0001` maps to `qr-spoof`. Unsupported IDs show a public-safe warning and do not trigger any backend, external service, canonical record lookup, database lookup, production verification, truth verification, QR authenticity check, or signed payload verification.
 
