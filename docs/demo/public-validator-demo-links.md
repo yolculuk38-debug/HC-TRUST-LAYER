@@ -60,5 +60,5 @@ This demo page must not be represented as:
 - signed payload verification;
 - canonical record lookup;
 - truth certification;
-- autonomous AI authority;
+- autonomous machine decision-making authority;
 - food, building, news, legal, or forensic certification.
