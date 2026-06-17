@@ -15,15 +15,14 @@ def test_static_viewer_lists_demo_scenarios() -> None:
         assert f'data-scenario="{scenario}"' in html
 
 
-
 def test_static_viewer_maps_demo_record_ids() -> None:
     html = _html()
 
     expected = {
         "HC-DEMO-PV-FIXTURE-FOOD-0001": "banana",
         "HC-DEMO-PV-FIXTURE-CONCRETE-0001": "building",
-        "HC-DEMO-PV-FIXTURE+NEWS-0001": "news",
-        "HC-DEMO-PV-FIXTURE+QR-0001": "qr-spoof",
+        "HC-DEMO-PV-FIXTURE-NEWS-0001": "news",
+        "HC-DEMO-PV-FIXTURE-QR-0001": "qr-spoof",
     }
 
     for record_id, scenario in expected.items():
@@ -45,7 +44,6 @@ def test_static_viewer_keeps_core_result_fields_visible() -> None:
         "warnings",
     ):
         assert field in html
-
 
 
 def test_static_viewer_keeps_safety_markers_visible() -> None:
