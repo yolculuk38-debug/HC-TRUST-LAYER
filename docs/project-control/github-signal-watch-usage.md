@@ -124,6 +124,8 @@ python scripts/hc_signal_watch_report.py --changelog-signals tmp/github-changelo
 
 The report preserves fixture signal fields such as `source`, `title`, `url`, `published`, `category`, `impact`, `risk`, `recommended_action`, `classification_reason`, `matched_keywords`, `evidence_gap`, `automation_boundary`, and `dedupe_key` when they are present in the normalized JSON. Human review remains required before any repository action.
 
+For a full end-to-end local fixture demo that generates both JSON and Markdown reports in a temporary output directory, see [HC Signal Watch GitHub Changelog Fixture Demo](github-signal-watch-fixture-demo.md).
+
 ## Required manual live checks
 
 The script and workflow are local/report-only and cannot replace live GitHub inspection.
