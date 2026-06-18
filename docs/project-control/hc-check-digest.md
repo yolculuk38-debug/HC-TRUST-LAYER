@@ -104,10 +104,18 @@ appears, and after human review activity changes the PR health picture.
 not include `HC Check Digest`. `check_run` refreshes also skip HC Check Digest
 check names. For `status` events, the adapter resolves the related pull request
 from the commit SHA using read-only API access before building local digest
-inputs. These guards avoid a self-triggering digest loop. Refreshes only rebuild
-the report, publish the job summary, and upload the artifact. They do not
-comment, label, assign, approve, merge, enable auto-merge, or otherwise mutate
-PR or repository state.
+inputs. These guards avoid a self-triggering digest loop.
+
+Each refresh fetches live metadata at run time instead of relying only on the
+event payload. The workflow also uses per-PR/head-SHA concurrency with
+`cancel-in-progress: true` so an older in-flight digest run is cancelled when a
+later check, status, review, or comment update arrives. This keeps the published
+advisory summary aligned to the latest observed read-only metadata without
+adding write permissions or mutation.
+
+Refreshes only rebuild the report, publish the job summary, and upload the
+artifact. They do not comment, label, assign, approve, merge, enable auto-merge,
+or otherwise mutate PR or repository state.
 
 ## Merge guidance
 
