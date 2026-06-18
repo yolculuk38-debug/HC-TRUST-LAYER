@@ -35,6 +35,13 @@ def test_failed_required_check_blocks_merge() -> None:
     assert digest["blocking"][0]["reason"] == "failed required check candidate"
 
 
+def test_completed_required_check_with_failing_conclusion_blocks_merge() -> None:
+    digest = build_digest(checks=[{"name": "Validation", "status": "completed", "conclusion": "failure"}])
+
+    assert digest["merge_guidance"] == "do_not_merge"
+    assert digest["blocking"][0]["name"] == "Validation"
+
+
 def test_unresolved_non_outdated_thread_blocks_merge() -> None:
     digest = build_digest(threads=[{"name": "Active thread", "resolved": False, "outdated": False}])
 
@@ -60,6 +67,20 @@ def test_codex_p2_open_feedback_blocks_merge() -> None:
 
     assert digest["merge_guidance"] == "do_not_merge"
     assert digest["blocking"][0]["reason"] == "open Codex P2 feedback"
+
+
+def test_bracketed_codex_p2_open_feedback_blocks_merge() -> None:
+    digest = build_digest(reviews=[{"author": "codex", "title": "[P2] clarify digest parsing", "status": "open"}])
+
+    assert digest["merge_guidance"] == "do_not_merge"
+    assert digest["blocking"][0]["reason"] == "open Codex P2 feedback"
+
+
+def test_markdown_codex_p1_open_feedback_blocks_merge() -> None:
+    digest = build_digest(reviews=[{"author": "codex", "body": "**P1** Badge: required failure hidden", "status": "open"}])
+
+    assert digest["merge_guidance"] == "do_not_merge"
+    assert digest["blocking"][0]["reason"] == "open Codex P1 feedback"
 
 
 def test_resolved_or_outdated_codex_p2_does_not_block() -> None:

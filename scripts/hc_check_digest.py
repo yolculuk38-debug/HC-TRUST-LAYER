@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -46,8 +47,8 @@ AUTOMATION_KEYWORDS = (
 )
 
 FAIL_STATUSES = {"failure", "failed", "error", "cancelled", "timed_out", "action_required"}
-PASS_STATUSES = {"success", "passed", "pass", "ok", "neutral", "skipped"}
 WARNING_LEVELS = {"warning", "notice", "advisory"}
+PRIORITY_TOKEN_RE = re.compile(r"(?<![a-z0-9])p([123])(?![a-z0-9])")
 
 
 def _load_json(path: str | None) -> Any:
@@ -84,6 +85,14 @@ def _status(item: dict[str, Any]) -> str:
     return _text(item, "status", "conclusion", "state", "result").lower()
 
 
+def _outcome_values(item: dict[str, Any]) -> set[str]:
+    return {
+        str(item.get(key, "")).strip().lower()
+        for key in ("conclusion", "result", "status", "state")
+        if str(item.get(key, "")).strip()
+    }
+
+
 def _is_outdated(item: dict[str, Any]) -> bool:
     return bool(item.get("outdated") or item.get("is_outdated"))
 
@@ -95,9 +104,9 @@ def _is_resolved(item: dict[str, Any]) -> bool:
 
 def _codex_severity(item: dict[str, Any]) -> str:
     text = _text(item, "severity", "priority", "level", "body", "comment", "title", "name").lower()
-    for severity in ("p1", "p2", "p3"):
-        if severity in text.replace("-", " ").split() or f"codex {severity}" in text:
-            return severity.upper()
+    match = PRIORITY_TOKEN_RE.search(text)
+    if match:
+        return f"P{match.group(1)}"
     return ""
 
 
@@ -107,14 +116,14 @@ def _entry(item: dict[str, Any], reason: str) -> dict[str, str]:
 
 def _is_required_failure(item: dict[str, Any]) -> bool:
     haystack = _text(item, "name", "check", "title", "context", "workflow", "type", "category").lower()
-    status = _status(item)
-    return status in FAIL_STATUSES and any(keyword in haystack for keyword in REQUIRED_FAILURE_KEYWORDS)
+    outcomes = _outcome_values(item)
+    return bool(outcomes & FAIL_STATUSES) and any(keyword in haystack for keyword in REQUIRED_FAILURE_KEYWORDS)
 
 
 def _is_advisory(item: dict[str, Any]) -> bool:
     haystack = _text(item, "name", "check", "title", "context", "workflow", "type", "category", "severity", "level").lower()
-    status = _status(item)
-    return any(keyword in haystack for keyword in ADVISORY_KEYWORDS) or status in WARNING_LEVELS or any(
+    outcomes = _outcome_values(item)
+    return any(keyword in haystack for keyword in ADVISORY_KEYWORDS) or bool(outcomes & WARNING_LEVELS) or any(
         level in haystack for level in WARNING_LEVELS
     )
 
