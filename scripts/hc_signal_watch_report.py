@@ -70,8 +70,6 @@ ACTION_AUTOMATION_BOUNDARY = (
 
 
 def _priority_for_signal(risk: Any, evidence_gap: Any = None, recommended_action: Any = None) -> str:
-    if evidence_gap or not recommended_action:
-        return "P4"
     normalized = str(risk or "").strip().lower()
     if normalized == "high":
         return "P1"

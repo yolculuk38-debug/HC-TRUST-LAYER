@@ -77,6 +77,7 @@ def test_signal_watch_recommended_human_actions_prioritize_fixture_risks(tmp_pat
                 "risk": "medium",
                 "recommended_action": "inspect workflow action versions and warnings",
                 "classification_reason": "workflow runtime signal",
+                "evidence_gap": "missing local workflow context",
             },
             {
                 "source": "GitHub Changelog fixture",
@@ -84,6 +85,7 @@ def test_signal_watch_recommended_human_actions_prioritize_fixture_risks(tmp_pat
                 "risk": "high",
                 "recommended_action": "inspect advisory security signal interpretation",
                 "classification_reason": "code scanning, secret scanning, or supply-chain signal",
+                "evidence_gap": "missing local alert context",
             },
         ],
     }
@@ -95,9 +97,17 @@ def test_signal_watch_recommended_human_actions_prioritize_fixture_risks(tmp_pat
     actions = report["recommended_human_actions"]
     assert [action["priority"] for action in actions] == ["P1", "P2"]
     assert actions[0]["recommended_action"] == "inspect advisory security signal interpretation"
+    assert actions[0]["reason"] == "missing local alert context"
     assert actions[1]["recommended_action"] == "inspect workflow action versions and warnings"
+    assert actions[1]["reason"] == "missing local workflow context"
+    assert report["network_access"] is False
+    assert report["repository_mutation"] is False
+    assert report["approval_authority"] is False
+    assert report["merge_authority"] is False
     assert all("no live network" in action["automation_boundary"] for action in actions)
     assert all("no GitHub API calls" in action["automation_boundary"] for action in actions)
+    assert all("no approval authority" in action["automation_boundary"] for action in actions)
+    assert all("no merge authority" in action["automation_boundary"] for action in actions)
 
 
 def test_signal_watch_recommended_human_actions_empty_markdown_message() -> None:
