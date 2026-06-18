@@ -45,6 +45,22 @@ SIGNAL_KEYWORDS: tuple[tuple[str, str, str, str], ...] = (
     ("follower", "community", "low", "inspect onboarding and public safety language"),
 )
 
+CHANGELOG_SIGNAL_FIELDS = (
+    "source",
+    "title",
+    "url",
+    "published",
+    "category",
+    "impact",
+    "risk",
+    "recommended_action",
+    "classification_reason",
+    "matched_keywords",
+    "evidence_gap",
+    "automation_boundary",
+    "dedupe_key",
+)
+
 
 @dataclass(frozen=True)
 class SignalInput:
@@ -147,6 +163,42 @@ def _load_signals(path: Path | None) -> list[SignalInput]:
     return signals
 
 
+def _load_changelog_signals(path: Path | None) -> list[dict[str, Any]]:
+    if path is None:
+        return []
+    if not path.exists():
+        raise ValueError(f"changelog signal file not found: {path}")
+
+    try:
+        raw = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"changelog signal file is not valid JSON: {path}") from exc
+
+    if not isinstance(raw, dict):
+        raise ValueError("changelog signal JSON must be the normalized fixture object")
+    if raw.get("mode") != "local_fixture_only":
+        raise ValueError("changelog signal JSON must come from local fixture normalization")
+    if raw.get("network_access") is not False:
+        raise ValueError("changelog signal JSON must declare network_access=false")
+
+    raw_signals = raw.get("signals")
+    if not isinstance(raw_signals, list):
+        raise ValueError("changelog signal JSON must include a signals list")
+
+    signals: list[dict[str, Any]] = []
+    for index, entry in enumerate(raw_signals):
+        if not isinstance(entry, dict):
+            raise ValueError(f"changelog signal entry {index} must be an object")
+        title = str(entry.get("title", "")).strip()
+        if not title:
+            raise ValueError(f"changelog signal entry {index} missing title")
+        signal = {field: entry.get(field) for field in CHANGELOG_SIGNAL_FIELDS if field in entry}
+        signal.setdefault("source", "GitHub Changelog fixture")
+        signal["title"] = title
+        signals.append(signal)
+    return signals
+
+
 def classify_signal(signal: SignalInput) -> SignalFinding:
     haystack = " ".join(part for part in (signal.source, signal.title, signal.note or "") if part).lower()
     for keyword, impact, risk, action in SIGNAL_KEYWORDS:
@@ -174,10 +226,15 @@ def classify_signal(signal: SignalInput) -> SignalFinding:
     )
 
 
-def build_report(repo_root: Path, signal_file: Path | None = None) -> dict[str, Any]:
+def build_report(
+    repo_root: Path,
+    signal_file: Path | None = None,
+    changelog_signals_file: Path | None = None,
+) -> dict[str, Any]:
     repo_root = repo_root.resolve()
     signal_inputs = _load_signals(signal_file)
     findings = [classify_signal(signal) for signal in signal_inputs]
+    changelog_signals = _load_changelog_signals(changelog_signals_file)
 
     report: dict[str, Any] = {
         **SAFETY_MARKERS,
@@ -185,6 +242,8 @@ def build_report(repo_root: Path, signal_file: Path | None = None) -> dict[str, 
         "mode": "local_report_only",
         "network_access": False,
         "repository_mutation": False,
+        "issue_comment_automation": False,
+        "label_reviewer_mutation": False,
         "approval_authority": False,
         "merge_authority": False,
         "policy": _policy_status(repo_root),
@@ -198,6 +257,7 @@ def build_report(repo_root: Path, signal_file: Path | None = None) -> dict[str, 
             "community visibility signal review when stars, watchers, forks, followers, or first-time contributors appear",
         ],
         "signals": [finding.to_dict() for finding in findings],
+        "github_changelog_fixture_signals": changelog_signals,
         "evidence_gaps": [],
     }
 
@@ -229,6 +289,8 @@ def render_markdown(report: dict[str, Any]) -> str:
         f"- mode={report['mode']}",
         f"- network_access={_markdown_bool(report['network_access'])}",
         f"- repository_mutation={_markdown_bool(report['repository_mutation'])}",
+        f"- issue_comment_automation={_markdown_bool(report['issue_comment_automation'])}",
+        f"- label_reviewer_mutation={_markdown_bool(report['label_reviewer_mutation'])}",
         f"- approval_authority={_markdown_bool(report['approval_authority'])}",
         f"- merge_authority={_markdown_bool(report['merge_authority'])}",
         "",
@@ -268,6 +330,32 @@ def render_markdown(report: dict[str, Any]) -> str:
         lines.append("No operator-provided signals were supplied to this local report.")
         lines.append("")
 
+    lines.extend(["## GitHub Changelog fixture signals", ""])
+    if report["github_changelog_fixture_signals"]:
+        for signal in report["github_changelog_fixture_signals"]:
+            lines.extend(
+                [
+                    f"### {signal['title']}",
+                    "",
+                    f"- source: {signal.get('source', 'GitHub Changelog fixture')}",
+                    f"- url: {signal.get('url') or 'none'}",
+                    f"- published: {signal.get('published') or 'none'}",
+                    f"- category: {signal.get('category') or 'none'}",
+                    f"- impact: {signal.get('impact') or 'none'}",
+                    f"- risk: {signal.get('risk') or 'none'}",
+                    f"- recommended_action: {signal.get('recommended_action') or 'none'}",
+                    f"- classification_reason: {signal.get('classification_reason') or 'none'}",
+                    f"- matched_keywords: {', '.join(signal.get('matched_keywords') or []) or 'none'}",
+                    f"- evidence_gap: {signal.get('evidence_gap') or 'none'}",
+                    f"- automation_boundary: {signal.get('automation_boundary') or 'none'}",
+                    f"- dedupe_key: {signal.get('dedupe_key') or 'none'}",
+                    "",
+                ]
+            )
+    else:
+        lines.append("No GitHub Changelog fixture signals were supplied to this local report.")
+        lines.append("")
+
     lines.extend(["## Evidence gaps", ""])
     if report["evidence_gaps"]:
         lines.extend(f"- {gap}" for gap in report["evidence_gaps"])
@@ -282,10 +370,19 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Build a local HC GitHub Signal Watch report.")
     parser.add_argument("repo_root", nargs="?", default=".", help="Repository root path")
     parser.add_argument("--signals", type=Path, default=None, help="Optional JSON list of operator-provided signals")
+    parser.add_argument(
+        "--changelog-signals",
+        type=Path,
+        default=None,
+        help="Optional normalized local fixture JSON from hc_signal_watch_rss_ingest.py",
+    )
     parser.add_argument("--format", choices=("json", "md"), default="json")
     args = parser.parse_args()
 
-    report = build_report(Path(args.repo_root), args.signals)
+    try:
+        report = build_report(Path(args.repo_root), args.signals, args.changelog_signals)
+    except ValueError as exc:
+        parser.error(str(exc))
     if args.format == "json":
         print(json.dumps(report, indent=2, sort_keys=True))
     else:
