@@ -142,6 +142,46 @@ jobs:
               "X-GitHub-Api-Version": "2022-11-28",
           }
 
+          def error_details(exc):
+              try:
+                  raw_body = exc.read().decode("utf-8", errors="replace")
+              except Exception:
+                  raw_body = ""
+
+              message = ""
+              if raw_body:
+                  try:
+                      message = json.loads(raw_body).get("message", "")
+                  except json.JSONDecodeError:
+                      message = raw_body
+
+              return message.strip(), raw_body
+
+          def is_permission_denied_403(exc, message, raw_body):
+              if exc.code != 403:
+                  return False
+
+              remaining = exc.headers.get("x-ratelimit-remaining", "")
+              retry_after = exc.headers.get("retry-after", "")
+              lower_details = f"{message}\n{raw_body}".lower()
+              rate_limit_terms = (
+                  "rate limit",
+                  "secondary rate",
+                  "abuse detection",
+                  "too many requests",
+              )
+              if remaining == "0" or retry_after or any(term in lower_details for term in rate_limit_terms):
+                  return False
+
+              permission_terms = (
+                  "resource not accessible by integration",
+                  "must have",
+                  "permission",
+                  "not authorized",
+                  "requires authentication",
+              )
+              return any(term in lower_details for term in permission_terms)
+
           try:
               request = urllib.request.Request(list_url, headers=headers)
               with urllib.request.urlopen(request, timeout=20) as response:
@@ -161,7 +201,16 @@ jobs:
               with urllib.request.urlopen(request, timeout=20) as response:
                   print(f"Advisory comment {method} completed with status {response.status}.")
           except urllib.error.HTTPError as exc:
-              print(f"::warning::Advisory comment skipped: GitHub API returned HTTP {exc.code}.")
+              message, raw_body = error_details(exc)
+              if is_permission_denied_403(exc, message, raw_body):
+                  print(
+                      "::notice::Advisory comment skipped: "
+                      "GitHub API returned HTTP 403 consistent with missing token permissions. "
+                      "The uploaded artifact remains the source of truth."
+                  )
+              else:
+                  detail = f": {message}" if message else ""
+                  print(f"::warning::Advisory comment skipped: GitHub API returned HTTP {exc.code}{detail}.")
               sys.exit(0)
           except Exception as exc:
               print(f"::warning::Advisory comment skipped: {exc}")

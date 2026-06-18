@@ -11,9 +11,11 @@ path_risk_rules:
     - README.md
     - docs/**/*.md
     - examples/**/*.json
+    - tests/test_hc_signal_watch_*.py
   medium:
     - .github/workflows/**/*.yml
     - scripts/check_*.py
+    - scripts/hc_signal_watch_*.py
     - scripts/export_verification_package.py
     - schema/verification-package-v1.schema.json
   high:
