@@ -2,6 +2,21 @@ name: HC Check Digest
 
 on:
   pull_request:
+  pull_request_review:
+  pull_request_review_comment:
+  workflow_run:
+    workflows:
+      - HC-TRUST-LAYER Validation
+      - Terminology Guard
+      - Docs Drift Check
+      - Canonical Artifact Boundary Guard
+      - Advisory Policy Evaluation
+      - PR Scope Guard
+      - Governance Preflight
+      - Automation Gate
+      - verification-package-schema
+    types:
+      - completed
   workflow_dispatch:
 
 permissions:
@@ -14,6 +29,7 @@ jobs:
   digest:
     name: Build advisory PR health digest
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.name != 'HC Check Digest' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,8 +39,8 @@ jobs:
       - name: Collect read-only PR metadata
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.workflow_run.pull_requests[0].number }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.event.workflow_run.head_sha || github.sha }}
         run: |
           if [ -n "${PR_NUMBER}" ]; then
             python scripts/hc_check_digest_github_adapter.py \

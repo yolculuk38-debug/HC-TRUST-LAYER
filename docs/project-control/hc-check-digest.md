@@ -57,8 +57,16 @@ The workflow may collect read-only metadata for:
 
 - check runs and workflow runs for the PR head SHA
 - PR reviews
-- review comments or available review-thread style metadata
+- REST review comments as non-blocking external review signals
+- true review-thread metadata when resolved/outdated state is available
 - workflow artifacts
+
+The adapter follows GitHub pagination for list endpoints so later pages of
+checks, reviews, review comments, workflow runs, and artifacts are included in
+the local digest inputs. REST review comments are not treated as unresolved
+threads because they do not carry reliable resolved-thread state. Only true
+review-thread metadata with resolved/outdated state may create unresolved-thread
+blocking signals.
 
 The workflow writes:
 
@@ -83,6 +91,19 @@ The v2 workflow never mutates PR state. It does not:
 
 The workflow permissions are read-only: `contents: read`, `actions: read`,
 `checks: read`, and `pull-requests: read`.
+
+## Refresh behavior
+
+The v2 workflow refreshes on pull request updates, PR reviews, PR review
+comments, and selected completed check workflows. This lets the digest update
+after required checks complete or fail, after Codex P1/P2 feedback appears, and
+after human review activity changes the PR health picture.
+
+`workflow_run` refreshes are limited to named upstream check workflows and do
+not include `HC Check Digest`, which avoids a self-triggering digest loop. These
+refreshes only rebuild the report, publish the job summary, and upload the
+artifact. They do not comment, label, assign, approve, merge, enable auto-merge,
+or otherwise mutate PR or repository state.
 
 ## Merge guidance
 
