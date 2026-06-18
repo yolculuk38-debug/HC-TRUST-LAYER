@@ -83,3 +83,45 @@ def test_cli_outputs_fixture_only_json(tmp_path: Path, capsys) -> None:
     assert output["mode"] == "local_fixture_only"
     assert output["repository_mutation"] is False
     assert output["signals"][0]["impact"] == "dependency"
+
+
+def test_keyword_matching_uses_token_and_phrase_boundaries() -> None:
+    module = _module()
+
+    payload = module.normalize_entries(
+        [
+            module.FeedEntry(
+                source="GitHub Changelog fixture",
+                title="Repository preview availability improvements",
+                url="https://example.invalid/preview-availability",
+                summary="Public preview availability update for repository insights",
+            )
+        ]
+    )
+
+    assert payload["signals"][0]["impact"] == "none"
+    assert payload["signals"][0]["matched_keywords"] == []
+
+
+def test_classification_prefers_highest_risk_keyword_group() -> None:
+    module = _module()
+
+    payload = module.normalize_entries(
+        [
+            module.FeedEntry(
+                source="GitHub Changelog fixture",
+                title="Secret scanning for GitHub Actions",
+                url="https://example.invalid/secret-scanning-actions",
+            ),
+            module.FeedEntry(
+                source="GitHub Changelog fixture",
+                title="GitHub Actions security advisory",
+                url="https://example.invalid/actions-security-advisory",
+            ),
+        ]
+    )
+
+    assert [signal["impact"] for signal in payload["signals"]] == ["security", "security"]
+    assert [signal["risk"] for signal in payload["signals"]] == ["high", "high"]
+    assert payload["signals"][0]["matched_keywords"] == ["secret scanning"]
+    assert payload["signals"][1]["matched_keywords"] == ["security advisory"]

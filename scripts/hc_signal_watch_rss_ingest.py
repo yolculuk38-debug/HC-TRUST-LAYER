@@ -107,6 +107,19 @@ DEFAULT_AUTOMATION_BOUNDARY = (
     "advisory-only; no issue/comment automation, labels, reviewers, approval, or merge"
 )
 
+RISK_RANK = {"low": 0, "medium": 1, "high": 2}
+
+
+def _keyword_pattern(keyword: str) -> re.Pattern[str]:
+    """Match a keyword as a bounded token or phrase, not a substring."""
+    parts = [re.escape(part) for part in keyword.split()]
+    phrase = r"\s+".join(parts)
+    return re.compile(rf"(?<![a-z0-9]){phrase}(?![a-z0-9])")
+
+
+def _keyword_hits(haystack: str, keywords: tuple[str, ...]) -> list[str]:
+    return [keyword for keyword in keywords if _keyword_pattern(keyword).search(haystack)]
+
 
 @dataclass(frozen=True)
 class FeedEntry:
@@ -233,12 +246,19 @@ def _classify(entry: FeedEntry) -> dict[str, Any]:
     ).lower()
     matched: list[tuple[str, str, str, str, str]] = []
     for impact, risk, action, reason, keywords in KEYWORD_GROUPS:
-        hits = [keyword for keyword in keywords if keyword in haystack]
+        hits = _keyword_hits(haystack, keywords)
         if hits:
             matched.append((impact, risk, action, reason, ", ".join(hits)))
 
     if matched:
-        impact, risk, action, reason, keywords = matched[0]
+        impact, risk, action, reason, keywords = max(
+            matched,
+            key=lambda match: (
+                sum(len(keyword) for keyword in match[4].split(", ")),
+                RISK_RANK[match[1]],
+                len(match[4].split(", ")),
+            ),
+        )
         return {
             "impact": impact,
             "risk": risk,
