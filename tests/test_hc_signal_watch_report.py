@@ -17,6 +17,17 @@ def _module():
     return module
 
 
+def _ingest_module():
+    ingest_script = ROOT / "scripts" / "hc_signal_watch_rss_ingest.py"
+    spec = importlib.util.spec_from_file_location("hc_signal_watch_rss_ingest_for_report", ingest_script)
+    assert spec is not None
+    assert spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules["hc_signal_watch_rss_ingest_for_report"] = module
+    spec.loader.exec_module(module)
+    return module
+
+
 def test_signal_watch_report_is_report_only() -> None:
     module = _module()
 
@@ -196,3 +207,56 @@ def test_signal_watch_changelog_signal_file_fails_safely(tmp_path: Path) -> None
         assert "changelog signal file not found" in str(exc)
     else:
         raise AssertionError("missing changelog signal file should fail safely")
+
+
+def test_signal_watch_local_rss_fixture_report_golden_snapshot(tmp_path: Path) -> None:
+    report_module = _module()
+    ingest = _ingest_module()
+    fixture = ROOT / "examples" / "hc-signal-watch" / "github-changelog-rss-fixture.xml"
+
+    normalized_path = tmp_path / "github-changelog-rss-normalized.json"
+    normalized_path.write_text(
+        json.dumps(ingest.normalize_entries(ingest.load_fixture(fixture))),
+        encoding="utf-8",
+    )
+
+    report = report_module.build_report(ROOT, changelog_signals_file=normalized_path)
+    markdown = report_module.render_markdown(report)
+
+    assert report["advisory_only"] is True
+    assert report["public_safe"] is True
+    assert report["truth_guarantee"] is False
+    assert report["human_review_required"] is True
+    assert report["mode"] == "local_report_only"
+    assert report["network_access"] is False
+    assert report["repository_mutation"] is False
+    assert report["issue_comment_automation"] is False
+    assert report["label_reviewer_mutation"] is False
+    assert report["approval_authority"] is False
+    assert report["merge_authority"] is False
+    assert "github_changelog_fixture_signals" in report
+
+    signals = report["github_changelog_fixture_signals"]
+    assert signals
+    assert any(signal["risk"] == "medium" for signal in signals)
+    expected_fields = {
+        "title",
+        "category",
+        "impact",
+        "risk",
+        "recommended_action",
+        "classification_reason",
+        "matched_keywords",
+        "automation_boundary",
+        "dedupe_key",
+    }
+    assert expected_fields <= signals[0].keys()
+
+    assert "# HC GitHub Signal Watch" in markdown
+    assert "## Safety markers" in markdown
+    assert "## GitHub Changelog fixture signals" in markdown
+    assert "network_access=false" in markdown
+    assert "repository_mutation=false" in markdown
+    assert "approval_authority=false" in markdown
+    assert "merge_authority=false" in markdown
+    assert signals[0]["title"] in markdown
