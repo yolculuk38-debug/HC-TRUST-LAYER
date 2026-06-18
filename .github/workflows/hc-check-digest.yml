@@ -2,8 +2,25 @@ name: HC Check Digest
 
 on:
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+      - edited
   pull_request_review:
+    types:
+      - submitted
+      - edited
+      - dismissed
   pull_request_review_comment:
+    types:
+      - created
+      - edited
+      - deleted
+  check_run:
+    types:
+      - completed
   workflow_run:
     workflows:
       - HC-TRUST-LAYER Validation
@@ -29,7 +46,12 @@ jobs:
   digest:
     name: Build advisory PR health digest
     runs-on: ubuntu-latest
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.name != 'HC Check Digest' }}
+    if: >-
+      ${{
+        (github.event_name != 'workflow_run' || github.event.workflow_run.name != 'HC Check Digest') &&
+        (github.event_name != 'check_run' || !contains(github.event.check_run.name, 'HC Check Digest')) &&
+        (github.event_name != 'check_run' || !contains(github.event.check_run.name, 'Build advisory PR health digest'))
+      }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -39,8 +61,8 @@ jobs:
       - name: Collect read-only PR metadata
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number || github.event.workflow_run.pull_requests[0].number }}
-          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.event.workflow_run.head_sha || github.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.workflow_run.pull_requests[0].number || github.event.check_run.pull_requests[0].number }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.event.workflow_run.head_sha || github.event.check_run.head_sha || github.sha }}
         run: |
           if [ -n "${PR_NUMBER}" ]; then
             python scripts/hc_check_digest_github_adapter.py \

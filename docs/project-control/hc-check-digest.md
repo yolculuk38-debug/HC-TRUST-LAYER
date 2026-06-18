@@ -94,16 +94,18 @@ The workflow permissions are read-only: `contents: read`, `actions: read`,
 
 ## Refresh behavior
 
-The v2 workflow refreshes on pull request updates, PR reviews, PR review
-comments, and selected completed check workflows. This lets the digest update
-after required checks complete or fail, after Codex P1/P2 feedback appears, and
-after human review activity changes the PR health picture.
+The v2 workflow refreshes on scoped pull request updates, PR review submissions
+or edits, PR review comment changes, completed external check runs, and selected
+completed GitHub Actions workflows. This lets the digest update after required
+checks complete or fail, after Codex P1/P2 feedback appears, and after human
+review activity changes the PR health picture.
 
 `workflow_run` refreshes are limited to named upstream check workflows and do
-not include `HC Check Digest`, which avoids a self-triggering digest loop. These
-refreshes only rebuild the report, publish the job summary, and upload the
-artifact. They do not comment, label, assign, approve, merge, enable auto-merge,
-or otherwise mutate PR or repository state.
+not include `HC Check Digest`. `check_run` refreshes also skip HC Check Digest
+check names. These guards avoid a self-triggering digest loop. Refreshes only
+rebuild the report, publish the job summary, and upload the artifact. They do
+not comment, label, assign, approve, merge, enable auto-merge, or otherwise
+mutate PR or repository state.
 
 ## Merge guidance
 
