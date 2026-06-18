@@ -1,0 +1,10 @@
+{
+  "checks": [
+    {"name": "Validation", "status": "success"},
+    {"name": "Canonical Artifact Boundary", "status": "success"},
+    {"name": "Docs Drift", "status": "success"},
+    {"name": "Terminology", "status": "success"},
+    {"name": "Policy Evaluation", "status": "success"},
+    {"name": "PR Scope Guard", "status": "success"}
+  ]
+}
