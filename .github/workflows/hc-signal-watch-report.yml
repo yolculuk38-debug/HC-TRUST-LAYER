@@ -1,0 +1,56 @@
+name: HC Signal Watch Report
+
+# Security hardening defaults: least-privilege token scopes, deterministic concurrency, and bounded runtime.
+# Governance boundary: report-only. This workflow must not mutate repository state or PR state.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 4 * * *"
+  pull_request:
+    paths:
+      - ".github/workflows/hc-signal-watch-report.yml"
+      - "scripts/hc_signal_watch_report.py"
+      - "docs/project-control/github-signal-watch-policy.md"
+      - "docs/project-control/github-signal-watch-usage.md"
+      - "docs/project-control/active-work-registry.md"
+      - ".github/dependabot.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  report:
+    timeout-minutes: 10
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Build Signal Watch JSON report
+        run: python scripts/hc_signal_watch_report.py . --format json > hc-signal-watch-report.json
+
+      - name: Build Signal Watch Markdown report
+        run: python scripts/hc_signal_watch_report.py . --format md > hc-signal-watch-report.md
+
+      - name: Print Signal Watch report summary
+        run: sed -n '1,120p' hc-signal-watch-report.md
+
+      - name: Record report-only boundary
+        run: |
+          echo "HC Signal Watch Report is advisory-only." >> "$GITHUB_STEP_SUMMARY"
+          echo "This workflow does not approve, merge, label, comment, assign reviewers, open issues, or mutate repository state." >> "$GITHUB_STEP_SUMMARY"
+          echo "Live GitHub Home, Changelog, PR, and check-annotation signals still require human-supervised review." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload Signal Watch report artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: hc-signal-watch-report
+          path: |
+            hc-signal-watch-report.json
+            hc-signal-watch-report.md
+          retention-days: 14
