@@ -1,0 +1,8 @@
+{
+  "checks": [
+    {"name": "Validation", "status": "success"},
+    {"name": "HC Control Bot Report", "status": "notice"},
+    {"name": "Signal Watch Report", "status": "warning"},
+    {"name": "Safe Auto Merge", "status": "success"}
+  ]
+}

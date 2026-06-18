@@ -1,0 +1,232 @@
+#!/usr/bin/env python3
+"""Build a deterministic local HC Check Digest from JSON fixtures.
+
+The digest is report-only. It reads local JSON files, does not call GitHub or
+network services, does not mutate repository state, and does not grant approval
+or merge authority.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+from typing import Any
+
+SAFETY_MARKERS = {
+    "advisory_only": True,
+    "public_safe": True,
+    "truth_guarantee": False,
+    "human_review_required": True,
+    "network_access": False,
+    "repository_mutation": False,
+    "approval_authority": False,
+    "merge_authority": False,
+}
+
+REQUIRED_FAILURE_KEYWORDS = (
+    "validation",
+    "canonical artifact boundary",
+    "docs drift",
+    "terminology",
+    "policy evaluation",
+    "scope guard",
+)
+ADVISORY_KEYWORDS = (
+    "hc control bot report",
+    "signal watch report",
+    "repository inventory",
+    "release audit",
+    "pr risk labeler",
+)
+AUTOMATION_KEYWORDS = (
+    "safe auto merge",
+    "enable pr auto-merge",
+    "terminology autofix suggest",
+)
+
+FAIL_STATUSES = {"failure", "failed", "error", "cancelled", "timed_out", "action_required"}
+PASS_STATUSES = {"success", "passed", "pass", "ok", "neutral", "skipped"}
+WARNING_LEVELS = {"warning", "notice", "advisory"}
+
+
+def _load_json(path: str | None) -> Any:
+    if not path:
+        return []
+    with Path(path).open("r", encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def _items(payload: Any) -> list[dict[str, Any]]:
+    if payload is None:
+        return []
+    if isinstance(payload, list):
+        return [item for item in payload if isinstance(item, dict)]
+    if isinstance(payload, dict):
+        for key in ("checks", "reviews", "threads", "artifacts", "items", "data"):
+            value = payload.get(key)
+            if isinstance(value, list):
+                return [item for item in value if isinstance(item, dict)]
+        return [payload]
+    return []
+
+
+def _text(item: dict[str, Any], *keys: str) -> str:
+    values = [str(item.get(key, "")) for key in keys]
+    return " ".join(values).strip()
+
+
+def _name(item: dict[str, Any]) -> str:
+    return _text(item, "name", "check", "title", "context", "workflow", "type") or "unnamed signal"
+
+
+def _status(item: dict[str, Any]) -> str:
+    return _text(item, "status", "conclusion", "state", "result").lower()
+
+
+def _is_outdated(item: dict[str, Any]) -> bool:
+    return bool(item.get("outdated") or item.get("is_outdated"))
+
+
+def _is_resolved(item: dict[str, Any]) -> bool:
+    state = _text(item, "state", "status", "resolution").lower()
+    return bool(item.get("resolved") or item.get("is_resolved") or state in {"resolved", "closed", "dismissed"})
+
+
+def _codex_severity(item: dict[str, Any]) -> str:
+    text = _text(item, "severity", "priority", "level", "body", "comment", "title", "name").lower()
+    for severity in ("p1", "p2", "p3"):
+        if severity in text.replace("-", " ").split() or f"codex {severity}" in text:
+            return severity.upper()
+    return ""
+
+
+def _entry(item: dict[str, Any], reason: str) -> dict[str, str]:
+    return {"name": _name(item), "status": _status(item) or "unknown", "reason": reason}
+
+
+def _is_required_failure(item: dict[str, Any]) -> bool:
+    haystack = _text(item, "name", "check", "title", "context", "workflow", "type", "category").lower()
+    status = _status(item)
+    return status in FAIL_STATUSES and any(keyword in haystack for keyword in REQUIRED_FAILURE_KEYWORDS)
+
+
+def _is_advisory(item: dict[str, Any]) -> bool:
+    haystack = _text(item, "name", "check", "title", "context", "workflow", "type", "category", "severity", "level").lower()
+    status = _status(item)
+    return any(keyword in haystack for keyword in ADVISORY_KEYWORDS) or status in WARNING_LEVELS or any(
+        level in haystack for level in WARNING_LEVELS
+    )
+
+
+def _is_automation_helper(item: dict[str, Any]) -> bool:
+    haystack = _text(item, "name", "check", "title", "context", "workflow", "type", "category").lower()
+    return any(keyword in haystack for keyword in AUTOMATION_KEYWORDS)
+
+
+def build_digest(checks: Any = None, reviews: Any = None, threads: Any = None, artifacts: Any = None) -> dict[str, Any]:
+    blocking: list[dict[str, str]] = []
+    advisory: list[dict[str, str]] = []
+    automation_helpers: list[dict[str, str]] = []
+    external_review: list[dict[str, str]] = []
+    artifact_entries: list[dict[str, str]] = []
+
+    for check in _items(checks):
+        if _is_automation_helper(check):
+            automation_helpers.append(_entry(check, "automation helper signal"))
+        if _is_required_failure(check):
+            blocking.append(_entry(check, "failed required check candidate"))
+        elif _is_advisory(check):
+            advisory.append(_entry(check, "advisory check signal"))
+
+    for review in _items(reviews):
+        severity = _codex_severity(review)
+        is_codex = "codex" in _text(review, "author", "source", "name", "title", "body").lower()
+        if is_codex or _text(review, "author", "source", "reviewer"):
+            external_review.append(_entry(review, "external review signal"))
+        if is_codex and severity in {"P1", "P2"} and not _is_resolved(review) and not _is_outdated(review):
+            blocking.append(_entry(review, f"open Codex {severity} feedback"))
+
+    for thread in _items(threads):
+        external_review.append(_entry(thread, "review thread signal"))
+        if not _is_resolved(thread) and not _is_outdated(thread):
+            blocking.append(_entry(thread, "unresolved non-outdated review thread"))
+
+    for artifact in _items(artifacts):
+        artifact_entries.append(_entry(artifact, "local artifact signal"))
+
+    if blocking:
+        merge_guidance = "do_not_merge"
+    elif advisory:
+        merge_guidance = "human_review_before_merge"
+    else:
+        merge_guidance = "merge_allowed_after_human_review"
+
+    summary = {
+        "blocking_count": len(blocking),
+        "advisory_count": len(advisory),
+        "automation_helper_count": len(automation_helpers),
+        "external_review_count": len(external_review),
+        "artifact_count": len(artifact_entries),
+        "merge_guidance": merge_guidance,
+    }
+    return {
+        **SAFETY_MARKERS,
+        "blocking": blocking,
+        "advisory": advisory,
+        "automation_helpers": automation_helpers,
+        "external_review": external_review,
+        "artifacts": artifact_entries,
+        "merge_guidance": merge_guidance,
+        "summary": summary,
+    }
+
+
+def _render_section(lines: list[str], title: str, items: list[dict[str, str]]) -> None:
+    lines.extend([f"## {title}", ""])
+    if not items:
+        lines.extend(["none", ""])
+        return
+    for item in items:
+        lines.append(f"- {item['name']} ({item['status']}): {item['reason']}")
+    lines.append("")
+
+
+def render_markdown(digest: dict[str, Any]) -> str:
+    lines = ["# HC Check Digest", "", "## Safety markers", ""]
+    for key in SAFETY_MARKERS:
+        lines.append(f"- {key}: {str(digest[key]).lower()}")
+    lines.append("")
+    _render_section(lines, "Blocking", digest["blocking"])
+    _render_section(lines, "Advisory", digest["advisory"])
+    _render_section(lines, "Automation helpers", digest["automation_helpers"])
+    _render_section(lines, "External review", digest["external_review"])
+    _render_section(lines, "Artifacts", digest["artifacts"])
+    lines.extend(["## Merge guidance", "", digest["merge_guidance"], ""])
+    return "\n".join(lines)
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Build a local report-only HC Check Digest.")
+    parser.add_argument("--checks")
+    parser.add_argument("--reviews")
+    parser.add_argument("--threads")
+    parser.add_argument("--artifacts")
+    parser.add_argument("--format", choices=("json", "md"), default="json")
+    args = parser.parse_args()
+
+    digest = build_digest(
+        checks=_load_json(args.checks),
+        reviews=_load_json(args.reviews),
+        threads=_load_json(args.threads),
+        artifacts=_load_json(args.artifacts),
+    )
+    if args.format == "json":
+        print(json.dumps(digest, indent=2, sort_keys=True))
+    else:
+        print(render_markdown(digest), end="")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

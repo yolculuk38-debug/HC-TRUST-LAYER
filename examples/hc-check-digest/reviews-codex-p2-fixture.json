@@ -1,0 +1,6 @@
+{
+  "reviews": [
+    {"author": "codex", "title": "Codex P2 feedback", "severity": "P2", "status": "open"},
+    {"author": "human-maintainer", "title": "Human review", "status": "commented"}
+  ]
+}

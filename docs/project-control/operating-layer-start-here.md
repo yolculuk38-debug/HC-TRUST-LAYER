@@ -36,6 +36,7 @@ It does not approve, merge, release, or make final decisions.
 Main reference:
 
 - `docs/project-control/hc-operating-layer-map.md`
+- `docs/project-control/hc-check-digest.md`
 
 ## Layer 2: HC Guide Bot
 
