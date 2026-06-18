@@ -21,6 +21,7 @@ on:
   check_run:
     types:
       - completed
+  status:
   workflow_run:
     workflows:
       - HC-TRUST-LAYER Validation
@@ -62,22 +63,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number || github.event.workflow_run.pull_requests[0].number || github.event.check_run.pull_requests[0].number }}
-          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.event.workflow_run.head_sha || github.event.check_run.head_sha || github.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.event.workflow_run.head_sha || github.event.check_run.head_sha || github.event.sha || github.sha }}
         run: |
-          if [ -n "${PR_NUMBER}" ]; then
-            python scripts/hc_check_digest_github_adapter.py \
-              --fetch-github \
-              --repo "${GITHUB_REPOSITORY}" \
-              --pr-number "${PR_NUMBER}" \
-              --head-sha "${PR_HEAD_SHA}" \
-              --output-dir hc-check-digest-inputs
-          else
-            mkdir -p hc-check-digest-inputs
-            printf '[]\n' > hc-check-digest-inputs/checks.json
-            printf '[]\n' > hc-check-digest-inputs/reviews.json
-            printf '[]\n' > hc-check-digest-inputs/threads.json
-            printf '[]\n' > hc-check-digest-inputs/artifacts.json
-          fi
+          python scripts/hc_check_digest_github_adapter.py \
+            --fetch-github \
+            --repo "${GITHUB_REPOSITORY}" \
+            --pr-number "${PR_NUMBER}" \
+            --head-sha "${PR_HEAD_SHA}" \
+            --output-dir hc-check-digest-inputs
 
       - name: Build HC Check Digest outputs
         run: |

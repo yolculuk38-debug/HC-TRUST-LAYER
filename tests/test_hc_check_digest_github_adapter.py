@@ -8,6 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 from hc_check_digest import build_digest
 from hc_check_digest_github_adapter import (
     fetch_github_inputs,
+    fetch_pr_number_for_sha,
     normalize_check_runs,
     normalize_review_threads,
     normalize_reviews,
@@ -196,3 +197,19 @@ def test_fetch_github_inputs_follows_pagination_for_codex_p2_review() -> None:
     assert responses == []
     assert digest["merge_guidance"] == "do_not_merge"
     assert digest["blocking"][0]["reason"] == "open Codex P2 feedback"
+
+
+def test_fetch_pr_number_for_sha_uses_paginated_commit_pull_lookup() -> None:
+    responses = [
+        FakeResponse({"pulls": []}, '<https://api.github.com/page2>; rel="next"'),
+        FakeResponse({"pulls": [{"number": 1066}]}),
+    ]
+
+    def fake_urlopen(request: object, timeout: int = 30) -> FakeResponse:
+        return responses.pop(0)
+
+    with patch("urllib.request.urlopen", side_effect=fake_urlopen):
+        pr_number = fetch_pr_number_for_sha("owner/repo", "abc123", "token")
+
+    assert responses == []
+    assert pr_number == "1066"

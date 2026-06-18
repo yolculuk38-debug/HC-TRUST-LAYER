@@ -278,6 +278,15 @@ def fetch_review_threads(repo: str, pr_number: str, token: str) -> dict[str, lis
     return {"threads": threads}
 
 
+def fetch_pr_number_for_sha(repo: str, head_sha: str, token: str) -> str:
+    encoded_sha = urllib.parse.quote(head_sha, safe="")
+    pulls_payload = _github_get_pages(f"/repos/{repo}/commits/{encoded_sha}/pulls?per_page=100", token, "pulls")
+    pulls = pulls_payload.get("pulls", [])
+    if not pulls:
+        return ""
+    return str(pulls[0].get("number") or "")
+
+
 def fetch_github_inputs(repo: str, pr_number: str, head_sha: str, token: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     encoded_sha = urllib.parse.quote(head_sha, safe="")
     checks_payload = _github_get_pages(f"/repos/{repo}/commits/{encoded_sha}/check-runs?per_page=100", token, "check_runs")
@@ -310,9 +319,13 @@ def main() -> int:
 
     if args.fetch_github:
         token = os.environ.get("GITHUB_TOKEN", "")
-        if not token or not args.repo or not args.pr_number or not args.head_sha:
-            raise SystemExit("GITHUB_TOKEN, repo, pr-number, and head-sha are required for --fetch-github")
-        checks, reviews, threads, artifacts = fetch_github_inputs(args.repo, args.pr_number, args.head_sha, token)
+        if not token or not args.repo or not args.head_sha:
+            raise SystemExit("GITHUB_TOKEN, repo, and head-sha are required for --fetch-github")
+        pr_number = args.pr_number or fetch_pr_number_for_sha(args.repo, args.head_sha, token)
+        if not pr_number:
+            write_inputs(Path(args.output_dir), [], [], [], [])
+            return 0
+        checks, reviews, threads, artifacts = fetch_github_inputs(args.repo, pr_number, args.head_sha, token)
     else:
         checks = normalize_check_runs(_read_json(args.checks_json)) + normalize_workflow_runs(_read_json(args.workflow_runs_json))
         reviews = normalize_reviews(_read_json(args.reviews_json))
