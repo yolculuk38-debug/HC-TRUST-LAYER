@@ -1,0 +1,26 @@
+{
+  "source": "GitHub Changelog fixture",
+  "entries": [
+    {
+      "title": "Secret scanning update",
+      "url": "https://example.invalid/github-changelog/secret-scanning",
+      "published": "2026-06-16T12:00:00Z",
+      "category": "security",
+      "summary": "Fixture summary for a secret scanning signal."
+    },
+    {
+      "title": "Secret scanning update duplicate",
+      "url": "https://example.invalid/github-changelog/secret-scanning",
+      "published": "2026-06-16T12:00:00Z",
+      "category": "security",
+      "summary": "Duplicate fixture item for deduplication coverage."
+    },
+    {
+      "title": "Dependabot pip advisory database update",
+      "url": "https://example.invalid/github-changelog/dependabot-pip",
+      "published": "2026-06-16T13:00:00Z",
+      "category": "dependency",
+      "summary": "Fixture summary for dependency review triage."
+    }
+  ]
+}
