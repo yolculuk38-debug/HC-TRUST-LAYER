@@ -161,7 +161,14 @@ jobs:
               with urllib.request.urlopen(request, timeout=20) as response:
                   print(f"Advisory comment {method} completed with status {response.status}.")
           except urllib.error.HTTPError as exc:
-              print(f"::warning::Advisory comment skipped: GitHub API returned HTTP {exc.code}.")
+              if exc.code == 403:
+                  print(
+                      "::notice::Advisory comment skipped: "
+                      "GitHub API returned HTTP 403 because token permissions did not allow it. "
+                      "The uploaded artifact remains the source of truth."
+                  )
+              else:
+                  print(f"::warning::Advisory comment skipped: GitHub API returned HTTP {exc.code}.")
               sys.exit(0)
           except Exception as exc:
               print(f"::warning::Advisory comment skipped: {exc}")
