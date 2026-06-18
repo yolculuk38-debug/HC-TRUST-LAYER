@@ -1,7 +1,7 @@
 # Codex GitHub PR Flow Note
 
 > **Documentation Status**
-> - **status:** OPERATIONS NOTE
+> - **status:** RESEARCH
 > - **scope:** Diagnostic operator guidance for a tested ChatGPT to GitHub issue/comment to Codex to branch to commit to pull request flow.
 > - **canonical relevance:** Advisory only; this note does not change canonical records, schemas, validators, signing, federation, policy, runtime code, protected paths, generated artifacts, or GitHub Actions.
 
