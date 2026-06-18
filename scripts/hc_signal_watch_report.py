@@ -282,6 +282,8 @@ def render_markdown(report: dict[str, Any]) -> str:
     lines = [
         "# HC GitHub Signal Watch Report",
         "",
+        "## Safety markers",
+        "",
         f"- advisory_only={_markdown_bool(report['advisory_only'])}",
         f"- public_safe={_markdown_bool(report['public_safe'])}",
         f"- truth_guarantee={_markdown_bool(report['truth_guarantee'])}",
