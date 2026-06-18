@@ -97,4 +97,102 @@ def test_signal_watch_markdown_keeps_safety_markers() -> None:
     assert "truth_guarantee=false" in markdown
     assert "human_review_required=true" in markdown
     assert "repository_mutation=false" in markdown
+    assert "issue_comment_automation=false" in markdown
+    assert "label_reviewer_mutation=false" in markdown
     assert "merge_authority=false" in markdown
+
+
+def test_signal_watch_imports_changelog_fixture_signals_json(tmp_path: Path) -> None:
+    module = _module()
+    fixture = ROOT / "examples" / "hc-signal-watch" / "github-changelog-signals-fixture.json"
+    ingest_script = ROOT / "scripts" / "hc_signal_watch_rss_ingest.py"
+    spec = importlib.util.spec_from_file_location("hc_signal_watch_rss_ingest_for_report", ingest_script)
+    assert spec is not None
+    assert spec.loader is not None
+    ingest = importlib.util.module_from_spec(spec)
+    sys.modules["hc_signal_watch_rss_ingest_for_report"] = ingest
+    spec.loader.exec_module(ingest)
+
+    payload_path = tmp_path / "github-changelog-normalized.json"
+    payload_path.write_text(
+        json.dumps(ingest.normalize_entries(ingest.load_fixture(fixture))),
+        encoding="utf-8",
+    )
+
+    report = module.build_report(ROOT, changelog_signals_file=payload_path)
+
+    signals = report["github_changelog_fixture_signals"]
+    assert len(signals) == 2
+    assert signals[0]["source"] == "GitHub Changelog fixture"
+    assert signals[0]["title"] == "Secret scanning update"
+    assert signals[0]["url"] == "https://example.invalid/github-changelog/secret-scanning"
+    assert signals[0]["published"] == "2026-06-16T12:00:00Z"
+    assert signals[0]["category"] == "security"
+    assert signals[0]["impact"] == "security"
+    assert signals[0]["risk"] == "high"
+    assert signals[0]["recommended_action"] == "inspect advisory security signal interpretation"
+    assert signals[0]["classification_reason"] == "code scanning, secret scanning, or supply-chain signal"
+    assert signals[0]["matched_keywords"] == ["secret scanning"]
+    assert signals[0]["evidence_gap"] is None
+    assert signals[0]["automation_boundary"] == "advisory-only; no issue/comment automation, labels, reviewers, approval, or merge"
+    assert signals[0]["dedupe_key"] == "url:https://example.invalid/github-changelog/secret-scanning"
+
+
+def test_signal_watch_markdown_includes_changelog_fixture_section(tmp_path: Path) -> None:
+    module = _module()
+    payload = {
+        "mode": "local_fixture_only",
+        "network_access": False,
+        "signals": [
+            {
+                "source": "GitHub Changelog fixture",
+                "title": "GitHub Actions runner update",
+                "impact": "workflow",
+                "risk": "medium",
+                "recommended_action": "inspect workflow action versions and warnings",
+                "matched_keywords": ["actions", "runner"],
+                "automation_boundary": "advisory-only; no issue/comment automation, labels, reviewers, approval, or merge",
+                "dedupe_key": "url:https://example.invalid/actions-runner",
+            }
+        ],
+    }
+    payload_path = tmp_path / "changelog-signals.json"
+    payload_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    markdown = module.render_markdown(module.build_report(ROOT, changelog_signals_file=payload_path))
+
+    assert "## GitHub Changelog fixture signals" in markdown
+    assert "### GitHub Actions runner update" in markdown
+    assert "- matched_keywords: actions, runner" in markdown
+    assert "- dedupe_key: url:https://example.invalid/actions-runner" in markdown
+
+
+def test_signal_watch_missing_changelog_input_keeps_current_behavior() -> None:
+    module = _module()
+
+    report = module.build_report(ROOT)
+
+    assert report["github_changelog_fixture_signals"] == []
+    assert report["signals"] == []
+    assert "No signal JSON was supplied" in report["evidence_gaps"][0]
+
+
+def test_signal_watch_changelog_signal_file_fails_safely(tmp_path: Path) -> None:
+    module = _module()
+    malformed = tmp_path / "malformed.json"
+    malformed.write_text("not json", encoding="utf-8")
+
+    try:
+        module.build_report(ROOT, changelog_signals_file=malformed)
+    except ValueError as exc:
+        assert "changelog signal file is not valid JSON" in str(exc)
+    else:
+        raise AssertionError("malformed changelog signal file should fail safely")
+
+    missing = tmp_path / "missing.json"
+    try:
+        module.build_report(ROOT, changelog_signals_file=missing)
+    except ValueError as exc:
+        assert "changelog signal file not found" in str(exc)
+    else:
+        raise AssertionError("missing changelog signal file should fail safely")

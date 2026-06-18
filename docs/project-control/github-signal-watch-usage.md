@@ -111,6 +111,19 @@ The output classifies each signal as advisory evidence and recommends an action 
 - inspect dependency update policy;
 - record as no action when there is no HC-relevant match.
 
+## GitHub Changelog fixture signal input
+
+The report can also include normalized local fixture signals produced by `scripts/hc_signal_watch_rss_ingest.py`. This input is local fixture-only and report-only. It reads a saved JSON output file and does not fetch a live RSS feed, call the network, mutate the repository, create issues or comments, change labels or reviewers, approve pull requests, or merge pull requests.
+
+Example local fixture flow:
+
+```bash
+python scripts/hc_signal_watch_rss_ingest.py examples/hc-signal-watch/github-changelog-rss-fixture.xml > tmp/github-changelog-signals.json
+python scripts/hc_signal_watch_report.py --changelog-signals tmp/github-changelog-signals.json --format md
+```
+
+The report preserves fixture signal fields such as `source`, `title`, `url`, `published`, `category`, `impact`, `risk`, `recommended_action`, `classification_reason`, `matched_keywords`, `evidence_gap`, `automation_boundary`, and `dedupe_key` when they are present in the normalized JSON. Human review remains required before any repository action.
+
 ## Required manual live checks
 
 The script and workflow are local/report-only and cannot replace live GitHub inspection.
@@ -191,7 +204,7 @@ This usage note and workflow do not:
 
 The following remain parked for separate review:
 
-- GitHub Changelog RSS ingestion;
+- live GitHub Changelog RSS ingestion;
 - automatic issue creation;
 - automatic PR comments;
 - dependency dashboard issue;
