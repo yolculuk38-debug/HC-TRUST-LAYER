@@ -1,7 +1,7 @@
 # HC GitHub Signal Watch Usage
 
 > Status: operator usage note
-> Scope: local report-only signal review
+> Scope: local and workflow report-only signal review
 > Authority: advisory only
 > Production readiness: not claimed
 
@@ -43,6 +43,37 @@ The baseline report checks local repository readiness:
 - pip weekly updates are configured;
 - GitHub Actions dependency grouping is configured.
 
+## Scheduled workflow report
+
+`.github/workflows/hc-signal-watch-report.yml` runs the same local report script in a report-only GitHub Actions workflow.
+
+It can run from:
+
+- `workflow_dispatch` for manual operator checks;
+- a daily schedule;
+- pull requests that change the workflow, Signal Watch script, related policy docs, the Active Work Registry, or Dependabot configuration.
+
+Expected workflow boundary:
+
+```text
+permissions: contents: read
+network_access: no explicit external fetch step
+repository_mutation: false
+approval_authority: false
+merge_authority: false
+issue_or_comment_creation: false
+label_or_reviewer_mutation: false
+```
+
+Expected artifacts:
+
+```text
+hc-signal-watch-report.json
+hc-signal-watch-report.md
+```
+
+The workflow report is advisory evidence only. It does not replace live PR review, code scanning review, dependency review, GitHub Home inspection, GitHub Changelog inspection, or human-supervised validation.
+
 ## Operator-provided signal input
 
 When a signal is visible in GitHub Home, GitHub Changelog, repository notifications, a pull request, or a check annotation, an operator can write a small local JSON file.
@@ -82,7 +113,7 @@ The output classifies each signal as advisory evidence and recommends an action 
 
 ## Required manual live checks
 
-The script is local and cannot replace live GitHub inspection.
+The script and workflow are local/report-only and cannot replace live GitHub inspection.
 
 Before saying `repo temiz`, `checks temiz`, `açık PR yok`, or `sürüm güncel`, the operator must still check:
 
@@ -143,7 +174,7 @@ Recommended action: inspect dependency update policy
 
 ## Non-goals
 
-This usage note does not:
+This usage note and workflow do not:
 
 - authorize automatic merge;
 - authorize automatic approval;
@@ -151,10 +182,17 @@ This usage note does not:
 - replace CI;
 - replace CodeQL or dependency review;
 - guarantee truth, security, correctness, production readiness, or forensic certainty;
-- change workflows, branch protection, runtime behavior, schemas, validators, records, policy enforcement, federation, signing, or canonical artifacts.
+- create issues or comments;
+- change labels or reviewers;
+- change workflows beyond the report-only workflow documented here;
+- change branch protection, runtime behavior, schemas, validators, records, policy enforcement, federation, signing, or canonical artifacts.
 
-## Next possible step
+## Parked next steps
 
-A future implementation may add a scheduled report-only workflow that runs the local script and uploads a markdown artifact.
+The following remain parked for separate review:
 
-That future step must remain advisory-only and must be reviewed separately before workflow changes are introduced.
+- GitHub Changelog RSS ingestion;
+- automatic issue creation;
+- automatic PR comments;
+- dependency dashboard issue;
+- any workflow that writes to repository or PR state.
