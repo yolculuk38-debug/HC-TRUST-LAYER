@@ -1,0 +1,78 @@
+name: HC Check Digest
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+  checks: read
+  pull-requests: read
+
+jobs:
+  digest:
+    name: Build advisory PR health digest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Collect read-only PR metadata
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          if [ -n "${PR_NUMBER}" ]; then
+            python scripts/hc_check_digest_github_adapter.py \
+              --fetch-github \
+              --repo "${GITHUB_REPOSITORY}" \
+              --pr-number "${PR_NUMBER}" \
+              --head-sha "${PR_HEAD_SHA}" \
+              --output-dir hc-check-digest-inputs
+          else
+            mkdir -p hc-check-digest-inputs
+            printf '[]\n' > hc-check-digest-inputs/checks.json
+            printf '[]\n' > hc-check-digest-inputs/reviews.json
+            printf '[]\n' > hc-check-digest-inputs/threads.json
+            printf '[]\n' > hc-check-digest-inputs/artifacts.json
+          fi
+
+      - name: Build HC Check Digest outputs
+        run: |
+          python scripts/hc_check_digest.py \
+            --checks hc-check-digest-inputs/checks.json \
+            --reviews hc-check-digest-inputs/reviews.json \
+            --threads hc-check-digest-inputs/threads.json \
+            --artifacts hc-check-digest-inputs/artifacts.json \
+            --format json > hc-check-digest.json
+          python scripts/hc_check_digest.py \
+            --checks hc-check-digest-inputs/checks.json \
+            --reviews hc-check-digest-inputs/reviews.json \
+            --threads hc-check-digest-inputs/threads.json \
+            --artifacts hc-check-digest-inputs/artifacts.json \
+            --format md > hc-check-digest.md
+
+      - name: Publish advisory job summary
+        run: |
+          {
+            echo "# HC Check Digest v2"
+            echo
+            echo "HC Check Digest is advisory-only."
+            echo "It does not approve, reject, label, assign, comment, or merge."
+            echo "Humans retain final authority."
+            echo
+            cat hc-check-digest.md
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Upload HC Check Digest artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hc-check-digest
+          path: |
+            hc-check-digest.json
+            hc-check-digest.md
+            hc-check-digest-inputs/*.json
