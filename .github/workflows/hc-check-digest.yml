@@ -1,0 +1,117 @@
+name: HC Check Digest
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+      - edited
+  pull_request_review:
+    types:
+      - submitted
+      - edited
+      - dismissed
+  pull_request_review_comment:
+    types:
+      - created
+      - edited
+      - deleted
+  check_run:
+    types:
+      - completed
+  status:
+  workflow_run:
+    workflows:
+      - HC-TRUST-LAYER Validation
+      - Terminology Guard
+      - Docs Drift Check
+      - Canonical Artifact Boundary Guard
+      - Advisory Policy Evaluation
+      - PR Scope Guard
+      - Governance Preflight
+      - Automation Gate
+      - verification-package-schema
+    types:
+      - completed
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+  checks: read
+  pull-requests: read
+
+# Refresh design: every trigger below is read-only and only rebuilds the digest
+# from live metadata fetched at run time. Concurrency cancels older in-flight
+# digest runs for the same PR/head SHA so a later check or review update does
+# not leave a stale advisory summary behind.
+concurrency:
+  group: hc-check-digest-${{ github.event.pull_request.number || github.event.workflow_run.pull_requests[0].number || github.event.check_run.pull_requests[0].number || github.event.sha || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  digest:
+    name: Build advisory PR health digest
+    runs-on: ubuntu-latest
+    if: >-
+      ${{
+        (github.event_name != 'workflow_run' || github.event.workflow_run.name != 'HC Check Digest') &&
+        (github.event_name != 'check_run' || !contains(github.event.check_run.name, 'HC Check Digest')) &&
+        (github.event_name != 'check_run' || !contains(github.event.check_run.name, 'Build advisory PR health digest'))
+      }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Collect read-only PR metadata
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.workflow_run.pull_requests[0].number || github.event.check_run.pull_requests[0].number }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.event.workflow_run.head_sha || github.event.check_run.head_sha || github.event.sha || github.sha }}
+        run: |
+          python scripts/hc_check_digest_github_adapter.py \
+            --fetch-github \
+            --repo "${GITHUB_REPOSITORY}" \
+            --pr-number "${PR_NUMBER}" \
+            --head-sha "${PR_HEAD_SHA}" \
+            --output-dir hc-check-digest-inputs
+
+      - name: Build HC Check Digest outputs
+        run: |
+          python scripts/hc_check_digest.py \
+            --checks hc-check-digest-inputs/checks.json \
+            --reviews hc-check-digest-inputs/reviews.json \
+            --threads hc-check-digest-inputs/threads.json \
+            --artifacts hc-check-digest-inputs/artifacts.json \
+            --format json > hc-check-digest.json
+          python scripts/hc_check_digest.py \
+            --checks hc-check-digest-inputs/checks.json \
+            --reviews hc-check-digest-inputs/reviews.json \
+            --threads hc-check-digest-inputs/threads.json \
+            --artifacts hc-check-digest-inputs/artifacts.json \
+            --format md > hc-check-digest.md
+
+      - name: Publish advisory job summary
+        run: |
+          {
+            echo "# HC Check Digest v2"
+            echo
+            echo "HC Check Digest is advisory-only."
+            echo "It does not approve, reject, label, assign, comment, or merge."
+            echo "Humans retain final authority."
+            echo
+            cat hc-check-digest.md
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Upload HC Check Digest artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hc-check-digest
+          path: |
+            hc-check-digest.json
+            hc-check-digest.md
+            hc-check-digest-inputs/*.json
