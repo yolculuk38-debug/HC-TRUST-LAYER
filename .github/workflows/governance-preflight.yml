@@ -26,6 +26,9 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Check GitHub Actions versions
+        run: python scripts/check_github_actions_versions.py
+
       - name: Run HC-TRUST-LAYER governance preflight
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}

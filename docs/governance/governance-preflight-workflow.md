@@ -10,12 +10,15 @@ The workflow is advisory and preserves HC:// human-supervised validation authori
 
 - Path: `.github/workflows/governance-preflight.yml`
 - Trigger: pull request events (`opened`, `synchronize`, `reopened`, `ready_for_review`)
-- Command: `python scripts/check_pr_governance.py --base-ref <base-sha> --head-ref <head-sha>`
+- Commands:
+  - `python scripts/check_github_actions_versions.py`
+  - `python scripts/check_pr_governance.py --base-ref <base-sha> --head-ref <head-sha>`
 
 ## Deterministic and Lightweight Design
 
-- Uses `actions/checkout@v4` with full history (`fetch-depth: 0`) for stable diff availability.
-- Uses `actions/setup-python@v5` with `python-version: '3.x'`.
+- Uses `actions/checkout@v6` with full history (`fetch-depth: 0`) for stable diff availability.
+- Uses `actions/setup-python@v6` with `python-version: '3.x'`.
+- Runs `scripts/check_github_actions_versions.py` as a deterministic, network-free stale action guard before governance classification.
 - Uses deterministic PR SHA inputs from `github.event.pull_request.base.sha` and `github.event.pull_request.head.sha`.
 - Uses workflow concurrency and bounded runtime (`timeout-minutes: 10`) to keep execution predictable and low-friction.
 
