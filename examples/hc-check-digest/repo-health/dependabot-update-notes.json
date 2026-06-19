@@ -1,0 +1,10 @@
+{
+  "dependabot": [
+    {
+      "name": "Dependabot github-actions weekly update",
+      "status": "available",
+      "level": "advisory",
+      "reason": "Weekly github-actions dependency update note for human review."
+    }
+  ]
+}

@@ -41,6 +41,24 @@ none
 
 - hc-check-digest (available): local artifact signal
 
+## Repo health signals
+
+### changelog
+
+none
+
+### dependabot
+
+none
+
+### codeql
+
+none
+
+### weekly_summary
+
+none
+
 ## Merge guidance
 
 do_not_merge

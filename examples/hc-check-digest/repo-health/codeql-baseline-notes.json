@@ -1,0 +1,10 @@
+{
+  "codeql": [
+    {
+      "name": "CodeQL baseline note",
+      "status": "baseline",
+      "level": "neutral/baseline",
+      "reason": "CodeQL remains a separate check; this digest records a neutral baseline note only."
+    }
+  ]
+}

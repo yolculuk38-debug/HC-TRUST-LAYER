@@ -1,0 +1,10 @@
+{
+  "changelog": [
+    {
+      "name": "GitHub Changelog action runtime notice",
+      "status": "published",
+      "level": "advisory",
+      "reason": "Review GitHub Changelog release note for possible action runtime impact."
+    }
+  ]
+}

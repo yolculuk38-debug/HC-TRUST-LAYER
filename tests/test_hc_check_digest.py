@@ -209,3 +209,275 @@ def test_post_merge_smoke_blocking_and_nonblocking_boundaries() -> None:
     assert digest["artifacts"] == [
         {"name": "hc-check-digest", "status": "available", "reason": "local artifact signal"}
     ]
+
+
+def _repo_health_path(name: str) -> Path:
+    return Path("examples/hc-check-digest/repo-health") / name
+
+
+def _load_repo_health_fixture(name: str):
+    import json
+
+    return json.loads(_repo_health_path(name).read_text(encoding="utf-8"))
+
+
+def test_repo_health_changelog_advisory_signal() -> None:
+    digest = build_digest(repo_health=_load_repo_health_fixture("github-changelog-signals.json"))
+
+    signal = digest["repo_health_signals"]["changelog"][0]
+    assert signal["level"] == "advisory"
+    assert digest["merge_guidance"] == "human_review_before_merge"
+    assert digest["blocking"] == []
+
+
+def test_repo_health_dependabot_update_note_is_advisory() -> None:
+    digest = build_digest(repo_health=_load_repo_health_fixture("dependabot-update-notes.json"))
+
+    signal = digest["repo_health_signals"]["dependabot"][0]
+    assert signal["level"] == "advisory"
+    assert digest["blocking"] == []
+
+
+def test_repo_health_codeql_baseline_note_is_neutral() -> None:
+    digest = build_digest(repo_health=_load_repo_health_fixture("codeql-baseline-notes.json"))
+
+    signal = digest["repo_health_signals"]["codeql"][0]
+    assert signal["level"] == "neutral/baseline"
+    assert digest["merge_guidance"] == "merge_allowed_after_human_review"
+    assert digest["blocking"] == []
+
+
+def test_repo_health_weekly_summary_rendering_is_informational() -> None:
+    digest = build_digest(repo_health=_load_repo_health_fixture("weekly-repo-health-summary.json"))
+    markdown = render_markdown(digest)
+
+    assert digest["repo_health_signals"]["weekly_summary"][0]["level"] == "informational"
+    assert "### weekly_summary" in markdown
+    assert "Weekly repo health summary" in markdown
+    assert digest["blocking"] == []
+
+
+def test_repo_health_explicit_blocker_propagates() -> None:
+    digest = build_digest(
+        repo_health={
+            "changelog": [
+                {
+                    "name": "Explicit blocking changelog signal",
+                    "status": "published",
+                    "level": "blocking",
+                    "reason": "Fixture explicitly marks this release note as blocking.",
+                }
+            ],
+            "dependabot": [
+                {
+                    "name": "Explicit blocking security update",
+                    "status": "open",
+                    "security_blocking": True,
+                    "reason": "Fixture explicitly marks this update as security blocking.",
+                }
+            ],
+            "codeql": [
+                {
+                    "name": "Explicit blocking CodeQL note",
+                    "status": "failed",
+                    "blocking": True,
+                    "reason": "Fixture explicitly marks this CodeQL note as blocking.",
+                }
+            ],
+        }
+    )
+
+    assert digest["merge_guidance"] == "do_not_merge"
+    assert digest["summary"]["repo_health_counts"]["blocker"] == 3
+    assert {item["reason"] for item in digest["blocking"]} == {
+        "repo-health changelog blocker",
+        "repo-health dependabot blocker",
+        "repo-health codeql blocker",
+    }
+
+
+def test_repo_health_advisory_only_signals_do_not_block_merge_guidance() -> None:
+    digest = build_digest(
+        repo_health=[
+            _load_repo_health_fixture("github-changelog-signals.json"),
+            _load_repo_health_fixture("dependabot-update-notes.json"),
+            _load_repo_health_fixture("codeql-baseline-notes.json"),
+            _load_repo_health_fixture("weekly-repo-health-summary.json"),
+        ]
+    )
+
+    assert digest["blocking"] == []
+    assert digest["merge_guidance"] == "human_review_before_merge"
+    assert digest["summary"]["repo_health_counts"] == {
+        "blocker": 0,
+        "advisory": 2,
+        "neutral_baseline": 1,
+        "informational": 1,
+    }
+
+
+def test_repo_health_json_snapshot_is_stable() -> None:
+    import json
+
+    digest = build_digest(
+        repo_health=[
+            _load_repo_health_fixture("github-changelog-signals.json"),
+            _load_repo_health_fixture("dependabot-update-notes.json"),
+            _load_repo_health_fixture("codeql-baseline-notes.json"),
+            _load_repo_health_fixture("weekly-repo-health-summary.json"),
+        ]
+    )
+    actual = json.dumps(digest, indent=2, sort_keys=True) + "\n"
+
+    assert actual == _repo_health_path("expected-hc-check-digest-repo-health.json").read_text(encoding="utf-8")
+
+
+def test_repo_health_markdown_snapshot_is_stable() -> None:
+    digest = build_digest(
+        repo_health=[
+            _load_repo_health_fixture("github-changelog-signals.json"),
+            _load_repo_health_fixture("dependabot-update-notes.json"),
+            _load_repo_health_fixture("codeql-baseline-notes.json"),
+            _load_repo_health_fixture("weekly-repo-health-summary.json"),
+        ]
+    )
+    actual = render_markdown(digest)
+
+    assert actual == _repo_health_path("expected-hc-check-digest-repo-health.md").read_text(encoding="utf-8")
+
+
+def test_repo_health_parser_network_free_behavior_exists() -> None:
+    source = Path("scripts/hc_check_digest.py").read_text(encoding="utf-8")
+    assert "--repo-health" in source
+    assert "requests" not in source
+    assert "api.github.com" not in source
+
+
+def test_repo_health_dependabot_security_true_becomes_blocker() -> None:
+    digest = build_digest(
+        repo_health={
+            "dependabot": [
+                {
+                    "name": "Dependabot security update",
+                    "status": "open",
+                    "security": True,
+                    "reason": "Fixture marks this Dependabot update as security-related.",
+                }
+            ]
+        }
+    )
+
+    signal = digest["repo_health_signals"]["dependabot"][0]
+    assert signal["level"] == "blocker"
+    assert digest["merge_guidance"] == "do_not_merge"
+    assert digest["blocking"] == [
+        {"name": "Dependabot security update", "status": "open", "reason": "repo-health dependabot blocker"}
+    ]
+
+
+def test_repo_health_dependabot_level_security_becomes_blocker() -> None:
+    digest = build_digest(
+        repo_health={
+            "dependabot": [
+                {
+                    "name": "Dependabot security level update",
+                    "status": "open",
+                    "level": "security",
+                    "reason": "Fixture marks this Dependabot update level as security.",
+                }
+            ]
+        }
+    )
+
+    assert digest["repo_health_signals"]["dependabot"][0]["level"] == "blocker"
+    assert digest["merge_guidance"] == "do_not_merge"
+
+
+def test_repo_health_dependabot_severity_security_becomes_blocker() -> None:
+    digest = build_digest(
+        repo_health={
+            "dependabot": [
+                {
+                    "name": "Dependabot security severity update",
+                    "status": "open",
+                    "severity": "SECURITY",
+                    "reason": "Fixture marks this Dependabot update severity as security.",
+                }
+            ]
+        }
+    )
+
+    assert digest["repo_health_signals"]["dependabot"][0]["level"] == "blocker"
+    assert digest["merge_guidance"] == "do_not_merge"
+
+
+def test_repo_health_dependabot_category_and_type_security_become_blockers() -> None:
+    digest = build_digest(
+        repo_health={
+            "dependabot": [
+                {
+                    "name": "Dependabot security category update",
+                    "status": "open",
+                    "category": "security",
+                },
+                {
+                    "name": "Dependabot security type update",
+                    "status": "open",
+                    "type": "security",
+                },
+                {
+                    "name": "Dependabot blocking severity update",
+                    "status": "open",
+                    "severity": "blocking",
+                },
+            ]
+        }
+    )
+
+    assert [signal["level"] for signal in digest["repo_health_signals"]["dependabot"]] == [
+        "blocker",
+        "blocker",
+        "blocker",
+    ]
+    assert digest["summary"]["repo_health_counts"]["blocker"] == 3
+    assert digest["merge_guidance"] == "do_not_merge"
+
+
+def test_repo_health_dependabot_normal_advisory_update_remains_non_blocking() -> None:
+    digest = build_digest(repo_health=_load_repo_health_fixture("dependabot-update-notes.json"))
+
+    assert digest["repo_health_signals"]["dependabot"][0]["level"] == "advisory"
+    assert digest["blocking"] == []
+    assert digest["merge_guidance"] == "human_review_before_merge"
+
+
+def test_repo_health_dependabot_exact_security_and_blocking_markers_become_blockers() -> None:
+    cases = [
+        {"security": True},
+        {"security": "true"},
+        {"security_blocking": True},
+        {"security_blocking": "true"},
+        {"level": "security"},
+        {"severity": "security"},
+        {"category": "security"},
+        {"type": "security"},
+        {"level": "blocking"},
+        {"severity": "blocking"},
+    ]
+
+    for marker in cases:
+        digest = build_digest(
+            repo_health={
+                "dependabot": [
+                    {
+                        "name": f"Dependabot marker {marker}",
+                        "status": "open",
+                        **marker,
+                    }
+                ]
+            }
+        )
+
+        assert digest["repo_health_signals"]["dependabot"][0]["level"] == "blocker"
+        assert digest["merge_guidance"] == "do_not_merge"
+        assert digest["blocking"][0]["reason"] == "repo-health dependabot blocker"

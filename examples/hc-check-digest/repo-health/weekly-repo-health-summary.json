@@ -1,0 +1,10 @@
+{
+  "weekly_summary": [
+    {
+      "name": "Weekly repo health summary",
+      "status": "reported",
+      "level": "informational",
+      "reason": "Recurring report-only summary for human maintainers."
+    }
+  ]
+}

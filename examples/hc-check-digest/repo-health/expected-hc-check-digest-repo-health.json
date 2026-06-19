@@ -1,0 +1,64 @@
+{
+  "advisory": [],
+  "advisory_only": true,
+  "approval_authority": false,
+  "artifacts": [],
+  "automation_helpers": [],
+  "blocking": [],
+  "external_review": [],
+  "human_review_required": true,
+  "merge_authority": false,
+  "merge_guidance": "human_review_before_merge",
+  "network_access": false,
+  "public_safe": true,
+  "repo_health_signals": {
+    "changelog": [
+      {
+        "level": "advisory",
+        "name": "GitHub Changelog action runtime notice",
+        "reason": "Review GitHub Changelog release note for possible action runtime impact.",
+        "status": "published"
+      }
+    ],
+    "codeql": [
+      {
+        "level": "neutral/baseline",
+        "name": "CodeQL baseline note",
+        "reason": "CodeQL remains a separate check; this digest records a neutral baseline note only.",
+        "status": "baseline"
+      }
+    ],
+    "dependabot": [
+      {
+        "level": "advisory",
+        "name": "Dependabot github-actions weekly update",
+        "reason": "Weekly github-actions dependency update note for human review.",
+        "status": "available"
+      }
+    ],
+    "weekly_summary": [
+      {
+        "level": "informational",
+        "name": "Weekly repo health summary",
+        "reason": "Recurring report-only summary for human maintainers.",
+        "status": "reported"
+      }
+    ]
+  },
+  "repository_mutation": false,
+  "summary": {
+    "advisory_count": 0,
+    "artifact_count": 0,
+    "automation_helper_count": 0,
+    "blocking_count": 0,
+    "external_review_count": 0,
+    "merge_guidance": "human_review_before_merge",
+    "repo_health_counts": {
+      "advisory": 2,
+      "blocker": 0,
+      "informational": 1,
+      "neutral_baseline": 1
+    }
+  },
+  "truth_guarantee": false
+}
