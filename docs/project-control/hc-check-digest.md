@@ -107,14 +107,14 @@ from the commit SHA using read-only API access before building local digest
 inputs. These guards avoid a self-triggering digest loop.
 
 Each refresh fetches live metadata at run time instead of relying only on the
-event payload. The workflow also uses per-PR/head-SHA concurrency, but
-`cancel-in-progress` is disabled so a useful digest run is not cancelled before
-it publishes the JSON output, Markdown output, job summary, and artifact. GitHub
-still keeps the latest pending run in the concurrency group, and self-trigger or
-no-op HC Check Digest events skip at the job guard before checkout or metadata
-collection whenever possible. This avoids stale advisory output without leaving
-a cancelled digest check as the PR signal. The concurrency guard does not add
-write permissions or mutation.
+event payload. The workflow intentionally does not use GitHub concurrency. Even
+with `cancel-in-progress` disabled, GitHub may cancel older pending runs in the
+same concurrency group, which can leave a cancelled HC Check Digest check on a
+PR before the JSON output, Markdown output, job summary, and artifact are
+published. Instead, each useful refresh is allowed to finish, while self-trigger
+or no-op HC Check Digest events skip at the job guard before checkout or
+metadata collection whenever possible. This avoids cancelled digest check noise
+without adding write permissions or mutation.
 
 Refreshes only rebuild the report, publish the job summary, and upload the
 artifact. They do not comment, label, assign, approve, merge, enable auto-merge,

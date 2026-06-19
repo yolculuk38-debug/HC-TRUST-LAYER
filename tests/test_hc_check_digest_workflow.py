@@ -27,11 +27,11 @@ def test_hc_check_digest_workflow_keeps_read_only_permissions() -> None:
         assert forbidden_permission not in text
 
 
-def test_hc_check_digest_does_not_cancel_useful_run() -> None:
+def test_hc_check_digest_avoids_concurrency_cancellation() -> None:
     text = _workflow_text()
 
-    assert "cancel-in-progress: false" in text
-    assert "cancel-in-progress: true" not in text
+    assert "concurrency:" not in text
+    assert "cancel-in-progress" not in text
 
 
 def test_hc_check_digest_self_trigger_skips_before_steps() -> None:
