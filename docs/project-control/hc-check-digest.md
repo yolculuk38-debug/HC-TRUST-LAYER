@@ -203,9 +203,11 @@ The repo-health pack distinguishes `blocker`, `advisory`,
 `neutral/baseline`, and `informational` entries. GitHub Changelog and release
 note signals are advisory unless a local fixture explicitly marks them blocking.
 Dependabot update notes are advisory unless a local fixture explicitly marks a
-security or blocking condition. CodeQL baseline notes are neutral or advisory
-unless a local fixture explicitly marks them blocking. The weekly repo health
-summary is report-only and remains informational or advisory only.
+security or blocking condition, including `security=true`, `security_blocking=true`,
+or `security` / `blocking` values in `level`, `severity`, `category`, or `type`.
+CodeQL baseline notes are neutral or advisory unless a local fixture explicitly
+marks them blocking. The weekly repo health summary is report-only and remains
+informational or advisory only.
 
 Local usage:
 

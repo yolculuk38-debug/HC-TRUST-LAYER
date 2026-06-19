@@ -138,7 +138,6 @@ REPO_HEALTH_LEVELS = {"blocker", "advisory", "neutral/baseline", "informational"
 
 
 def _repo_health_group(item: dict[str, Any], fallback: str | None = None) -> str:
-    value = _text(item, "group", "category", "source", "type").lower().replace("-", "_").replace(" ", "_")
     aliases = {
         "github_changelog": "changelog",
         "github_changelog_release_notes": "changelog",
@@ -150,22 +149,35 @@ def _repo_health_group(item: dict[str, Any], fallback: str | None = None) -> str
         "weekly": "weekly_summary",
         "weekly_repo_health": "weekly_summary",
     }
-    group = aliases.get(value, value)
-    if group in REPO_HEALTH_GROUPS:
-        return group
+    for key in ("group", "source", "type", "category"):
+        value = str(item.get(key, "")).strip().lower().replace("-", "_").replace(" ", "_")
+        group = aliases.get(value, value)
+        if group in REPO_HEALTH_GROUPS:
+            return group
     if fallback in REPO_HEALTH_GROUPS:
         return fallback
     return "weekly_summary"
 
 
+def _truthy_marker(value: Any) -> bool:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        return value.strip().lower() in {"1", "true", "yes", "y"}
+    return bool(value)
+
+
 def _repo_health_level(item: dict[str, Any], group: str) -> str:
     markers = {
         str(item.get(key, "")).strip().lower().replace("_", "/")
-        for key in ("level", "severity", "classification", "status", "state", "result")
+        for key in ("level", "severity", "classification", "category", "type", "status", "state", "result")
         if str(item.get(key, "")).strip()
     }
-    explicit_blocking = bool(item.get("blocking") or item.get("blocker") or item.get("security_blocking"))
-    if explicit_blocking or bool(markers & {"blocker", "blocking", "security/blocking"}):
+    explicit_blocking = any(_truthy_marker(item.get(key)) for key in ("blocking", "blocker", "security_blocking"))
+    explicit_security_dependabot = group == "dependabot" and (
+        _truthy_marker(item.get("security")) or bool(markers & {"security", "security/blocking"})
+    )
+    if explicit_blocking or explicit_security_dependabot or bool(markers & {"blocker", "blocking", "security/blocking"}):
         if group != "weekly_summary":
             return "blocker"
     if markers & {"neutral", "baseline", "neutral/baseline"}:
