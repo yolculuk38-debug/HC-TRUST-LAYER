@@ -180,3 +180,60 @@ Merge guidance is deterministic and advisory:
   issues are present.
 
 The final decision remains with human maintainers under repository governance.
+
+## v4 repo-health signal pack
+
+v4 adds a deterministic repo-health signal pack to the existing report-only
+HC Check Digest output. The local engine can include a `repo_health_signals`
+section grouped by:
+
+- `changelog` for local GitHub Changelog or release-note signals;
+- `dependabot` for local Dependabot update notes;
+- `codeql` for local CodeQL baseline notes;
+- `weekly_summary` for a recurring weekly repo health summary.
+
+The local fixture inputs live in `examples/hc-check-digest/repo-health/`:
+
+- `github-changelog-signals.json`
+- `dependabot-update-notes.json`
+- `codeql-baseline-notes.json`
+- `weekly-repo-health-summary.json`
+
+The repo-health pack distinguishes `blocker`, `advisory`,
+`neutral/baseline`, and `informational` entries. GitHub Changelog and release
+note signals are advisory unless a local fixture explicitly marks them blocking.
+Dependabot update notes are advisory unless a local fixture explicitly marks a
+security or blocking condition. CodeQL baseline notes are neutral or advisory
+unless a local fixture explicitly marks them blocking. The weekly repo health
+summary is report-only and remains informational or advisory only.
+
+Local usage:
+
+```bash
+python scripts/hc_check_digest.py \
+  --repo-health examples/hc-check-digest/repo-health/github-changelog-signals.json \
+  --repo-health examples/hc-check-digest/repo-health/dependabot-update-notes.json \
+  --repo-health examples/hc-check-digest/repo-health/codeql-baseline-notes.json \
+  --repo-health examples/hc-check-digest/repo-health/weekly-repo-health-summary.json \
+  --format json
+```
+
+Expected JSON and Markdown snapshots are stored in the same repo-health fixture
+directory. They prove the output shape remains stable for changelog,
+Dependabot, CodeQL baseline, and weekly summary signals.
+
+The v4 repo-health pack is local-file only. It does not call the network, does
+not call the GitHub API, does not comment on PRs, does not add labels, does not
+assign users, does not approve, does not merge, and does not enable auto-merge.
+It only summarizes fixture data for human review.
+
+This differs from Signal Watch. Signal Watch tracks external ecosystem signals
+through its own local fixture-based signal support. HC Check Digest v4 consumes
+local repo-health fixture summaries as part of the PR health digest shape. It
+does not replace Signal Watch, does not fetch Signal Watch data, and does not
+create independent authority from those signals.
+
+Humans retain final authority. Repo-health signals are advisory report inputs;
+they do not provide production readiness, legal truth, identity finality,
+forensic certainty, certification authority, autonomous governance authority, or
+guaranteed correctness.

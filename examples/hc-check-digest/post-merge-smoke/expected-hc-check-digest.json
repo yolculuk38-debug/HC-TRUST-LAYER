@@ -55,6 +55,12 @@
   "merge_guidance": "do_not_merge",
   "network_access": false,
   "public_safe": true,
+  "repo_health_signals": {
+    "changelog": [],
+    "codeql": [],
+    "dependabot": [],
+    "weekly_summary": []
+  },
   "repository_mutation": false,
   "summary": {
     "advisory_count": 1,
@@ -62,7 +68,13 @@
     "automation_helper_count": 0,
     "blocking_count": 3,
     "external_review_count": 3,
-    "merge_guidance": "do_not_merge"
+    "merge_guidance": "do_not_merge",
+    "repo_health_counts": {
+      "advisory": 0,
+      "blocker": 0,
+      "informational": 0,
+      "neutral_baseline": 0
+    }
   },
   "truth_guarantee": false
 }
