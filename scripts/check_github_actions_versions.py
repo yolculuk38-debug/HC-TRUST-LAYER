@@ -15,9 +15,9 @@ USES_RE = re.compile(r"\buses:\s*([^\s#]+)")
 # Explicit denylist for action major versions known to emit Node.js 20 runtime
 # deprecation warnings in this repository. Keep this local and deterministic;
 # Dependabot remains responsible for discovering routine upstream updates.
-DEPRECATED_ACTIONS: dict[str, str] = {
-    "actions/checkout@v4": "actions/checkout@v6",
-    "actions/upload-artifact@v4": "actions/upload-artifact@v7",
+DEPRECATED_ACTION_MAJORS: dict[tuple[str, str], str] = {
+    ("actions/checkout", "v4"): "actions/checkout@v6",
+    ("actions/upload-artifact", "v4"): "actions/upload-artifact@v7",
 }
 
 
@@ -26,13 +26,39 @@ class Finding:
     path: Path
     line: int
     reference: str
+    deprecated_major: str
     replacement: str
 
     def render(self) -> str:
         return (
             f"ERROR: {self.path}:{self.line}: deprecated GitHub Action "
-            f"'{self.reference}' detected; use '{self.replacement}'"
+            f"'{self.reference}' detected for stale major '{self.deprecated_major}'; "
+            f"use '{self.replacement}'"
         )
+
+
+def split_action_reference(reference: str) -> tuple[str, str] | None:
+    if "@" not in reference:
+        return None
+    action, ref = reference.rsplit("@", 1)
+    if not action or not ref:
+        return None
+    return action, ref
+
+
+def matches_major(ref: str, major: str) -> bool:
+    return ref == major or ref.startswith(f"{major}.")
+
+
+def deprecated_replacement(reference: str) -> tuple[str, str] | None:
+    parsed = split_action_reference(reference)
+    if parsed is None:
+        return None
+    action, ref = parsed
+    for (deprecated_action, deprecated_major), replacement in DEPRECATED_ACTION_MAJORS.items():
+        if action == deprecated_action and matches_major(ref, deprecated_major):
+            return deprecated_major, replacement
+    return None
 
 
 def workflow_files(workflows_dir: Path) -> list[Path]:
@@ -53,9 +79,18 @@ def scan_file(path: Path) -> list[Finding]:
         if not match:
             continue
         reference = match.group(1).strip('"\'')
-        replacement = DEPRECATED_ACTIONS.get(reference)
-        if replacement:
-            findings.append(Finding(path=path, line=line_no, reference=reference, replacement=replacement))
+        deprecated = deprecated_replacement(reference)
+        if deprecated:
+            deprecated_major, replacement = deprecated
+            findings.append(
+                Finding(
+                    path=path,
+                    line=line_no,
+                    reference=reference,
+                    deprecated_major=deprecated_major,
+                    replacement=replacement,
+                )
+            )
     return findings
 
 
