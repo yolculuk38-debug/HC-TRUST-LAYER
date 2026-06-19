@@ -45,11 +45,17 @@ permissions:
 
 # Refresh design: every trigger below is read-only and only rebuilds the digest
 # from live metadata fetched at run time. Concurrency cancels older in-flight
-# digest runs for the same PR/head SHA so a later check or review update does
-# not leave a stale advisory summary behind.
+# digest runs for the same PR/head SHA so a later useful check or review update
+# does not leave a stale advisory summary behind. Self-trigger/no-op digest
+# events must not cancel the useful run that is still publishing outputs.
 concurrency:
   group: hc-check-digest-${{ github.event.pull_request.number || github.event.workflow_run.pull_requests[0].number || github.event.check_run.pull_requests[0].number || github.event.sha || github.sha }}
-  cancel-in-progress: true
+  cancel-in-progress: >-
+    ${{
+      !(github.event_name == 'workflow_run' && github.event.workflow_run.name == 'HC Check Digest') &&
+      !(github.event_name == 'check_run' && contains(github.event.check_run.name, 'HC Check Digest')) &&
+      !(github.event_name == 'check_run' && contains(github.event.check_run.name, 'Build advisory PR health digest'))
+    }}
 
 jobs:
   digest:

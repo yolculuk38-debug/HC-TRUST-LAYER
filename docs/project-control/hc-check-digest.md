@@ -107,11 +107,13 @@ from the commit SHA using read-only API access before building local digest
 inputs. These guards avoid a self-triggering digest loop.
 
 Each refresh fetches live metadata at run time instead of relying only on the
-event payload. The workflow also uses per-PR/head-SHA concurrency with
-`cancel-in-progress: true` so an older in-flight digest run is cancelled when a
-later check, status, review, or comment update arrives. This keeps the published
-advisory summary aligned to the latest observed read-only metadata without
-adding write permissions or mutation.
+event payload. The workflow also uses per-PR/head-SHA concurrency so an older
+in-flight digest run is cancelled when a later useful check, status, review, or
+comment update arrives. Self-trigger or no-op HC Check Digest events do not
+cancel an in-flight useful digest run. This keeps the published advisory summary
+aligned to the latest observed read-only metadata without self-cancelling the
+run that publishes the JSON output, Markdown output, job summary, and artifact.
+The concurrency guard does not add write permissions or mutation.
 
 Refreshes only rebuild the report, publish the job summary, and upload the
 artifact. They do not comment, label, assign, approve, merge, enable auto-merge,
