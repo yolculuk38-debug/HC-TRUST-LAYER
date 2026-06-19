@@ -449,3 +449,35 @@ def test_repo_health_dependabot_normal_advisory_update_remains_non_blocking() ->
     assert digest["repo_health_signals"]["dependabot"][0]["level"] == "advisory"
     assert digest["blocking"] == []
     assert digest["merge_guidance"] == "human_review_before_merge"
+
+
+def test_repo_health_dependabot_exact_security_and_blocking_markers_become_blockers() -> None:
+    cases = [
+        {"security": True},
+        {"security": "true"},
+        {"security_blocking": True},
+        {"security_blocking": "true"},
+        {"level": "security"},
+        {"severity": "security"},
+        {"category": "security"},
+        {"type": "security"},
+        {"level": "blocking"},
+        {"severity": "blocking"},
+    ]
+
+    for marker in cases:
+        digest = build_digest(
+            repo_health={
+                "dependabot": [
+                    {
+                        "name": f"Dependabot marker {marker}",
+                        "status": "open",
+                        **marker,
+                    }
+                ]
+            }
+        )
+
+        assert digest["repo_health_signals"]["dependabot"][0]["level"] == "blocker"
+        assert digest["merge_guidance"] == "do_not_merge"
+        assert digest["blocking"][0]["reason"] == "repo-health dependabot blocker"
