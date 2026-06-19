@@ -117,6 +117,56 @@ Refreshes only rebuild the report, publish the job summary, and upload the
 artifact. They do not comment, label, assign, approve, merge, enable auto-merge,
 or otherwise mutate PR or repository state.
 
+## v3 post-merge smoke snapshots
+
+Post-merge smoke fixtures live in
+`examples/hc-check-digest/post-merge-smoke/`. They provide deterministic local
+inputs for a compact end-to-end digest shape that includes:
+
+- passing required checks;
+- one advisory warning;
+- one failed required check;
+- one open Codex `[P2]` review signal;
+- one resolved review thread;
+- one unresolved non-outdated review thread;
+- available `hc-check-digest` artifact metadata.
+
+The same directory stores expected snapshots for:
+
+- `expected-hc-check-digest.json`
+- `expected-hc-check-digest.md`
+- `expected-job-summary.md`
+
+Run the smoke locally with:
+
+```bash
+python scripts/hc_check_digest.py \
+  --checks examples/hc-check-digest/post-merge-smoke/checks.json \
+  --reviews examples/hc-check-digest/post-merge-smoke/reviews.json \
+  --threads examples/hc-check-digest/post-merge-smoke/threads.json \
+  --artifacts examples/hc-check-digest/post-merge-smoke/artifacts.json \
+  --format json
+```
+
+Use `--format md` for the Markdown digest. To render the same advisory job
+summary wrapper used by the workflow snapshot, run:
+
+```bash
+python scripts/hc_check_digest_render_summary.py \
+  examples/hc-check-digest/post-merge-smoke/expected-hc-check-digest.json
+```
+
+The snapshots prove that the local JSON output, Markdown output, and job-summary
+wrapper remain stable and human-readable for representative post-merge signals.
+They also prove that advisory-only warnings remain non-blocking, resolved or
+outdated review threads remain non-blocking, unresolved non-outdated review
+threads block, failed required checks block, and open Codex P1/P2 feedback blocks.
+
+This is snapshot and report coverage only. It adds no workflow permission
+expansion, no PR comments, no labels, no assignments, no approvals, no merge or
+auto-merge authority, no repository mutation, and no network access to the local
+digest engine. Humans retain final authority.
+
 ## Merge guidance
 
 Merge guidance is deterministic and advisory:

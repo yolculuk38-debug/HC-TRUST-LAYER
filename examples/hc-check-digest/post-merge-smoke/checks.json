@@ -1,0 +1,18 @@
+[
+  {
+    "name": "Validation",
+    "status": "success"
+  },
+  {
+    "name": "Docs Drift Check",
+    "status": "success"
+  },
+  {
+    "name": "Signal Watch Report",
+    "status": "warning"
+  },
+  {
+    "name": "Policy Evaluation",
+    "status": "failure"
+  }
+]
