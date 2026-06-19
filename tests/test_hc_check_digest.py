@@ -126,3 +126,86 @@ def test_no_network_or_github_api_behavior_exists() -> None:
     assert forbidden_imports.isdisjoint(imports)
     assert "api.github.com" not in source
     assert "github.com" not in source.lower()
+
+
+def _post_merge_smoke_path(name: str) -> Path:
+    return Path("examples/hc-check-digest/post-merge-smoke") / name
+
+
+def _load_json_fixture(name: str):
+    import json
+
+    return json.loads(_post_merge_smoke_path(name).read_text(encoding="utf-8"))
+
+
+def test_post_merge_smoke_json_snapshot_is_stable() -> None:
+    import json
+
+    digest = build_digest(
+        checks=_load_json_fixture("checks.json"),
+        reviews=_load_json_fixture("reviews.json"),
+        threads=_load_json_fixture("threads.json"),
+        artifacts=_load_json_fixture("artifacts.json"),
+    )
+    actual = json.dumps(digest, indent=2, sort_keys=True) + "\n"
+
+    assert actual == _post_merge_smoke_path("expected-hc-check-digest.json").read_text(encoding="utf-8")
+
+
+def test_post_merge_smoke_markdown_snapshot_is_stable() -> None:
+    digest = build_digest(
+        checks=_load_json_fixture("checks.json"),
+        reviews=_load_json_fixture("reviews.json"),
+        threads=_load_json_fixture("threads.json"),
+        artifacts=_load_json_fixture("artifacts.json"),
+    )
+    actual = render_markdown(digest)
+
+    assert actual == _post_merge_smoke_path("expected-hc-check-digest.md").read_text(encoding="utf-8")
+
+
+def test_post_merge_smoke_job_summary_snapshot_and_safety_text_are_stable() -> None:
+    from hc_check_digest_render_summary import render_job_summary
+
+    digest = build_digest(
+        checks=_load_json_fixture("checks.json"),
+        reviews=_load_json_fixture("reviews.json"),
+        threads=_load_json_fixture("threads.json"),
+        artifacts=_load_json_fixture("artifacts.json"),
+    )
+    actual = render_job_summary(digest)
+
+    assert actual == _post_merge_smoke_path("expected-job-summary.md").read_text(encoding="utf-8")
+    for safety_text in (
+        "HC Check Digest is advisory-only.",
+        "It does not approve, reject, label, assign, comment, or merge.",
+        "Humans retain final authority.",
+    ):
+        assert safety_text in actual
+
+
+def test_post_merge_smoke_blocking_and_nonblocking_boundaries() -> None:
+    digest = build_digest(
+        checks=_load_json_fixture("checks.json"),
+        reviews=_load_json_fixture("reviews.json"),
+        threads=_load_json_fixture("threads.json"),
+        artifacts=_load_json_fixture("artifacts.json"),
+    )
+
+    assert digest["merge_guidance"] == "do_not_merge"
+    assert {item["reason"] for item in digest["blocking"]} == {
+        "failed required check candidate",
+        "open Codex P2 feedback",
+        "unresolved non-outdated review thread",
+    }
+    assert digest["advisory"] == [
+        {"name": "Signal Watch Report", "status": "warning", "reason": "advisory check signal"}
+    ]
+    assert {item["name"] for item in digest["external_review"]} == {
+        "[P2] Keep digest blockers visible",
+        "Resolved reviewer thread",
+        "Active reviewer thread",
+    }
+    assert digest["artifacts"] == [
+        {"name": "hc-check-digest", "status": "available", "reason": "local artifact signal"}
+    ]

@@ -1,0 +1,68 @@
+{
+  "advisory": [
+    {
+      "name": "Signal Watch Report",
+      "reason": "advisory check signal",
+      "status": "warning"
+    }
+  ],
+  "advisory_only": true,
+  "approval_authority": false,
+  "artifacts": [
+    {
+      "name": "hc-check-digest",
+      "reason": "local artifact signal",
+      "status": "available"
+    }
+  ],
+  "automation_helpers": [],
+  "blocking": [
+    {
+      "name": "Policy Evaluation",
+      "reason": "failed required check candidate",
+      "status": "failure"
+    },
+    {
+      "name": "[P2] Keep digest blockers visible",
+      "reason": "open Codex P2 feedback",
+      "status": "open"
+    },
+    {
+      "name": "Active reviewer thread",
+      "reason": "unresolved non-outdated review thread",
+      "status": "unknown"
+    }
+  ],
+  "external_review": [
+    {
+      "name": "[P2] Keep digest blockers visible",
+      "reason": "external review signal",
+      "status": "open"
+    },
+    {
+      "name": "Resolved reviewer thread",
+      "reason": "review thread signal",
+      "status": "unknown"
+    },
+    {
+      "name": "Active reviewer thread",
+      "reason": "review thread signal",
+      "status": "unknown"
+    }
+  ],
+  "human_review_required": true,
+  "merge_authority": false,
+  "merge_guidance": "do_not_merge",
+  "network_access": false,
+  "public_safe": true,
+  "repository_mutation": false,
+  "summary": {
+    "advisory_count": 1,
+    "artifact_count": 1,
+    "automation_helper_count": 0,
+    "blocking_count": 3,
+    "external_review_count": 3,
+    "merge_guidance": "do_not_merge"
+  },
+  "truth_guarantee": false
+}

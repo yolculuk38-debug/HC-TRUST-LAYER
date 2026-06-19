@@ -44,12 +44,10 @@ permissions:
   pull-requests: read
 
 # Refresh design: every trigger below is read-only and only rebuilds the digest
-# from live metadata fetched at run time. Concurrency cancels older in-flight
-# digest runs for the same PR/head SHA so a later check or review update does
-# not leave a stale advisory summary behind.
-concurrency:
-  group: hc-check-digest-${{ github.event.pull_request.number || github.event.workflow_run.pull_requests[0].number || github.event.check_run.pull_requests[0].number || github.event.sha || github.sha }}
-  cancel-in-progress: true
+# from live metadata fetched at run time. This workflow intentionally does not
+# use GitHub concurrency because pending-run cancellation can leave cancelled
+# digest checks on PRs before JSON, Markdown, the job summary, and the artifact
+# are published. Self-trigger/no-op events are still skipped by the job guard.
 
 jobs:
   digest:

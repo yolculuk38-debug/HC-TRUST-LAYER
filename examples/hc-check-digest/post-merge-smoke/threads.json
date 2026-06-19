@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Resolved reviewer thread",
+    "resolved": true,
+    "outdated": false
+  },
+  {
+    "name": "Active reviewer thread",
+    "resolved": false,
+    "outdated": false
+  }
+]
