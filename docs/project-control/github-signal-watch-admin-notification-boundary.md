@@ -33,6 +33,7 @@ The preferred direction is:
 
 - Signal Watch should not publish routine status into public issues by default.
 - Signal Watch notifications should be admin/operator-facing when they go beyond public-safe evidence surfaces.
+- The preferred future model for admin/operator notification design is the private/admin-only [HC Signal Watch Operator Notification Queue](github-signal-watch-operator-notification-queue.md).
 - GitHub Actions run summaries and artifacts remain public-safe evidence surfaces, not private/admin-only notification channels.
 - Public issues must not be used as the default notification channel for internal operational signals.
 - Human final authority remains required for interpretation and follow-up.
@@ -85,6 +86,7 @@ A public `HC Signal Watch Console` issue may remain documented as a transparency
 
 ### Stage 2: Admin-only notification design
 
+- Use the [HC Signal Watch Operator Notification Queue](github-signal-watch-operator-notification-queue.md) as the preferred future queue/inbox model.
 - Define genuinely private/admin-only notification behavior.
 - Do not classify Actions summaries or artifacts as private/admin-only notification channels.
 - Keep routine status out of public issue comments.
