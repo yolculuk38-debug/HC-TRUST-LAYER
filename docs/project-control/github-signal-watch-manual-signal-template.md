@@ -120,13 +120,15 @@ Copy one or more objects into `tmp/hc-signals.json`, then replace placeholder va
 
 ### Unrelated product news/no-action signal
 
+Keep this no-action object free of classifier trigger terms unless a real repository impact exists. The goal is to preserve the no-action path without accidentally creating a higher-priority recommended action.
+
 ```json
 [
   {
     "source": "GitHub Changelog",
     "title": "Unrelated GitHub product news: <summary>",
     "url": "<github-changelog-url>",
-    "note": "Operator observed product news with no apparent HC-TRUST-LAYER repository impact. Record as no-action unless later human review identifies a workflow, dependency, security, governance, or public-safety connection."
+    "note": "Operator observed product news with no apparent HC-TRUST-LAYER repository impact. Record as no-action unless later evidence shows direct repository operations impact."
   }
 ]
 ```
