@@ -5,6 +5,8 @@
 > Authority: advisory only
 > Production readiness: not claimed
 
+> Direction note: this fixed public issue model is a transparency option, not the preferred default for admin-only operational Signal Watch updates. For the preferred admin/operator-only notification boundary, see [HC Signal Watch Admin Notification Boundary](github-signal-watch-admin-notification-boundary.md).
+
 ## Purpose
 
 The future **HC Signal Watch Console** is a fixed, human-created GitHub issue intended to provide mobile-friendly, operator-facing advisory visibility for HC Signal Watch reports.

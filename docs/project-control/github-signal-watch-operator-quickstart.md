@@ -100,6 +100,8 @@ hc-signal-watch-live-rss-dry-run.md
 
 Use the JSON artifact for structured review and the Markdown artifact for operator-readable triage. If the workflow reports a fetch or parse error, treat it as a safe dry-run failure and inspect the artifact before deciding whether to retry or investigate manually.
 
+Treat the Actions summary as the current operator view. Private/admin-only notifications are a future separately reviewed stage, as described in [HC Signal Watch Admin Notification Boundary](github-signal-watch-admin-notification-boundary.md).
+
 ## Future console issue model
 
 A future issue-based visibility model is documented in [HC Signal Watch Console Issue Model](github-signal-watch-console-issue-model.md). The model defines a fixed, human-created `HC Signal Watch Console` issue for advisory latest-status summaries only. This quickstart does not implement issue comment automation. Any future workflow that posts or updates that fixed issue would be issue-comment automation and a GitHub issue state mutation, while repository files and branches remain unchanged. The GitHub Actions run plus JSON and Markdown artifacts remain the evidence source for human review.
