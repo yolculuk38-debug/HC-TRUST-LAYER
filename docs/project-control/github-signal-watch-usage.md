@@ -139,6 +139,34 @@ The report preserves fixture signal fields such as `source`, `title`, `url`, `pu
 
 For a full end-to-end local fixture demo that generates both JSON and Markdown reports in a temporary output directory, see [HC Signal Watch GitHub Changelog Fixture Demo](github-signal-watch-fixture-demo.md).
 
+
+## Manual live GitHub Changelog RSS dry-run
+
+`.github/workflows/hc-signal-watch-live-rss-dry-run.yml` provides an optional manual-only Signal Watch dry-run for the GitHub Changelog RSS feed. It runs only from `workflow_dispatch`; it has no schedule and no pull request trigger.
+
+The workflow fetches `https://github.blog/changelog/feed/` by default, or an explicit operator-supplied workflow input URL. It writes normalized Signal Watch JSON and Markdown report files as artifacts only:
+
+```text
+hc-signal-watch-live-rss-dry-run.json
+hc-signal-watch-live-rss-dry-run.md
+```
+
+Expected live dry-run boundary:
+
+```text
+advisory_only=true
+public_safe=true
+truth_guarantee=false
+human_review_required=true
+repository_mutation=false
+issue_comment_automation=false
+label_reviewer_mutation=false
+approval_authority=false
+merge_authority=false
+```
+
+The workflow includes a bounded job timeout and script-level fetch timeout. Fetch or parse errors are reported as safe dry-run failures in the artifacts instead of creating issues, pull request comments, labels, reviewer requests, approvals, merges, or repository mutations. Human review remains required before any repository action.
+
 ## Required manual live checks
 
 The script and workflow are local/report-only and cannot replace live GitHub inspection.
@@ -219,7 +247,7 @@ This usage note and workflow do not:
 
 The following remain parked for separate review:
 
-- live GitHub Changelog RSS ingestion;
+- repository-mutating live GitHub Changelog RSS ingestion;
 - automatic issue creation;
 - automatic PR comments;
 - dependency dashboard issue;

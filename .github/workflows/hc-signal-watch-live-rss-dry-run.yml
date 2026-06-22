@@ -1,0 +1,65 @@
+name: HC Signal Watch Live RSS Dry Run
+
+# Manual live RSS observation only. This workflow is read-only, artifact-only,
+# and must not mutate repository, issue, pull request, label, reviewer,
+# approval, or merge state.
+
+on:
+  workflow_dispatch:
+    inputs:
+      rss_url:
+        description: "Optional explicit GitHub Changelog RSS URL"
+        required: false
+        default: "https://github.blog/changelog/feed/"
+      timeout_seconds:
+        description: "Fetch timeout in seconds"
+        required: false
+        default: "10"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  dry-run:
+    timeout-minutes: 5
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Build live RSS dry-run artifacts
+        env:
+          RSS_URL: ${{ inputs.rss_url }}
+          TIMEOUT_SECONDS: ${{ inputs.timeout_seconds }}
+        run: |
+          python scripts/hc_signal_watch_live_rss_fetch.py \
+            --url "$RSS_URL" \
+            --timeout "$TIMEOUT_SECONDS" \
+            --json-output hc-signal-watch-live-rss-dry-run.json \
+            --markdown-output hc-signal-watch-live-rss-dry-run.md
+
+      - name: Record dry-run boundary
+        run: |
+          echo "HC Signal Watch live RSS dry run is advisory-only." >> "$GITHUB_STEP_SUMMARY"
+          echo "advisory_only=true" >> "$GITHUB_STEP_SUMMARY"
+          echo "public_safe=true" >> "$GITHUB_STEP_SUMMARY"
+          echo "truth_guarantee=false" >> "$GITHUB_STEP_SUMMARY"
+          echo "human_review_required=true" >> "$GITHUB_STEP_SUMMARY"
+          echo "repository_mutation=false" >> "$GITHUB_STEP_SUMMARY"
+          echo "issue_comment_automation=false" >> "$GITHUB_STEP_SUMMARY"
+          echo "label_reviewer_mutation=false" >> "$GITHUB_STEP_SUMMARY"
+          echo "approval_authority=false" >> "$GITHUB_STEP_SUMMARY"
+          echo "merge_authority=false" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload live RSS dry-run artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: hc-signal-watch-live-rss-dry-run
+          path: |
+            hc-signal-watch-live-rss-dry-run.json
+            hc-signal-watch-live-rss-dry-run.md
+          retention-days: 14
