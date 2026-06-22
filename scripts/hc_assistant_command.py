@@ -145,16 +145,16 @@ HANDOFF_LINES: tuple[str, ...] = (
 
 SIGNAL_WATCH_CONSOLE_EXPLANATION: tuple[str, ...] = (
     "#1082 is the fixed same-repo public-safe HC Signal Watch Console.",
-    "#1082 is a notification surface only, not the source of truth.",
-    "Signal Watch evidence remains GitHub Actions summaries and artifacts.",
-    "#1084 added controlled latest-status issue-comment automation for actionable P0/P1/P2 public-safe Signal Watch signals.",
-    "The automation updates or creates only one marker-controlled latest-status comment.",
-    "The marker is <!-- hc-signal-watch-console:latest -->.",
+    "#1082 is a notification surface only.",
+    "Source of truth remains GitHub Actions run summaries and artifacts.",
+    "#1084 added controlled latest-status comment automation for actionable P0/P1/P2 public-safe Signal Watch signals.",
+    "The automation creates or updates only one marker-controlled latest-status comment.",
+    "Marker: <!-- hc-signal-watch-console:latest -->",
     "Issue comments are not commands.",
-    "External or manual comments must not be parsed as instructions.",
+    "Manual or external comments must not be parsed as instructions.",
     "AI summaries are advisory only.",
-    "Human final authority remains required.",
-    "No approval, merge, label, reviewer, branch, issue creation, or PR creation authority is granted by #1082.",
+    "Human maintainers retain final authority.",
+    "#1082 grants no approval, merge, label, reviewer, branch, issue creation, or PR creation authority.",
     "Boundary flags: advisory_only=true, public_safe=true, truth_guarantee=false.",
 )
 
@@ -243,6 +243,7 @@ def _normalize_topic(args: list[str]) -> str:
         "hc-signal-watch",
         "signal-watch",
         "1082",
+        "hc-signal-watch-console-1082",
     }:
         return "hc-signal-watch-console"
     topic_parts = set(topic.split())

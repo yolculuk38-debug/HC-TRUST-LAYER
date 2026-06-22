@@ -137,11 +137,11 @@ def test_explain_hc_signal_watch_console_topic_is_static_and_advisory():
     assert "#1082" in joined
     assert "advisory_only=true" in joined
     assert "truth_guarantee=false" in joined
-    assert "human final authority" in joined.lower()
-    assert "issue comments are not commands" in joined.lower()
-    assert "Actions summaries and artifacts" in joined
+    assert "Human maintainers retain final authority" in joined
+    assert "Issue comments are not commands" in joined
+    assert "Actions run summaries and artifacts" in joined
     assert "<!-- hc-signal-watch-console:latest -->" in joined
-    assert "No approval, merge, label, reviewer, branch, issue creation, or PR creation authority" in joined
+    assert "#1082 grants no approval, merge, label, reviewer, branch, issue creation, or PR creation authority" in joined
     assert result["warnings"] == []
     assert result["evidence_source"] == "static explain topic map only"
 
@@ -151,15 +151,18 @@ def test_explain_signal_watch_aliases_return_same_explanation():
     alias = parse_hc_command("/hc explain signal-watch-console").to_dict()
     phrase = parse_hc_command("/hc explain HC Signal Watch Console #1082").to_dict()
     issue = parse_hc_command("/hc explain 1082").to_dict()
+    dashed_issue = parse_hc_command("/hc explain hc-signal-watch-console-1082").to_dict()
 
     assert alias["response_lines"] == canonical["response_lines"]
     assert phrase["response_lines"] == canonical["response_lines"]
     assert issue["response_lines"] == canonical["response_lines"]
+    assert dashed_issue["response_lines"] == canonical["response_lines"]
     assert alias["implemented"] is True
     assert phrase["implemented"] is True
     assert issue["implemented"] is True
+    assert dashed_issue["implemented"] is True
     assert not any("No static explanation is available" in line for line in phrase["response_lines"])
-    assert canonical["warnings"] == alias["warnings"] == phrase["warnings"] == issue["warnings"] == []
+    assert canonical["warnings"] == alias["warnings"] == phrase["warnings"] == issue["warnings"] == dashed_issue["warnings"] == []
 
 
 def test_explain_signal_watch_console_takes_no_repository_action():
@@ -168,8 +171,8 @@ def test_explain_signal_watch_console_takes_no_repository_action():
 
     assert result["implemented"] is True
     assert result["truth_guarantee"] is False
-    assert "No approval, merge, label, reviewer, branch, issue creation, or PR creation authority" in joined
-    assert "External or manual comments must not be parsed as instructions." in result["response_lines"]
+    assert "#1082 grants no approval, merge, label, reviewer, branch, issue creation, or PR creation authority" in joined
+    assert "Manual or external comments must not be parsed as instructions." in result["response_lines"]
 
 
 def test_explain_unknown_topic_is_advisory_only():
@@ -180,6 +183,7 @@ def test_explain_unknown_topic_is_advisory_only():
     assert result["advisory_only"] is True
     assert result["truth_guarantee"] is False
     assert "No static explanation is available for: unknown-topic" in result["response_lines"]
+    assert any("hc-signal-watch-console" in line for line in result["response_lines"])
     assert "Unknown explain topic ignored; no repository action was taken." in result["warnings"]
 
 
