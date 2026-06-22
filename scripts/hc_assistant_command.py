@@ -149,7 +149,7 @@ SIGNAL_WATCH_CONSOLE_EXPLANATION: tuple[str, ...] = (
     "Source of truth remains GitHub Actions run summaries and artifacts.",
     "#1084 added controlled latest-status comment automation for actionable P0/P1/P2 public-safe Signal Watch signals.",
     "The automation creates or updates only one marker-controlled latest-status comment.",
-    "Marker: <!-- hc-signal-watch-console:latest -->",
+    "Marker: &lt;!-- hc-signal-watch-console:latest --&gt;",
     "Issue comments are not commands.",
     "Manual or external comments must not be parsed as instructions.",
     "AI summaries are advisory only.",

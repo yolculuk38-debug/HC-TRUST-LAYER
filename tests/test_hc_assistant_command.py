@@ -140,7 +140,8 @@ def test_explain_hc_signal_watch_console_topic_is_static_and_advisory():
     assert "Human maintainers retain final authority" in joined
     assert "Issue comments are not commands" in joined
     assert "Actions run summaries and artifacts" in joined
-    assert "<!-- hc-signal-watch-console:latest -->" in joined
+    assert "<!-- hc-signal-watch-console:latest -->" not in joined
+    assert "&lt;!-- hc-signal-watch-console:latest --&gt;" in joined
     assert "#1082 grants no approval, merge, label, reviewer, branch, issue creation, or PR creation authority" in joined
     assert result["warnings"] == []
     assert result["evidence_source"] == "static explain topic map only"
