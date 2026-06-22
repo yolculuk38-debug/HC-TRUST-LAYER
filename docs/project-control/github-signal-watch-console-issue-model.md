@@ -39,15 +39,15 @@ No `HC-TRUST-OPS` repository or second private repository is required for the cu
 
 ## Fixed issue
 
-The suggested console issue name is fixed:
+The fixed console issue name is:
 
 ```text
 HC Signal Watch Console
 ```
 
-`HC Signal Watch Console` is the only canonical same-repo fixed issue title. `HC Operator Notification Queue` is a model/category name only, not an issue title. No migration or selection ambiguity is allowed.
+`HC Signal Watch Console` is the only canonical same-repo fixed issue title. The current fixed issue is `#1082` in `yolculuk38-debug/HC-TRUST-LAYER`; see [HC Signal Watch Console Issue Binding](github-signal-watch-console-issue-binding.md). `HC Operator Notification Queue` is a model/category name only, not an issue title. No migration or selection ambiguity is allowed.
 
-The fixed console issue must be created by a human before any future workflow may update it. Future automation, if separately proposed and reviewed, must target only the human-created fixed issue titled `HC Signal Watch Console`, either through one latest-status comment or one controlled thread. This model does not authorize automatic creation of additional issues.
+The fixed console issue has been created by a human as `#1082`. Future automation, if separately proposed and reviewed, must target only `#1082`, either through one latest-status comment or one controlled thread. This model does not authorize automatic creation of additional issues.
 
 ## Source of truth
 
