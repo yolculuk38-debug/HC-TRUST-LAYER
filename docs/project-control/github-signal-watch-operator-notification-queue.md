@@ -9,6 +9,8 @@
 
 The HC Operator Notification Queue is a future private/admin-only advisory inbox for important HC Signal Watch notifications.
 
+Before any private inbox implementation, maintainers must satisfy the [HC Signal Watch Private Inbox Setup Contract](github-signal-watch-private-inbox-setup.md).
+
 The queue is intended to help a maintainer/operator notice meaningful Signal Watch items without publishing routine operational status into public HC-TRUST-LAYER issues. It is a notification model only; it is not implemented by this PR.
 
 Boundary values for this documentation-only model:

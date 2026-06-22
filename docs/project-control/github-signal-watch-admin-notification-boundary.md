@@ -69,6 +69,8 @@ Future admin-only notification design may consider these genuinely private/admin
 
 Any private issue, GitHub App, or external service path requires separate design and governance review before implementation.
 
+Private inbox implementation also requires the [HC Signal Watch Private Inbox Setup Contract](github-signal-watch-private-inbox-setup.md) to be completed first.
+
 ## Discouraged default channel
 
 Public repository issue comments for routine Signal Watch status are discouraged and default-forbidden for admin-only operational updates.
