@@ -95,6 +95,28 @@ def test_no_action_remains_no_action() -> None:
     assert payload["suggestions"][0]["suggested_type"] == "no_action"
 
 
+def test_report_generated_no_action_text_remains_no_action() -> None:
+    module = _module()
+
+    payload = module.build_suggestions(
+        _report(
+            [
+                {
+                    "priority": "P3",
+                    "source": "GitHub Changelog",
+                    "reason": "no HC-relevant keyword matched this signal",
+                    "recommended_action": "record as no action unless repository operations are affected",
+                    "human_review_required": True,
+                    "automation_boundary": "advisory-only",
+                }
+            ]
+        )
+    )
+
+    assert payload["suggestions"][0]["suggested_type"] == "no_action"
+    assert "No action suggested" in payload["suggestions"][0]["title"]
+
+
 def test_empty_report_produces_no_suggestions() -> None:
     module = _module()
 
