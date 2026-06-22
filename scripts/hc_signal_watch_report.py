@@ -242,11 +242,16 @@ def _load_changelog_signals(path: Path | None) -> list[dict[str, Any]]:
         raise ValueError(f"changelog signal file is not valid JSON: {path}") from exc
 
     if not isinstance(raw, dict):
-        raise ValueError("changelog signal JSON must be the normalized fixture object")
-    if raw.get("mode") != "local_fixture_only":
-        raise ValueError("changelog signal JSON must come from local fixture normalization")
-    if raw.get("network_access") is not False:
-        raise ValueError("changelog signal JSON must declare network_access=false")
+        raise ValueError("changelog signal JSON must be the normalized fixture or live dry-run object")
+    mode = raw.get("mode")
+    if mode == "local_fixture_only":
+        if raw.get("network_access") is not False:
+            raise ValueError("changelog signal JSON must declare network_access=false")
+    elif mode == "manual_live_rss_dry_run":
+        if raw.get("safe_failure") is True or raw.get("fetch_status") != "ok":
+            return []
+    else:
+        raise ValueError("changelog signal JSON must come from local fixture normalization or live RSS dry-run")
 
     raw_signals = raw.get("signals")
     if not isinstance(raw_signals, list):

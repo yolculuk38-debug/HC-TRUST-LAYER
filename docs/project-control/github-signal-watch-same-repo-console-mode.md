@@ -9,7 +9,7 @@
 
 This document defines the current practical HC Signal Watch notification direction for HC-TRUST-LAYER: same-repo, public-safe, evidence-anchored issue notification when an operator needs a surfaced advisory prompt.
 
-HC-TRUST-LAYER remains the single operational repository for the current model. No second private operations repository is required. Signal Watch evidence remains in GitHub Actions summaries and artifacts. The current canonical fixed public-safe issue is `#1082`, titled `HC Signal Watch Console`, as recorded in [HC Signal Watch Console Issue Binding](github-signal-watch-console-issue-binding.md). The first controlled automation updates one latest-status comment on `#1082` only for actionable P0/P1/P2 public-safe signals.
+HC-TRUST-LAYER remains the single operational repository for the current model. No second private operations repository is required. Signal Watch evidence remains in GitHub Actions summaries and artifacts. The current canonical fixed public-safe issue is `#1082`, titled `HC Signal Watch Console`, as recorded in [HC Signal Watch Console Issue Binding](github-signal-watch-console-issue-binding.md). The first controlled automation updates one latest-status comment on `#1082` only for actionable P0/P1/P2 public-safe signals. The workflow uses a split-job permission boundary: pull request report runs are read-only, and only the non-pull_request main-branch `console-comment` job receives `issues: write`.
 
 Boundary values for the controlled latest-status comment mode:
 
@@ -83,7 +83,7 @@ Forbidden content and behavior:
 
 A notification is an early-warning review prompt, not mandatory work.
 
-P0, P1, and P2 signals may create or update the single public-safe latest-status comment on `#1082`. P3, no-action, informational-only, empty reports, and fetch or parse failures without an actionable signal stay quiet.
+P0, P1, and P2 signals from the report artifact may create or update the single public-safe latest-status comment on `#1082`. P3, no-action, informational-only, empty reports, and fetch or parse failures without an actionable signal stay quiet.
 
 After reviewing the evidence and repository context, the operator may dismiss, archive, ignore, watch, escalate, create an issue, or create a pull request. No issue, pull request, or merge action may rely on AI narrative alone.
 

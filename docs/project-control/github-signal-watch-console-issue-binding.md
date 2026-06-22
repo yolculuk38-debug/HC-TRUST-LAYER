@@ -45,7 +45,7 @@ merge_authority=false
 
 - Signal Watch issue-comment automation may target only `#1082`.
 - Automation must not create additional console issues.
-- Automation must not infer another issue from title search if `#1082` is configured.
+- Automation must not infer another issue from title search if `#1082` is configured. Pull request workflow runs must remain read-only and must not receive an issue-write token.
 - If `#1082` is closed, deleted, locked, or renamed, automation must fail closed or stay quiet until a human updates this binding.
 - Issue text must not be parsed as commands.
 - The issue is not a source of truth; it is a notification surface only.

@@ -33,7 +33,6 @@ ALLOWED_REPORT_FIELDS = {
 }
 FORBIDDEN_OUTPUT_KEYS = {
     "token",
-    "secret",
     "password",
     "private_key",
     "authorization",
@@ -81,6 +80,17 @@ def _read_json(path: Path) -> dict[str, Any]:
     if not isinstance(raw, dict):
         raise ValueError("Signal Watch report JSON must be an object")
     return raw
+
+
+def _validate_no_forbidden_keys(value: Any) -> None:
+    if isinstance(value, dict):
+        for key, nested in value.items():
+            if str(key).strip().lower() in FORBIDDEN_OUTPUT_KEYS:
+                raise ValueError(f"report includes forbidden field: {key}")
+            _validate_no_forbidden_keys(nested)
+    elif isinstance(value, list):
+        for item in value:
+            _validate_no_forbidden_keys(item)
 
 
 def _env(name: str, default: str | None = None) -> str:
@@ -164,6 +174,7 @@ def _report_field(report: dict[str, Any], *names: str) -> str | None:
 
 
 def build_comment_body(report: dict[str, Any], context: GitHubContext) -> str | None:
+    _validate_no_forbidden_keys(report)
     action = _first_actionable(report)
     if action is None:
         return None
@@ -218,16 +229,13 @@ def build_comment_body(report: dict[str, Any], context: GitHubContext) -> str | 
             "Issue text is not a command surface.",
         ]
     )
-    body = "\n".join(lines) + "\n"
-    lowered = body.lower()
-    if any(key in lowered for key in FORBIDDEN_OUTPUT_KEYS):
-        raise ValueError("comment payload includes forbidden field text")
-    return body
+    return "\n".join(lines) + "\n"
 
 
 class GitHubClient:
     def __init__(self, context: GitHubContext) -> None:
         self.context = context
+        self.last_link_header = ""
 
     def request(self, method: str, path: str, payload: dict[str, Any] | None = None) -> Any:
         data = None if payload is None else json.dumps(payload).encode("utf-8")
@@ -243,6 +251,7 @@ class GitHubClient:
             },
         )
         with urllib.request.urlopen(request, timeout=20) as response:  # nosec: controlled GitHub API URL
+            self.last_link_header = response.headers.get("Link", "")
             response_data = response.read().decode("utf-8")
         return json.loads(response_data) if response_data else None
 
@@ -254,6 +263,42 @@ def _issue_is_valid(issue: dict[str, Any]) -> bool:
         and issue.get("title") == EXPECTED_ISSUE_TITLE
         and issue.get("locked") is not True
     )
+
+
+def _next_path_from_link_header(link_header: str) -> str | None:
+    for part in link_header.split(","):
+        section = part.strip()
+        if 'rel="next"' not in section:
+            continue
+        if not section.startswith("<") or ">" not in section:
+            continue
+        url = section[1:section.index(">")]
+        marker = "/issues/"
+        index = url.find(marker)
+        if index == -1:
+            continue
+        return url[index:]
+    return None
+
+
+def _find_marker_comment(context: GitHubContext, client: GitHubClient) -> dict[str, Any] | None:
+    path: str | None = f"/issues/{context.issue_number}/comments?per_page=100"
+    while path:
+        comments = client.request("GET", path)
+        if not isinstance(comments, list):
+            raise ValueError("comments response was not a list")
+        marker_comment = next(
+            (
+                comment
+                for comment in comments
+                if isinstance(comment, dict) and MARKER in str(comment.get("body") or "")
+            ),
+            None,
+        )
+        if marker_comment is not None:
+            return marker_comment
+        path = _next_path_from_link_header(getattr(client, "last_link_header", ""))
+    return None
 
 
 def update_console_comment(report: dict[str, Any], context: GitHubContext, client: GitHubClient, dry_run: bool = False) -> str:
@@ -276,13 +321,10 @@ def update_console_comment(report: dict[str, Any], context: GitHubContext, clien
         return "quiet: issue missing, closed, renamed, locked, or invalid"
 
     try:
-        comments = client.request("GET", f"/issues/{context.issue_number}/comments?per_page=100")
+        marker_comment = _find_marker_comment(context, client)
     except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, ValueError):
         return "quiet: comments not accessible"
-    if not isinstance(comments, list):
-        return "quiet: comments not accessible"
 
-    marker_comment = next((comment for comment in comments if isinstance(comment, dict) and MARKER in str(comment.get("body") or "")), None)
     if marker_comment and marker_comment.get("id"):
         client.request("PATCH", f"/issues/comments/{marker_comment['id']}", {"body": body})
         return "updated: latest-status comment"

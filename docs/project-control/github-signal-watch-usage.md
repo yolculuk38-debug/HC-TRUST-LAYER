@@ -45,7 +45,7 @@ The baseline report checks local repository readiness:
 
 ## Scheduled workflow report
 
-`.github/workflows/hc-signal-watch-report.yml` runs the same local report script in a report-only GitHub Actions workflow.
+`.github/workflows/hc-signal-watch-report.yml` runs the Signal Watch report in a split-job GitHub Actions workflow. The `report` job is read-only and produces artifacts. The `console-comment` job is separate, depends on `report`, and is the only job with `issues: write`.
 
 It can run from:
 
@@ -56,8 +56,9 @@ It can run from:
 Expected workflow boundary:
 
 ```text
-permissions: contents: read
-network_access: no explicit external fetch step
+report job permissions: contents: read, actions: read
+console-comment permissions: contents: read, actions: read, issues: write
+network_access: live RSS fetch only on non-pull_request main-branch contexts; safe failure stays quiet
 repository_mutation: false
 approval_authority: false
 merge_authority: false
@@ -76,7 +77,7 @@ hc-signal-watch-report.json
 hc-signal-watch-report.md
 ```
 
-The workflow report is advisory evidence only. For actionable P0/P1/P2 signals on safe main-branch workflow contexts, the workflow may update one controlled latest-status comment on `#1082`. The comment is a notification pointer only and does not replace live PR review, code scanning review, dependency review, GitHub Home inspection, GitHub Changelog inspection, Actions artifacts, or human-supervised validation.
+The workflow report is advisory evidence only. Pull request runs never receive an issue-write token. For actionable P0/P1/P2 signals on safe main-branch workflow contexts, the separate `console-comment` job may update one controlled latest-status comment on `#1082`. The comment is a notification pointer only and does not replace live PR review, code scanning review, dependency review, GitHub Home inspection, GitHub Changelog inspection, Actions artifacts, or human-supervised validation.
 
 ## Operator-provided signal input
 

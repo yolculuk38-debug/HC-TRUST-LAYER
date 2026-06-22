@@ -1,7 +1,7 @@
 name: HC Signal Watch Report
 
 # Security hardening defaults: least-privilege token scopes, deterministic concurrency, and bounded runtime.
-# Governance boundary: report-only. This workflow must not mutate repository state or PR state.
+# Governance boundary: report artifacts are evidence; only the gated console-comment job may update #1082.
 
 on:
   workflow_dispatch:
@@ -12,6 +12,8 @@ on:
       - ".github/workflows/hc-signal-watch-report.yml"
       - "scripts/hc_signal_watch_report.py"
       - "scripts/hc_signal_watch_console_comment.py"
+      - "scripts/hc_signal_watch_live_rss_fetch.py"
+      - "scripts/hc_signal_watch_rss_ingest.py"
       - "docs/project-control/github-signal-watch-policy.md"
       - "docs/project-control/github-signal-watch-usage.md"
       - "docs/project-control/github-signal-watch-console-issue-binding.md"
@@ -23,7 +25,6 @@ on:
 permissions:
   contents: read
   actions: read
-  issues: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -33,28 +34,83 @@ jobs:
   report:
     timeout-minutes: 10
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      actions: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      - name: Build empty Signal Watch input for pull request review
+        if: ${{ github.event_name == 'pull_request' || github.ref != 'refs/heads/main' }}
+        run: |
+          cat > hc-signal-watch-changelog-signals.json <<'JSON'
+          {
+            "advisory_only": true,
+            "public_safe": true,
+            "truth_guarantee": false,
+            "human_review_required": true,
+            "network_access": false,
+            "mode": "local_fixture_only",
+            "signals": []
+          }
+          JSON
+
+      - name: Build live GitHub Changelog Signal Watch input
+        if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
+        run: |
+          python scripts/hc_signal_watch_live_rss_fetch.py \
+            --timeout 10 \
+            --json-output hc-signal-watch-changelog-signals.json \
+            --markdown-output hc-signal-watch-changelog-signals.md
+
       - name: Build Signal Watch JSON report
-        run: python scripts/hc_signal_watch_report.py . --format json > hc-signal-watch-report.json
+        run: python scripts/hc_signal_watch_report.py . --changelog-signals hc-signal-watch-changelog-signals.json --format json > hc-signal-watch-report.json
 
       - name: Build Signal Watch Markdown report
-        run: python scripts/hc_signal_watch_report.py . --format md > hc-signal-watch-report.md
+        run: python scripts/hc_signal_watch_report.py . --changelog-signals hc-signal-watch-changelog-signals.json --format md > hc-signal-watch-report.md
 
       - name: Print Signal Watch report summary
         run: sed -n '1,120p' hc-signal-watch-report.md
 
-      - name: Record report-only boundary
+      - name: Record report boundary
         run: |
           echo "HC Signal Watch Report is advisory-only." >> "$GITHUB_STEP_SUMMARY"
-          echo "This workflow does not approve, merge, label, assign reviewers, open issues, open PRs, approve, merge, update branches, or mutate repository files." >> "$GITHUB_STEP_SUMMARY"
-          echo "Only the gated fixed-console step may create or update one latest-status issue comment on #1082 for actionable P0/P1/P2 public-safe signals." >> "$GITHUB_STEP_SUMMARY"
+          echo "The report job is read-only and never receives issue-write permission." >> "$GITHUB_STEP_SUMMARY"
+          echo "This workflow does not approve, merge, label, assign reviewers, open issues, open PRs, update branches, or mutate repository files." >> "$GITHUB_STEP_SUMMARY"
+          echo "Only the gated console-comment job may create or update one latest-status issue comment on #1082 for actionable P0/P1/P2 public-safe signals." >> "$GITHUB_STEP_SUMMARY"
           echo "Live GitHub Home, Changelog, PR, and check-annotation signals still require human-supervised review." >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Upload Signal Watch report artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: hc-signal-watch-report
+          path: |
+            hc-signal-watch-report.json
+            hc-signal-watch-report.md
+            hc-signal-watch-changelog-signals.json
+            hc-signal-watch-changelog-signals.md
+          retention-days: 14
+
+  console-comment:
+    needs: report
+    if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
+    timeout-minutes: 5
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      actions: read
+      issues: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Download Signal Watch report artifacts
+        uses: actions/download-artifact@v7
+        with:
+          name: hc-signal-watch-report
+
       - name: Update fixed Signal Watch console comment
-        if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HC_SIGNAL_WATCH_CONSOLE_ISSUE: "1082"
@@ -64,12 +120,3 @@ jobs:
           digest="sha256:$(sha256sum hc-signal-watch-report.json | awk '{print $1}')"
           export HC_SIGNAL_WATCH_ARTIFACT_DIGEST="$digest"
           python scripts/hc_signal_watch_console_comment.py
-
-      - name: Upload Signal Watch report artifacts
-        uses: actions/upload-artifact@v7
-        with:
-          name: hc-signal-watch-report
-          path: |
-            hc-signal-watch-report.json
-            hc-signal-watch-report.md
-          retention-days: 14

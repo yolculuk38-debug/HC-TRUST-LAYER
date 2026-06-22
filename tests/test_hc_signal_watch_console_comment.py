@@ -57,7 +57,7 @@ def _report(priority="P1", **extra):
 
 
 class FakeClient:
-    def __init__(self, issue=None, comments=None):
+    def __init__(self, issue=None, comments=None, comment_pages=None):
         self.issue = issue if issue is not None else {
             "number": 1082,
             "state": "open",
@@ -65,14 +65,25 @@ class FakeClient:
             "locked": False,
         }
         self.comments = comments if comments is not None else []
+        self.comment_pages = comment_pages
+        self.last_link_header = ""
         self.calls = []
 
     def request(self, method, path, payload=None):
         self.calls.append((method, path, payload))
         if method == "GET" and path == "/issues/1082":
             return self.issue
-        if method == "GET" and path == "/issues/1082/comments?per_page=100":
-            return self.comments
+        if method == "GET" and path.startswith("/issues/1082/comments"):
+            if self.comment_pages is None:
+                self.last_link_header = ""
+                return self.comments
+            page = "2" if "page=2" in path else "1"
+            comments, next_path = self.comment_pages[page]
+            if next_path:
+                self.last_link_header = f'<https://api.github.com/repos/yolculuk38-debug/HC-TRUST-LAYER{next_path}>; rel="next"'
+            else:
+                self.last_link_header = ""
+            return comments
         if method in {"POST", "PATCH"}:
             return {"ok": True}
         raise AssertionError((method, path, payload))
@@ -130,6 +141,23 @@ def test_existing_marker_comment_is_updated_not_duplicated():
     assert not any(call[0] == "POST" for call in client.calls)
 
 
+def test_marker_comment_on_later_page_is_updated_not_duplicated():
+    module = _module()
+    client = FakeClient(
+        comment_pages={
+            "1": ([{"id": 111, "body": "page one human note"}], "/issues/1082/comments?per_page=100&page=2"),
+            "2": ([{"id": 888, "body": f"page two\n{module.MARKER}"}], None),
+        }
+    )
+
+    result = module.update_console_comment(_report("P1"), _context(module), client)
+
+    assert result == "updated: latest-status comment"
+    assert any(call[0] == "GET" and "page=2" in call[1] for call in client.calls)
+    assert any(call[0] == "PATCH" and call[1] == "/issues/comments/888" for call in client.calls)
+    assert not any(call[0] == "POST" for call in client.calls)
+
+
 def test_no_marker_comment_creates_one_comment_for_actionable_signal_only():
     module = _module()
     client = FakeClient(comments=[{"id": 111, "body": "human note"}])
@@ -157,18 +185,29 @@ def test_issue_body_and_comment_command_text_are_ignored():
     assert not any("/merge" in str(call[2]) for call in client.calls if call[2])
 
 
-def test_forbidden_fields_are_not_included():
+def test_forbidden_field_keys_are_rejected_without_scanning_public_text():
     module = _module()
-    body = module.build_comment_body(
-        _report("P1", token="hidden", raw_log="private details", private_account_data="no"),
-        _context(module),
-    )
-    assert body is not None
-    lowered = body.lower()
     for forbidden in module.FORBIDDEN_OUTPUT_KEYS:
-        assert forbidden not in lowered
-    assert "hidden" not in body
-    assert "private details" not in body
+        try:
+            module.build_comment_body(_report("P1", **{forbidden: "hidden"}), _context(module))
+        except ValueError as exc:
+            assert f"report includes forbidden field: {forbidden}" in str(exc)
+        else:
+            raise AssertionError(f"forbidden field {forbidden} should be rejected")
+
+
+def test_public_secret_scanning_signal_is_allowed():
+    module = _module()
+    report = _report("P1")
+    report["github_changelog_fixture_signals"][0]["title"] = "Secret scanning update"
+    report["github_changelog_fixture_signals"][0]["recommended_action"] = "inspect advisory security signal interpretation"
+    report["recommended_human_actions"][0]["recommended_action"] = "inspect advisory security signal interpretation"
+
+    body = module.build_comment_body(report, _context(module))
+
+    assert body is not None
+    assert "signal_title: Secret scanning update" in body
+    assert "priority: P1" in body
 
 
 def test_dry_run_does_not_call_github(capsys):
@@ -206,6 +245,12 @@ def test_workflow_gating_does_not_run_issue_writes_on_pull_request():
     workflow = (ROOT / ".github" / "workflows" / "hc-signal-watch-report.yml").read_text(encoding="utf-8")
     assert "Update fixed Signal Watch console comment" in workflow
     assert "github.event_name != 'pull_request'" in workflow
+    assert "issues: write" not in workflow.split("jobs:", 1)[0]
+    report_job = workflow.split("  report:", 1)[1].split("  console-comment:", 1)[0]
+    console_job = workflow.split("  console-comment:", 1)[1]
+    assert "issues: write" not in report_job
+    assert "issues: write" in console_job
+    assert "needs: report" in console_job
     assert "github.ref == 'refs/heads/main'" in workflow
     assert "HC_SIGNAL_WATCH_CONSOLE_ISSUE: \"1082\"" in workflow
     assert "python scripts/hc_signal_watch_console_comment.py" in workflow

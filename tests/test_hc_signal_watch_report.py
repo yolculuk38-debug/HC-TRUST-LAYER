@@ -338,3 +338,57 @@ def test_signal_watch_local_rss_fixture_report_golden_snapshot(tmp_path: Path) -
     assert "approval_authority=false" in markdown
     assert "merge_authority=false" in markdown
     assert signals[0]["title"] in markdown
+
+
+def test_signal_watch_report_accepts_live_rss_dry_run_changelog_input(tmp_path: Path) -> None:
+    module = _module()
+    payload = {
+        "mode": "manual_live_rss_dry_run",
+        "network_access": True,
+        "safe_failure": False,
+        "fetch_status": "ok",
+        "signals": [
+            {
+                "source": "GitHub Changelog RSS live dry run",
+                "title": "Secret scanning update",
+                "risk": "high",
+                "recommended_action": "inspect advisory security signal interpretation",
+                "classification_reason": "code scanning, secret scanning, or supply-chain signal",
+                "evidence_gap": None,
+            }
+        ],
+    }
+    payload_path = tmp_path / "live-rss-signals.json"
+    payload_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    report = module.build_report(ROOT, changelog_signals_file=payload_path)
+
+    assert report["github_changelog_fixture_signals"][0]["title"] == "Secret scanning update"
+    assert report["recommended_human_actions"][0]["priority"] == "P1"
+    assert report["recommended_human_actions"][0]["recommended_action"] == "inspect advisory security signal interpretation"
+
+
+def test_signal_watch_report_live_rss_safe_failure_stays_quiet(tmp_path: Path) -> None:
+    module = _module()
+    payload = {
+        "mode": "manual_live_rss_dry_run",
+        "network_access": True,
+        "safe_failure": True,
+        "fetch_status": "error",
+        "fetch_error": "timeout while fetching RSS",
+        "signals": [
+            {
+                "source": "GitHub Changelog RSS live dry run",
+                "title": "Secret scanning update",
+                "risk": "high",
+                "recommended_action": "inspect advisory security signal interpretation",
+            }
+        ],
+    }
+    payload_path = tmp_path / "live-rss-safe-failure.json"
+    payload_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    report = module.build_report(ROOT, changelog_signals_file=payload_path)
+
+    assert report["github_changelog_fixture_signals"] == []
+    assert report["recommended_human_actions"] == []
