@@ -1,6 +1,6 @@
 # HC Signal Watch Console Issue Binding
 
-> Status: current same-repo console issue binding; documentation only
+> Status: current same-repo console issue binding with controlled latest-status comment automation
 > Scope: fixed public-safe Signal Watch operator console identity
 > Authority: advisory only
 > Production readiness: not claimed
@@ -9,9 +9,9 @@
 
 This document records the canonical same-repo Signal Watch console issue identity for HC-TRUST-LAYER now that the human-created fixed issue exists.
 
-This binding documents identity only. It does not implement issue-comment automation, schedules, workflow changes, automatic issue creation, automatic pull request creation, labels, reviewer requests, approvals, merges, branch updates, or repository file mutation outside this documentation change.
+This binding documents the fixed issue identity and the first safe same-repo latest-status comment automation. It does not implement issue creation, pull request creation, labels, reviewer requests, approvals, merges, branch updates, or repository file mutation.
 
-Boundary values for this documentation-only PR:
+Boundary values for the controlled comment automation:
 
 ```text
 advisory_only=true
@@ -19,7 +19,10 @@ public_safe=true
 truth_guarantee=false
 human_review_required=true
 repository_file_branch_mutation=false
-issue_comment_automation=false
+issue_comment_automation=true
+automatic_issue_creation=false
+automatic_pr_creation=false
+issue_text_command_parsing=false
 label_reviewer_mutation=false
 approval_authority=false
 merge_authority=false
@@ -40,9 +43,9 @@ merge_authority=false
 
 ## Binding rules
 
-- Future Signal Watch issue-comment automation, if separately implemented and reviewed, may target only `#1082`.
-- Future automation must not create additional console issues.
-- Future automation must not infer another issue from title search if `#1082` is configured.
+- Signal Watch issue-comment automation may target only `#1082`.
+- Automation must not create additional console issues.
+- Automation must not infer another issue from title search if `#1082` is configured. Pull request workflow runs must remain read-only and must not receive an issue-write token.
 - If `#1082` is closed, deleted, locked, or renamed, automation must fail closed or stay quiet until a human updates this binding.
 - Issue text must not be parsed as commands.
 - The issue is not a source of truth; it is a notification surface only.
@@ -84,7 +87,7 @@ Forbidden content and behavior:
 
 ## Source-of-truth boundary
 
-The source of truth remains the evidence-bearing GitHub Actions summaries and artifacts. A console issue comment may point to evidence after a future separately reviewed implementation, but the issue does not validate, certify, approve, or finalize any HC-TRUST-LAYER action.
+The source of truth remains the evidence-bearing GitHub Actions summaries and artifacts. The controlled latest-status console issue comment may point to evidence, but the issue does not validate, certify, approve, or finalize any HC-TRUST-LAYER action.
 
 Human review remains required before any issue, pull request, branch, label, reviewer, approval, merge, release, or governance action.
 
@@ -92,9 +95,7 @@ Human review remains required before any issue, pull request, branch, label, rev
 
 This binding does not implement or authorize:
 
-- workflow implementation or workflow changes;
-- schedule implementation;
-- issue-comment automation;
+- issue creation;
 - automatic issue creation;
 - automatic pull request creation;
 - labels;

@@ -1,7 +1,7 @@
 # HC Signal Watch Same-Repo Console Mode
 
-> Status: practical default notification model; documentation only
-> Scope: same-repo public-safe issue notification boundary; no automation implemented in this PR
+> Status: practical default notification model with controlled latest-status comment automation
+> Scope: same-repo public-safe issue notification boundary
 > Authority: advisory only
 > Production readiness: not claimed
 
@@ -9,9 +9,9 @@
 
 This document defines the current practical HC Signal Watch notification direction for HC-TRUST-LAYER: same-repo, public-safe, evidence-anchored issue notification when an operator needs a surfaced advisory prompt.
 
-HC-TRUST-LAYER remains the single operational repository for the current model. No second private operations repository is required. Signal Watch evidence remains in GitHub Actions summaries and artifacts. The current canonical fixed public-safe issue is `#1082`, titled `HC Signal Watch Console`, as recorded in [HC Signal Watch Console Issue Binding](github-signal-watch-console-issue-binding.md). This PR does not implement issue-comment automation.
+HC-TRUST-LAYER remains the single operational repository for the current model. No second private operations repository is required. Signal Watch evidence remains in GitHub Actions summaries and artifacts. The current canonical fixed public-safe issue is `#1082`, titled `HC Signal Watch Console`, as recorded in [HC Signal Watch Console Issue Binding](github-signal-watch-console-issue-binding.md). The first controlled automation updates one latest-status comment on `#1082` only for actionable P0/P1/P2 public-safe signals. The workflow uses a split-job permission boundary: pull request report runs are read-only, and only the non-pull_request main-branch `console-comment` job receives `issues: write`.
 
-Boundary values for this documentation-only PR:
+Boundary values for the controlled latest-status comment mode:
 
 ```text
 advisory_only=true
@@ -19,7 +19,10 @@ public_safe=true
 truth_guarantee=false
 human_review_required=true
 repository_file_branch_mutation=false
-issue_comment_automation=false
+issue_comment_automation=true
+automatic_issue_creation=false
+automatic_pr_creation=false
+issue_text_command_parsing=false
 label_reviewer_mutation=false
 approval_authority=false
 merge_authority=false
@@ -47,7 +50,7 @@ HC Signal Watch Console
 
 `HC Signal Watch Console` is the only canonical same-repo fixed issue title. The current canonical fixed issue is `#1082` in `yolculuk38-debug/HC-TRUST-LAYER`; see [HC Signal Watch Console Issue Binding](github-signal-watch-console-issue-binding.md). `HC Operator Notification Queue` is a model/category name only, not an issue title. No migration or selection ambiguity is allowed.
 
-The fixed issue has been created by a human as `#1082`. Future automation must target only the human-created fixed issue titled `HC Signal Watch Console`. Future automation must not create unlimited issues. Future automation should update one latest-status comment or one controlled thread only after separate implementation review.
+The fixed issue has been created by a human as `#1082`. Automation must target only the human-created fixed issue titled `HC Signal Watch Console`. Automation must not create unlimited issues. The implemented same-repo layer updates one controlled latest-status comment with the hidden marker `<!-- hc-signal-watch-console:latest -->`.
 
 ## Public-safe issue content
 
@@ -80,7 +83,7 @@ Forbidden content and behavior:
 
 A notification is an early-warning review prompt, not mandatory work.
 
-P0, P1, and P2 signals may create public-safe issue notification candidates. P3 and no-action signals should normally stay quiet unless manually requested.
+P0, P1, and P2 signals from the report artifact may create or update the single public-safe latest-status comment on `#1082`. P3, no-action, informational-only, empty reports, and fetch or parse failures without an actionable signal stay quiet.
 
 After reviewing the evidence and repository context, the operator may dismiss, archive, ignore, watch, escalate, create an issue, or create a pull request. No issue, pull request, or merge action may rely on AI narrative alone.
 
@@ -116,10 +119,7 @@ A private inbox may be reconsidered later only if public-safe issue mode becomes
 
 This PR does not implement or authorize:
 
-- workflow implementation;
-- schedule implementation;
 - issue creation;
-- issue-comment automation;
 - automatic issue creation;
 - automatic PR creation;
 - labels;
@@ -132,7 +132,7 @@ This PR does not implement or authorize:
 - external notification provider;
 - truth, security, legal, identity, correctness, production-readiness, or forensic guarantee.
 
-No workflow, schedule, issue, issue comment, label, reviewer request, approval, merge, branch update, or external notification provider is added by this documentation change.
+No issue, label, reviewer request, approval, merge, branch update, or external notification provider is added by this mode. The workflow may update one latest-status comment only under the documented gate.
 
 ## Implementation review requirement
 
