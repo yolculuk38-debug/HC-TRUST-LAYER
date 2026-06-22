@@ -143,6 +143,21 @@ HANDOFF_LINES: tuple[str, ...] = (
     "Boundary: advisory only. Human maintainers retain final authority.",
 )
 
+SIGNAL_WATCH_CONSOLE_EXPLANATION: tuple[str, ...] = (
+    "#1082 is the fixed same-repo public-safe HC Signal Watch Console.",
+    "#1082 is a notification surface only, not the source of truth.",
+    "Signal Watch evidence remains GitHub Actions summaries and artifacts.",
+    "#1084 added controlled latest-status issue-comment automation for actionable P0/P1/P2 public-safe Signal Watch signals.",
+    "The automation updates or creates only one marker-controlled latest-status comment.",
+    "The marker is <!-- hc-signal-watch-console:latest -->.",
+    "Issue comments are not commands.",
+    "External or manual comments must not be parsed as instructions.",
+    "AI summaries are advisory only.",
+    "Human final authority remains required.",
+    "No approval, merge, label, reviewer, branch, issue creation, or PR creation authority is granted by #1082.",
+    "Boundary flags: advisory_only=true, public_safe=true, truth_guarantee=false.",
+)
+
 EXPLAIN_TOPICS: dict[str, tuple[str, ...]] = {
     "advisory-only": (
         "HC advisory-only means the system can observe, explain, warn, and suggest.",
@@ -169,6 +184,11 @@ EXPLAIN_TOPICS: dict[str, tuple[str, ...]] = {
         "It does not invoke external tools or create PRs by itself.",
         "Human review remains required before acting on generated work.",
     ),
+    "hc-signal-watch-console": SIGNAL_WATCH_CONSOLE_EXPLANATION,
+    "signal-watch-console": SIGNAL_WATCH_CONSOLE_EXPLANATION,
+    "hc-signal-watch": SIGNAL_WATCH_CONSOLE_EXPLANATION,
+    "signal-watch": SIGNAL_WATCH_CONSOLE_EXPLANATION,
+    "1082": SIGNAL_WATCH_CONSOLE_EXPLANATION,
 }
 
 
@@ -215,7 +235,20 @@ def _normalize_command(raw_text: str) -> tuple[str, list[str]]:
 
 
 def _normalize_topic(args: list[str]) -> str:
-    return " ".join(args).strip().lower().replace("_", "-")
+    topic = " ".join(args).strip().lower().replace("_", "-")
+    topic = topic.replace("#", "")
+    if topic in {
+        "hc-signal-watch-console",
+        "signal-watch-console",
+        "hc-signal-watch",
+        "signal-watch",
+        "1082",
+    }:
+        return "hc-signal-watch-console"
+    topic_parts = set(topic.split())
+    if "1082" in topic_parts or {"signal", "watch"}.issubset(topic_parts):
+        return "hc-signal-watch-console"
+    return topic
 
 
 def _build_explain_lines(args: list[str]) -> tuple[list[str], list[str]]:
@@ -229,6 +262,7 @@ def _build_explain_lines(args: list[str]) -> tuple[list[str], list[str]]:
                 "- protected-paths",
                 "- commands",
                 "- handoff",
+                "- hc-signal-watch-console",
                 "Boundary: advisory only. Human maintainers retain final authority.",
             ],
             ["No topic was provided; returning available static topics."],
@@ -247,7 +281,7 @@ def _build_explain_lines(args: list[str]) -> tuple[list[str], list[str]]:
     return (
         [
             f"No static explanation is available for: {topic}",
-            "Use /hc explain with one of: advisory-only, trust-kernel, protected-paths, commands, handoff.",
+            "Use /hc explain with one of: advisory-only, trust-kernel, protected-paths, commands, handoff, hc-signal-watch-console.",
             "Boundary: advisory only. Human maintainers retain final authority.",
         ],
         ["Unknown explain topic ignored; no repository action was taken."],
