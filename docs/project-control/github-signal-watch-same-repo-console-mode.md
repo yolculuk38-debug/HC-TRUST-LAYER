@@ -39,19 +39,15 @@ The source of truth remains the evidence: the workflow run, generated Signal Wat
 
 ## Fixed issue
 
-Suggested fixed issue title:
+Canonical fixed issue title:
 
 ```text
 HC Signal Watch Console
 ```
 
-Alternative fixed issue title:
+`HC Signal Watch Console` is the only canonical same-repo fixed issue title. `HC Operator Notification Queue` is a model/category name only, not an issue title. No migration or selection ambiguity is allowed.
 
-```text
-HC Operator Notification Queue
-```
-
-The fixed issue must be created by a human before any future automation updates it. Future automation must not create unlimited issues. Future automation should update one latest-status comment or one controlled thread only after separate implementation review.
+The fixed issue must be created by a human before any future automation updates it. Future automation must target only the human-created fixed issue titled `HC Signal Watch Console`. Future automation must not create unlimited issues. Future automation should update one latest-status comment or one controlled thread only after separate implementation review.
 
 ## Public-safe issue content
 

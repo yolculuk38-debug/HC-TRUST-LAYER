@@ -7,7 +7,7 @@
 
 ## Purpose
 
-The HC Operator Notification Queue is an advisory model for important HC Signal Watch notifications. The current practical path is the same-repo public-safe console issue mode documented in [HC Signal Watch Same-Repo Console Mode](github-signal-watch-same-repo-console-mode.md).
+The HC Operator Notification Queue is an advisory model/category for important HC Signal Watch notifications, not an issue title. The current practical path is the same-repo public-safe console issue mode documented in [HC Signal Watch Same-Repo Console Mode](github-signal-watch-same-repo-console-mode.md).
 
 Private inbox setup remains optional, future, and parked. Before any private inbox implementation, maintainers must satisfy the [HC Signal Watch Private Inbox Setup Contract](github-signal-watch-private-inbox-setup.md).
 
@@ -107,7 +107,7 @@ Automatic deletion must not remove evidence artifacts or canonical records. Clea
 
 ## Same-repo practical path and optional private inbox
 
-The current practical path is a same-repo, public-safe, evidence-anchored fixed issue in HC-TRUST-LAYER when a surfaced notification is needed. No `HC-TRUST-OPS` repository or second private repository is required for the current model.
+The current practical path is a same-repo, public-safe, evidence-anchored fixed issue in HC-TRUST-LAYER titled `HC Signal Watch Console` when a surfaced notification is needed. No `HC-TRUST-OPS` repository or second private repository is required for the current model.
 
 GitHub Actions summaries and artifacts remain the current evidence surfaces. They are not replaced by the queue or by any issue comment.
 

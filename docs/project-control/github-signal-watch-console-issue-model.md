@@ -45,9 +45,9 @@ The suggested console issue name is fixed:
 HC Signal Watch Console
 ```
 
-The alternative fixed issue title is `HC Operator Notification Queue`.
+`HC Signal Watch Console` is the only canonical same-repo fixed issue title. `HC Operator Notification Queue` is a model/category name only, not an issue title. No migration or selection ambiguity is allowed.
 
-The fixed console issue must be created by a human before any future workflow may update it. Future automation, if separately proposed and reviewed, may only update that human-created fixed issue, either through one latest-status comment or one controlled thread. This model does not authorize automatic creation of additional issues.
+The fixed console issue must be created by a human before any future workflow may update it. Future automation, if separately proposed and reviewed, must target only the human-created fixed issue titled `HC Signal Watch Console`, either through one latest-status comment or one controlled thread. This model does not authorize automatic creation of additional issues.
 
 ## Source of truth
 

@@ -49,8 +49,9 @@ The exact repository name would have to be chosen by the maintainer if this opti
 
 The maintainer may create one fixed private issue for future inbox updates, such as:
 
-- `HC Operator Notification Queue`
 - `HC Signal Watch Inbox`
+
+`HC Operator Notification Queue` is a model/category name only, not an issue title.
 
 The issue must be created by a human before any future automation can update it.
 
