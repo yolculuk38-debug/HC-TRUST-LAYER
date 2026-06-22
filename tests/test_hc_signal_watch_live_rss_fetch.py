@@ -24,6 +24,17 @@ RSS = """<?xml version=\"1.0\"?>
 </channel></rss>
 """
 
+RSS_WITH_TITLE_ONLY_ITEMS = """<?xml version=\"1.0\"?>
+<rss><channel>
+  <item>
+    <title>First title-only operator signal</title>
+  </item>
+  <item>
+    <title>Second title-only operator signal</title>
+  </item>
+</channel></rss>
+"""
+
 
 def test_parse_rss_classifies_actions_and_no_action():
     payload = {**live.SAFETY_MARKERS, **live.normalize_entries(live.parse_rss(RSS, live.DEFAULT_RSS_URL))}
@@ -33,6 +44,19 @@ def test_parse_rss_classifies_actions_and_no_action():
     assert signals[0]["risk"] == "medium"
     assert signals[1]["impact"] == "none"
     assert signals[1]["recommended_action"] == "record as no action unless repository operations are affected"
+
+
+def test_title_only_items_without_guid_or_link_remain_distinct():
+    payload = {
+        **live.SAFETY_MARKERS,
+        **live.normalize_entries(live.parse_rss(RSS_WITH_TITLE_ONLY_ITEMS, live.DEFAULT_RSS_URL)),
+    }
+
+    assert [signal["title"] for signal in payload["signals"]] == [
+        "First title-only operator signal",
+        "Second title-only operator signal",
+    ]
+    assert payload["duplicates_suppressed"] == []
 
 
 def test_timeout_error_is_safe_failure(monkeypatch):
