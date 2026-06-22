@@ -85,7 +85,7 @@ def parse_rss(xml_text: str, source_url: str) -> list[FeedEntry]:
                 published=_child_text(element, {"pubdate", "published", "updated"}),
                 category=_child_text(element, {"category"}),
                 summary=_child_text(element, {"description", "summary", "content"}),
-                guid=_child_text(element, {"guid", "id"}) or source_url,
+                guid=_child_text(element, {"guid", "id"}),
             )
         )
     return entries
