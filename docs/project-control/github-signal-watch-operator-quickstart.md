@@ -100,6 +100,10 @@ hc-signal-watch-live-rss-dry-run.md
 
 Use the JSON artifact for structured review and the Markdown artifact for operator-readable triage. If the workflow reports a fetch or parse error, treat it as a safe dry-run failure and inspect the artifact before deciding whether to retry or investigate manually.
 
+## Future console issue model
+
+A future issue-based visibility model is documented in [HC Signal Watch Console Issue Model](github-signal-watch-console-issue-model.md). The model defines a fixed, human-created `HC Signal Watch Console` issue for advisory latest-status summaries only. This quickstart does not implement issue comment automation, and the GitHub Actions run plus JSON and Markdown artifacts remain the evidence source for human review.
+
 ## Interpretation guide
 
 Use Signal Watch priorities as triage hints:
