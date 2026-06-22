@@ -169,6 +169,8 @@ merge_authority=false
 
 The workflow includes a bounded job timeout and script-level fetch timeout. Fetch or parse errors are reported as safe dry-run failures in the artifacts instead of creating issues, pull request comments, labels, reviewer requests, approvals, merges, or repository mutations. Human review remains required before any repository action.
 
+The future issue-based visibility model for this dry-run is defined in [HC Signal Watch Console Issue Model](github-signal-watch-console-issue-model.md). That model is documentation only here; it does not implement issue comment automation. Any future workflow that posts or updates the fixed console issue would be issue-comment automation and a GitHub issue state mutation, while repository files and branches remain unchanged. The fixed console issue must be human-created before any future workflow may update it.
+
 ## Required manual live checks
 
 The script and workflow are local/report-only and cannot replace live GitHub inspection.
