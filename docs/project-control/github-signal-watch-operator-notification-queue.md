@@ -107,7 +107,7 @@ Automatic deletion must not remove evidence artifacts or canonical records. Clea
 
 ## Same-repo practical path and optional private inbox
 
-The current practical path is a same-repo, public-safe, evidence-anchored fixed issue in HC-TRUST-LAYER titled `HC Signal Watch Console` when a surfaced notification is needed. No `HC-TRUST-OPS` repository or second private repository is required for the current model.
+The current practical path is a same-repo, public-safe, evidence-anchored fixed issue in HC-TRUST-LAYER titled `HC Signal Watch Console`. The current fixed issue is `#1082`, as recorded in [HC Signal Watch Console Issue Binding](github-signal-watch-console-issue-binding.md). Queue items may surface through `#1082` only after future reviewed implementation; this document does not implement that automation. No `HC-TRUST-OPS` repository or second private repository is required for the current model.
 
 GitHub Actions summaries and artifacts remain the current evidence surfaces. They are not replaced by the queue or by any issue comment.
 

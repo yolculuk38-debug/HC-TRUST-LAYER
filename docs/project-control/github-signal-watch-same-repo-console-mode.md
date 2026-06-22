@@ -9,7 +9,7 @@
 
 This document defines the current practical HC Signal Watch notification direction for HC-TRUST-LAYER: same-repo, public-safe, evidence-anchored issue notification when an operator needs a surfaced advisory prompt.
 
-HC-TRUST-LAYER remains the single operational repository for the current model. No second private operations repository is required. Signal Watch evidence remains in GitHub Actions summaries and artifacts. A single fixed public-safe issue in HC-TRUST-LAYER may be used later as the operator console, but this PR does not create that issue or implement issue-comment automation.
+HC-TRUST-LAYER remains the single operational repository for the current model. No second private operations repository is required. Signal Watch evidence remains in GitHub Actions summaries and artifacts. The current canonical fixed public-safe issue is `#1082`, titled `HC Signal Watch Console`, as recorded in [HC Signal Watch Console Issue Binding](github-signal-watch-console-issue-binding.md). This PR does not implement issue-comment automation.
 
 Boundary values for this documentation-only PR:
 
@@ -45,9 +45,9 @@ Canonical fixed issue title:
 HC Signal Watch Console
 ```
 
-`HC Signal Watch Console` is the only canonical same-repo fixed issue title. `HC Operator Notification Queue` is a model/category name only, not an issue title. No migration or selection ambiguity is allowed.
+`HC Signal Watch Console` is the only canonical same-repo fixed issue title. The current canonical fixed issue is `#1082` in `yolculuk38-debug/HC-TRUST-LAYER`; see [HC Signal Watch Console Issue Binding](github-signal-watch-console-issue-binding.md). `HC Operator Notification Queue` is a model/category name only, not an issue title. No migration or selection ambiguity is allowed.
 
-The fixed issue must be created by a human before any future automation updates it. Future automation must target only the human-created fixed issue titled `HC Signal Watch Console`. Future automation must not create unlimited issues. Future automation should update one latest-status comment or one controlled thread only after separate implementation review.
+The fixed issue has been created by a human as `#1082`. Future automation must target only the human-created fixed issue titled `HC Signal Watch Console`. Future automation must not create unlimited issues. Future automation should update one latest-status comment or one controlled thread only after separate implementation review.
 
 ## Public-safe issue content
 
