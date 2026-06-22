@@ -42,18 +42,64 @@ jobs:
             --json-output hc-signal-watch-live-rss-dry-run.json \
             --markdown-output hc-signal-watch-live-rss-dry-run.md
 
-      - name: Record dry-run boundary
+      - name: Publish dry-run report summary
         run: |
-          echo "HC Signal Watch live RSS dry run is advisory-only." >> "$GITHUB_STEP_SUMMARY"
-          echo "advisory_only=true" >> "$GITHUB_STEP_SUMMARY"
-          echo "public_safe=true" >> "$GITHUB_STEP_SUMMARY"
-          echo "truth_guarantee=false" >> "$GITHUB_STEP_SUMMARY"
-          echo "human_review_required=true" >> "$GITHUB_STEP_SUMMARY"
-          echo "repository_mutation=false" >> "$GITHUB_STEP_SUMMARY"
-          echo "issue_comment_automation=false" >> "$GITHUB_STEP_SUMMARY"
-          echo "label_reviewer_mutation=false" >> "$GITHUB_STEP_SUMMARY"
-          echo "approval_authority=false" >> "$GITHUB_STEP_SUMMARY"
-          echo "merge_authority=false" >> "$GITHUB_STEP_SUMMARY"
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          json_path = Path("hc-signal-watch-live-rss-dry-run.json")
+          markdown_path = Path("hc-signal-watch-live-rss-dry-run.md")
+          summary_path = Path(os.environ["GITHUB_STEP_SUMMARY"])
+
+          payload = json.loads(json_path.read_text(encoding="utf-8")) if json_path.exists() else {}
+          signals = payload.get("signals") or []
+          safe_failure = bool(payload.get("safe_failure", True))
+          if safe_failure:
+              recommended_action = "manual review"
+          elif signals:
+              recommended_action = "review"
+          else:
+              recommended_action = "no-action"
+
+          def marker(name, default):
+              value = payload.get(name, default)
+              return "true" if value is True else "false" if value is False else str(value)
+
+          lines = [
+              "# HC Signal Watch Live RSS Dry Run",
+              "",
+              f"- fetch_status={payload.get('fetch_status', 'missing')}",
+              f"- safe_failure={marker('safe_failure', True)}",
+              f"- signal_count={len(signals)}",
+              f"- recommended_action={recommended_action}",
+              f"- advisory_only={marker('advisory_only', True)}",
+              f"- public_safe={marker('public_safe', True)}",
+              f"- truth_guarantee={marker('truth_guarantee', False)}",
+              f"- human_review_required={marker('human_review_required', True)}",
+              f"- repository_mutation={marker('repository_mutation', False)}",
+              f"- issue_comment_automation={marker('issue_comment_automation', False)}",
+              f"- label_reviewer_mutation={marker('label_reviewer_mutation', False)}",
+              f"- approval_authority={marker('approval_authority', False)}",
+              f"- merge_authority={marker('merge_authority', False)}",
+              "",
+          ]
+
+          report = markdown_path.read_text(encoding="utf-8") if markdown_path.exists() else ""
+          if report.strip():
+              lines.extend(["## Full dry-run report", "", report.rstrip(), ""])
+          else:
+              lines.extend([
+                  "## Full dry-run report",
+                  "",
+                  "Safe failure: Markdown report artifact is missing or empty; human review remains required.",
+                  "",
+              ])
+
+          with summary_path.open("a", encoding="utf-8") as summary:
+              summary.write("\n".join(lines))
+          PY
 
       - name: Upload live RSS dry-run artifacts
         uses: actions/upload-artifact@v7

@@ -110,6 +110,13 @@ def test_workflow_is_manual_only_and_read_only():
     assert "pull-requests: write" not in workflow
     assert "contents: write" not in workflow
     assert "permissions:\n  contents: read" in workflow
+    assert "actions/upload-artifact@v7" in workflow
+    assert "hc-signal-watch-live-rss-dry-run.json" in workflow
+    assert "hc-signal-watch-live-rss-dry-run.md" in workflow
+    assert "GITHUB_STEP_SUMMARY" in workflow
+    assert "Full dry-run report" in workflow
+    assert "Safe failure: Markdown report artifact is missing or empty" in workflow
+    assert "recommended_action" in workflow
     forbidden = ("gh issue", "gh pr comment", "gh pr review", "gh pr merge", "actions/github-script", "add-labels", "request-reviewers")
     for token in forbidden:
         assert token not in workflow
