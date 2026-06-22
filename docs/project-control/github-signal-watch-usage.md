@@ -111,6 +111,19 @@ The output classifies each signal as advisory evidence and recommends an action 
 - inspect dependency update policy;
 - record as no action when there is no HC-relevant match.
 
+## Dry-run issue/PR suggestion text
+
+Operators can convert the local JSON report `recommended_human_actions` into copy-ready dry-run suggestion text. This is local-only text generation. It does not create GitHub issues, PRs, comments, labels, reviewer requests, approvals, merges, workflow runs, or repository state changes.
+
+Example dry-run flow:
+
+```bash
+python scripts/hc_signal_watch_report.py --signals tmp/hc-signals.json --format json > tmp/hc-signal-watch-report.json
+python scripts/hc_signal_watch_suggest.py tmp/hc-signal-watch-report.json --format md
+```
+
+The suggestion output keeps `advisory_only=true`, `public_safe=true`, `truth_guarantee=false`, and `human_review_required=true`. Human review remains required before any repository action.
+
 ## GitHub Changelog fixture signal input
 
 The report can also include normalized local fixture signals produced by `scripts/hc_signal_watch_rss_ingest.py`. This input is local fixture-only and report-only. It reads a saved JSON output file and does not fetch a live RSS feed, call the network, mutate the repository, create issues or comments, change labels or reviewers, approve pull requests, or merge pull requests.
