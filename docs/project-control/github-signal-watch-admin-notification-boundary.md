@@ -101,6 +101,33 @@ A public `HC Signal Watch Console` issue may remain documented as a transparency
 - Schedule may be considered only after notification visibility and permissions are reviewed.
 - Scheduled execution must preserve human-supervised validation and evidence review.
 
+## AI assistant interpretation boundary
+
+Trust the record, not the assistant. AI assistant summaries are advisory only and must not become the source of truth for Signal Watch interpretation.
+
+The source of truth remains:
+
+- the GitHub Actions run;
+- the generated Signal Watch artifacts;
+- the artifact digest or hash when available;
+- the original Signal Watch record.
+
+Any future admin-only notification must be evidence-anchored and include these references when available:
+
+- workflow run link;
+- artifact name or link;
+- artifact digest or hash;
+- `generated_at` value or workflow run timestamp;
+- `recommended_action`;
+- `human_review_required=true`;
+- `truth_guarantee=false`.
+
+An AI assistant must not present a notification as mandatory work without citing the underlying Signal Watch evidence. A Signal-derived issue or pull request must include the Signal evidence reference and explain why the action is needed. Merge and review decisions must not rely on an AI narrative alone.
+
+Operators may dismiss, archive, ignore, watch, or escalate notifications. A notification is not an obligation. Public issue comments remain discouraged and default-forbidden for routine operational status.
+
+This PR remains documentation-only and does not add workflows, scripts, issue-comment automation, schedules, labels, reviewer requests, approvals, merges, repository writes, external services, or LLM decisions.
+
 ## Security boundaries
 
 This boundary forbids implementation in this PR and sets limits for future designs:
