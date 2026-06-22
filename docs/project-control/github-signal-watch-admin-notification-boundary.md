@@ -9,7 +9,7 @@
 
 This document defines the preferred next direction for HC Signal Watch visibility: admin/operator-facing notification, not routine publication into public repository issues.
 
-Signal Watch should help maintainers notice GitHub operational signals without making internal operational summaries the default public issue content. The GitHub Actions run summary and artifacts remain the evidence source. Human final authority remains required before any repository action.
+Signal Watch should help maintainers notice GitHub operational signals without making internal operational summaries the default public issue content. In this public repository, GitHub Actions job summaries and artifacts are public-safe evidence surfaces, not private/admin-only notification channels. Human final authority remains required before any repository action.
 
 Boundary values for this documentation-only PR:
 
@@ -32,8 +32,8 @@ merge_authority=false
 The preferred direction is:
 
 - Signal Watch should not publish routine status into public issues by default.
-- Signal Watch summaries should be admin/operator-facing.
-- GitHub Actions run summaries and artifacts remain the evidence source.
+- Signal Watch notifications should be admin/operator-facing when they go beyond public-safe evidence surfaces.
+- GitHub Actions run summaries and artifacts remain public-safe evidence surfaces, not private/admin-only notification channels.
 - Public issues must not be used as the default notification channel for internal operational signals.
 - Human final authority remains required for interpretation and follow-up.
 
@@ -47,21 +47,26 @@ The intended operator experience is similar to a store-console background check 
 2. An operator receives a concise notification only when attention is needed.
 3. The operator should not need to hunt artifacts manually for every routine run.
 4. Normal no-action runs can stay quiet.
-5. Evidence remains available in the Actions run summary and artifacts for review.
+5. Evidence remains available in the public-safe Actions run summary and artifacts for review.
 
 This analogy is only a UX reference. It does not claim production readiness, external platform equivalence, legal status, security certainty, or correctness guarantees.
 
-## Allowed future notification channels
+## Evidence surfaces and allowed future notification channels
 
-Future notification design may consider these channels, subject to separate review where needed:
+The current evidence surfaces are:
 
 - GitHub Actions job summary;
-- GitHub Actions artifacts;
-- GitHub notification from workflow failure or manual run;
+- GitHub Actions artifacts.
+
+In this public repository, those evidence surfaces are public-safe review surfaces. They are not private/admin-only notification channels and must not be described as private admin notification. They may reduce artifact hunting for operators, but they do not provide private maintainer notification.
+
+Future admin-only notification design may consider these genuinely private/admin-only channels, subject to separate review:
+
+- GitHub notification from workflow failure or manual run, when visibility is limited to maintainers by GitHub permissions;
 - private/admin-only operations repository issue, if created later;
 - future GitHub App or external notification service, only after separate governance review.
 
-The first two channels are already aligned with the current evidence-first model. Any private issue, GitHub App, or external service path requires separate design and governance review before implementation.
+Any private issue, GitHub App, or external service path requires separate design and governance review before implementation.
 
 ## Discouraged default channel
 
@@ -73,15 +78,17 @@ A public `HC Signal Watch Console` issue may remain documented as a transparency
 
 ### Stage 1: Current evidence view
 
-- Actions summary only.
-- Artifacts only.
+- Actions summary only as a public-safe evidence surface.
+- Artifacts only as public-safe evidence surfaces.
 - Manual `workflow_dispatch`.
+- No private/admin-only notification channel yet.
 
 ### Stage 2: Admin-only notification design
 
-- Define private/admin-only notification behavior.
+- Define genuinely private/admin-only notification behavior.
+- Do not classify Actions summaries or artifacts as private/admin-only notification channels.
 - Keep routine status out of public issue comments.
-- Preserve Actions summaries and artifacts as evidence.
+- Preserve Actions summaries and artifacts as public-safe evidence surfaces.
 
 ### Stage 3: Optional private notification implementation
 
@@ -110,10 +117,10 @@ This boundary forbids implementation in this PR and sets limits for future desig
 - no LLM decision;
 - no truth, security, legal, identity, correctness, production-readiness, or forensic certainty guarantee;
 - no external notification provider unless separately reviewed;
-- no secrets exposed to public logs or public issues.
+- no secrets exposed to public logs, public artifacts, public summaries, or public issues.
 
 ## Relationship to the public console issue model
 
 The fixed public `HC Signal Watch Console` issue model remains a possible transparency option. It should be treated as a separately reviewed public visibility model, not as the preferred default for admin-only operational updates.
 
-For current operations, use the Actions summary and artifacts as the review surface. Future private/admin-only notification work should be scoped separately and remain advisory, public-safe in documentation, and human-supervised.
+For current operations, use the Actions summary and artifacts as public-safe evidence review surfaces. Future private/admin-only notification work should be scoped separately and remain advisory, public-safe in documentation, and human-supervised.

@@ -171,7 +171,7 @@ The workflow includes a bounded job timeout and script-level fetch timeout. Fetc
 
 The future issue-based visibility model for this dry-run is defined in [HC Signal Watch Console Issue Model](github-signal-watch-console-issue-model.md). That model is documentation only here; it does not implement issue comment automation. Any future workflow that posts or updates the fixed console issue would be issue-comment automation and a GitHub issue state mutation, while repository files and branches remain unchanged. The fixed console issue must be human-created before any future workflow may update it.
 
-Routine live RSS dry-run status should remain in the Actions summary and artifacts unless an admin-only notification channel is separately designed and reviewed. The preferred next-direction boundary is documented in [HC Signal Watch Admin Notification Boundary](github-signal-watch-admin-notification-boundary.md); public issue comments are not the default channel for internal operational Signal Watch updates.
+Routine live RSS dry-run status should remain in Actions summaries and artifacts as public-safe evidence surfaces unless a genuinely private/admin-only notification channel is separately designed and reviewed. The preferred next-direction boundary is documented in [HC Signal Watch Admin Notification Boundary](github-signal-watch-admin-notification-boundary.md); public issue comments are not the default channel for internal operational Signal Watch updates.
 
 ## Required manual live checks
 
