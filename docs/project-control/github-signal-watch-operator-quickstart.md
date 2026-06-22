@@ -28,14 +28,17 @@ advisory_only=true
 public_safe=true
 truth_guarantee=false
 human_review_required=true
-repository_mutation=false
-issue_comment_automation=false
+repository_file_branch_mutation=false
+issue_comment_automation=true
+automatic_issue_creation=false
+automatic_pr_creation=false
+issue_text_command_parsing=false
 label_reviewer_mutation=false
 approval_authority=false
 merge_authority=false
 ```
 
-These values mean the report and suggestion text are not final decisions. A human operator must inspect the evidence, repository context, open pull requests, checks, and review state before taking any action.
+For local report and suggestion-only flows, `issue_comment_automation=false` still applies. For the gated workflow latest-status comment on `#1082`, the value is `issue_comment_automation=true`. These values mean Signal Watch output is not a final decision. A human operator must inspect the evidence, repository context, open pull requests, checks, and review state before taking any action.
 
 ## Manual JSON signal flow
 
@@ -100,11 +103,11 @@ hc-signal-watch-live-rss-dry-run.md
 
 Use the JSON artifact for structured review and the Markdown artifact for operator-readable triage. If the workflow reports a fetch or parse error, treat it as a safe dry-run failure and inspect the artifact before deciding whether to retry or investigate manually.
 
-Treat the Actions summary and artifacts as the current public-safe evidence view, not as private/admin-only notifications. The current manual same-repo review console is `#1082`, titled `HC Signal Watch Console`, as recorded in [HC Signal Watch Console Issue Binding](github-signal-watch-console-issue-binding.md). Issue-comment automation is not implemented here. No second repository is required for the current model. Optional private/admin-only notifications remain future and parked, as described in [HC Signal Watch Private Inbox Setup Contract](github-signal-watch-private-inbox-setup.md).
+Treat the Actions summary and artifacts as the current public-safe evidence view, not as private/admin-only notifications. The same-repo review console is `#1082`, titled `HC Signal Watch Console`, as recorded in [HC Signal Watch Console Issue Binding](github-signal-watch-console-issue-binding.md). For actionable P0/P1/P2 Signal Watch reports on safe main-branch contexts, the workflow may update one controlled latest-status comment on `#1082`. No second repository is required for the current model. Optional private/admin-only notifications remain future and parked, as described in [HC Signal Watch Private Inbox Setup Contract](github-signal-watch-private-inbox-setup.md).
 
 ## Future console issue model
 
-A future same-repo issue-based visibility model is documented in [HC Signal Watch Same-Repo Console Mode](github-signal-watch-same-repo-console-mode.md) and [HC Signal Watch Console Issue Model](github-signal-watch-console-issue-model.md). The model defines the fixed, human-created `HC Signal Watch Console` issue, currently `#1082`, for public-safe advisory latest-status summaries only. This quickstart does not implement issue comment automation. Any future workflow that posts or updates that fixed issue would be issue-comment automation and a GitHub issue state mutation, while repository files and branches remain unchanged. The GitHub Actions run plus JSON and Markdown artifacts remain the evidence source for human review. A notification is not an obligation; trust the record, not the assistant.
+A future same-repo issue-based visibility model is documented in [HC Signal Watch Same-Repo Console Mode](github-signal-watch-same-repo-console-mode.md) and [HC Signal Watch Console Issue Model](github-signal-watch-console-issue-model.md). The model defines the fixed, human-created `HC Signal Watch Console` issue, currently `#1082`, for public-safe advisory latest-status summaries only. The implemented latest-status path is issue-comment automation and a GitHub issue state mutation, while repository files and branches remain unchanged. The GitHub Actions run plus JSON and Markdown artifacts remain the evidence source for human review. A notification is not an obligation; trust the record, not the assistant.
 
 ## Interpretation guide
 
@@ -112,7 +115,7 @@ Use Signal Watch priorities as triage hints:
 
 | Priority | Operator interpretation |
 | --- | --- |
-| P1/P2 | Inspect promptly and likely prepare an issue or PR suggestion for human review. |
+| P0/P1/P2 | Inspect promptly. If `#1082` has a latest-status notification, open the linked Actions run and artifacts before deciding on any next step. |
 | P3 | Review repository context before deciding whether any action is needed. |
 | P4/no-action | Record only unless repository operations are affected. |
 
@@ -124,7 +127,7 @@ This quickstart does not authorize or provide:
 
 - automatic issue creation;
 - automatic PR creation;
-- comments;
+- uncontrolled comments outside the single gated `#1082` latest-status comment;
 - labels or reviewers;
 - approvals;
 - merges;

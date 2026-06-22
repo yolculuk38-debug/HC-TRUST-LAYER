@@ -61,7 +61,11 @@ network_access: no explicit external fetch step
 repository_mutation: false
 approval_authority: false
 merge_authority: false
-issue_or_comment_creation: false
+repository_file_branch_mutation: false
+issue_comment_automation: true
+automatic_issue_creation: false
+automatic_pr_creation: false
+issue_text_command_parsing: false
 label_or_reviewer_mutation: false
 ```
 
@@ -72,7 +76,7 @@ hc-signal-watch-report.json
 hc-signal-watch-report.md
 ```
 
-The workflow report is advisory evidence only. It does not replace live PR review, code scanning review, dependency review, GitHub Home inspection, GitHub Changelog inspection, or human-supervised validation.
+The workflow report is advisory evidence only. For actionable P0/P1/P2 signals on safe main-branch workflow contexts, the workflow may update one controlled latest-status comment on `#1082`. The comment is a notification pointer only and does not replace live PR review, code scanning review, dependency review, GitHub Home inspection, GitHub Changelog inspection, Actions artifacts, or human-supervised validation.
 
 ## Operator-provided signal input
 
@@ -169,9 +173,9 @@ merge_authority=false
 
 The workflow includes a bounded job timeout and script-level fetch timeout. Fetch or parse errors are reported as safe dry-run failures in the artifacts instead of creating issues, pull request comments, labels, reviewer requests, approvals, merges, or repository mutations. Human review remains required before any repository action.
 
-The same-repo issue-based visibility model for this dry-run is defined in [HC Signal Watch Same-Repo Console Mode](github-signal-watch-same-repo-console-mode.md), [HC Signal Watch Console Issue Model](github-signal-watch-console-issue-model.md), and [HC Signal Watch Console Issue Binding](github-signal-watch-console-issue-binding.md). That model is documentation only here; it does not implement issue comment automation. Any future workflow that posts or updates the fixed console issue would be issue-comment automation and a GitHub issue state mutation, while repository files and branches remain unchanged. The current manual review console is the human-created fixed issue `#1082`, titled `HC Signal Watch Console`; no issue-comment automation is implemented yet.
+The same-repo issue-based visibility model for this dry-run is defined in [HC Signal Watch Same-Repo Console Mode](github-signal-watch-same-repo-console-mode.md), [HC Signal Watch Console Issue Model](github-signal-watch-console-issue-model.md), and [HC Signal Watch Console Issue Binding](github-signal-watch-console-issue-binding.md). That model now includes controlled latest-status issue-comment automation for P0/P1/P2 public-safe signals on the fixed issue `#1082`, titled `HC Signal Watch Console`. The comment points operators to the workflow run and artifacts. Repository files and branches remain unchanged.
 
-Routine live RSS dry-run evidence remains in Actions summaries and artifacts as the current public-safe evidence view. The same-repo fixed issue `#1082` is documented as the current manual review console, issue-comment automation is not implemented, and no second repository is required for the current model. The optional private/admin-only operator queue is separately documented in [HC Signal Watch Operator Notification Queue](github-signal-watch-operator-notification-queue.md), with the parked setup contract in [HC Signal Watch Private Inbox Setup Contract](github-signal-watch-private-inbox-setup.md). The notification boundary is documented in [HC Signal Watch Admin Notification Boundary](github-signal-watch-admin-notification-boundary.md). A notification is not an obligation; trust the record, not the assistant.
+Routine live RSS dry-run evidence remains in Actions summaries and artifacts as the current public-safe evidence view. The same-repo fixed issue `#1082` is the current review console; controlled issue-comment automation is limited to one latest-status comment for actionable P0/P1/P2 Signal Watch reports, and no second repository is required for the current model. The optional private/admin-only operator queue is separately documented in [HC Signal Watch Operator Notification Queue](github-signal-watch-operator-notification-queue.md), with the parked setup contract in [HC Signal Watch Private Inbox Setup Contract](github-signal-watch-private-inbox-setup.md). The notification boundary is documented in [HC Signal Watch Admin Notification Boundary](github-signal-watch-admin-notification-boundary.md). A notification is not an obligation; trust the record, not the assistant.
 
 ## Required manual live checks
 
