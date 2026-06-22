@@ -100,7 +100,7 @@ hc-signal-watch-live-rss-dry-run.md
 
 Use the JSON artifact for structured review and the Markdown artifact for operator-readable triage. If the workflow reports a fetch or parse error, treat it as a safe dry-run failure and inspect the artifact before deciding whether to retry or investigate manually.
 
-Treat the Actions summary and artifacts as the current public-safe evidence view, not as private/admin-only notifications. Genuinely private/admin-only notifications are a future separately reviewed stage, as described in [HC Signal Watch Admin Notification Boundary](github-signal-watch-admin-notification-boundary.md).
+Treat the Actions summary and artifacts as the current public-safe evidence view, not as private/admin-only notifications. The future private/admin-only operator queue is separately documented in [HC Signal Watch Operator Notification Queue](github-signal-watch-operator-notification-queue.md) and is not implemented here. Genuinely private/admin-only notifications are a future separately reviewed stage, as described in [HC Signal Watch Admin Notification Boundary](github-signal-watch-admin-notification-boundary.md).
 
 ## Future console issue model
 
