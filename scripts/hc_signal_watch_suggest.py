@@ -29,6 +29,10 @@ SAFETY_MARKERS = {
 }
 
 NO_ACTION_VALUES = {"", "no-action", "no action", "none"}
+NO_ACTION_PHRASES = (
+    "record as no action",
+    "no action unless repository operations are affected",
+)
 SUGGESTION_AUTOMATION_BOUNDARY = (
     "dry-run text generation only; no GitHub API calls; no network access; "
     "no issue/comment creation; no label/reviewer mutation; no approval authority; no merge authority"
@@ -36,7 +40,8 @@ SUGGESTION_AUTOMATION_BOUNDARY = (
 
 
 def _is_no_action(value: Any) -> bool:
-    return str(value or "").strip().lower() in NO_ACTION_VALUES
+    normalized = str(value or "").strip().lower()
+    return normalized in NO_ACTION_VALUES or any(phrase in normalized for phrase in NO_ACTION_PHRASES)
 
 
 def _suggested_type(priority: str, recommended_action: Any) -> str:
