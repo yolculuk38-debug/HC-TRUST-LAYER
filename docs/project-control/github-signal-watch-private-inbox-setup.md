@@ -1,13 +1,13 @@
 # HC Signal Watch Private Inbox Setup Contract
 
-> Status: future setup contract; documentation only
+> Status: optional future setup contract; parked; documentation only
 > Scope: private/admin-only Signal Watch operator inbox setup requirements
 > Authority: advisory only
 > Production readiness: not claimed
 
 ## Purpose
 
-This document defines the human setup requirements for a future private/admin-only Signal Watch operator inbox.
+This document defines the human setup requirements for a possible future private/admin-only Signal Watch operator inbox. This path is optional, future, and parked. It is not required for current HC-TRUST-LAYER operation because the practical current model is the same-repo public-safe console issue mode documented in [HC Signal Watch Same-Repo Console Mode](github-signal-watch-same-repo-console-mode.md).
 
 This document does not:
 
@@ -35,7 +35,7 @@ merge_authority=false
 
 ## Recommended private channel
 
-A private/admin-only operations repository is the preferred future notification target for private Signal Watch operator notifications.
+A private/admin-only operations repository is only an optional future notification target if same-repo public-safe issue mode becomes insufficient. It is not required for current operation.
 
 Suggested repository name examples:
 
@@ -43,20 +43,21 @@ Suggested repository name examples:
 - `HC-OPERATOR-INBOX`
 - `HC-SIGNAL-INBOX`
 
-The exact repository name must be chosen by the maintainer. The private repository must not be assumed to exist.
+The exact repository name would have to be chosen by the maintainer if this optional path is revived. The private repository must not be assumed to exist, and HC-TRUST-LAYER operation must not require `HC-TRUST-OPS` or any second repository.
 
 ## Required human-created issue
 
 The maintainer may create one fixed private issue for future inbox updates, such as:
 
-- `HC Operator Notification Queue`
 - `HC Signal Watch Inbox`
+
+`HC Operator Notification Queue` is a model/category name only, not an issue title.
 
 The issue must be created by a human before any future automation can update it.
 
 Future automation must not create unlimited issues. Future automation should update one marked latest-status comment or one controlled thread only after separate implementation review.
 
-## Future required configuration
+## Future required configuration if revived
 
 Any future implementation must require explicit maintainer-provided configuration before publishing private operator notifications:
 

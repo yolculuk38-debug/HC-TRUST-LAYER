@@ -1,15 +1,15 @@
 # HC Signal Watch Console Issue Model
 
-> Status: future issue visibility model
+> Status: practical same-repo public-safe issue visibility model
 > Scope: documentation only; no automation implemented in this PR
 > Authority: advisory only
 > Production readiness: not claimed
 
-> Direction note: this fixed public issue model is a transparency option, not the preferred default for admin-only operational Signal Watch updates. Actions summaries and artifacts are public-safe evidence surfaces, not private/admin-only notification channels. For the preferred admin/operator-only notification boundary, see [HC Signal Watch Admin Notification Boundary](github-signal-watch-admin-notification-boundary.md).
+> Direction note: the practical default for now is the same-repo public-safe console issue mode described in [HC Signal Watch Same-Repo Console Mode](github-signal-watch-same-repo-console-mode.md). HC-TRUST-LAYER remains the single operational repository; no second private operations repository is required for the current model.
 
 ## Purpose
 
-The future **HC Signal Watch Console** is a fixed, human-created GitHub issue intended to provide mobile-friendly, operator-facing advisory visibility for HC Signal Watch reports.
+The **HC Signal Watch Console** is a fixed, human-created GitHub issue intended to provide mobile-friendly, operator-facing advisory visibility for HC Signal Watch reports in the same HC-TRUST-LAYER repository.
 
 It exists so operators do not need to remember specific GitHub Actions pages or manually hunt for artifact downloads before reviewing recent Signal Watch status. The console issue is a surfaced summary view only. It keeps the audit trail visible while separating evidence artifacts from convenience summaries.
 
@@ -31,15 +31,23 @@ merge_authority=false
 
 A future workflow that posts or updates a comment in the fixed console issue would have `issue_comment_automation=true` and would mutate GitHub issue state. That future issue-comment update must not be described as `repository_mutation=false`. The narrower boundary is that future comment automation may update only the human-created fixed console issue, while repository files and branches remain unchanged: `repository_file_branch_mutation=false`.
 
+## Same-repo practical default
+
+The same-repo public-safe console issue mode is the practical default for now. Signal Watch evidence remains in Actions summaries and artifacts. The fixed issue is only an advisory notification surface and does not replace evidence review.
+
+No `HC-TRUST-OPS` repository or second private repository is required for the current model. The private inbox path remains optional, future, and parked unless public-safe same-repo issue mode becomes insufficient.
+
 ## Fixed issue
 
-The console issue name is fixed:
+The suggested console issue name is fixed:
 
 ```text
 HC Signal Watch Console
 ```
 
-The fixed console issue must be created by a human before any future workflow may update it. Future automation, if separately proposed and reviewed, may only update that human-created fixed issue. This model does not authorize automatic creation of additional issues.
+`HC Signal Watch Console` is the only canonical same-repo fixed issue title. `HC Operator Notification Queue` is a model/category name only, not an issue title. No migration or selection ambiguity is allowed.
+
+The fixed console issue must be created by a human before any future workflow may update it. Future automation, if separately proposed and reviewed, must target only the human-created fixed issue titled `HC Signal Watch Console`, either through one latest-status comment or one controlled thread. This model does not authorize automatic creation of additional issues.
 
 ## Source of truth
 
