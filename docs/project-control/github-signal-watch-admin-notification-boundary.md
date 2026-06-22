@@ -1,15 +1,15 @@
 # HC Signal Watch Admin Notification Boundary
 
-> Status: preferred next-direction boundary
+> Status: notification boundary
 > Scope: documentation only; no workflow, issue-comment, schedule, or notification automation implemented in this PR
 > Authority: advisory only
 > Production readiness: not claimed
 
 ## Purpose
 
-This document defines the preferred next direction for HC Signal Watch visibility: admin/operator-facing notification, not routine publication into public repository issues.
+This document defines the HC Signal Watch notification boundary for admin/operator-facing review prompts and public-safe same-repo issue visibility.
 
-Signal Watch should help maintainers notice GitHub operational signals without making internal operational summaries the default public issue content. In this public repository, GitHub Actions job summaries and artifacts are public-safe evidence surfaces, not private/admin-only notification channels. Human final authority remains required before any repository action.
+Signal Watch should help maintainers notice GitHub operational signals without exposing secrets, private data, or internal security-sensitive details. In this public repository, GitHub Actions job summaries and artifacts are public-safe evidence surfaces. A fixed same-repo public-safe console issue may be used when evidence-anchored and limited to public-safe content. Human final authority remains required before any repository action.
 
 Boundary values for this documentation-only PR:
 
@@ -27,18 +27,18 @@ merge_authority=false
 
 `public_safe=true` describes this document itself. It does not mean routine Signal Watch operational summaries should be published to public issues by default.
 
-## Preferred direction
+## Practical direction
 
-The preferred direction is:
+The practical direction is:
 
-- Signal Watch should not publish routine status into public issues by default.
-- Signal Watch notifications should be admin/operator-facing when they go beyond public-safe evidence surfaces.
-- The preferred future model for admin/operator notification design is the private/admin-only [HC Signal Watch Operator Notification Queue](github-signal-watch-operator-notification-queue.md).
-- GitHub Actions run summaries and artifacts remain public-safe evidence surfaces, not private/admin-only notification channels.
-- Public issues must not be used as the default notification channel for internal operational signals.
+- Signal Watch evidence remains in Actions summaries and artifacts.
+- Same-repo public-safe console issue mode is the practical default when a surfaced issue notification is needed.
+- The same-repo model is documented in [HC Signal Watch Same-Repo Console Mode](github-signal-watch-same-repo-console-mode.md).
+- No second private repository is required for the current model.
+- Signal Watch notifications should avoid secrets, private data, and internal security-sensitive details.
 - Human final authority remains required for interpretation and follow-up.
 
-This direction preserves operator visibility while avoiding unnecessary public exposure of routine internal operational triage.
+This direction preserves operator visibility while avoiding unnecessary public exposure of internal operational details.
 
 ## Google Play style analogy
 
@@ -61,21 +61,22 @@ The current evidence surfaces are:
 
 In this public repository, those evidence surfaces are public-safe review surfaces. They are not private/admin-only notification channels and must not be described as private admin notification. They may reduce artifact hunting for operators, but they do not provide private maintainer notification.
 
-Future admin-only notification design may consider these genuinely private/admin-only channels, subject to separate review:
+Future notification design may consider these channels, subject to separate review:
 
 - GitHub notification from workflow failure or manual run, when visibility is limited to maintainers by GitHub permissions;
-- private/admin-only operations repository issue, if created later;
+- same-repo public-safe console issue, when evidence-anchored and limited to public-safe content;
+- optional private/admin-only operations repository issue, if created later;
 - future GitHub App or external notification service, only after separate governance review.
 
 Any private issue, GitHub App, or external service path requires separate design and governance review before implementation.
 
-Private inbox implementation also requires the [HC Signal Watch Private Inbox Setup Contract](github-signal-watch-private-inbox-setup.md) to be completed first.
+Private inbox implementation remains optional, future, and parked. If reconsidered later, it requires the [HC Signal Watch Private Inbox Setup Contract](github-signal-watch-private-inbox-setup.md) to be completed first.
 
-## Discouraged default channel
+## Public-safe same-repo issue boundary
 
-Public repository issue comments for routine Signal Watch status are discouraged and default-forbidden for admin-only operational updates.
+Public repository issue comments are allowed only when they are evidence-anchored, public-safe, advisory, and limited to the fixed same-repo console issue model. They must not contain secrets, tokens, credentials, private account data, personal data, raw private logs, or internal security-sensitive details.
 
-A public `HC Signal Watch Console` issue may remain documented as a transparency option, but it is not the preferred default implementation for admin-only Signal Watch updates. Public issue publication must not become the default notification path for internal operational signals.
+The fixed public `HC Signal Watch Console` issue is the practical default for same-repo surfaced notifications when needed. It must not become a command surface, source of truth, or mandatory work list.
 
 ## Future implementation stages
 
@@ -86,12 +87,11 @@ A public `HC Signal Watch Console` issue may remain documented as a transparency
 - Manual `workflow_dispatch`.
 - No private/admin-only notification channel yet.
 
-### Stage 2: Admin-only notification design
+### Stage 2: Same-repo public-safe console design
 
-- Use the [HC Signal Watch Operator Notification Queue](github-signal-watch-operator-notification-queue.md) as the preferred future queue/inbox model.
-- Define genuinely private/admin-only notification behavior.
+- Use [HC Signal Watch Same-Repo Console Mode](github-signal-watch-same-repo-console-mode.md) as the practical default.
 - Do not classify Actions summaries or artifacts as private/admin-only notification channels.
-- Keep routine status out of public issue comments.
+- Keep issue content public-safe, evidence-anchored, and advisory.
 - Preserve Actions summaries and artifacts as public-safe evidence surfaces.
 
 ### Stage 3: Optional private notification implementation
@@ -128,7 +128,7 @@ Any future admin-only notification must be evidence-anchored and include these r
 
 An AI assistant must not present a notification as mandatory work without citing the underlying Signal Watch evidence. A Signal-derived issue or pull request must include the Signal evidence reference and explain why the action is needed. Merge and review decisions must not rely on an AI narrative alone.
 
-Operators may dismiss, archive, ignore, watch, or escalate notifications. A notification is not an obligation. Public issue comments remain discouraged and default-forbidden for routine operational status.
+Operators may dismiss, archive, ignore, watch, or escalate notifications. A notification is not an obligation. Public issue comments are allowed only under the same-repo public-safe console boundary and must remain evidence-anchored and advisory.
 
 This PR remains documentation-only and does not add workflows, scripts, issue-comment automation, schedules, labels, reviewer requests, approvals, merges, repository writes, external services, or LLM decisions.
 
@@ -136,7 +136,7 @@ This PR remains documentation-only and does not add workflows, scripts, issue-co
 
 This boundary forbids implementation in this PR and sets limits for future designs:
 
-- no public issue-comment automation by default;
+- no issue-comment automation in this PR;
 - no automatic issue creation;
 - no automatic PR creation;
 - no labels;
@@ -152,6 +152,6 @@ This boundary forbids implementation in this PR and sets limits for future desig
 
 ## Relationship to the public console issue model
 
-The fixed public `HC Signal Watch Console` issue model remains a possible transparency option. It should be treated as a separately reviewed public visibility model, not as the preferred default for admin-only operational updates.
+The fixed public `HC Signal Watch Console` issue model is the practical same-repo default for surfaced public-safe notifications when needed. See [HC Signal Watch Same-Repo Console Mode](github-signal-watch-same-repo-console-mode.md).
 
-For current operations, use the Actions summary and artifacts as public-safe evidence review surfaces. Future private/admin-only notification work should be scoped separately and remain advisory, public-safe in documentation, and human-supervised.
+For current operations, use the Actions summary and artifacts as public-safe evidence review surfaces. Future private/admin-only notification work is optional, parked, and should be reconsidered only if the same-repo public-safe issue mode becomes insufficient.

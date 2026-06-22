@@ -1,17 +1,17 @@
 # HC Signal Watch Operator Notification Queue
 
 > Status: future queue model; documentation only
-> Scope: private/admin-only Signal Watch operator notification design
+> Scope: same-repo practical notification model with optional future private inbox
 > Authority: advisory only
 > Production readiness: not claimed
 
 ## Purpose
 
-The HC Operator Notification Queue is a future private/admin-only advisory inbox for important HC Signal Watch notifications.
+The HC Operator Notification Queue is an advisory model for important HC Signal Watch notifications. The current practical path is the same-repo public-safe console issue mode documented in [HC Signal Watch Same-Repo Console Mode](github-signal-watch-same-repo-console-mode.md).
 
-Before any private inbox implementation, maintainers must satisfy the [HC Signal Watch Private Inbox Setup Contract](github-signal-watch-private-inbox-setup.md).
+Private inbox setup remains optional, future, and parked. Before any private inbox implementation, maintainers must satisfy the [HC Signal Watch Private Inbox Setup Contract](github-signal-watch-private-inbox-setup.md).
 
-The queue is intended to help a maintainer/operator notice meaningful Signal Watch items without publishing routine operational status into public HC-TRUST-LAYER issues. It is a notification model only; it is not implemented by this PR.
+The queue is intended to help a maintainer/operator notice meaningful Signal Watch items without treating notifications as mandatory work. It is a notification model only; it is not implemented by this PR.
 
 Boundary values for this documentation-only model:
 
@@ -105,13 +105,13 @@ No-action and informational items may be archived or deleted later, but retentio
 
 Automatic deletion must not remove evidence artifacts or canonical records. Cleanup of notification items must remain separate from evidence preservation, artifact retention, and canonical HC:// record boundaries.
 
-## Private/admin-only channel requirement
+## Same-repo practical path and optional private inbox
 
-Future queue implementation should prefer a private/admin-only operations repository issue or another genuinely private channel.
+The current practical path is a same-repo, public-safe, evidence-anchored fixed issue in HC-TRUST-LAYER when a surfaced notification is needed. No `HC-TRUST-OPS` repository or second private repository is required for the current model.
 
-Public HC-TRUST-LAYER issues are not the default channel for routine Signal Watch notifications. Public issue comments must not become the default path for internal operational Signal Watch status.
+GitHub Actions summaries and artifacts remain the current evidence surfaces. They are not replaced by the queue or by any issue comment.
 
-GitHub Actions summaries and artifacts remain public-safe evidence surfaces. They are not the queue itself and must not be described as private/admin-only notification channels.
+Private/admin-only inbox setup remains optional and future. It may be reconsidered later only if public-safe same-repo issue mode becomes insufficient.
 
 ## AI assistant access boundary
 
@@ -131,7 +131,7 @@ The source of truth remains the evidence: the Actions run, generated Signal Watc
 
 ## Future weekly schedule relationship
 
-Weekly Signal Watch scheduling may be considered only after the queue design and private/admin-only notification channel are reviewed.
+Weekly Signal Watch scheduling may be considered only after notification behavior is separately reviewed.
 
 Weekly checks should avoid noise. No-action weekly runs may stay quiet. Only meaningful P0, P1, or P2 items should create operator-facing notification candidates.
 
@@ -145,6 +145,7 @@ This PR does not implement or authorize:
 - schedule implementation;
 - private repository creation;
 - issue comment automation;
+- issue creation;
 - public issue comments;
 - automatic issue creation;
 - automatic PR creation;
