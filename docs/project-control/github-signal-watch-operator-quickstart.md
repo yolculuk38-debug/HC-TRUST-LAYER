@@ -102,7 +102,7 @@ Use the JSON artifact for structured review and the Markdown artifact for operat
 
 ## Future console issue model
 
-A future issue-based visibility model is documented in [HC Signal Watch Console Issue Model](github-signal-watch-console-issue-model.md). The model defines a fixed, human-created `HC Signal Watch Console` issue for advisory latest-status summaries only. This quickstart does not implement issue comment automation, and the GitHub Actions run plus JSON and Markdown artifacts remain the evidence source for human review.
+A future issue-based visibility model is documented in [HC Signal Watch Console Issue Model](github-signal-watch-console-issue-model.md). The model defines a fixed, human-created `HC Signal Watch Console` issue for advisory latest-status summaries only. This quickstart does not implement issue comment automation. Any future workflow that posts or updates that fixed issue would be issue-comment automation and a GitHub issue state mutation, while repository files and branches remain unchanged. The GitHub Actions run plus JSON and Markdown artifacts remain the evidence source for human review.
 
 ## Interpretation guide
 

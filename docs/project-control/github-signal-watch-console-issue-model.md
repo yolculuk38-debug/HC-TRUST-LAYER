@@ -11,21 +11,23 @@ The future **HC Signal Watch Console** is a fixed, human-created GitHub issue in
 
 It exists so operators do not need to remember specific GitHub Actions pages or manually hunt for artifact downloads before reviewing recent Signal Watch status. The console issue is a surfaced summary view only. It keeps the audit trail visible while separating evidence artifacts from convenience summaries.
 
-Expected boundary values for this model:
+Boundary values for this documentation-only PR:
 
 ```text
 advisory_only=true
 public_safe=true
 truth_guarantee=false
 human_review_required=true
-repository_mutation=false
+repository_file_branch_mutation=false
 issue_comment_automation=false
 label_reviewer_mutation=false
 approval_authority=false
 merge_authority=false
 ```
 
-`issue_comment_automation=false` applies to this PR because this document defines the future model only. It does not implement workflow, script, or repository automation.
+`issue_comment_automation=false` applies to this PR because this document defines the future model only. It does not implement workflow, script, issue comment, or repository automation.
+
+A future workflow that posts or updates a comment in the fixed console issue would have `issue_comment_automation=true` and would mutate GitHub issue state. That future issue-comment update must not be described as `repository_mutation=false`. The narrower boundary is that future comment automation may update only the human-created fixed console issue, while repository files and branches remain unchanged: `repository_file_branch_mutation=false`.
 
 ## Fixed issue
 
@@ -79,7 +81,9 @@ If future issue-comment automation is proposed and reviewed separately, the expe
 - include `recommended_action`;
 - include `human_review_required=true`;
 - include `truth_guarantee=false`;
-- include `repository_mutation=false`.
+- include `issue_comment_automation=true` for that future workflow;
+- include that the issue comment update is a GitHub issue state mutation;
+- include `repository_file_branch_mutation=false`.
 
 The latest-status comment may summarize recent advisory status, but reviewers must use the workflow run and artifacts when validating details.
 
@@ -93,7 +97,7 @@ A future issue comment may suggest only bounded, human-reviewed next steps:
 - `prepare PR suggestion`;
 - `watch future GitHub changes`.
 
-These suggestions are advisory triage language. They do not authorize repository mutation, approval, merge, release, or governance decisions.
+These suggestions are advisory triage language. They do not authorize repository file or branch mutation, approval, merge, release, or governance decisions.
 
 ## Forbidden behavior
 
