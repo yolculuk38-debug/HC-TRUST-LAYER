@@ -139,6 +139,8 @@ The report preserves fixture signal fields such as `source`, `title`, `url`, `pu
 
 For a full end-to-end local fixture demo that generates both JSON and Markdown reports in a temporary output directory, see [HC Signal Watch GitHub Changelog Fixture Demo](github-signal-watch-fixture-demo.md).
 
+For a concise end-to-end operator flow from manual JSON signal or live RSS dry-run to advisory report and dry-run suggestions, see [HC Signal Watch Operator Quickstart](github-signal-watch-operator-quickstart.md).
+
 
 ## Manual live GitHub Changelog RSS dry-run
 
