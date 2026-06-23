@@ -32,8 +32,10 @@ The check should preserve HC:// and HC-TRUST-LAYER terminology, avoid changing s
 
 ## Decision rule
 
-- If any candidate is referenced by active navigation, `START_HERE`, operator maps, lifecycle indexes, or planning docs, do not archive it yet.
-- If a candidate is unreferenced but contains audit-significant rationale, prefer archive/stub instead of deletion.
+- Inventory, checklist, cleanup-plan, lifecycle-index, and reference-check mentions are informational references only; they are not blockers by themselves.
+- If a candidate is mentioned only by lifecycle inventory, cleanup plan, or reference-check documents, that mention alone does not block archive/stub consideration.
+- If a candidate is referenced by active navigation, `README`, `START_HERE`, operator maps, active planning docs, governance/runtime dependency docs, or public entrypoints, do not archive it yet.
+- If a candidate is unreferenced by active blockers but contains audit-significant rationale, prefer archive/stub instead of deletion.
 - Deletion remains prohibited without a separate explicit human approval PR.
 
 ## Output classification
