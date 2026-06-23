@@ -8,6 +8,16 @@ This note records a maintainer-provided source summary and evaluates it against 
 
 It is not a protocol decision, release plan, product commitment, or canonical verification record.
 
+## Source pointer and evidence gap
+
+Source type: maintainer-provided external AI/source-summary text.
+
+Origin: the maintainer pasted a Gemini/NotebookLM-style summary of uploaded project screenshots and source photos into the project conversation on 2026-06-23.
+
+External share reference provided by the maintainer: `https://g.co/gemini/share/c3a5ecd3ac98`.
+
+Evidence status: the external share artifact is not stored in this repository and was not independently fetched into this PR. This note therefore records only the maintainer-pasted summary text as advisory source material. Future operators must not treat this note as canonical evidence for the source images, the external tool output, or current repository state.
+
 ## Source summary captured
 
 The source summary suggested these roadmap areas:
