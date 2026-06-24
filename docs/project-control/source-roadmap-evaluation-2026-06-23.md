@@ -10,13 +10,13 @@ It is not a protocol decision, release plan, product commitment, or canonical ve
 
 ## Source pointer and evidence gap
 
-Source type: maintainer-provided external AI/source-summary text.
+Source type: maintainer-provided external advisory summary.
 
-Origin: the maintainer pasted a Gemini/NotebookLM-style summary of uploaded project screenshots and source photos into the project conversation on 2026-06-23.
+Origin: the maintainer pasted an external model-assisted summary of uploaded project screenshots and source photos into the project conversation on 2026-06-23.
 
-External share reference provided by the maintainer: `https://g.co/gemini/share/c3a5ecd3ac98`.
+External source reference: a maintainer-provided external share identifier was recorded for audit traceability: "c3a5ecd3ac98".
 
-Evidence status: the external share artifact is not stored in this repository and was not independently fetched into this PR. This note therefore records only the maintainer-pasted summary text as advisory source material. Future operators must not treat this note as canonical evidence for the source images, the external tool output, or current repository state.
+Evidence status: the external share artifact is not stored in this repository and was not independently fetched into this PR. This note therefore records only the maintainer-pasted summary text as advisory source material. Future operators must not treat this note as canonical evidence for the source images, the external advisory output, or current repository state.
 
 ## Source summary captured
 
@@ -65,7 +65,7 @@ The safe current direction remains:
 1. Inventory validator/runtime/workflow behavior before adding new stabilization work.
 2. Continue public verifier and explorer planning at demo/index level before production behavior.
 3. Convert useful external source summaries into clearly labeled non-canonical notes.
-4. Keep all AI/tool outputs advisory and vendor-neutral.
+4. Keep all advisory source summaries vendor-neutral and advisory.
 
 ## P2 — parked concepts
 
