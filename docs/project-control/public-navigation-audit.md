@@ -4,7 +4,7 @@ This report is preserved as historical project-control audit evidence.
 
 It is no longer treated as an active navigation source or current public-entrypoint decision record.
 
-Later report-control records found no active blocker requiring this file to remain active. The approved safest handling is to keep it in place with this notice rather than delete, move, or rewrite it.
+Later report-control records found no active blocker requiring this file to remain active. The recommended safest handling is to keep it in place with this notice rather than delete, move, or rewrite it.
 
 Current handling is governed by:
 
