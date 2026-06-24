@@ -14,7 +14,7 @@ Source type: maintainer-provided external advisory summary.
 
 Origin: the maintainer pasted an external model-assisted summary of uploaded project screenshots and source photos into the project conversation on 2026-06-23.
 
-External share reference provided by the maintainer: not recorded in this report; the external artifact is not stored in this repository.
+External source reference: a maintainer-provided external share identifier was recorded for audit traceability: "c3a5ecd3ac98".
 
 Evidence status: the external share artifact is not stored in this repository and was not independently fetched into this PR. This note therefore records only the maintainer-pasted summary text as advisory source material. Future operators must not treat this note as canonical evidence for the source images, the external advisory output, or current repository state.
 

@@ -9,7 +9,7 @@ This standard applies to project-control reports and report-like planning or aud
 ## Rule
 
 - Internal repository automation or project-control mechanisms may be described by role when needed.
-- External model/vendor names should not be recorded in reports unless required for reproducibility or legal/audit reasons.
+- External model/vendor names should not be recorded in reports unless required for reproducibility or legal/audit reasons. If reproducibility requires a pointer, prefer a vendor-neutral stable source identifier rather than a model/vendor name.
 - External inputs should be described generically, for example:
   - maintainer-provided external advisory
   - third-party advisory source
