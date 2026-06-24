@@ -4,7 +4,7 @@ This docs-only audit is advisory evidence for HC-TRUST-LAYER cleanup planning. I
 
 ## 1. Executive summary
 
-- **Codex/local environment limitation:** Codex could not independently verify remote GitHub state from this container. The local checkout has no configured Git remote, `gh` is unavailable, and direct shell access to the GitHub API returned a network 403.
+- **Controlled assistant/local environment limitation:** The controlled assistant could not independently verify remote GitHub state from this container. The local checkout has no configured Git remote, `gh` is unavailable, and direct shell access to the GitHub API returned a network 403.
 - **Maintainer/operator verification note:** Live maintainer/operator review identified current open PR #993 during this audit review and current open issue #812, `HC Assistant Console v2`. Issue #812 must remain ACTIVE_KEEP unless explicitly superseded by human review.
 - **Whether cleanup is safe now:** Cleanup implementation is **not safe now**. Only this audit report is safe because it is docs-only and changes no protected behavior. Do not close issues, delete branches, or change workflows, tests, source, generated artifacts, or protected files as part of this audit.
 - **What must remain active:** Governance, security, release audit, branch protection, code scanning/advisory security, validation, terminology, canonical-artifact, policy, PR guard, inventory, and active assistant/control workflows must remain active pending human review.
@@ -60,21 +60,21 @@ Repository evidence: `tests/` contains broad coverage across runtime behavior, p
 ## 4. Branch cleanup review
 
 - **Merged branches safe to delete:** None proven. Local checkout only shows current branch state, and remote branches were not available because no Git remote is configured.
-- **Stale Codex branches:** Cannot be determined from local evidence.
+- **Stale controlled-assistant branches:** Cannot be determined from local evidence.
 - **Branches with open PRs:** Cannot be determined from local evidence.
 - **Branches that must not be touched:** `main` must never be deleted; any branch with an open PR must not be deleted; any branch not proven merged into `main` must not be deleted.
 - **Branches needing human review:** All remote branches until GitHub branch and PR state are reviewed.
 
 Manual GitHub UI steps after human review:
 1. Open GitHub repository → **Pull requests** → confirm no open PR uses the branch.
-2. Open **Branches** → filter stale Codex branches.
+2. Open **Branches** → filter stale controlled-assistant branches.
 3. For each candidate, confirm it is merged into `main` or explicitly human-approved as abandoned.
 4. Delete only the selected branch using GitHub UI branch delete controls.
 5. Never delete `main` or protected/release branches.
 
 ## 5. Issue cleanup review
 
-Codex/local container could not independently inspect all open issues. Live operator review identified #812 as the active HC Assistant Console v2; it must remain ACTIVE_KEEP. Any other issue cleanup requires separate human-reviewed issue audit. Do not close issues from this PR.
+The controlled assistant/local container could not independently inspect all open issues. Live operator review identified #812 as the active HC Assistant Console v2; it must remain ACTIVE_KEEP. Any other issue cleanup requires separate human-reviewed issue audit. Do not close issues from this PR.
 
 | Classification | Issue | Title | Reason | Evidence | Proposed closing comment | State reason |
 |---|---|---|---|---|---|---|
@@ -88,21 +88,21 @@ Human issue cleanup process:
 4. Comment before closure with linked PR evidence.
 5. Use `completed`, `duplicate`, or `not_planned` only when evidence supports that state reason.
 
-## 6. GitHub/Codex messages and notification cleanup
+## 6. GitHub assistant messages and notification cleanup
 
-Repository PRs cannot clean GitHub inbox state, ChatGPT Codex task lists, or notification messages.
+Repository PRs cannot clean GitHub inbox state, controlled-assistant task lists, or notification messages.
 
 | Classification | Evidence | Cleanup path |
 |---|---|---|
-| cannot-clean-from-repo | Notifications and Codex task lists are user/account state, not repository files | Manual cleanup only |
+| cannot-clean-from-repo | Notifications and controlled-assistant task lists are user/account state, not repository files | Manual cleanup only |
 | merged PR task record | Recent local git history shows merged PR references through #992 | Mark related GitHub notifications done/read after confirming merge |
 | active task record | Current audit task | Keep visible until this audit PR is reviewed |
 | duplicate task record | Not proven | Do not archive unless the associated PR is merged or superseded |
-| stale Codex task record | Not proven from repo files | Park pending human inbox review |
+| stale controlled-assistant task record | Not proven from repo files | Park pending human inbox review |
 
 Manual cleanup instructions:
 - Mark merged PR notifications as done/read after confirming the PR is merged.
-- Do not create duplicate PRs from completed Codex task outputs.
+- Do not create duplicate PRs from completed controlled-assistant task outputs.
 - Keep only current open PR and active issue tasks visible.
 - Ignore or archive old GitHub Mention tasks only after confirming their PR is merged or intentionally superseded.
 
