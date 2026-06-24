@@ -1,3 +1,24 @@
+# Archived / superseded notice
+
+This report is preserved as historical project-control audit evidence.
+
+It is no longer treated as an active navigation source or current public-entrypoint decision record.
+
+Later report-control records found no active blocker requiring this file to remain active. The recommended safest handling is to keep it in place with this notice rather than delete, move, or rewrite it.
+
+Current handling is governed by:
+
+- `docs/project-control/report-lifecycle-index.md`
+- `docs/project-control/archiveable-report-reference-findings-2026-06-23.md`
+- `docs/project-control/public-navigation-audit-final-reference-search-2026-06-24.md`
+- `docs/project-control/public-navigation-audit-archive-stub-plan-2026-06-24.md`
+
+Deletion is not authorized.
+Path movement is not authorized.
+This file remains audit evidence.
+
+---
+
 # Public Navigation Audit
 
 > **Mode:** REPORT ONLY  
