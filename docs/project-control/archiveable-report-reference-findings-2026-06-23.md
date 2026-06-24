@@ -29,15 +29,14 @@ References were classified into these review categories:
 | --- | --- | --- | --- | --- | --- |
 | `docs/project-control/public-navigation-audit.md` | Informational inventory references only, based on lifecycle/cleanup/reference-check mentions | Not confirmed | Current evidence points to lifecycle inventory, cleanup plan, and reference-check mentions rather than active navigation/operator dependencies. | Archive/stub candidate, pending one final active-navigation search. | Do not delete; consider archive/stub only in a later PR if no active navigation references are found. |
 | `docs/project-control/repository-cleanup-audit-2026-06-15.md` | Active project-control references appear present, including `next-actions`, `operator-entry-map`, `task-ledger`, and `project-state` | Yes, until these project-control references are superseded or rewritten in a later PR | The report appears connected to active project-control context and should not be treated as inventory-only without additional review. | Keep/reference for now. | Do not archive yet; first determine whether those active references still matter. |
-| `docs/project-control/workflow-run-noise-audit-2026-06-16.md` | Informational inventory references only, based on lifecycle/cleanup/reference-check mentions | Not confirmed | Current evidence points to lifecycle inventory, cleanup plan, and reference-check mentions rather than active workflow/CI decision dependencies. | Archive/stub candidate, pending one final workflow-noise search. | Do not delete; consider archive/stub only in a later PR if no active workflow/CI decision references are found. |
+| `docs/project-control/workflow-run-noise-audit-2026-06-16.md` | Active CI/workflow successor references appear present | Yes, until successor CI/workflow review references are superseded or rewritten | Successor workflow/CI review reports appear to follow this audit, including `auto-merge-policy-overlap-review-2026-06-16.md` and `push-to-main-duplication-review-2026-06-16.md`. | Keep/reference for now. | Do not archive yet; first determine whether the successor workflow/CI review chain still depends on it. |
 | `docs/project-control/public-explorer-planning-gap-review.md` | Active planning/public-explorer references appear present, including `public-explorer-navigation` and `public-explorer-maturity-checklist` | Yes, until public explorer planning is superseded | The report appears connected to active Public Explorer planning context and should not be archived while that planning remains current. | Keep active/reference for now. | Do not archive yet; revisit after public explorer planning is updated or superseded. |
 
 ## Recommended next PR
 
-The next PR may be an archive/stub plan only for candidates without active blockers. Based on this preliminary finding, likely candidates are:
+The next PR may be an archive/stub plan only for candidates without active blockers. Based on this preliminary finding, the only likely candidate is:
 
-- `docs/project-control/public-navigation-audit.md`
-- `docs/project-control/workflow-run-noise-audit-2026-06-16.md`
+- `docs/project-control/public-navigation-audit.md`, pending one final active-navigation search
 
 No archive, stub, or delete action is authorized by this PR.
 
