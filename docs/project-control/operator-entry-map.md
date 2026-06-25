@@ -93,16 +93,17 @@ Boundary: advisory only. Human maintainers retain final authority.
 8. docs/project-control/hc-assistant-console-guide.md
 9. docs/project-control/hc-trust-engineer-command-interface.md
 10. docs/project-control/hc-engineer-command-surface-status.md
-11. docs/project-control/repository-assistant-baseline-status.md
-12. docs/project-control/local-verifier-example-navigation-status.md
-13. docs/project-control/hc-assistant-console-issue-template.md
-14. docs/project-control/governance-evidence-review-checklist.md
-15. docs/project-control/governance-evidence-review-handoff.md
-16. docs/project-control/evidence-artifact-inspection-guide.md
-17. docs/project-control/repository-structure-triage-2026-06-16.md
-18. docs/project-control/repository-index-chain-2026-06-16.md
-19. docs/project-control/repository-cleanup-phase1-checkpoint-2026-06-16.md
-20. docs/terminology-audit.md
+11. docs/project-control/hc-trust-engineer-closure-report-mode.md
+12. docs/project-control/repository-assistant-baseline-status.md
+13. docs/project-control/local-verifier-example-navigation-status.md
+14. docs/project-control/hc-assistant-console-issue-template.md
+15. docs/project-control/governance-evidence-review-checklist.md
+16. docs/project-control/governance-evidence-review-handoff.md
+17. docs/project-control/evidence-artifact-inspection-guide.md
+18. docs/project-control/repository-structure-triage-2026-06-16.md
+19. docs/project-control/repository-index-chain-2026-06-16.md
+20. docs/project-control/repository-cleanup-phase1-checkpoint-2026-06-16.md
+21. docs/terminology-audit.md
 
 ## Public Validator Planning Reference
 
@@ -122,9 +123,10 @@ For HC Control Bot / HC Trust Engineer work, read these documents before proposi
 6. docs/project-control/hc-control-bot-advisory-comment-template.md
 7. docs/project-control/hc-trust-engineer-command-interface.md
 8. docs/project-control/hc-engineer-command-surface-status.md
-9. docs/project-control/repository-assistant-baseline-status.md
-10. scripts/hc_control_bot.py
-11. tests/test_hc_control_bot.py
+9. docs/project-control/hc-trust-engineer-closure-report-mode.md
+10. docs/project-control/repository-assistant-baseline-status.md
+11. scripts/hc_control_bot.py
+12. tests/test_hc_control_bot.py
 
 Current boundary:
 
