@@ -1,0 +1,33 @@
+{
+  "repository": "HC-TRUST-LAYER",
+  "generated_at": "2026-06-25T00:00:00Z",
+  "evidence_window": "Illustrative local emitter fixture only; no live repository state asserted.",
+  "open_pr_count": 1,
+  "recent_merged_prs": ["#123"],
+  "chain_id": "project-control-local-emitter-sample",
+  "chain_type": "project_control",
+  "chain_status": "partially_complete",
+  "next_action_title": "Review local HC Trust Engineer emitter output",
+  "next_action_type": "follow_up_planning_action",
+  "risk_level": "low",
+  "known_uncertainties": [
+    "Fixture data is illustrative and not canonical repository evidence.",
+    "Human maintainer review remains required before any follow-up action."
+  ],
+  "evidence_reviewed": [
+    "docs/project-control/hc-trust-engineer-local-emitter-plan.md",
+    "docs/project-control/hc-trust-engineer-operating-loop-output-contract.md"
+  ],
+  "related_prs": ["#123"],
+  "chain_evidence": ["Local fixture demonstrates output-contract shape only."],
+  "next_action_reason": "The emitter output can be reviewed locally before any human-selected follow-up.",
+  "allowed_scope": [
+    "tests/fixtures/project_control/**"
+  ],
+  "forbidden_scope": ["records/**", "schema/**", ".github/workflows/**"],
+  "risk_reason": "The fixture and emitter are local-only, advisory, and do not change repository authority.",
+  "handoff_recommendation": "Review the local emitter output as advisory project-control material.",
+  "decision_needed": "Decide whether the advisory next-action candidate is useful, needs revision, or should be deferred.",
+  "safe_next_step": "Run the local emitter and output-contract validator, then inspect the JSON envelope.",
+  "do_not_do": "Do not treat this output as approval, merge readiness, certification, or repository-state proof."
+}
