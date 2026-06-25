@@ -1,0 +1,72 @@
+{
+  "report_type": "hc_trust_engineer_operating_loop",
+  "generated_at": "2026-06-25T00:00:00Z",
+  "repository": "HC-TRUST-LAYER",
+  "source_of_truth": "GitHub state for PRs, merges, comments, reviews, issues, and checks",
+  "evidence_window": "Illustrative fixture only; no repository state asserted",
+  "advisory_only": true,
+  "public_safe": true,
+  "truth_guarantee": false,
+  "human_review_required": true,
+  "repository_mutation": false,
+  "issue_comment_automation": false,
+  "label_reviewer_mutation": false,
+  "approval_authority": false,
+  "merge_authority": false,
+  "hard_boundary_markers": [
+    "advisory_only=true",
+    "public_safe=true",
+    "truth_guarantee=false",
+    "human_review_required=true",
+    "repository_mutation=false",
+    "issue_comment_automation=false",
+    "label_reviewer_mutation=false",
+    "approval_authority=false",
+    "merge_authority=false"
+  ],
+  "outputs": [
+    {
+      "section": "STATE_SUMMARY",
+      "summary": "Illustrative report shape for an HC Trust Engineer Operating Loop review.",
+      "evidence_reviewed": ["Example project-control output contract"],
+      "open_pr_count": 1,
+      "recent_merged_prs": ["#123"],
+      "known_uncertainties": ["Fixture data is illustrative and not repository evidence."]
+    },
+    {
+      "section": "CHAIN_STATUS",
+      "chain_id": "project-control-output-contract-sample",
+      "chain_type": "project_control",
+      "related_prs": ["#123"],
+      "status": "partially_complete",
+      "evidence": ["Example report envelope fixture"],
+      "uncertainty": ["Human maintainer review remains required."]
+    },
+    {
+      "section": "NEXT_ACTION_CANDIDATE",
+      "action_type": "follow_up_planning_action",
+      "title": "Review local output-contract validation sample",
+      "reason": "The fixture illustrates deterministic validation boundaries before any future report-only emitter.",
+      "allowed_scope": ["scripts/**", "tests/project_control/**", "tests/fixtures/project_control/**"],
+      "forbidden_scope": ["records/**", "schema/**", ".github/workflows/**"],
+      "expected_risk": "low",
+      "human_decision_required": true
+    },
+    {
+      "section": "RISK_BOUNDARY_CLASSIFICATION",
+      "risk_level": "low",
+      "reason": "The sample is local-only, advisory, and does not change authority or repository state.",
+      "protected_paths_touched": false,
+      "automation_authority_change": false,
+      "runtime_or_validator_impact": false
+    },
+    {
+      "section": "HUMAN_HANDOFF_NOTE",
+      "recommendation": "Human maintainer may review whether the local fixture and validator match the output contract.",
+      "decision_needed": "Accept, revise, or defer the local validation sample.",
+      "safe_next_step": "Run the local validator and review the fixture diff.",
+      "do_not_do": "Do not comment, label, approve, merge, or mutate repository state automatically.",
+      "final_authority": "Human maintainer"
+    }
+  ]
+}
