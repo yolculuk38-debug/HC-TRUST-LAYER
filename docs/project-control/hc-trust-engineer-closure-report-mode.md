@@ -2,15 +2,17 @@
 
 Status: project-control design note; advisory and report-only.
 
+This note defines only closure report mode. It does not define or expand a full HC Trust Engineer operating loop.
+
 ## Purpose
 
 Closure report mode is a bounded capability of the existing HC Trust Engineer / report-only advisory line. It reviews project-control report chains and proposes `READY_FOR_CLOSURE_NOTE` only when repository evidence shows that a chain appears complete enough for a human-reviewed closure note.
 
-The mode helps maintainers identify when a project-control report sequence has reached a stable handoff point. It does not create the closure note, decide repository truth, or mutate repository state.
+The mode helps maintainers identify when a project-control report sequence appears ready for a closure-note recommendation. It does not create the closure note, decide repository truth, or mutate repository state.
 
 ## Scope
 
-Closure report mode applies only to project-control advisory/report chains, including report lifecycle references, project-control indexes, archived reference reports, finding reports, and related maintainer-directed evidence.
+Closure report mode applies only to project-control advisory/report chains, including report lifecycle references, project-control indexes, archived reference reports, finding reports, and direct human maintainer direction for the reviewed chain.
 
 It does not decide:
 
@@ -90,7 +92,7 @@ If any condition is missing, unclear, or contradicted by repository evidence, th
 
 ## Human handoff
 
-A closure report mode result is only a recommendation. A human maintainer decides whether to create a pull request, issue, comment, archive action, or other repository-facing follow-up.
+A closure report mode result is only a recommendation. A human maintainer decides whether to create a pull request, issue, comment, archive action, or another repository-facing follow-up.
 
 Human final authority remains required for closure notes and any repository action. The mode does not create autonomous governance authority for HC Trust Engineer, HC Control Bot, or any other agent.
 
