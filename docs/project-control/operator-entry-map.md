@@ -46,10 +46,11 @@ E. branch cleanup remains open for complete branch-list triage. A previous conne
 7. Repository index chain: [`docs/project-control/repository-index-chain-2026-06-16.md`](repository-index-chain-2026-06-16.md)
 8. Cleanup phase 1 checkpoint: [`docs/project-control/repository-cleanup-phase1-checkpoint-2026-06-16.md`](repository-cleanup-phase1-checkpoint-2026-06-16.md)
 9. HC Trust Engineer operating loop: [`docs/project-control/hc-trust-engineer-operating-loop.md`](hc-trust-engineer-operating-loop.md)
-10. Governance evidence review checklist: [`docs/project-control/governance-evidence-review-checklist.md`](governance-evidence-review-checklist.md)
-11. Governance evidence review handoff: [`docs/project-control/governance-evidence-review-handoff.md`](governance-evidence-review-handoff.md)
-12. Evidence artifact inspection guide: [`docs/project-control/evidence-artifact-inspection-guide.md`](evidence-artifact-inspection-guide.md)
-13. Active assistant console: [#812 HC Assistant Console v2](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/812)
+10. HC Trust Engineer operating loop output contract: [`docs/project-control/hc-trust-engineer-operating-loop-output-contract.md`](hc-trust-engineer-operating-loop-output-contract.md)
+11. Governance evidence review checklist: [`docs/project-control/governance-evidence-review-checklist.md`](governance-evidence-review-checklist.md)
+12. Governance evidence review handoff: [`docs/project-control/governance-evidence-review-handoff.md`](governance-evidence-review-handoff.md)
+13. Evidence artifact inspection guide: [`docs/project-control/evidence-artifact-inspection-guide.md`](evidence-artifact-inspection-guide.md)
+14. Active assistant console: [#812 HC Assistant Console v2](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/812)
 
 Do not repeat #811, #813, #814, #826, #828, or assistant-console / command-surface / repository-assistant-baseline synchronization work unless new repository evidence appears. Treat #763 as closed historical evidence only.
 
