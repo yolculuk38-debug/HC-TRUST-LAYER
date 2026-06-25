@@ -45,10 +45,11 @@ E. branch cleanup remains open for complete branch-list triage. A previous conne
 6. Repository structure triage: [`docs/project-control/repository-structure-triage-2026-06-16.md`](repository-structure-triage-2026-06-16.md)
 7. Repository index chain: [`docs/project-control/repository-index-chain-2026-06-16.md`](repository-index-chain-2026-06-16.md)
 8. Cleanup phase 1 checkpoint: [`docs/project-control/repository-cleanup-phase1-checkpoint-2026-06-16.md`](repository-cleanup-phase1-checkpoint-2026-06-16.md)
-9. Governance evidence review checklist: [`docs/project-control/governance-evidence-review-checklist.md`](governance-evidence-review-checklist.md)
-10. Governance evidence review handoff: [`docs/project-control/governance-evidence-review-handoff.md`](governance-evidence-review-handoff.md)
-11. Evidence artifact inspection guide: [`docs/project-control/evidence-artifact-inspection-guide.md`](evidence-artifact-inspection-guide.md)
-12. Active assistant console: [#812 HC Assistant Console v2](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/812)
+9. HC Trust Engineer operating loop: [`docs/project-control/hc-trust-engineer-operating-loop.md`](hc-trust-engineer-operating-loop.md)
+10. Governance evidence review checklist: [`docs/project-control/governance-evidence-review-checklist.md`](governance-evidence-review-checklist.md)
+11. Governance evidence review handoff: [`docs/project-control/governance-evidence-review-handoff.md`](governance-evidence-review-handoff.md)
+12. Evidence artifact inspection guide: [`docs/project-control/evidence-artifact-inspection-guide.md`](evidence-artifact-inspection-guide.md)
+13. Active assistant console: [#812 HC Assistant Console v2](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/812)
 
 Do not repeat #811, #813, #814, #826, #828, or assistant-console / command-surface / repository-assistant-baseline synchronization work unless new repository evidence appears. Treat #763 as closed historical evidence only.
 
