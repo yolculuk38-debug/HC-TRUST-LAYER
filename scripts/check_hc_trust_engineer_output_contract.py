@@ -88,6 +88,23 @@ SECTION_REQUIRED_FIELDS = {
     ],
 }
 
+OPTIONAL_SECTION_REQUIRED_FIELDS = {
+    "READY_FOR_CLOSURE_NOTE": [
+        "chain_id",
+        "reason",
+        "evidence",
+        "human_action_required",
+        "must_follow_closure_report_mode_rules",
+    ],
+    "NOT_READY_FOR_CLOSURE": [
+        "chain_id",
+        "missing_evidence",
+        "blocker",
+        "uncertainty",
+        "recommended_follow_up",
+    ],
+}
+
 REQUIRED_SECTIONS = set(SECTION_REQUIRED_FIELDS)
 CHAIN_STATUS_VALUES = {
     "complete",
@@ -133,6 +150,14 @@ def _section_map(outputs: Any) -> dict[str, dict[str, Any]]:
     return sections
 
 
+def _validate_section_fields(
+    section: dict[str, Any], section_name: str, required_fields: list[str]
+) -> None:
+    for field in required_fields:
+        if field not in section:
+            raise ContractError(f"{section_name} missing required field: {field}")
+
+
 def validate_contract(payload: dict[str, Any]) -> None:
     envelope = _require_mapping(payload, "envelope")
 
@@ -144,7 +169,9 @@ def validate_contract(payload: dict[str, Any]) -> None:
         actual = envelope[field]
         if actual is not expected:
             expected_text = str(expected).lower()
-            actual_text = str(actual).lower() if isinstance(actual, bool) else repr(actual)
+            actual_text = (
+                str(actual).lower() if isinstance(actual, bool) else repr(actual)
+            )
             raise ContractError(
                 f"{field} must be exactly {expected_text}; got {actual_text}"
             )
@@ -161,10 +188,15 @@ def validate_contract(payload: dict[str, Any]) -> None:
         raise ContractError(f"missing required output section: {section_name}")
 
     for section_name, required_fields in SECTION_REQUIRED_FIELDS.items():
-        section = sections[section_name]
-        for field in required_fields:
-            if field not in section:
-                raise ContractError(f"{section_name} missing required field: {field}")
+        _validate_section_fields(
+            sections[section_name], section_name, required_fields
+        )
+
+    for section_name, required_fields in OPTIONAL_SECTION_REQUIRED_FIELDS.items():
+        if section_name in sections:
+            _validate_section_fields(
+                sections[section_name], section_name, required_fields
+            )
 
     status = sections["CHAIN_STATUS"]["status"]
     if status not in CHAIN_STATUS_VALUES:
@@ -187,9 +219,13 @@ def validate_contract(payload: dict[str, Any]) -> None:
         "NEXT_ACTION_CANDIDATE.forbidden_scope",
     )
     if "schemas/**" in forbidden_scope:
-        raise ContractError("NEXT_ACTION_CANDIDATE.forbidden_scope must not use schemas/**")
+        raise ContractError(
+            "NEXT_ACTION_CANDIDATE.forbidden_scope must not use schemas/**"
+        )
     if "schema/**" not in forbidden_scope:
-        raise ContractError("NEXT_ACTION_CANDIDATE.forbidden_scope must include schema/**")
+        raise ContractError(
+            "NEXT_ACTION_CANDIDATE.forbidden_scope must include schema/**"
+        )
 
 
 def load_contract(path: Path) -> dict[str, Any]:
@@ -213,7 +249,10 @@ def main(argv: list[str] | None = None) -> int:
     try:
         validate_contract(load_contract(path))
     except ContractError as exc:
-        print(f"HC Trust Engineer output contract validation failed: {exc}", file=sys.stderr)
+        print(
+            f"HC Trust Engineer output contract validation failed: {exc}",
+            file=sys.stderr,
+        )
         return 1
 
     print(f"HC Trust Engineer output contract sample is valid: {path}")
