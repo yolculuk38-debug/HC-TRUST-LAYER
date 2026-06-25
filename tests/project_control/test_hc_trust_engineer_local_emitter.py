@@ -114,3 +114,96 @@ def test_failure_path_does_not_print_partial_json_to_stdout(tmp_path):
     assert result.returncode != 0
     assert result.stdout == ""
     assert "risk_level has invalid value" in result.stderr
+
+
+def risk_section(payload):
+    return section(payload, "RISK_BOUNDARY_CLASSIFICATION")
+
+
+def test_allowed_scope_schema_upgrades_risk_and_sets_protected_path(tmp_path):
+    path = write_input(tmp_path, allowed_scope=["schema/**"], risk_level="low")
+
+    payload = emit_from_file(path)
+
+    risk = risk_section(payload)
+    assert risk["risk_level"] == "high"
+    assert risk["protected_paths_touched"] is True
+    assert risk["automation_authority_change"] is False
+    assert risk["runtime_or_validator_impact"] is False
+
+
+def test_allowed_scope_validator_sets_runtime_impact_and_upgrades_risk(tmp_path):
+    path = write_input(
+        tmp_path,
+        allowed_scope=["scripts/check_hc_trust_engineer_output_contract.py"],
+        risk_level="low",
+    )
+
+    payload = emit_from_file(path)
+
+    risk = risk_section(payload)
+    assert risk["risk_level"] == "high"
+    assert risk["protected_paths_touched"] is False
+    assert risk["automation_authority_change"] is False
+    assert risk["runtime_or_validator_impact"] is True
+
+
+def test_allowed_scope_workflow_sets_authority_change_and_upgrades_risk(tmp_path):
+    path = write_input(tmp_path, allowed_scope=[".github/workflows/**"], risk_level="low")
+
+    payload = emit_from_file(path)
+
+    risk = risk_section(payload)
+    assert risk["risk_level"] == "high"
+    assert risk["protected_paths_touched"] is True
+    assert risk["automation_authority_change"] is True
+    assert risk["runtime_or_validator_impact"] is False
+
+
+def test_forbidden_scope_schema_alone_does_not_set_protected_path(tmp_path):
+    path = write_input(
+        tmp_path,
+        allowed_scope=["tests/fixtures/project_control/example.json"],
+        forbidden_scope=["schema/**"],
+        risk_level="low",
+    )
+
+    payload = emit_from_file(path)
+
+    risk = risk_section(payload)
+    assert risk["risk_level"] == "low"
+    assert risk["protected_paths_touched"] is False
+    assert risk["automation_authority_change"] is False
+    assert risk["runtime_or_validator_impact"] is False
+
+
+def test_input_high_risk_remains_high(tmp_path):
+    path = write_input(
+        tmp_path,
+        allowed_scope=["tests/fixtures/project_control/example.json"],
+        risk_level="high",
+    )
+
+    payload = emit_from_file(path)
+
+    risk = risk_section(payload)
+    assert risk["risk_level"] == "high"
+    assert risk["protected_paths_touched"] is False
+    assert risk["automation_authority_change"] is False
+    assert risk["runtime_or_validator_impact"] is False
+
+
+def test_normal_safe_scope_remains_low_with_all_risk_flags_false(tmp_path):
+    path = write_input(
+        tmp_path,
+        allowed_scope=["tests/fixtures/project_control/example.json"],
+        risk_level="low",
+    )
+
+    payload = emit_from_file(path)
+
+    risk = risk_section(payload)
+    assert risk["risk_level"] == "low"
+    assert risk["protected_paths_touched"] is False
+    assert risk["automation_authority_change"] is False
+    assert risk["runtime_or_validator_impact"] is False

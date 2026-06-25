@@ -22,9 +22,7 @@
   "chain_evidence": ["Local fixture demonstrates output-contract shape only."],
   "next_action_reason": "The emitter output can be reviewed locally before any human-selected follow-up.",
   "allowed_scope": [
-    "scripts/hc_trust_engineer_local_emitter.py",
-    "tests/project_control/test_hc_trust_engineer_local_emitter.py",
-    "tests/fixtures/project_control/hc_trust_engineer_local_emitter_input_sample.json"
+    "tests/fixtures/project_control/**"
   ],
   "forbidden_scope": ["records/**", "schema/**", ".github/workflows/**"],
   "risk_reason": "The fixture and emitter are local-only, advisory, and do not change repository authority.",

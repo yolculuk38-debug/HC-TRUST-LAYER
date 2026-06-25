@@ -42,6 +42,34 @@ NEXT_ACTION_VALUES = {
     "blocked_action",
 }
 RISK_LEVEL_VALUES = {"low", "medium", "high"}
+PROTECTED_SCOPE_PREFIXES = (
+    "records/",
+    "qr/",
+    "hash/",
+    "agents/",
+    "schema/",
+    "schemas/",
+    ".github/workflows/",
+    "src/",
+)
+PROTECTED_SCOPE_GLOBS = {
+    "records/**",
+    "qr/**",
+    "hash/**",
+    "agents/**",
+    "schema/**",
+    "schemas/**",
+    ".github/workflows/**",
+    "src/**",
+}
+AUTOMATION_AUTHORITY_TERMS = (
+    "workflow",
+    "automation_authority",
+    "approval_authority",
+    "merge_authority",
+    "label_reviewer",
+    "issue_comment",
+)
 
 REQUIRED_INPUT_FIELDS = [
     "repository",
@@ -93,6 +121,90 @@ def _require_string(data: dict[str, Any], field: str) -> str:
     if not isinstance(value, str) or not value:
         raise EmitterInputError(f"{field} must be a non-empty string")
     return value
+
+
+def _scope_entry(entry: str) -> str:
+    normalized = entry.strip()
+    while normalized.startswith("./"):
+        normalized = normalized[2:]
+    return normalized
+
+
+def _scope_targets(entry: str, path: str) -> bool:
+    normalized = _scope_entry(entry)
+    normalized_path = _scope_entry(path)
+    if normalized == normalized_path:
+        return True
+    if normalized.endswith("/**"):
+        return normalized_path.startswith(normalized[:-3])
+    return normalized.startswith(f"{normalized_path}/")
+
+
+def _scope_has_protected_path(scope: list[str]) -> bool:
+    for entry in scope:
+        normalized = _scope_entry(entry)
+        if normalized in PROTECTED_SCOPE_GLOBS:
+            return True
+        if any(normalized.startswith(prefix) for prefix in PROTECTED_SCOPE_PREFIXES):
+            return True
+    return False
+
+
+def _scope_has_runtime_or_validator_impact(scope: list[str]) -> bool:
+    for entry in scope:
+        normalized = _scope_entry(entry)
+        name = Path(normalized).name.lower()
+        if normalized.startswith("scripts/") or normalized.startswith("src/"):
+            return True
+        if normalized in {
+            "scripts/check_hc_trust_engineer_output_contract.py",
+            "scripts/hc_trust_engineer_local_emitter.py",
+        }:
+            return True
+        if any(term in name for term in ("validator", "check", "governance", "emitter")):
+            return True
+    return False
+
+
+def _input_suggests_automation_authority_change(data: dict[str, Any]) -> bool:
+    explicit = data.get("automation_authority_change")
+    if isinstance(explicit, bool):
+        return explicit
+    values = [
+        str(data.get("next_action_title", "")),
+        str(data.get("next_action_reason", "")),
+        str(data.get("risk_reason", "")),
+    ]
+    return any(
+        term in value.lower()
+        for value in values
+        for term in AUTOMATION_AUTHORITY_TERMS
+    )
+
+
+def _derive_risk_boundary(
+    data: dict[str, Any], allowed_scope: list[str], forbidden_scope: list[str]
+) -> dict[str, Any]:
+    del forbidden_scope  # Forbidden-only paths are boundaries, not candidate touches.
+
+    protected_paths_touched = _scope_has_protected_path(allowed_scope)
+    runtime_or_validator_impact = _scope_has_runtime_or_validator_impact(allowed_scope)
+    automation_authority_change = any(
+        _scope_targets(entry, ".github/workflows") for entry in allowed_scope
+    ) or _input_suggests_automation_authority_change(data)
+    derived_high_risk = (
+        protected_paths_touched
+        or runtime_or_validator_impact
+        or automation_authority_change
+    )
+    risk_level = "high" if derived_high_risk else data["risk_level"]
+
+    return {
+        "risk_level": risk_level,
+        "protected_paths_touched": protected_paths_touched,
+        "automation_authority_change": automation_authority_change,
+        "runtime_or_validator_impact": runtime_or_validator_impact,
+    }
 
 
 def load_input(path: Path) -> dict[str, Any]:
@@ -161,6 +273,7 @@ def build_envelope(data: dict[str, Any]) -> dict[str, Any]:
     if "schema/**" not in forbidden_scope:
         forbidden_scope.append("schema/**")
     forbidden_scope = [item for item in forbidden_scope if item != "schemas/**"]
+    risk_boundary = _derive_risk_boundary(data, allowed_scope, forbidden_scope)
 
     return {
         "report_type": "hc_trust_engineer_operating_loop",
@@ -201,19 +314,19 @@ def build_envelope(data: dict[str, Any]) -> dict[str, Any]:
                 ),
                 "allowed_scope": allowed_scope,
                 "forbidden_scope": forbidden_scope,
-                "expected_risk": data["risk_level"],
+                "expected_risk": risk_boundary["risk_level"],
                 "human_decision_required": True,
             },
             {
                 "section": "RISK_BOUNDARY_CLASSIFICATION",
-                "risk_level": data["risk_level"],
+                "risk_level": risk_boundary["risk_level"],
                 "reason": data.get(
                     "risk_reason",
                     "Local-only report output does not grant automation authority or mutate repository state.",
                 ),
-                "protected_paths_touched": False,
-                "automation_authority_change": False,
-                "runtime_or_validator_impact": False,
+                "protected_paths_touched": risk_boundary["protected_paths_touched"],
+                "automation_authority_change": risk_boundary["automation_authority_change"],
+                "runtime_or_validator_impact": risk_boundary["runtime_or_validator_impact"],
             },
             {
                 "section": "HUMAN_HANDOFF_NOTE",
