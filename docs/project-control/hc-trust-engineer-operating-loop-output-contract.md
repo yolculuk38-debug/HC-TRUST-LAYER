@@ -199,7 +199,7 @@ outputs:
       - "docs/project-control/**"
     forbidden_scope:
       - "records/**"
-      - "schemas/**"
+      - "schema/**"
       - "scripts/**"
     expected_risk: low
     human_decision_required: true
@@ -215,6 +215,20 @@ outputs:
     safe_next_step: "Review GitHub evidence before opening any PR."
     do_not_do: "Do not comment, label, approve, merge, or mutate repository state automatically."
     final_authority: "Human maintainer"
+```
+
+Illustrative exact marker block for grep-able boundary checks:
+
+```text
+advisory_only=true
+public_safe=true
+truth_guarantee=false
+human_review_required=true
+repository_mutation=false
+issue_comment_automation=false
+label_reviewer_mutation=false
+approval_authority=false
+merge_authority=false
 ```
 
 ## Closure Note Relationship
