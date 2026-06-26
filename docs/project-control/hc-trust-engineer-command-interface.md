@@ -34,6 +34,7 @@ Current implementation mode:
 - machine-readable JSON output;
 - static response maps and checklists only;
 - issue and pull request comments starting with `/hc` can trigger the listener;
+- the listener may post or update advisory comments, but parser output must not mutate claim, task, label, reviewer, pull request, branch, file, workflow, approval, close, or merge state;
 - trusted default-branch checkout for command execution;
 - no PR-branch code execution;
 - no live pull request inspection by the parser;
@@ -269,6 +270,7 @@ Current parser boundaries:
 
 - does not read live GitHub issues or pull requests;
 - does not create a queue entry, claim ledger, handoff package, branch, pull request, label, reviewer request, approval, close, merge, file, or workflow;
+- may be posted by the advisory `/hc` listener, but does not mutate claim or task state through issue comments;
 - does not call `scripts/hc_task_claim.py` automatically;
 - returns static report-only guidance.
 
@@ -281,6 +283,7 @@ Validates only the visible task ID format. It does not look up task state, reser
 Current parser boundaries:
 
 - does not read live GitHub issues, pull requests, labels, reviewers, branches, files, workflows, or task state;
+- may be posted by the advisory `/hc` listener, but does not mutate claim or task state through issue comments;
 - does not write repository state;
 - does not create a claim ledger;
 - does not call GitHub API, network, subprocess, workflow APIs, LLMs, Codex, Copilot, or other agents;

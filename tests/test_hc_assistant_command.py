@@ -406,7 +406,7 @@ def _assert_claim_boundaries(result):
     assert result["human_review_required"] is True
     joined = "\n".join(result["response_lines"] + result["warnings"])
     assert "repository_mutation=false" in joined
-    assert "issue_comment_automation=false" in joined
+    assert "claim_state_issue_comment_automation=false" in joined
     assert "label_reviewer_mutation=false" in joined
     assert "approval_authority=false" in joined
     assert "merge_authority=false" in joined
@@ -431,6 +431,16 @@ def test_queue_command_returns_advisory_guidance():
     assert "Claim comes before handoff" in joined
     assert "Human maintainer decides" in joined
     _assert_claim_boundaries(result)
+
+
+def test_claim_command_acknowledges_advisory_listener_without_claim_state_mutation():
+    result = parse_hc_command("/hc claim HC-TASK-2026-001").to_dict()
+    joined = "\n".join(result["response_lines"])
+
+    assert "the /hc listener may post or update an advisory issue comment" in joined
+    assert "issue comments do not create, reserve, release, or mutate claim/task state" in joined
+    assert "claim_state_issue_comment_automation=false" in joined
+    assert "- issue_comment_automation=false" not in result["response_lines"]
 
 
 def test_claim_valid_task_id_returns_report_only_no_mutation_guidance():
