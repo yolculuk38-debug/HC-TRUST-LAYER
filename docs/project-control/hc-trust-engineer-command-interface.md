@@ -256,7 +256,13 @@ The following commands are not required for the first implementation:
 /hc onboarding
 /hc glossary
 /hc demo
+/hc queue
+/hc claim HC-TASK-YYYY-NNN
+/hc release HC-TASK-YYYY-NNN
+/hc task status HC-TASK-YYYY-NNN
 ```
+
+The queue and claim commands are planned only, not implemented. They require separate governance-reviewed PRs before implementation.
 
 They should be added only after the core commands are stable and after separate governance-reviewed PRs.
 
