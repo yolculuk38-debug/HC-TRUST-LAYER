@@ -20,34 +20,56 @@ This document defines how HC-TRUST-LAYER turns a maintainer request into a small
 4. Maintainer authorizes any scoped handoff.
 5. A coding assistant implements one scoped PR at a time.
 6. HC Trust Engineer checks metadata, diff, files, checks, reviews, threads, and comments.
-7. HC Trust Engineer performs a delayed second inspection before merge-ready status.
+7. HC Trust Engineer observes the visible PR review window before merge-ready reporting; checks and workflows are not delayed.
 8. Feedback or failed checks trigger a scoped fix loop.
 9. Merge readiness is reported to the maintainer.
 10. Merge occurs only after explicit maintainer command.
 11. HC Trust Engineer verifies the merged state and records the result.
 
-## HC Review Wait Gate
+## HC Review Window
 
-This gate is documentation-only operational guidance. It does not create automation, approval authority, merge authority, labels, reviewer requests, closes, or workflow changes.
+This review window is documentation-only operational guidance for visible pull request review readiness. It does not create automation, approval authority, merge authority, labels, reviewer requests, closes, workflow changes, or a GitHub check.
 
-Rules:
+The 90-second timer is a visible PR note, PR body field, or maintainer/Codex handoff comment convention. It is not a CI-blocking check and must not delay Automation Gate, GitHub Checks, or any existing workflow. Do not add a new workflow, check, status, label, or automation permission for this timer.
 
-1. When a pull request is opened or updated, record T0 as the latest head SHA observation time.
+Suggested visible PR note:
+
+```text
+⏳ HC Review Window
+- Head SHA:
+- Window: 90 seconds after latest PR update or head SHA observation
+- Eligible after:
+- Purpose: allow late Codex review/comments before HC Trust Engineer reports merge-readiness
+- Checks are not delayed by this timer
+- Merge still requires final HC Trust Engineer review and explicit maintainer command
+```
+
+Reaction and comment markers:
+
+- 👀 may indicate review observation has started.
+- ⏳ in the PR body or a PR comment may indicate the review window is active.
+- ✅ in the PR body or a PR comment may indicate the review window elapsed.
+- These markers are advisory only and do not create approval, merge authority, labels, reviewers, closes, or task authority.
+
+Final pass behavior:
+
+1. When a pull request is opened or updated, record T0 as the latest PR update time or latest head SHA observation time in a visible PR note when useful.
 2. Do not declare merge-ready from the first quick pass.
-3. Wait at least 90 seconds before final merge-readiness reporting when Codex review may still arrive.
-4. After the wait, perform a second pass over:
+3. HC Trust Engineer checks whether the 90-second review window has elapsed without delaying checks or workflows.
+4. HC Trust Engineer confirms the head SHA is unchanged since the recorded observation.
+5. HC Trust Engineer performs a final pass over:
    - pull request metadata;
    - head SHA;
    - changed files and diff scope;
    - checks and workflow conclusions;
    - pull request comments;
+   - Codex comments;
    - review submissions;
-   - review threads and resolved state;
-   - Codex comments.
-5. If Codex P1/P2 feedback, failed checks, unresolved threads, or scope issues exist, do not merge and do not report merge-ready.
-6. If the wait window has passed and the pull request is clean, report merge-ready to the maintainer.
-7. Merge still requires explicit maintainer command.
-8. After merge, wait about 30 seconds and verify:
+   - review threads and resolved state.
+6. If Codex P1/P2 feedback, failed checks, unresolved threads, changed head SHA, or scope issues exist, do not report merge-ready.
+7. If the review window has elapsed, the head SHA is unchanged, and the pull request is clean, merge-ready may be reported to the maintainer.
+8. Merge still requires final HC Trust Engineer review and explicit maintainer command.
+9. After merge, wait about 30 seconds and verify:
    - pull request state is closed;
    - `merged=true`;
    - merge commit SHA is recorded;
