@@ -136,6 +136,10 @@ Task IDs are coordination aids only. They are not canonical records, proof of tr
 
 It evaluates local fixtures only. It does not create claims, write ledgers, call GitHub, automate issue comments, invoke agents, assign labels or reviewers, approve, close, merge, or change repository state.
 
+### Report-only `/hc claim` command surface
+
+The `/hc queue`, `/hc claim HC-TASK-YYYY-NNN`, `/hc release HC-TASK-YYYY-NNN`, and `/hc task status HC-TASK-YYYY-NNN` command forms are report-only parser outputs in `scripts/hc_assistant_command.py`. They do not create claims, reserve tasks, release claims, read live GitHub state, call the local evaluator automatically, write repository state, or replace maintainer judgment. Use `scripts/hc_task_claim.py` with a maintainer-provided local JSON fixture for local deterministic evaluation, and leave claim acknowledgement or release decisions to a human maintainer.
+
 ### Security model
 
 - Issue comments are untrusted input.
