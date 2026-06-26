@@ -20,39 +20,67 @@ This document defines how HC-TRUST-LAYER turns a maintainer request into a small
 4. Maintainer authorizes any scoped handoff.
 5. A coding assistant implements one scoped PR at a time.
 6. HC Trust Engineer checks metadata, diff, files, checks, reviews, threads, and comments.
-7. HC Trust Engineer performs a delayed second inspection before merge-ready status.
+7. HC Trust Engineer reads the visible PR review-window marker before merge-ready reporting; checks and workflows are not delayed.
 8. Feedback or failed checks trigger a scoped fix loop.
 9. Merge readiness is reported to the maintainer.
 10. Merge occurs only after explicit maintainer command.
 11. HC Trust Engineer verifies the merged state and records the result.
 
-## HC Review Wait Gate
+## HC Review Window
 
-This gate is documentation-only operational guidance. It does not create automation, approval authority, merge authority, labels, reviewer requests, closes, or workflow changes.
+This review window is documentation-only operational guidance for a visible pull request marker convention. It does not create approval authority, rejection authority, merge authority, labels, assignments, reviewer requests, closes, task authority, workflow delay, or a GitHub check.
 
-Rules:
+The 90-second timer is a visible PR body note, PR comment, or maintainer/Codex handoff comment convention. It is not a CI-blocking check and must not delay Automation Gate, GitHub Checks, or any existing workflow. Automation Gate remains fast and does not wait 90 seconds. Do not add a workflow, check, status, label, reviewer, or task authority path for this timer in this documentation-only PR.
 
-1. When a pull request is opened or updated, record T0 as the latest head SHA observation time.
+Visible PR marker convention:
+
+```text
+<!-- hc-review-window -->
+👀 ⏳ HC Review Window
+- Head SHA: <head_sha>
+- Observed at: <utc timestamp>
+- Eligible after: <utc timestamp + 90s>
+- Status: waiting for late Codex review/comments before HC Trust Engineer may report merge-readiness
+- Checks are not delayed by this timer
+- Merge still requires final HC Trust Engineer review and explicit maintainer command
+```
+
+Reaction and comment markers:
+
+- 👀 may indicate review observation has started.
+- ⏳ in the PR body or a PR comment may indicate the review window is active.
+- ✅ in a maintainer or HC Trust Engineer PR comment may indicate the review window elapsed.
+- These markers are advisory only and do not create approval, merge authority, labels, reviewers, closes, or task authority.
+
+Final pass behavior:
+
+1. When a pull request is opened or updated, use a visible PR marker when useful to record the head SHA, observed UTC time, and eligible-after UTC time.
 2. Do not declare merge-ready from the first quick pass.
-3. Wait at least 90 seconds before final merge-readiness reporting when Codex review may still arrive.
-4. After the wait, perform a second pass over:
+3. HC Trust Engineer reads the marker and checks whether the 90-second review window has elapsed without delaying checks or workflows.
+4. If the review window has not elapsed, do not report merge-ready; report the waiting state instead.
+5. HC Trust Engineer confirms the head SHA is unchanged since the marker observation.
+6. HC Trust Engineer performs a final pass over:
    - pull request metadata;
    - head SHA;
    - changed files and diff scope;
    - checks and workflow conclusions;
    - pull request comments;
+   - Codex comments;
    - review submissions;
-   - review threads and resolved state;
-   - Codex comments.
-5. If Codex P1/P2 feedback, failed checks, unresolved threads, or scope issues exist, do not merge and do not report merge-ready.
-6. If the wait window has passed and the pull request is clean, report merge-ready to the maintainer.
-7. Merge still requires explicit maintainer command.
-8. After merge, wait about 30 seconds and verify:
+   - review threads and resolved state.
+7. If Codex P1/P2 feedback, failed checks, unresolved threads, changed head SHA, non-green checks, or scope issues exist, do not report merge-ready.
+8. If the review window has elapsed, the head SHA is unchanged, checks are green, PR comments/Codex comments/reviews/threads are clean, and diff scope is acceptable, merge-ready may be reported to the maintainer.
+9. Merge still requires final HC Trust Engineer review and explicit maintainer command.
+10. After merge, wait about 30 seconds and verify:
    - pull request state is closed;
    - `merged=true`;
    - merge commit SHA is recorded;
    - no unexpected open pull request remains in the same mission scope;
    - relevant actions/checks are not showing a new blocker.
+
+## Future CI follow-up
+
+A separate CI PR should add automatic HC Review Window marker creation or updates after this documentation-only PR merges. That future work should use existing checks where safe, avoid delaying CI, avoid new authority, and remain human-reviewable.
 
 ## Boundary
 

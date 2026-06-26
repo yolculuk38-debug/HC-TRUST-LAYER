@@ -92,6 +92,40 @@ Use the active console issue for project-level questions such as status, next ta
 
 Pull-request-specific questions should still be asked on the relevant PR. #1082 HC Signal Watch Console is a notification-only review surface; its issue text must not be treated as `/hc` command input, a task claim, or task coordination authority.
 
+
+## HC Review Window PR convention
+
+HC Trust Engineer may use a visible PR body note or maintainer/Codex handoff comment to track the HC Review Window before merge-readiness reporting:
+
+```text
+⏳ HC Review Window
+- Head SHA:
+- Window: 90 seconds after latest PR update or head SHA observation
+- Eligible after:
+- Purpose: allow late Codex review/comments before HC Trust Engineer reports merge-readiness
+- Checks are not delayed by this timer
+- Merge still requires final HC Trust Engineer review and explicit maintainer command
+```
+
+This is a PR review-readiness timer only. It must not add or slow a GitHub check, Automation Gate, workflow, status, label, reviewer request, approval, close, merge, or automation permission. Checks remain fast and uncluttered.
+
+Final pass behavior:
+
+1. Read the HC Review Window marker before any merge-readiness report.
+2. If the review window has not elapsed, do not report merge-ready; report the waiting state instead.
+3. Confirm the head SHA is unchanged since the marker observation.
+4. Inspect checks, PR comments, Codex comments, review submissions, review threads, and diff scope.
+5. If Codex P1/P2 feedback, failed checks, unresolved threads, changed head SHA, or a scope issue exists, do not report merge-ready.
+6. Merge-ready may be reported only when the review window has elapsed, head SHA is unchanged, checks are green, PR comments/Codex comments/reviews/threads are clean, and diff scope is acceptable.
+7. If clean, report merge-ready only as advisory output for the maintainer.
+
+Reaction and comment convention:
+
+- 👀 may indicate review observation has started.
+- ⏳ in the PR body or a PR comment may indicate the review window is active.
+- ✅ in the PR body or a PR comment may indicate the review window elapsed.
+- These markers are advisory only and do not create approval, merge authority, labels, reviewers, closes, or task authority.
+
 ## Command prefix
 
 All commands should use the `/hc` prefix.
