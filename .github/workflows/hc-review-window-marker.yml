@@ -24,6 +24,8 @@ jobs:
         uses: actions/github-script@v9
         with:
           script: |
+            const fs = require('fs');
+
             const marker = '<!-- hc-review-window -->';
             const autoMarker = '<!-- hc-review-window:auto-marker -->';
             const owner = context.repo.owner;
@@ -53,6 +55,25 @@ jobs:
               '- Merge still requires final HC Trust Engineer review and explicit maintainer command'
             ].join('\n');
 
+            const isCommentPermissionFallback = (error) => (
+              error.status === 403
+              && typeof error.message === 'string'
+              && error.message.includes('Resource not accessible by integration')
+            );
+
+            const writeMarkerSummary = async () => {
+              const summaryPath = process.env.GITHUB_STEP_SUMMARY;
+              if (!summaryPath) {
+                throw new Error('Missing GITHUB_STEP_SUMMARY path.');
+              }
+              await fs.promises.appendFile(summaryPath, `${body}\n`, 'utf8');
+            };
+
+            const warnAndSummarize = async (action, error) => {
+              core.warning(`Could not ${action} HC Review Window marker comment because GitHub denied issue comment access: ${error.message}`);
+              await writeMarkerSummary();
+            };
+
             const comments = await github.paginate(github.rest.issues.listComments, {
               owner,
               repo,
@@ -62,12 +83,20 @@ jobs:
             const existing = comments.filter((comment) => comment.body && comment.body.includes(autoMarker));
 
             if (existing.length > 0) {
-              await github.rest.issues.updateComment({
-                owner,
-                repo,
-                comment_id: existing[0].id,
-                body
-              });
+              try {
+                await github.rest.issues.updateComment({
+                  owner,
+                  repo,
+                  comment_id: existing[0].id,
+                  body
+                });
+              } catch (error) {
+                if (isCommentPermissionFallback(error)) {
+                  await warnAndSummarize('update the', error);
+                  return;
+                }
+                throw error;
+              }
               if (existing.length > 1) {
                 core.warning(`Found ${existing.length} workflow-owned HC Review Window marker comments; updated the oldest marker without creating another.`);
               } else {
@@ -76,10 +105,18 @@ jobs:
               return;
             }
 
-            await github.rest.issues.createComment({
-              owner,
-              repo,
-              issue_number: prNumber,
-              body
-            });
+            try {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: prNumber,
+                body
+              });
+            } catch (error) {
+              if (isCommentPermissionFallback(error)) {
+                await warnAndSummarize('create the', error);
+                return;
+              }
+              throw error;
+            }
             core.info('Created workflow-owned HC Review Window marker comment.');
