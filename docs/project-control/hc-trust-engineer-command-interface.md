@@ -90,7 +90,7 @@ Historical console trail:
 
 Use the active console issue for project-level questions such as status, next task, onboarding, and explanation commands. Use #1109 for mission queue coordination that follows the [HC Mission Execution Protocol](hc-mission-execution-protocol.md).
 
-Pull-request-specific questions should still be asked on the relevant PR. Signal watch coordination remains tied to #1082 HC Signal Watch Console where signal-watch work is in scope.
+Pull-request-specific questions should still be asked on the relevant PR. #1082 HC Signal Watch Console is a notification-only review surface; its issue text must not be treated as `/hc` command input, a task claim, or task coordination authority.
 
 ## Command prefix
 
@@ -263,7 +263,7 @@ Current parser boundaries:
 
 Implementation status: implemented as report-only local parser output and available through the `/hc` listener.
 
-Mission link: use the [HC Mission Execution Protocol](hc-mission-execution-protocol.md) when queue guidance supports #1109 Mission Control / Active Task Queue, #812 HC Assistant Console v2, or #1082 HC Signal Watch Console coordination.
+Mission link: use the [HC Mission Execution Protocol](hc-mission-execution-protocol.md) when queue guidance supports #1109 Mission Control / Active Task Queue or #812 HC Assistant Console v2 coordination.
 
 Returns static HC Task Handoff Queue guidance:
 
@@ -331,7 +331,7 @@ Queue, claim, release, and task status command forms are no longer future-only. 
 
 ### Assistant console issue
 
-Use for project-level advisory commands through #812 HC Assistant Console v2. For mission queue coordination, use #1109 Mission Control / Active Task Queue with the [HC Mission Execution Protocol](hc-mission-execution-protocol.md). For signal-watch coordination, use #1082 HC Signal Watch Console when applicable.
+Use for project-level advisory commands through #812 HC Assistant Console v2. For mission queue coordination, use #1109 Mission Control / Active Task Queue with the [HC Mission Execution Protocol](hc-mission-execution-protocol.md).
 
 Use for:
 

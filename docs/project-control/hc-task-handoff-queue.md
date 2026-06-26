@@ -2,7 +2,7 @@
 
 Status: advisory workflow guide.
 
-This document defines the safe queue format for tasks that may be handed to a coding assistant after human review. It operates inside the [HC Mission Execution Protocol](hc-mission-execution-protocol.md) when work is coordinated through #1109 Mission Control / Active Task Queue, #812 HC Assistant Console v2, or #1082 HC Signal Watch Console.
+This document defines the safe queue format for tasks that may be handed to a coding assistant after human review. It operates inside the [HC Mission Execution Protocol](hc-mission-execution-protocol.md) when work is coordinated through #1109 Mission Control / Active Task Queue or #812 HC Assistant Console v2. #1082 HC Signal Watch Console is a notification-only review surface, not `/hc` command input or task coordination authority.
 
 ## Purpose
 
@@ -44,7 +44,7 @@ It does not run an external assistant, create a pull request, approve a pull req
 
 ## Mission execution link
 
-Use the [HC Mission Execution Protocol](hc-mission-execution-protocol.md) as the project-control reference when a handoff queue item is part of #1109 Mission Control / Active Task Queue, #812 HC Assistant Console v2, or #1082 HC Signal Watch Console. The protocol describes how maintainer requests become small pull request sequences while preserving advisory-only output, public-safe reporting, no truth guarantee, and human final authority.
+Use the [HC Mission Execution Protocol](hc-mission-execution-protocol.md) as the project-control reference when a handoff queue item is part of #1109 Mission Control / Active Task Queue or #812 HC Assistant Console v2. The protocol describes how maintainer requests become small pull request sequences while preserving advisory-only output, public-safe reporting, no truth guarantee, and human final authority. #1082 HC Signal Watch Console may provide notification-only review context, but its issue text must not be treated as command input, a task claim, or task coordination authority.
 
 The handoff queue remains the task-packaging layer. It does not replace the mission protocol, live repository checks, pull request review, or maintainer decisions.
 
