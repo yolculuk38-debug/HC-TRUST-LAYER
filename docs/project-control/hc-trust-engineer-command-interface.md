@@ -110,6 +110,12 @@ A non-blocking PR marker workflow may maintain one visible HC Review Window comm
 
 This is a PR review-readiness timer only. The marker is advisory-only. Checks are not delayed by the marker. It must not add or slow a required GitHub check, Automation Gate, status, label, reviewer request, approval, rejection, close, merge, or task authority path. Checks remain fast and uncluttered.
 
+### Operator mental model
+
+In football, the match is not treated as final before 90 minutes. In HC review flow, a PR must not be reported merge-ready before the 90-second advisory review window has elapsed for the current head SHA. This is only a mental model: the HC Review Window is advisory-only, does not delay checks, and does not technically block GitHub merge. It gives late Codex/review/comments time to appear before advisory merge-readiness reporting. Merge still requires final HC Trust Engineer review, explicit maintainer command, and human final authority remains required. If the head SHA changes, the review window must be evaluated again for the new head SHA.
+
+Boundary flags: `advisory_only=true`; `public_safe=true`; `truth_guarantee=false`.
+
 Final pass behavior:
 
 1. Read the HC Review Window marker before any merge-readiness report.
