@@ -1,9 +1,16 @@
 name: HC Review Window Marker
-# Advisory/non-blocking PR marker only. Does not delay checks, approve, merge, label, assign, close, or request reviewers.
+# Advisory/non-blocking manual marker only. Does not delay checks, approve, merge, label, assign, close, or request reviewers.
+# PR review-window reporting now lives inside HC Control Bot Report; automatic PR triggers are disabled.
 
 on:
-  pull_request_target:
-    types: [opened, reopened, ready_for_review, synchronize]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Pull request number for manual marker debugging
+        required: true
+      head_sha:
+        description: Optional head SHA to show in the advisory marker
+        required: false
 
 permissions:
   contents: read
@@ -11,7 +18,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || inputs.pr_number }}
   cancel-in-progress: true
 
 jobs:
@@ -31,14 +38,16 @@ jobs:
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const pr = context.payload.pull_request;
+            const inputPrNumber = core.getInput('pr_number');
+            const inputHeadSha = core.getInput('head_sha');
 
-            if (!pr) {
-              core.setFailed('Missing pull request metadata.');
+            if (!pr && !inputPrNumber) {
+              core.setFailed('Missing pull request metadata or manual pr_number input.');
               return;
             }
 
-            const prNumber = pr.number;
-            const headSha = pr.head.sha;
+            const prNumber = pr ? pr.number : Number(inputPrNumber);
+            const headSha = pr ? pr.head.sha : (inputHeadSha || context.sha);
             const observedAt = new Date();
             const eligibleAfter = new Date(observedAt.getTime() + 90 * 1000);
             const timestamp = (date) => date.toISOString().replace(/\.\d{3}Z$/, 'Z');

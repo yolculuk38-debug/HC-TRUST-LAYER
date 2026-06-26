@@ -12,7 +12,12 @@ def test_hc_review_window_marker_is_advisory_and_comment_only() -> None:
     text = _workflow_text()
 
     assert "name: HC Review Window Marker" in text
-    assert "pull_request_target:" in text
+    assert "workflow_dispatch:" in text
+    assert "pr_number:" in text
+    assert "head_sha:" in text
+    assert "pull_request:" not in text
+    assert "pull_request_target:" not in text
+    assert "automatic PR triggers are disabled" in text
     assert "contents: read" in text
     assert "pull-requests: read" in text
     assert "issues: write" in text
@@ -64,7 +69,7 @@ def test_hc_review_window_marker_comment_permission_fallback_is_non_blocking() -
     assert update_call in text
     assert create_call in text
     assert "throw error;" in text
-    assert "core.setFailed('Missing pull request metadata.');" in text
+    assert "Missing pull request metadata or manual pr_number input." in text
 
 
 def test_hc_task_handoff_queue_documents_non_blocking_marker_boundary() -> None:
