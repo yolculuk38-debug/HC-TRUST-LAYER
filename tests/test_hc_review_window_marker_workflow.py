@@ -36,6 +36,18 @@ def test_hc_review_window_marker_is_advisory_and_comment_only() -> None:
         assert forbidden not in text
 
 
+def test_hc_review_window_marker_consumes_workflow_dispatch_payload_inputs() -> None:
+    text = _workflow_text()
+
+    assert "const workflowInputs = context.payload.inputs || {};" in text
+    assert "const inputPrNumber = workflowInputs.pr_number || '';" in text
+    assert "const inputHeadSha = workflowInputs.head_sha || '';" in text
+    assert "core.getInput('pr_number')" not in text
+    assert "core.getInput('head_sha')" not in text
+    assert "const prNumber = pr ? pr.number : Number(inputPrNumber);" in text
+    assert "const headSha = pr ? pr.head.sha : (inputHeadSha || context.sha);" in text
+
+
 def test_hc_review_window_marker_updates_only_auto_owned_marker() -> None:
     text = _workflow_text()
 

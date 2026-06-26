@@ -38,8 +38,9 @@ jobs:
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const pr = context.payload.pull_request;
-            const inputPrNumber = core.getInput('pr_number');
-            const inputHeadSha = core.getInput('head_sha');
+            const workflowInputs = context.payload.inputs || {};
+            const inputPrNumber = workflowInputs.pr_number || '';
+            const inputHeadSha = workflowInputs.head_sha || '';
 
             if (!pr && !inputPrNumber) {
               core.setFailed('Missing pull request metadata or manual pr_number input.');
