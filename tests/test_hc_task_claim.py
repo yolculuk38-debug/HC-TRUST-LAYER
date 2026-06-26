@@ -50,8 +50,8 @@ def test_existing_active_claim_blocks_duplicate_claim():
     assert "duplicate_active_claim" in payload["blockers"]
 
 
-@pytest.mark.parametrize("state", ["in_progress", "pr_open"])
-def test_existing_in_progress_or_pr_open_claim_blocks_duplicate_claim(state):
+@pytest.mark.parametrize("state", ["claimed", "in_progress", "pr_open"])
+def test_existing_claimed_in_progress_or_pr_open_claim_blocks_duplicate_claim(state):
     payload = report(existing_claims=[{"task_id": "HC-TASK-2026-001", "state": state}])
 
     assert payload["claim_allowed"] is False
@@ -101,6 +101,16 @@ def test_release_action_does_not_imply_repository_mutation():
     assert payload["repository_mutation"] is False
     assert payload["approval_authority"] is False
     assert payload["merge_authority"] is False
+
+
+def test_unsupported_state_release_blocks_manual_release_ready():
+    payload = report(requested_action="release", current_state="typo")
+
+    assert payload["claim_allowed"] is False
+    assert payload["claim_status"] == "advisory_claim_blocked"
+    assert "unsupported_current_state" in payload["warnings"]
+    assert "unsupported_current_state" in payload["blockers"]
+    assert payload["next_human_action"] == "maintainer_correct_or_review_current_state"
 
 
 def test_status_action_is_advisory_only():

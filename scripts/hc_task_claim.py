@@ -29,7 +29,7 @@ SUPPORTED_STATES = {
     "blocked",
     "stale",
 }
-ACTIVE_CLAIM_STATES = {"active", "in_progress", "pr_open"}
+ACTIVE_CLAIM_STATES = {"active", "claimed", "in_progress", "pr_open"}
 
 
 @dataclass(frozen=True)
@@ -108,6 +108,7 @@ def evaluate_claim(fixture: dict[str, Any]) -> HCTaskClaimReport:
     task_title = str(fixture.get("task_title", "")).strip()
     requested_action = str(fixture.get("requested_action", "claim")).strip().lower()
     current_state = str(fixture.get("current_state", "")).strip()
+    current_state_supported = current_state.strip().lower() in SUPPORTED_STATES
     normalized_state = _normalize_state(current_state)
     open_prs = _as_list(fixture.get("open_prs"))
     existing_claims = _as_list(fixture.get("existing_claims"))
@@ -120,8 +121,9 @@ def evaluate_claim(fixture: dict[str, Any]) -> HCTaskClaimReport:
         blockers.append("invalid_task_id")
     if requested_action not in SUPPORTED_ACTIONS:
         warnings.append("unsupported_requested_action")
-    if current_state.strip().lower() not in SUPPORTED_STATES:
+    if not current_state_supported:
         warnings.append("unsupported_current_state")
+        blockers.append("unsupported_current_state")
     if open_prs:
         blockers.append("open_pr_exists_do_not_duplicate")
     if _has_active_duplicate_claim(existing_claims, task_id):
@@ -135,12 +137,15 @@ def evaluate_claim(fixture: dict[str, Any]) -> HCTaskClaimReport:
         claim_status = "status_only"
         next_human_action = "review_advisory_status_only"
     elif requested_action == "release":
-        if "invalid_task_id" not in blockers:
+        if not blockers and current_state_supported:
             claim_allowed = normalized_state in {"claimed", "in_progress", "stale", "blocked"}
-        claim_status = "manual_release_ready" if claim_allowed and not open_prs else "advisory_claim_blocked"
-        next_human_action = (
-            "manually_review_release_request" if claim_allowed else "review_blockers_before_manual_release"
-        )
+        claim_status = "manual_release_ready" if claim_allowed else "advisory_claim_blocked"
+        if not current_state_supported:
+            next_human_action = "maintainer_correct_or_review_current_state"
+        else:
+            next_human_action = (
+                "manually_review_release_request" if claim_allowed else "review_blockers_before_manual_release"
+            )
     elif requested_action == "claim" and not blockers:
         if normalized_state == "ready":
             claim_allowed = True
