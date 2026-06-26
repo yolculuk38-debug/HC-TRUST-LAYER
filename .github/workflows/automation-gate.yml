@@ -3,12 +3,11 @@ name: Automation Gate
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review, edited]
+    types: [opened, synchronize, reopened, edited]
 
 permissions:
   contents: read
   pull-requests: read
-  issues: write
 
 
 concurrency:
@@ -22,48 +21,9 @@ jobs:
     timeout-minutes: 20
     runs-on: ubuntu-22.04
     steps:
-      - name: Upsert HC Review Window marker
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-          REPO: ${{ github.repository }}
-        run: |
-          set -euo pipefail
-
-          observed_at="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
-          eligible_after="$(date -u -d "${observed_at} + 90 seconds" +"%Y-%m-%dT%H:%M:%SZ")"
-
-          body="$(cat <<EOF
-<!-- hc-review-window -->
-👀 ⏳ HC Review Window
-- Head SHA: ${HEAD_SHA}
-- Observed at: ${observed_at}
-- Eligible after: ${eligible_after}
-- Status: waiting for late Codex review/comments before HC Trust Engineer may report merge-readiness
-- Checks are not delayed by this timer
-- Merge still requires final HC Trust Engineer review and explicit maintainer command
-EOF
-)"
-
-          mapfile -t marker_comment_ids < <(
-            gh api --paginate "repos/${REPO}/issues/${PR_NUMBER}/comments" \
-              --jq '.[] | select(.body | contains("<!-- hc-review-window -->")) | .id'
-          )
-
-          if [ "${#marker_comment_ids[@]}" -eq 0 ]; then
-            gh api "repos/${REPO}/issues/${PR_NUMBER}/comments" -f body="${body}" >/dev/null
-          else
-            gh api -X PATCH "repos/${REPO}/issues/comments/${marker_comment_ids[0]}" -f body="${body}" >/dev/null
-            for duplicate_id in "${marker_comment_ids[@]:1}"; do
-              gh api -X DELETE "repos/${REPO}/issues/comments/${duplicate_id}" >/dev/null
-            done
-          fi
-
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-          persist-credentials: false
 
       - name: Require PR title and body
         env:
