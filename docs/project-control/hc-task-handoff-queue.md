@@ -2,7 +2,7 @@
 
 Status: advisory workflow guide.
 
-This document defines the safe queue format for tasks that may be handed to a coding assistant after human review.
+This document defines the safe queue format for tasks that may be handed to a coding assistant after human review. It operates inside the [HC Mission Execution Protocol](hc-mission-execution-protocol.md) when work is coordinated through #1109 Mission Control / Active Task Queue, #812 HC Assistant Console v2, or #1082 HC Signal Watch Console.
 
 ## Purpose
 
@@ -13,11 +13,12 @@ It does not run an external assistant, create a pull request, approve a pull req
 ## Supported flow
 
 1. The maintainer states the task.
-2. HC Trust Engineer splits the task into the smallest safe scope.
-3. `scripts/hc_task_handoff.py` can build a local handoff package from a task fixture.
-4. The maintainer may paste the handoff package into a coding assistant.
-5. Any generated pull request is reviewed by the normal GitHub flow.
-6. Comments, review threads, protected-path status, and checks are inspected before merge consideration.
+2. For mission-level coordination, the maintainer or HC Trust Engineer aligns the task with the [HC Mission Execution Protocol](hc-mission-execution-protocol.md) and the active coordination surface.
+3. HC Trust Engineer splits the task into the smallest safe scope.
+4. `scripts/hc_task_handoff.py` can build a local handoff package from a task fixture.
+5. The maintainer may paste the handoff package into a coding assistant.
+6. Any generated pull request is reviewed by the normal GitHub flow.
+7. Comments, review threads, protected-path status, and checks are inspected before merge consideration.
 
 ## Required task fields
 
@@ -40,6 +41,12 @@ It does not run an external assistant, create a pull request, approve a pull req
 - no automatic pull request creation
 - no automatic approval, close, label, assignment, or merge
 
+
+## Mission execution link
+
+Use the [HC Mission Execution Protocol](hc-mission-execution-protocol.md) as the project-control reference when a handoff queue item is part of #1109 Mission Control / Active Task Queue, #812 HC Assistant Console v2, or #1082 HC Signal Watch Console. The protocol describes how maintainer requests become small pull request sequences while preserving advisory-only output, public-safe reporting, no truth guarantee, and human final authority.
+
+The handoff queue remains the task-packaging layer. It does not replace the mission protocol, live repository checks, pull request review, or maintainer decisions.
 
 ## Claim and queue extension
 
