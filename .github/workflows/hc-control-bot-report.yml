@@ -75,7 +75,29 @@ jobs:
 
       - name: Run deterministic scanner
         run: |
-          python scripts/hc_control_bot.py --pretty $(cat hc-control-bot-changed-paths.txt) | tee hc-control-bot-report.json
+          python scripts/hc_control_bot.py --pretty --paths-file hc-control-bot-changed-paths.txt | tee hc-control-bot-report.json
+
+      - name: Add HC Review Window status
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          observed_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          eligible_after=$(date -u -d "${observed_at} + 90 seconds" +%Y-%m-%dT%H:%M:%SZ)
+          cat > hc-review-window-status.md <<EOF
+          ## HC Review Window Status
+
+          - Head SHA: ${HEAD_SHA}
+          - Observed at: ${observed_at}
+          - Eligible after: ${eligible_after}
+          - Status: waiting for late Codex review/comments before HC Trust Engineer may report merge-readiness
+          - Boundary: Checks are not delayed by this timer.
+          - Boundary: Merge still requires final HC Trust Engineer review and explicit maintainer command.
+          - advisory_only=true
+          - public_safe=true
+          - truth_guarantee=false
+          - human final authority remains required
+          EOF
+          cat hc-review-window-status.md >> "${GITHUB_STEP_SUMMARY}"
 
       - name: Upload report artifact
         uses: actions/upload-artifact@v7
@@ -84,4 +106,5 @@ jobs:
           path: |
             hc-control-bot-report.json
             hc-control-bot-changed-paths.txt
+            hc-review-window-status.md
           if-no-files-found: error

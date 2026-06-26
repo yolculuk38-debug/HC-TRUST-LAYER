@@ -12,7 +12,12 @@ def test_hc_review_window_marker_is_advisory_and_comment_only() -> None:
     text = _workflow_text()
 
     assert "name: HC Review Window Marker" in text
-    assert "pull_request_target:" in text
+    assert "workflow_dispatch:" in text
+    assert "pr_number:" in text
+    assert "head_sha:" in text
+    assert "pull_request:" not in text
+    assert "pull_request_target:" not in text
+    assert "automatic PR triggers are disabled" in text
     assert "contents: read" in text
     assert "pull-requests: read" in text
     assert "issues: write" in text
@@ -29,6 +34,18 @@ def test_hc_review_window_marker_is_advisory_and_comment_only() -> None:
         "pulls.merge",
     ):
         assert forbidden not in text
+
+
+def test_hc_review_window_marker_consumes_workflow_dispatch_payload_inputs() -> None:
+    text = _workflow_text()
+
+    assert "const workflowInputs = context.payload.inputs || {};" in text
+    assert "const inputPrNumber = workflowInputs.pr_number || '';" in text
+    assert "const inputHeadSha = workflowInputs.head_sha || '';" in text
+    assert "core.getInput('pr_number')" not in text
+    assert "core.getInput('head_sha')" not in text
+    assert "const prNumber = pr ? pr.number : Number(inputPrNumber);" in text
+    assert "const headSha = pr ? pr.head.sha : (inputHeadSha || context.sha);" in text
 
 
 def test_hc_review_window_marker_updates_only_auto_owned_marker() -> None:
@@ -64,7 +81,7 @@ def test_hc_review_window_marker_comment_permission_fallback_is_non_blocking() -
     assert update_call in text
     assert create_call in text
     assert "throw error;" in text
-    assert "core.setFailed('Missing pull request metadata.');" in text
+    assert "Missing pull request metadata or manual pr_number input." in text
 
 
 def test_hc_task_handoff_queue_documents_non_blocking_marker_boundary() -> None:
