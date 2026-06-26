@@ -15,6 +15,10 @@ Implemented in `scripts/hc_assistant_command.py`:
 - `/hc explain`
 - `/hc risks`
 - `/hc review`
+- `/hc queue`
+- `/hc claim HC-TASK-YYYY-NNN`
+- `/hc release HC-TASK-YYYY-NNN`
+- `/hc task status HC-TASK-YYYY-NNN`
 
 Covered by `tests/test_hc_assistant_command.py`.
 
@@ -30,6 +34,7 @@ Current implementation mode:
 - machine-readable JSON output;
 - static response maps and checklists only;
 - issue and pull request comments starting with `/hc` can trigger the listener;
+- the listener may post or update advisory comments, but parser output must not mutate claim, task, label, reviewer, pull request, branch, file, workflow, approval, close, or merge state;
 - trusted default-branch checkout for command execution;
 - no PR-branch code execution;
 - no live pull request inspection by the parser;
@@ -105,6 +110,10 @@ Current output includes:
 /hc explain <topic-or-path>
 /hc risks
 /hc review
+/hc queue
+/hc claim HC-TASK-YYYY-NNN
+/hc release HC-TASK-YYYY-NNN
+/hc task status HC-TASK-YYYY-NNN
 ```
 
 Boundary: advisory only. Human maintainers retain final authority.
@@ -244,6 +253,56 @@ Current parser boundaries:
 - does not approve, reject, request changes, merge, close, label, assign, or certify;
 - returns a review preparation checklist only.
 
+### `/hc queue`
+
+Implementation status: implemented as report-only local parser output and available through the `/hc` listener.
+
+Returns static HC Task Handoff Queue guidance:
+
+- use HC Task Handoff Queue for coordination;
+- claim comes before handoff;
+- handoff packages work;
+- PR applies work;
+- CI and review provide evidence;
+- human maintainer decides.
+
+Current parser boundaries:
+
+- does not read live GitHub issues or pull requests;
+- does not create a queue entry, claim ledger, handoff package, branch, pull request, label, reviewer request, approval, close, merge, file, or workflow;
+- may be posted by the advisory `/hc` listener, but does not mutate claim or task state through issue comments;
+- does not call `scripts/hc_task_claim.py` automatically;
+- returns static report-only guidance.
+
+### `/hc claim HC-TASK-YYYY-NNN`
+
+Implementation status: implemented as report-only local parser output and available through the `/hc` listener.
+
+Validates only the visible task ID format. It does not look up task state, reserve work, create a claim, or acknowledge ownership. Local evaluation remains through `scripts/hc_task_claim.py` with a maintainer-provided local JSON fixture.
+
+Current parser boundaries:
+
+- does not read live GitHub issues, pull requests, labels, reviewers, branches, files, workflows, or task state;
+- may be posted by the advisory `/hc` listener, but does not mutate claim or task state through issue comments;
+- does not write repository state;
+- does not create a claim ledger;
+- does not call GitHub API, network, subprocess, workflow APIs, LLMs, Codex, Copilot, or other agents;
+- does not call `scripts/hc_task_claim.py` automatically;
+- does not assign, request reviewers, approve, close, or merge;
+- returns report-only advisory JSON for human maintainer review.
+
+### `/hc release HC-TASK-YYYY-NNN`
+
+Implementation status: implemented as report-only local parser output and available through the `/hc` listener.
+
+Validates only the visible task ID format. It does not release a claim or change task state. Local release-readiness evaluation remains through `scripts/hc_task_claim.py` with a maintainer-provided local JSON fixture.
+
+### `/hc task status HC-TASK-YYYY-NNN`
+
+Implementation status: implemented as report-only local parser output and available through the `/hc` listener.
+
+Validates only the visible task ID format and returns status-only advisory guidance. It does not perform live GitHub lookup and does not inspect issue, pull request, or claim state. Machine-readable status evaluation remains through `scripts/hc_task_claim.py` with a maintainer-provided local JSON fixture.
+
 ## Suggested future commands
 
 The following commands are not required for the first implementation:
@@ -256,15 +315,9 @@ The following commands are not required for the first implementation:
 /hc onboarding
 /hc glossary
 /hc demo
-/hc queue
-/hc claim HC-TASK-YYYY-NNN
-/hc release HC-TASK-YYYY-NNN
-/hc task status HC-TASK-YYYY-NNN
 ```
 
-The queue and claim commands are planned only, not implemented. They require separate governance-reviewed PRs before implementation.
-
-They should be added only after the core commands are stable and after separate governance-reviewed PRs.
+Queue, claim, release, and task status command forms are no longer future-only. They are implemented only as report-only command parser outputs. They do not create claims, release claims, read live GitHub state, or replace the local evaluator and human maintainer decision.
 
 ## Where commands work
 
@@ -278,7 +331,11 @@ Use for:
 - `/hc explain`;
 - `/hc evidence`;
 - `/hc risks`;
-- `/hc review`.
+- `/hc review`;
+- `/hc queue`;
+- `/hc claim HC-TASK-YYYY-NNN`;
+- `/hc release HC-TASK-YYYY-NNN`;
+- `/hc task status HC-TASK-YYYY-NNN`.
 
 The listener responds to issue comments that start with `/hc`.
 

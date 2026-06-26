@@ -397,3 +397,130 @@ def test_cli_outputs_machine_readable_handoff_json(capsys):
     assert payload["implemented"] is True
     assert payload["advisory_only"] is True
     assert "- helper: scripts/hc_task_handoff.py" in payload["response_lines"]
+
+
+def _assert_claim_boundaries(result):
+    assert result["advisory_only"] is True
+    assert result["public_safe"] is True
+    assert result["truth_guarantee"] is False
+    assert result["human_review_required"] is True
+    joined = "\n".join(result["response_lines"] + result["warnings"])
+    assert "repository_mutation=false" in joined
+    assert "claim_state_issue_comment_automation=false" in joined
+    assert "label_reviewer_mutation=false" in joined
+    assert "approval_authority=false" in joined
+    assert "merge_authority=false" in joined
+
+
+def test_help_command_lists_claim_queue_commands():
+    result = parse_hc_command("/hc help").to_dict()
+
+    assert "- /hc queue" in result["response_lines"]
+    assert "- /hc claim HC-TASK-YYYY-NNN" in result["response_lines"]
+    assert "- /hc release HC-TASK-YYYY-NNN" in result["response_lines"]
+    assert "- /hc task status HC-TASK-YYYY-NNN" in result["response_lines"]
+
+
+def test_queue_command_returns_advisory_guidance():
+    result = parse_hc_command("/hc queue").to_dict()
+    joined = "\n".join(result["response_lines"])
+
+    assert result["command"] == "queue"
+    assert result["implemented"] is True
+    assert "Use HC Task Handoff Queue for coordination" in joined
+    assert "Claim comes before handoff" in joined
+    assert "Human maintainer decides" in joined
+    _assert_claim_boundaries(result)
+
+
+def test_claim_command_acknowledges_advisory_listener_without_claim_state_mutation():
+    result = parse_hc_command("/hc claim HC-TASK-2026-001").to_dict()
+    joined = "\n".join(result["response_lines"])
+
+    assert "the /hc listener may post or update an advisory issue comment" in joined
+    assert "issue comments do not create, reserve, release, or mutate claim/task state" in joined
+    assert "claim_state_issue_comment_automation=false" in joined
+    assert "- issue_comment_automation=false" not in result["response_lines"]
+
+
+def test_claim_valid_task_id_returns_report_only_no_mutation_guidance():
+    result = parse_hc_command("/hc claim HC-TASK-2026-001").to_dict()
+    joined = "\n".join(result["response_lines"])
+
+    assert result["command"] == "claim"
+    assert result["implemented"] is True
+    assert "task_id: HC-TASK-2026-001" in joined
+    assert "Report-only advisory claim request received" in joined
+    assert "No repository mutation occurred" in joined
+    assert "python scripts/hc_task_claim.py <fixture.json> --pretty" in joined
+    assert "Human maintainer must review" in joined
+    _assert_claim_boundaries(result)
+
+
+def test_claim_invalid_task_id_warns_invalid_or_missing_task_id():
+    result = parse_hc_command("/hc claim BAD-ID").to_dict()
+
+    assert result["implemented"] is True
+    assert "invalid_or_missing_task_id" in result["warnings"]
+    assert "Expected task ID format: HC-TASK-YYYY-NNN" in result["response_lines"]
+    _assert_claim_boundaries(result)
+
+
+def test_claim_missing_task_id_warns_invalid_or_missing_task_id():
+    result = parse_hc_command("/hc claim").to_dict()
+
+    assert result["implemented"] is True
+    assert "invalid_or_missing_task_id" in result["warnings"]
+    assert "Expected task ID format: HC-TASK-YYYY-NNN" in result["response_lines"]
+    _assert_claim_boundaries(result)
+
+
+def test_release_valid_task_id_returns_manual_release_report_only_guidance():
+    result = parse_hc_command("/hc release HC-TASK-2026-001").to_dict()
+    joined = "\n".join(result["response_lines"])
+
+    assert result["command"] == "release"
+    assert result["implemented"] is True
+    assert "Report-only manual release request received" in joined
+    assert "No repository mutation occurred" in joined
+    assert "Use local fixture evaluator for release readiness" in joined
+    assert "Human maintainer must decide" in joined
+    _assert_claim_boundaries(result)
+
+
+def test_release_invalid_task_id_warns_invalid_or_missing_task_id():
+    result = parse_hc_command("/hc release BAD-ID").to_dict()
+
+    assert result["implemented"] is True
+    assert "invalid_or_missing_task_id" in result["warnings"]
+    _assert_claim_boundaries(result)
+
+
+def test_task_status_valid_task_id_returns_status_only_guidance():
+    result = parse_hc_command("/hc task status HC-TASK-2026-001").to_dict()
+    joined = "\n".join(result["response_lines"])
+
+    assert result["command"] == "task status"
+    assert result["implemented"] is True
+    assert "Status-only advisory command received" in joined
+    assert "No live GitHub lookup occurred" in joined
+    assert "No claim, issue, PR" in joined
+    assert "Use local fixture evaluator for machine-readable status" in joined
+    _assert_claim_boundaries(result)
+
+
+def test_task_status_invalid_task_id_warns_invalid_or_missing_task_id():
+    result = parse_hc_command("/hc task status BAD-ID").to_dict()
+
+    assert result["implemented"] is True
+    assert "invalid_or_missing_task_id" in result["warnings"]
+    _assert_claim_boundaries(result)
+
+
+def test_task_unknown_subcommand_does_not_crash_and_warns():
+    result = parse_hc_command("/hc task unknown HC-TASK-2026-001").to_dict()
+
+    assert result["command"] == "task"
+    assert result["implemented"] is True
+    assert "unsupported_task_subcommand" in result["warnings"]
+    _assert_claim_boundaries(result)

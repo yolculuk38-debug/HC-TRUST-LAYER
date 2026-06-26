@@ -66,7 +66,7 @@ public_safe=true
 truth_guarantee=false
 human_review_required=true
 repository_mutation=false
-issue_comment_automation=false
+claim_state_issue_comment_automation=false
 label_reviewer_mutation=false
 approval_authority=false
 merge_authority=false
@@ -135,6 +135,10 @@ Task IDs are coordination aids only. They are not canonical records, proof of tr
 `scripts/hc_task_claim.py` evaluates local task-claim fixtures and prints a machine-readable advisory report.
 
 It evaluates local fixtures only. It does not create claims, write ledgers, call GitHub, automate issue comments, invoke agents, assign labels or reviewers, approve, close, merge, or change repository state.
+
+### Report-only `/hc claim` command surface
+
+The `/hc queue`, `/hc claim HC-TASK-YYYY-NNN`, `/hc release HC-TASK-YYYY-NNN`, and `/hc task status HC-TASK-YYYY-NNN` command forms are report-only parser outputs in `scripts/hc_assistant_command.py`. The `/hc` listener may post or update an advisory issue comment, but these command forms do not create claims, reserve tasks, release claims, mutate claim or task state through issue comments, read live GitHub state, call the local evaluator automatically, write repository state, or replace maintainer judgment. Use `scripts/hc_task_claim.py` with a maintainer-provided local JSON fixture for local deterministic evaluation, and leave claim acknowledgement or release decisions to a human maintainer.
 
 ### Security model
 

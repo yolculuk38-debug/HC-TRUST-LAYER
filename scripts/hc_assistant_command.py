@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from dataclasses import dataclass
 
 SUPPORTED_COMMANDS: tuple[str, ...] = (
@@ -23,6 +24,47 @@ SUPPORTED_COMMANDS: tuple[str, ...] = (
     "engineer",
     "bot",
     "handoff",
+    "queue",
+    "claim",
+    "release",
+    "task",
+)
+
+TASK_ID_RE = re.compile(r"^HC-TASK-\d{4}-\d{3}$")
+
+BOUNDARY_LINES: tuple[str, ...] = (
+    "- advisory_only=true",
+    "- public_safe=true",
+    "- truth_guarantee=false",
+    "- human_review_required=true",
+    "- repository_mutation=false",
+    "- claim_state_issue_comment_automation=false",
+    "- label_reviewer_mutation=false",
+    "- approval_authority=false",
+    "- merge_authority=false",
+)
+
+CLAIM_COMMAND_BOUNDARY_LINES: tuple[str, ...] = (
+    "- advisory-only: these commands are advisory-only report outputs.",
+    "- no_claim_reservation: they do not create, reserve, release, or acknowledge claims.",
+    "- no_github_mutation: they do not modify GitHub issues, labels, reviewers, PRs, branches, files, or workflows.",
+    "- advisory_listener_comment: the /hc listener may post or update an advisory issue comment.",
+    "- no_claim_state_issue_comment_automation: issue comments do not create, reserve, release, or mutate claim/task state.",
+    "- no_automatic_evaluator: they do not call scripts/hc_task_claim.py automatically.",
+    "- local_evaluation: for actual local evaluation, use scripts/hc_task_claim.py with a maintainer-provided local JSON fixture.",
+    *BOUNDARY_LINES,
+)
+
+QUEUE_LINES: tuple[str, ...] = (
+    "HC Trust Engineer queue guidance:",
+    "- Use HC Task Handoff Queue for coordination.",
+    "- Claim comes before handoff.",
+    "- Handoff packages work.",
+    "- PR applies work.",
+    "- CI/review provide evidence.",
+    "- Human maintainer decides.",
+    *CLAIM_COMMAND_BOUNDARY_LINES,
+    "Boundary: report-only advisory output. Human maintainers retain final authority.",
 )
 
 HELP_LINES: tuple[str, ...] = (
@@ -37,6 +79,10 @@ HELP_LINES: tuple[str, ...] = (
     "- /hc engineer",
     "- /hc bot",
     "- /hc handoff",
+    "- /hc queue",
+    "- /hc claim HC-TASK-YYYY-NNN",
+    "- /hc release HC-TASK-YYYY-NNN",
+    "- /hc task status HC-TASK-YYYY-NNN",
     "Boundary: advisory only. Human maintainers retain final authority.",
 )
 
@@ -128,6 +174,7 @@ BOT_LINES: tuple[str, ...] = (
     "- command_parser: scripts/hc_assistant_command.py",
     "- task_planner: scripts/hc_engineer_task_plan.py",
     "- handoff_helper: scripts/hc_task_handoff.py",
+    "- task_claim_evaluator: scripts/hc_task_claim.py",
     "- parked: GitHub App, dashboard UI, live chat UI, LLM memory layer, automatic approval, automatic merge, automatic close, automatic label or assignment",
     "Boundary: report-only advisory MVP. Human maintainers retain final authority.",
 )
@@ -289,6 +336,129 @@ def _build_explain_lines(args: list[str]) -> tuple[list[str], list[str]]:
     )
 
 
+
+def _is_valid_task_id(task_id: str | None) -> bool:
+    return bool(task_id and TASK_ID_RE.fullmatch(task_id))
+
+
+def _invalid_task_id_result(command: str, args: list[str], extra_warning: str | None = None) -> CommandResult:
+    warnings = ["invalid_or_missing_task_id"]
+    if extra_warning:
+        warnings.append(extra_warning)
+    return CommandResult(
+        advisory_only=True,
+        public_safe=True,
+        truth_guarantee=False,
+        human_review_required=True,
+        command_prefix="/hc",
+        command=command,
+        implemented=True,
+        response_lines=[
+            f"HC Trust Engineer {command} command received, but the task ID is missing or invalid.",
+            "Expected task ID format: HC-TASK-YYYY-NNN",
+            "No action taken.",
+            "No repository mutation occurred.",
+            *CLAIM_COMMAND_BOUNDARY_LINES,
+        ],
+        warnings=warnings,
+        evidence_source="static claim command interface only",
+    )
+
+
+def _claim_result(args: list[str]) -> CommandResult:
+    task_id = args[0] if args else None
+    if not _is_valid_task_id(task_id):
+        return _invalid_task_id_result("claim", args)
+    return CommandResult(
+        advisory_only=True,
+        public_safe=True,
+        truth_guarantee=False,
+        human_review_required=True,
+        command_prefix="/hc",
+        command="claim",
+        implemented=True,
+        response_lines=[
+            f"task_id: {task_id}",
+            "Report-only advisory claim request received.",
+            "No repository mutation occurred.",
+            "This command does not create, reserve, or acknowledge a claim.",
+            "Local evaluator command example: python scripts/hc_task_claim.py <fixture.json> --pretty",
+            "Human maintainer must review before acknowledging any claim.",
+            *CLAIM_COMMAND_BOUNDARY_LINES,
+        ],
+        warnings=[],
+        evidence_source="static claim command interface only",
+    )
+
+
+def _release_result(args: list[str]) -> CommandResult:
+    task_id = args[0] if args else None
+    if not _is_valid_task_id(task_id):
+        return _invalid_task_id_result("release", args)
+    return CommandResult(
+        advisory_only=True,
+        public_safe=True,
+        truth_guarantee=False,
+        human_review_required=True,
+        command_prefix="/hc",
+        command="release",
+        implemented=True,
+        response_lines=[
+            f"task_id: {task_id}",
+            "Report-only manual release request received.",
+            "No repository mutation occurred.",
+            "This command does not release or modify any claim.",
+            "Use local fixture evaluator for release readiness: python scripts/hc_task_claim.py <fixture.json> --pretty",
+            "Human maintainer must decide.",
+            *CLAIM_COMMAND_BOUNDARY_LINES,
+        ],
+        warnings=[],
+        evidence_source="static claim command interface only",
+    )
+
+
+def _task_result(args: list[str]) -> CommandResult:
+    if not args or args[0].lower() != "status":
+        return CommandResult(
+            advisory_only=True,
+            public_safe=True,
+            truth_guarantee=False,
+            human_review_required=True,
+            command_prefix="/hc",
+            command="task",
+            implemented=True,
+            response_lines=[
+                "HC Trust Engineer task command received, but only /hc task status HC-TASK-YYYY-NNN is supported.",
+                "No action taken.",
+                "No repository mutation occurred.",
+                *CLAIM_COMMAND_BOUNDARY_LINES,
+            ],
+            warnings=["unsupported_task_subcommand"],
+            evidence_source="static claim command interface only",
+        )
+    task_id = args[1] if len(args) > 1 else None
+    if not _is_valid_task_id(task_id):
+        return _invalid_task_id_result("task status", args)
+    return CommandResult(
+        advisory_only=True,
+        public_safe=True,
+        truth_guarantee=False,
+        human_review_required=True,
+        command_prefix="/hc",
+        command="task status",
+        implemented=True,
+        response_lines=[
+            f"task_id: {task_id}",
+            "Status-only advisory command received.",
+            "No live GitHub lookup occurred.",
+            "No claim, issue, PR, label, reviewer, branch, file, or workflow mutation occurred.",
+            "Use local fixture evaluator for machine-readable status: python scripts/hc_task_claim.py <fixture.json> --pretty",
+            *CLAIM_COMMAND_BOUNDARY_LINES,
+        ],
+        warnings=[],
+        evidence_source="static claim command interface only",
+    )
+
 def parse_hc_command(raw_text: str) -> CommandResult:
     """Parse an explicit `/hc` command without executing any repository action."""
 
@@ -447,6 +617,29 @@ def parse_hc_command(raw_text: str) -> CommandResult:
             ],
             evidence_source="static bot-line status summary from HC assistant command interface",
         )
+
+    if command == "queue":
+        return CommandResult(
+            advisory_only=True,
+            public_safe=True,
+            truth_guarantee=False,
+            human_review_required=True,
+            command_prefix="/hc",
+            command="queue",
+            implemented=True,
+            response_lines=list(QUEUE_LINES),
+            warnings=[],
+            evidence_source="static queue guidance from docs/project-control/hc-task-handoff-queue.md",
+        )
+
+    if command == "claim":
+        return _claim_result(args)
+
+    if command == "release":
+        return _release_result(args)
+
+    if command == "task":
+        return _task_result(args)
 
     if command == "handoff":
         return CommandResult(
