@@ -46,6 +46,27 @@ def test_hc_review_window_marker_updates_only_auto_owned_marker() -> None:
     assert "90 * 1000" in text
 
 
+def test_hc_review_window_marker_comment_permission_fallback_is_non_blocking() -> None:
+    text = _workflow_text()
+
+    for expected in (
+        "Resource not accessible by integration",
+        "error.status === 403",
+        "core.warning",
+        "GITHUB_STEP_SUMMARY",
+        "writeMarkerSummary",
+        "isCommentPermissionFallback",
+    ):
+        assert expected in text
+
+    update_call = "try {\n                await github.rest.issues.updateComment"
+    create_call = "try {\n              await github.rest.issues.createComment"
+    assert update_call in text
+    assert create_call in text
+    assert "throw error;" in text
+    assert "core.setFailed('Missing pull request metadata.');" in text
+
+
 def test_hc_task_handoff_queue_documents_non_blocking_marker_boundary() -> None:
     text = HANDOFF_QUEUE.read_text(encoding="utf-8")
 
