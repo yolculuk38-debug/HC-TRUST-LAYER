@@ -130,6 +130,12 @@ Task IDs are coordination aids only. They are not canonical records, proof of tr
 - A task with an open pull request should not be claimed again unless explicitly split.
 - Duplicate task work should stop and report instead of opening a second pull request.
 
+### Local claim evaluator
+
+`scripts/hc_task_claim.py` evaluates local task-claim fixtures and prints a machine-readable advisory report.
+
+It evaluates local fixtures only. It does not create claims, write ledgers, call GitHub, automate issue comments, invoke agents, assign labels or reviewers, approve, close, merge, or change repository state.
+
 ### Security model
 
 - Issue comments are untrusted input.
