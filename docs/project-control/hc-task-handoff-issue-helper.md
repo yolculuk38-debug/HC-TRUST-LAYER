@@ -20,6 +20,10 @@ To print only the generated fixture:
 python scripts/hc_task_handoff_issue.py issue.md --fixture-only --pretty
 ```
 
+## Future claim metadata
+
+A future PR may extend issue helper documentation or fixtures with claim metadata. The current helper does not create claims, call the GitHub API, invoke Codex, or invoke external agents.
+
 ## Boundary
 
 - advisory_only=true

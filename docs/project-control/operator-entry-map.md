@@ -75,6 +75,8 @@ Use it for project-level `/hc` commands such as:
 /hc next
 ```
 
+For task coordination, use the claim and queue extension in [`docs/project-control/hc-task-handoff-queue.md`](hc-task-handoff-queue.md) as an advisory-only reference before opening duplicate work.
+
 Use pull request comments for PR-specific commands such as:
 
 ```text

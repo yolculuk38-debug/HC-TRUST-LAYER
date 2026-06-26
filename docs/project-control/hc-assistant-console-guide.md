@@ -188,6 +188,10 @@ Recommended implementation order:
 7. support `/hc next` using trusted project-control docs;
 8. add PR-scoped `/hc review` only after command behavior is stable.
 
+## Queue and claim note
+
+The assistant console may later support queue and claim commands through separate governance-reviewed PRs. Current use remains advisory-only. Claims are coordination notes, not approval, assignment authority, reviewer requests, merge readiness, or repository ownership. The console must not become a hidden decision engine.
+
 ## Final boundary
 
 The Assistant Console can feel like a chat surface.
