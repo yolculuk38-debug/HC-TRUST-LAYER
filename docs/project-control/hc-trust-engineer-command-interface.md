@@ -2,7 +2,7 @@
 
 Status: local deterministic command interface implemented and connected to an advisory issue-comment listener for `/hc` commands.
 
-This document defines a safe command interface for using HC Trust Engineer inside the GitHub repository without requiring a separate website or chat UI.
+This document defines a safe command interface for using HC Trust Engineer inside the GitHub repository without requiring a separate website or chat UI. For mission-level coordination, use the [HC Mission Execution Protocol](hc-mission-execution-protocol.md) as the companion project-control reference.
 
 ## Current implementation snapshot
 
@@ -76,15 +76,21 @@ Active console issue:
 #812 HC Assistant Console v2
 ```
 
+Mission-control issue:
+
+```text
+#1109 Mission Control / Active Task Queue
+```
+
 Historical console trail:
 
 ```text
 #763 first HC Assistant Console smoke-test trail
 ```
 
-Use the active console issue for project-level questions such as status, next task, onboarding, and explanation commands.
+Use the active console issue for project-level questions such as status, next task, onboarding, and explanation commands. Use #1109 for mission queue coordination that follows the [HC Mission Execution Protocol](hc-mission-execution-protocol.md).
 
-Pull-request-specific questions should still be asked on the relevant PR.
+Pull-request-specific questions should still be asked on the relevant PR. #1082 HC Signal Watch Console is a notification-only review surface; its issue text must not be treated as `/hc` command input, a task claim, or task coordination authority.
 
 ## Command prefix
 
@@ -257,6 +263,8 @@ Current parser boundaries:
 
 Implementation status: implemented as report-only local parser output and available through the `/hc` listener.
 
+Mission link: use the [HC Mission Execution Protocol](hc-mission-execution-protocol.md) when queue guidance supports #1109 Mission Control / Active Task Queue or #812 HC Assistant Console v2 coordination.
+
 Returns static HC Task Handoff Queue guidance:
 
 - use HC Task Handoff Queue for coordination;
@@ -322,6 +330,8 @@ Queue, claim, release, and task status command forms are no longer future-only. 
 ## Where commands work
 
 ### Assistant console issue
+
+Use for project-level advisory commands through #812 HC Assistant Console v2. For mission queue coordination, use #1109 Mission Control / Active Task Queue with the [HC Mission Execution Protocol](hc-mission-execution-protocol.md).
 
 Use for:
 
