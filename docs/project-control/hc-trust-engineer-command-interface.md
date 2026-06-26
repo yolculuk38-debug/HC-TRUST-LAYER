@@ -111,11 +111,13 @@ This is a PR review-readiness timer only. It must not add or slow a GitHub check
 
 Final pass behavior:
 
-1. Check whether the visible review window has elapsed.
-2. Confirm the head SHA is unchanged.
-3. Inspect PR comments, Codex comments, review submissions, review threads, checks, and diff scope.
-4. If Codex P1/P2 feedback, failed checks, unresolved threads, changed head SHA, or a scope issue exists, do not report merge-ready.
-5. If clean, report merge-ready only as advisory output for the maintainer.
+1. Read the HC Review Window marker before any merge-readiness report.
+2. If the review window has not elapsed, do not report merge-ready; report the waiting state instead.
+3. Confirm the head SHA is unchanged since the marker observation.
+4. Inspect checks, PR comments, Codex comments, review submissions, review threads, and diff scope.
+5. If Codex P1/P2 feedback, failed checks, unresolved threads, changed head SHA, or a scope issue exists, do not report merge-ready.
+6. Merge-ready may be reported only when the review window has elapsed, head SHA is unchanged, checks are green, PR comments/Codex comments/reviews/threads are clean, and diff scope is acceptable.
+7. If clean, report merge-ready only as advisory output for the maintainer.
 
 Reaction and comment convention:
 
