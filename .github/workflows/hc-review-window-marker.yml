@@ -1,0 +1,83 @@
+name: HC Review Window Marker
+# Advisory/non-blocking PR marker only. Does not delay checks, approve, merge, label, assign, close, or request reviewers.
+
+on:
+  pull_request_target:
+    types: [opened, reopened, ready_for_review, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  marker:
+    name: Update advisory PR marker
+    timeout-minutes: 5
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Create or update HC Review Window marker
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const marker = '<!-- hc-review-window -->';
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const pr = context.payload.pull_request;
+
+            if (!pr) {
+              core.setFailed('Missing pull request metadata.');
+              return;
+            }
+
+            const prNumber = pr.number;
+            const headSha = pr.head.sha;
+            const observedAt = new Date();
+            const eligibleAfter = new Date(observedAt.getTime() + 90 * 1000);
+            const timestamp = (date) => date.toISOString().replace(/\.\d{3}Z$/, 'Z');
+
+            const body = [
+              marker,
+              '👀 ⏳ HC Review Window',
+              `- Head SHA: ${headSha}`,
+              `- Observed at: ${timestamp(observedAt)}`,
+              `- Eligible after: ${timestamp(eligibleAfter)}`,
+              '- Status: waiting for late Codex review/comments before HC Trust Engineer may report merge-readiness',
+              '- Checks are not delayed by this timer',
+              '- Merge still requires final HC Trust Engineer review and explicit maintainer command'
+            ].join('\n');
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number: prNumber,
+              per_page: 100
+            });
+            const existing = comments.filter((comment) => comment.body && comment.body.includes(marker));
+
+            if (existing.length > 0) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing[0].id,
+                body
+              });
+              if (existing.length > 1) {
+                core.warning(`Found ${existing.length} HC Review Window marker comments; updated the oldest marker without creating another.`);
+              } else {
+                core.info('Updated existing HC Review Window marker comment.');
+              }
+              return;
+            }
+
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: prNumber,
+              body
+            });
+            core.info('Created HC Review Window marker comment.');
