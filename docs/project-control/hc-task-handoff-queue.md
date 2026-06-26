@@ -19,7 +19,7 @@ It does not run an external assistant, create a pull request, approve a pull req
 5. The maintainer may paste the handoff package into a coding assistant.
 6. Any generated pull request is reviewed by the normal GitHub flow.
 7. Comments, review threads, protected-path status, and checks are inspected before merge consideration.
-8. A visible HC Review Window note may be used on the PR so HC Trust Engineer can observe a 90-second review-readiness window before merge-readiness reporting; this does not delay checks, Automation Gate, or any workflow.
+8. A visible HC Review Window note may be used on the PR so HC Trust Engineer can observe a 90-second review-readiness window before merge-readiness reporting; this may be maintained by a dedicated non-blocking PR marker workflow and must not delay checks, Automation Gate, or any workflow.
 
 ## Required task fields
 
@@ -47,7 +47,7 @@ It does not run an external assistant, create a pull request, approve a pull req
 
 Use the [HC Mission Execution Protocol](hc-mission-execution-protocol.md) as the project-control reference when a handoff queue item is part of #1109 Mission Control / Active Task Queue or #812 HC Assistant Console v2. The protocol describes how maintainer requests become small pull request sequences while preserving advisory-only output, public-safe reporting, no truth guarantee, and human final authority. #1082 HC Signal Watch Console may provide notification-only review context, but its issue text must not be treated as command input, a task claim, or task coordination authority.
 
-The handoff queue remains the task-packaging layer. It does not replace the mission protocol, live repository checks, pull request review, the visible HC Review Window convention, or maintainer decisions. The review-window marker is advisory PR text only; it must not create a new check, workflow, approval, merge authority, label, reviewer, close, or task authority.
+The handoff queue remains the task-packaging layer. It does not replace the mission protocol, live repository checks, pull request review, the visible HC Review Window convention, or maintainer decisions. The Review Window marker may be automated by a dedicated non-blocking PR marker workflow, but that workflow must not be a required check, delay checks, approve, reject, merge, label, assign, close, request reviewers, create task authority, replace live PR review, or replace maintainer decision. Manual or handoff review-window notes remain audit records and must not be overwritten by the automated workflow.
 
 ## Claim and queue extension
 

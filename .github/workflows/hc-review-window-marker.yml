@@ -25,6 +25,7 @@ jobs:
         with:
           script: |
             const marker = '<!-- hc-review-window -->';
+            const autoMarker = '<!-- hc-review-window:auto-marker -->';
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const pr = context.payload.pull_request;
@@ -42,6 +43,7 @@ jobs:
 
             const body = [
               marker,
+              autoMarker,
               '👀 ⏳ HC Review Window',
               `- Head SHA: ${headSha}`,
               `- Observed at: ${timestamp(observedAt)}`,
@@ -57,7 +59,7 @@ jobs:
               issue_number: prNumber,
               per_page: 100
             });
-            const existing = comments.filter((comment) => comment.body && comment.body.includes(marker));
+            const existing = comments.filter((comment) => comment.body && comment.body.includes(autoMarker));
 
             if (existing.length > 0) {
               await github.rest.issues.updateComment({
@@ -67,9 +69,9 @@ jobs:
                 body
               });
               if (existing.length > 1) {
-                core.warning(`Found ${existing.length} HC Review Window marker comments; updated the oldest marker without creating another.`);
+                core.warning(`Found ${existing.length} workflow-owned HC Review Window marker comments; updated the oldest marker without creating another.`);
               } else {
-                core.info('Updated existing HC Review Window marker comment.');
+                core.info('Updated existing workflow-owned HC Review Window marker comment.');
               }
               return;
             }
@@ -80,4 +82,4 @@ jobs:
               issue_number: prNumber,
               body
             });
-            core.info('Created HC Review Window marker comment.');
+            core.info('Created workflow-owned HC Review Window marker comment.');
