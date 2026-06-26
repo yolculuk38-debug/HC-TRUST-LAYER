@@ -46,6 +46,22 @@ def test_hc_review_window_marker_updates_only_auto_owned_marker() -> None:
     assert "90 * 1000" in text
 
 
+def test_hc_review_window_marker_handles_comment_permission_denial_without_failing() -> None:
+    text = _workflow_text()
+
+    for expected in (
+        "core.warning(reason)",
+        "GITHUB_STEP_SUMMARY",
+        "Resource not accessible by integration",
+        "error.status === 403",
+        "handleCommentError",
+        "writeStepSummary(reason)",
+    ):
+        assert expected in text
+
+    assert "core.setFailed('Missing pull request metadata.')" in text
+
+
 def test_hc_task_handoff_queue_documents_non_blocking_marker_boundary() -> None:
     text = HANDOFF_QUEUE.read_text(encoding="utf-8")
 

@@ -24,6 +24,7 @@ jobs:
         uses: actions/github-script@v9
         with:
           script: |
+            const fs = require('fs');
             const marker = '<!-- hc-review-window -->';
             const autoMarker = '<!-- hc-review-window:auto-marker -->';
             const owner = context.repo.owner;
@@ -41,7 +42,7 @@ jobs:
             const eligibleAfter = new Date(observedAt.getTime() + 90 * 1000);
             const timestamp = (date) => date.toISOString().replace(/\.\d{3}Z$/, 'Z');
 
-            const body = [
+            const markerLines = [
               marker,
               autoMarker,
               '👀 ⏳ HC Review Window',
@@ -51,7 +52,40 @@ jobs:
               '- Status: waiting for late Codex review/comments before HC Trust Engineer may report merge-readiness',
               '- Checks are not delayed by this timer',
               '- Merge still requires final HC Trust Engineer review and explicit maintainer command'
-            ].join('\n');
+            ];
+            const body = markerLines.join('\n');
+
+            const writeStepSummary = async (reason) => {
+              const summary = [
+                '## HC Review Window Marker',
+                '',
+                reason ? `Comment update skipped: ${reason}` : 'Comment update completed.',
+                '',
+                ...markerLines
+              ].join('\n');
+
+              if (process.env.GITHUB_STEP_SUMMARY) {
+                await fs.promises.appendFile(process.env.GITHUB_STEP_SUMMARY, `${summary}\n`);
+              } else {
+                core.info(summary);
+              }
+            };
+
+            const isCommentPermissionDenied = (error) => {
+              const message = String(error && error.message ? error.message : error);
+              return error && error.status === 403 && message.includes('Resource not accessible by integration');
+            };
+
+            const handleCommentError = async (error, action) => {
+              if (isCommentPermissionDenied(error)) {
+                const reason = `${action} denied by GitHub token permissions: Resource not accessible by integration`;
+                core.warning(reason);
+                await writeStepSummary(reason);
+                return true;
+              }
+
+              throw error;
+            };
 
             const comments = await github.paginate(github.rest.issues.listComments, {
               owner,
@@ -62,24 +96,38 @@ jobs:
             const existing = comments.filter((comment) => comment.body && comment.body.includes(autoMarker));
 
             if (existing.length > 0) {
-              await github.rest.issues.updateComment({
-                owner,
-                repo,
-                comment_id: existing[0].id,
-                body
-              });
+              try {
+                await github.rest.issues.updateComment({
+                  owner,
+                  repo,
+                  comment_id: existing[0].id,
+                  body
+                });
+              } catch (error) {
+                if (await handleCommentError(error, 'HC Review Window marker comment update')) {
+                  return;
+                }
+              }
               if (existing.length > 1) {
                 core.warning(`Found ${existing.length} workflow-owned HC Review Window marker comments; updated the oldest marker without creating another.`);
               } else {
                 core.info('Updated existing workflow-owned HC Review Window marker comment.');
               }
+              await writeStepSummary();
               return;
             }
 
-            await github.rest.issues.createComment({
-              owner,
-              repo,
-              issue_number: prNumber,
-              body
-            });
+            try {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: prNumber,
+                body
+              });
+            } catch (error) {
+              if (await handleCommentError(error, 'HC Review Window marker comment creation')) {
+                return;
+              }
+            }
             core.info('Created workflow-owned HC Review Window marker comment.');
+            await writeStepSummary();
