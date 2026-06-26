@@ -28,9 +28,9 @@ This document defines how HC-TRUST-LAYER turns a maintainer request into a small
 
 ## HC Review Window
 
-This review window is documentation-only operational guidance for a visible pull request marker convention. It does not create approval authority, rejection authority, merge authority, labels, assignments, reviewer requests, closes, task authority, workflow delay, or a GitHub check.
+The HC Review Window marker may be automated by a non-blocking PR marker workflow. It does not create approval authority, rejection authority, merge authority, labels, assignments, reviewer requests, closes, task authority, workflow delay, or a required GitHub check.
 
-The 90-second timer is a visible PR body note, PR comment, or maintainer/Codex handoff comment convention. It is not a CI-blocking check and must not delay Automation Gate, GitHub Checks, or any existing workflow. Automation Gate remains fast and does not wait 90 seconds. Do not add a workflow, check, status, label, reviewer, or task authority path for this timer in this documentation-only PR.
+The 90-second timer is a visible PR comment convention. The marker is advisory-only. Checks are not delayed by the marker, and it must not delay Automation Gate, GitHub Checks, or any existing workflow. Automation Gate remains fast and does not wait 90 seconds. The marker does not approve, reject, merge, label, assign, close, request reviewers, or create task authority.
 
 Visible PR marker convention:
 
@@ -77,10 +77,6 @@ Final pass behavior:
    - merge commit SHA is recorded;
    - no unexpected open pull request remains in the same mission scope;
    - relevant actions/checks are not showing a new blocker.
-
-## Future CI follow-up
-
-A separate CI PR should add automatic HC Review Window marker creation or updates after this documentation-only PR merges. That future work should use existing checks where safe, avoid delaying CI, avoid new authority, and remain human-reviewable.
 
 ## Boundary
 
