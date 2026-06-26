@@ -24,6 +24,8 @@ python scripts/hc_task_handoff_issue.py issue.md --fixture-only --pretty
 
 A future PR may extend issue helper documentation or fixtures with claim metadata. The current helper does not create claims, call the GitHub API, invoke Codex, or invoke external agents.
 
+Future claim metadata may be passed to the local evaluator, but the issue helper still does not create claims or invoke agents.
+
 ## Boundary
 
 - advisory_only=true
