@@ -2,6 +2,8 @@
 
 Status: report only.
 
+Historical note: This document is a historical/report-only review. It records dependency declarations observed at the time of that review and should not be read as the current dependency baseline. Current package metadata must be confirmed from `pyproject.toml`. Current pinned install/test dependencies must be confirmed from `requirements.txt`. Current Python support baseline must be confirmed from `pyproject.toml` and the latest Python migration/support checkpoint.
+
 This document reviews duplicate Python dependency declarations across `requirements.txt` and `pyproject.toml` before any Dependabot Python monitoring is enabled.
 
 No dependency versions are changed by this document.
@@ -80,7 +82,7 @@ pytest<9; python_version < '3.10'
 pytest==9.0.3; python_version >= '3.10'
 ```
 
-This is intentional-looking because the project supports `requires-python = ">=3.9"`.
+This was intentional-looking at the time of this historical review because the project then supported `requires-python = ">=3.9"`. This note is historical and superseded by later Python baseline work.
 
 Before automated Python dependency monitoring is enabled, maintainers should decide whether Python 3.9 compatibility remains required for test dependencies.
 
@@ -219,3 +221,5 @@ Add a dependency consistency checklist reference to the dependency update policy
 Only after that should maintainers consider a scoped `.github/dependabot.yml` change for Python monitoring.
 
 Trust the record, not the narrative.
+
+Historical dependency reviews must be read in sequence with later dependency-wave checkpoints, Python migration checkpoints, `pyproject.toml`, and `requirements.txt`.
