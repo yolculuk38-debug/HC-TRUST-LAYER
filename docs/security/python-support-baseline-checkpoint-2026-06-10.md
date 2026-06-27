@@ -2,6 +2,8 @@
 
 Status: checkpoint record.
 
+Historical note: This checkpoint is historical. It records the intermediate Python `>=3.11` decision and was later superseded by `docs/security/python-3-14-migration-checkpoint-2026-06-10.md`, which records the coordinated migration that moved both package metadata and validation CI runtime to Python 3.14. This document should not be read as the current active Python package baseline.
+
 This document records the Python support baseline change that followed Dependabot warnings about Python 3.9 support.
 
 ## Purpose
@@ -72,5 +74,7 @@ Future Python baseline changes must be reviewed against:
 A newer Python baseline can improve support hygiene.
 
 A newer Python baseline is not a trust guarantee.
+
+Historical checkpoints must be read in sequence. Current baseline must be confirmed from `pyproject.toml` and the latest migration checkpoint before changing version policy.
 
 Trust the record, not the narrative.
