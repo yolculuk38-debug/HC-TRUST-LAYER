@@ -8,7 +8,7 @@ The format follows Keep a Changelog style, and this project uses reviewable rele
 
 ### Added
 
-- Developer onboarding documentation for Python 3.11+, virtual environment setup, dependency installation, pytest, linting, optional type checking, and contribution flow.
+- Developer onboarding documentation for the project Python setup flow, virtual environment setup, dependency installation, pytest, linting, optional type checking, and contribution flow.
 - Security threat model documentation covering repository contribution paths, CI/CD risks, verification package manipulation, and human review limits.
 
 ### Changed
