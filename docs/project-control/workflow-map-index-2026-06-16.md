@@ -2,7 +2,7 @@
 
 This document is a docs-only workflow map for HC-TRUST-LAYER. It records current GitHub Actions workflow behavior after the initial workflow noise-reduction PRs merged on 2026-06-16.
 
-Synchronized through: #1013.
+Synchronized through: current post-#1120 state; the relevant HC Review Window workflow behavior change came from #1117.
 
 ## Project boundary
 
@@ -35,7 +35,8 @@ Synchronized through: #1013.
 | `.github/workflows/governance-preflight.yml` | Governance Preflight | `pull_request` types: opened, synchronize, reopened, ready_for_review | `contents: read` | No | No | No | No | No | No | Yes | No | Not applicable | Medium | `HUMAN_REVIEW_REQUIRED` |
 | `.github/workflows/hc-assistant-command.yml` | HC Assistant Command Listener | `issue_comment` type: created; job only runs for comments starting with `/hc` | `contents: read`, `issues: write`, `pull-requests: read` | No repository file writes; may write issue comments | Yes; posts or updates an HC Assistant response comment | No | No | No | Yes | No | No | Not applicable | High | `PARK_HIGH_RISK` |
 | `.github/workflows/hc-control-bot-advisory-comment.yml` | HC Control Bot Advisory Comment | `pull_request_target` types: opened, synchronize, reopened, ready_for_review | `contents: read`, `pull-requests: read`, `issues: write` | No repository file writes; may write PR comments | Yes; posts or updates one advisory PR comment | No | No | No | Yes | No; uses `pull_request_target`, not `pull_request` | No | Not applicable | High | `HUMAN_REVIEW_REQUIRED` |
-| `.github/workflows/hc-control-bot-report.yml` | HC Control Bot Report | `pull_request` types: opened, synchronize, reopened, ready_for_review | `contents: read`, `pull-requests: read` | No | No | No | No | No | Yes | Yes | No | Not applicable | Medium | `KEEP` |
+| `.github/workflows/hc-control-bot-report.yml` | HC Control Bot Report | `pull_request` types: opened, synchronize, reopened, ready_for_review | `contents: read`, `pull-requests: read` | No | No; report-only job summary and artifact include HC Review Window status; does not comment, label, approve, merge, or delay checks | No | No | No | Yes | Yes | No | Not applicable | Medium | `KEEP` |
+| `.github/workflows/hc-review-window-marker.yml` | HC Review Window Marker | `workflow_dispatch` only; automatic PR triggers disabled | `contents: read`, `pull-requests: read`, `issues: write` | No | May create or update advisory PR marker comment only when manually dispatched; falls back to job summary on permission denial | No | No | No | No | No | No | Not applicable | High, because it has issue comment write permission even though it is manual-only | `HUMAN_REVIEW_REQUIRED` / `PARK_HIGH_RISK`; do not expand without explicit review |
 | `.github/workflows/hc-repo-inventory.yml` | HC Repository Inventory | `pull_request`; `workflow_dispatch`; `push` to `main` | `contents: read`, `id-token: write`, `attestations: write` | No | No | No | No | No | Yes | Yes | Yes | Intended audit evidence for repository inventory attestations on trusted contexts | Medium | `KEEP` |
 | `.github/workflows/policy-evaluation.yml` | Advisory Policy Evaluation | `pull_request` | `contents: read`, `pull-requests: read` | No | No | No | No | No | No | Yes | No | Not applicable | Medium | `HUMAN_REVIEW_REQUIRED` |
 | `.github/workflows/pr-risk-labeler.yml` | PR Risk Labeler | `pull_request` types: opened, synchronize, reopened, ready_for_review | `contents: read`, `pull-requests: write`, `issues: write` | Yes; mutates PR labels and can create labels | No | Yes; applies/removes `manual-review` and removes `auto-merge` | No | No | No | Yes | No | Not applicable | High | `PARK_HIGH_RISK` |
@@ -48,6 +49,14 @@ Synchronized through: #1013.
 | `.github/workflows/validate.yml` | HC-TRUST-LAYER Validation | `pull_request`; `push` to `main` with validation path filters | `contents: read` | No | No | No | No | No | Yes | Yes | Yes, when validation path filters match | Main-push scope reduced after #1011 while preserving broad PR validation coverage | Medium | `KEEP` |
 | `.github/workflows/verification-package-schema.yml` | verification-package-schema | `pull_request`; `push` to `main` with scoped schema/example checker paths | `contents: read` | No | No | No | No | No | No | Yes | Yes, when scoped path filters match | Main-push scope reduced after #1007 while preserving verification package schema/example coverage | Medium | `KEEP` |
 | `.github/workflows/verify-archive.yml` | Verify HC-TRUST-LAYER Archive | `push` to `main` with scoped archive-structure paths | `contents: read` | No | No | No | No | No | No | No | Yes, when scoped archive path filters match | Main-push scope reduced after #1012 while preserving archive-structure evidence coverage | Medium | `KEEP` |
+
+## HC Review Window observation
+
+- HC Review Window active reporting surface is now `HC Control Bot Report`.
+- `HC Review Window Marker` is preserved only as manual debug/passive fallback.
+- The marker workflow is not a required check.
+- CI/checks remain evidence, not trust authority.
+- Human final authority remains required.
 
 ## Initial observations
 
