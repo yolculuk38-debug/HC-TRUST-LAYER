@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "hc-trust-layer"
 version = "0.1.0"
 description = "HC Trust Layer utilities"
-readme = "ROADMAP.md"
+readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
   "fastapi==0.138.1",
