@@ -2,6 +2,8 @@
 
 Status: report only.
 
+Historical note: This document is a historical/report-only readiness review. It records dependency declarations observed at the time of that review and should not be read as the current dependency baseline. Current package metadata must be confirmed from `pyproject.toml`. Current pinned install/test dependencies must be confirmed from `requirements.txt`. Current Python support baseline must be confirmed from `pyproject.toml` and the latest Python migration/support checkpoint. Current Dependabot readiness must be re-evaluated before changing `.github/dependabot.yml`.
+
 This document assesses whether HC-TRUST-LAYER is ready to expand Dependabot beyond GitHub Actions into Python dependency monitoring.
 
 No Dependabot configuration is changed by this document.
@@ -150,7 +152,7 @@ Every Python dependency PR should answer:
 
 ## Recommended decision
 
-Do not expand Dependabot to Python dependencies yet.
+At the time of this review, do not expand Dependabot to Python dependencies yet.
 
 Next safe action:
 
@@ -167,3 +169,5 @@ Dependency monitoring is helpful.
 Dependency monitoring is not a substitute for runtime tests, schema review, validator review, governance review, or human maintainer judgment.
 
 Trust the record, not the narrative.
+
+Historical dependency monitoring readiness reviews must be read in sequence with later dependency-wave checkpoints, dependency declaration reviews, Python migration checkpoints, `pyproject.toml`, `requirements.txt`, and the current `.github/dependabot.yml`.
