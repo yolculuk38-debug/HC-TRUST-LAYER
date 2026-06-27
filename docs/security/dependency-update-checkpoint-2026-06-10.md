@@ -2,6 +2,10 @@
 
 Status: checkpoint record.
 
+## Historical/report-only boundary
+
+This document is a historical/report-only checkpoint. It records Python, dependency, CI, test, or release observations from the review moment when it was written. It should not be read as the current Python support baseline, dependency baseline, workflow runtime baseline, or live CI/test evidence. Current package metadata must be confirmed from `pyproject.toml`. Current pinned install/test dependencies must be confirmed from `requirements.txt`. Current workflow runtime versions must be confirmed from `.github/workflows/**`. Current CI/test evidence must be confirmed from live GitHub Actions and current PR/release evidence.
+
 This document records the first dependency update wave after Python dependency monitoring was enabled for HC-TRUST-LAYER.
 
 ## Purpose
@@ -122,3 +126,5 @@ Dependency updates improve freshness.
 Dependency updates do not prove safety.
 
 Trust the record, not the narrative.
+
+Historical Python, dependency, CI, and test evidence reports must be read in sequence with later migration checkpoints, dependency-wave checkpoints, current `pyproject.toml`, current `requirements.txt`, current workflow files, and live GitHub Actions evidence.
