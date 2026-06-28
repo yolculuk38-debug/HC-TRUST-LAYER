@@ -21,6 +21,10 @@ Synchronized through: current post-#1120 state; the relevant HC Review Window wo
 - `HUMAN_REVIEW_REQUIRED`: preserve or strengthen human-supervised review boundaries before any change.
 - `POSSIBLE_LOW_RISK_REDUCTION`: possible later simplification candidate if the evidence role is redundant and reviewers agree.
 
+## Related taxonomy
+
+See `docs/project-control/workflow-taxonomy.md` for the advisory role and authority classification of current GitHub Actions workflows.
+
 ## Workflow inventory
 
 | Workflow file path | Workflow name | Trigger/event type | Permissions summary | Writes repository state | Comments | Labels | Enables auto-merge | Commits files | Uploads artifacts | Runs on `pull_request` | Runs on push to `main` | Main-push run classification | Risk level | Recommendation |
