@@ -37,6 +37,7 @@ HC-TRUST-LAYER documentation, checks, demos, records, and automation must not be
 | `docs/runtime/`, `docs/spec/`, `docs/verification/`, `docs/architecture/`, `docs/core/` | Runtime, specification, verification, architecture, and core explanatory references. | schema/contract | Maintainers; needs maintainer confirmation where authority is unclear. | High when used to interpret verification behavior or canonical boundaries. |
 | `policy/` | Policy and governance-control material. | governance | Maintainers; protected unless explicitly allowed. | Very high: protected surface. |
 | `federation/` | Federation-related references or implementation surfaces. | experimental/research | Maintainers; needs explicit authorization for changes. | High: future federation behavior can affect trust boundaries. |
+| `signing/` | Protected cryptographic signing and trust-anchor surface. | generated/canonical | Maintainers; protected unless explicitly allowed. | Very high: can affect signing expectations, trust anchors, or verification interpretation. |
 | `signatures/`, `records/signatures/` | Signature-related evidence or signing references where present. | generated/canonical | Maintainers; protected unless explicitly allowed. | Very high: can affect signing expectations or evidence continuity. |
 | `hash/` | Hash references and integrity artifacts. | generated/canonical | Maintainers; protected unless explicitly allowed. | Very high: canonical linkage and integrity evidence. |
 | `qr/` | QR-related verification artifacts and references. | generated/canonical | Maintainers; protected unless explicitly allowed. | High: QR paths can affect verification interpretation. |
@@ -55,7 +56,7 @@ HC-TRUST-LAYER documentation, checks, demos, records, and automation must not be
 
 ## Boundary distinctions
 
-- **Canonical / protected surfaces:** schemas, validators, policy, federation, signatures, hash, QR, generated/canonical artifacts, trust-kernel references, and other protected paths require explicit human review and should not be modified opportunistically.
+- **Canonical / protected surfaces:** schemas, validators, policy, federation, signing, signatures, hash, QR, generated/canonical artifacts, trust-kernel references, and other protected paths require explicit human review and should not be modified opportunistically.
 - **Advisory/report-only surfaces:** checks, scripts, control-bot reports, demos, and project-control coordination can provide evidence, but they do not approve changes or establish truth authority.
 - **Experimental/research surfaces:** future, vision, draft, explorer, federation-planning, and research documents describe possible directions unless separately implemented and reviewed.
 - **Historical evidence surfaces:** records, archived materials, witness/timeline material, legacy names, and provenance examples preserve audit history and should not be silently rewritten.
