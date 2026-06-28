@@ -51,7 +51,7 @@ Authority levels are conservative. “High sensitivity” means the workflow use
 | HC Assistant Command Listener | `.github/workflows/hc-assistant-command.yml` | report-only/advisory | Advisory command response; may write issue comments. | High | Uses `issues: write` and posts/updates public advisory comments for `/hc` commands. Note for 3-3: write permission and command surface need least-privilege review. |
 | HC Check Digest | `.github/workflows/hc-check-digest.yml` | inventory/audit/digest | Advisory digest evidence from live PR/check/review metadata. | High | Uses `workflow_run`, `check_run`, status, review events, secrets token, and read permissions for actions/checks/PRs. Does not label, comment, approve, or merge. Note for 3-3: review event and token exposure risk. |
 | HC Control Bot Advisory Comment | `.github/workflows/hc-control-bot-advisory-comment.yml` | report-only/advisory | Advisory comment automation; not trust authority. | High | Uses `pull_request_target` and `issues: write`. Treat as privileged/high-risk when combined with untrusted PR context. Note for 3-3: event and write permission require careful review. |
-| HC Control Bot Report | `.github/workflows/hc-control-bot-report.yml` | report-only/advisory | Report-only scan and artifacts. | Medium | Checks out trusted base and PR docs as data, uploads artifacts, and includes HC Review Window status. Does not comment, label, approve, merge, or delay checks. |
+| HC Control Bot Report | `.github/workflows/hc-control-bot-report.yml` | report-only/advisory | Report-only scan and artifacts. | Medium | Checks out trusted base and PR docs as data, uploads artifacts, includes HC Review Window status, and emits the HC Workflow Taxonomy Drift advisory step/artifact when workflow changes lack a taxonomy update. Does not comment, label, approve, merge, or delay checks. |
 | HC Repository Inventory | `.github/workflows/hc-repo-inventory.yml` | inventory/audit/digest | Inventory/attestation evidence; needs maintainer confirmation for attestation authority boundaries. | High | Uses `id-token: write` and `attestations: write`. Note for 3-3: write permissions and provenance implications require least-privilege review. |
 | HC Review Window Marker | `.github/workflows/hc-review-window-marker.yml` | manual/debug | Manual advisory marker only. | High | `workflow_dispatch` only and uses `issues: write`; automatic PR triggers are disabled. Does not delay checks, approve, merge, label, assign, close, or request reviewers. |
 | HC Signal Watch Live RSS Dry Run | `.github/workflows/hc-signal-watch-live-rss-dry-run.yml` | manual/debug | Manual read-only dry-run evidence. | Medium | Manual live RSS observation only; artifact and step summary output. Network fetch results remain advisory and require human review. |
@@ -92,12 +92,11 @@ This PR and document do not:
 
 ## 7. Follow-up items
 
-- 3-1b: add a report-only workflow taxonomy drift checker.
-  - Rule: if `.github/workflows/**` changes but `docs/project-control/workflow-taxonomy.md` does not change, HC Control Bot Report should warn.
-  - Design note: the future checker must be stdlib-only, deterministic, report-only, and advisory.
-  - It must not block merge at first.
-  - It should emit a warning like: “Workflow files changed without workflow taxonomy update. Human review required.”
-  - Do not implement this checker in the 3-1 PR.
+- 3-1b: HC Control Bot Report now includes a report-only workflow taxonomy drift checker.
+  - Rule: if `.github/workflows/**` changes but `docs/project-control/workflow-taxonomy.md` does not change, HC Control Bot Report warns.
+  - The checker is stdlib-only, deterministic, report-only, and advisory.
+  - It does not block merge.
+  - It emits: “Workflow files changed without workflow taxonomy update. Human review required.”
 - 3-2: review workflow names vs actual behavior.
 - 3-3: review least-privilege permissions.
 - 3-4: review duplicate or obsolete workflow overlap.

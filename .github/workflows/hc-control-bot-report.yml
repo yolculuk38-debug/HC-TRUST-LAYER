@@ -56,6 +56,10 @@ jobs:
           page = 1
           filenames = []
 
+          def append_changed_path(path):
+              if path:
+                  filenames.append(path)
+
           while True:
               url = f"https://api.github.com/repos/{repo}/pulls/{pr_number}/files?per_page=100&page={page}"
               request = urllib.request.Request(
@@ -72,15 +76,42 @@ jobs:
               if not items:
                   break
 
-              filenames.extend(item["filename"] for item in items)
+              for item in items:
+                  append_changed_path(item.get("filename"))
+                  append_changed_path(item.get("previous_filename"))
               page += 1
 
+          unique_filenames = sorted(set(filenames))
           with open("hc-control-bot-changed-paths.txt", "w", encoding="utf-8") as handle:
-              for filename in filenames:
+              for filename in unique_filenames:
                   handle.write(filename + "\n")
 
-          print(f"Collected {len(filenames)} changed path(s).")
+          print(f"Collected {len(unique_filenames)} changed path(s), including previous filenames for renames when present.")
           PY
+
+      - name: Run workflow taxonomy drift report
+        run: |
+          if [ -f trusted-base/scripts/hc_workflow_taxonomy_drift_report.py ]; then
+            python trusted-base/scripts/hc_workflow_taxonomy_drift_report.py \
+              --paths-file trusted-base/hc-control-bot-changed-paths.txt \
+              | tee trusted-base/hc-workflow-taxonomy-drift.md
+          else
+            cat > trusted-base/hc-workflow-taxonomy-drift.md <<'EOF'
+          ## HC Workflow Taxonomy Drift
+
+          - status: skipped
+          - message: Trusted-base workflow taxonomy drift checker is unavailable on this base revision. Future PRs run this report after the checker lands.
+          - advisory_only=true
+          - public_safe=true
+          - truth_guarantee=false
+          - human_review_required=true
+          - expected_taxonomy_path: `docs/project-control/workflow-taxonomy.md`
+          - merge_blocking: false
+          - note: This report is advisory only and does not block merge.
+          EOF
+          fi
+          cat trusted-base/hc-workflow-taxonomy-drift.md >> "${GITHUB_STEP_SUMMARY}"
+          exit 0
 
       - name: Run deterministic scanner
         working-directory: trusted-base
@@ -176,6 +207,7 @@ jobs:
           path: |
             trusted-base/hc-control-bot-report.json
             trusted-base/hc-control-bot-changed-paths.txt
+            trusted-base/hc-workflow-taxonomy-drift.md
             trusted-base/hc-review-window-status.md
             trusted-base/hc-stale-baseline-scanner.md
           if-no-files-found: error

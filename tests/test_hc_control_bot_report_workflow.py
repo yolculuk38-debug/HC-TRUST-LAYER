@@ -118,3 +118,17 @@ def test_hc_control_bot_report_has_no_approval_merge_comment_or_label_authority(
     )
     for token in forbidden:
         assert token not in text
+
+
+def test_changed_path_collector_includes_previous_filenames_for_renames() -> None:
+    text = _workflow_text()
+
+    for expected in (
+        'item.get("filename")',
+        'item.get("previous_filename")',
+        'including previous filenames for renames when present',
+        'unique_filenames = sorted(set(filenames))',
+    ):
+        assert expected in text
+
+    assert text.index('item.get("previous_filename")') < text.index("Run workflow taxonomy drift report")
