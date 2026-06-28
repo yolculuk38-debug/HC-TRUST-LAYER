@@ -49,10 +49,98 @@ jobs:
         env:
           GITHUB_EVENT_PATH: ${{ github.event_path }}
         run: |
-          python trusted-base/scripts/hc_pr_lifecycle_compliance_report.py \
-            --event-json "$GITHUB_EVENT_PATH" \
-            --changed-files changed-files.txt \
-            --output-dir reports/hc-pr-lifecycle-compliance
+          if [ -f trusted-base/scripts/hc_pr_lifecycle_compliance_report.py ]; then
+            python trusted-base/scripts/hc_pr_lifecycle_compliance_report.py \
+              --event-json "$GITHUB_EVENT_PATH" \
+              --changed-files changed-files.txt \
+              --output-dir reports/hc-pr-lifecycle-compliance
+          else
+            python - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          def now():
+              return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+          event_path = os.environ["GITHUB_EVENT_PATH"]
+          with open(event_path, "r", encoding="utf-8") as handle:
+              event = json.load(handle)
+          pr = event.get("pull_request", {})
+          base = pr.get("base", {})
+          head = pr.get("head", {})
+          observed_at = now()
+          out = Path("reports/hc-pr-lifecycle-compliance")
+          out.mkdir(parents=True, exist_ok=True)
+          report = {
+              "report_name": "HC Control Bot PR Lifecycle Compliance Report",
+              "report_version": "0.1.0-bootstrap-fallback",
+              "advisory_only": True,
+              "report_only": True,
+              "public_safe": True,
+              "truth_guarantee": False,
+              "human_review_required": True,
+              "approval_authority": False,
+              "merge_authority": False,
+              "label_authority": False,
+              "reviewer_request_authority": False,
+              "assignment_authority": False,
+              "issue_mutation_authority": False,
+              "thread_resolution_authority": False,
+              "governance_mutation_authority": False,
+              "repository": event.get("repository", {}).get("full_name", "unknown"),
+              "pr_number": pr.get("number"),
+              "pr_title": pr.get("title") or "",
+              "pr_state": pr.get("state") or "unknown",
+              "draft": bool(pr.get("draft", False)),
+              "base_branch": base.get("ref") or "unknown",
+              "head_branch": head.get("ref") or "unknown",
+              "head_sha": head.get("sha") or "",
+              "observed_at": observed_at,
+              "generated_at": observed_at,
+              "generated_by": "hc-pr-lifecycle-compliance-bootstrap-fallback",
+              "lifecycle_summary": {
+                  "bootstrap_fallback": True,
+                  "trusted_base_reporter_missing": True,
+                  "full_lifecycle_compliance_report_evaluated": False,
+              },
+              "findings": [
+                  {
+                      "severity": "hold_for_human_review",
+                      "title": "trusted_base_reporter_missing",
+                      "detail": "Bootstrap fallback output only; full lifecycle compliance report was not evaluated.",
+                  }
+              ],
+              "warnings": ["trusted_base_reporter_missing"],
+              "blockers_for_human_review": ["trusted_base_reporter_missing"],
+              "not_evaluated": ["trusted_base_reporter_missing"],
+              "followups": [],
+          }
+          summary = "\n".join([
+              "# HC Control Bot PR Lifecycle Compliance Report",
+              "",
+              "## Boundary",
+              "- advisory_only=true",
+              "- report_only=true",
+              "- public_safe=true",
+              "- truth_guarantee=false",
+              "- human_review_required=true",
+              "",
+              "## Bootstrap fallback",
+              "- trusted_base_reporter_missing",
+              "- full lifecycle compliance report was not evaluated",
+              "- This is bootstrap fallback output.",
+              "",
+              "## Human review note",
+              "- Human maintainer makes the final decision.",
+              "",
+          ])
+          (out / "report.json").write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          (out / "summary.md").write_text(summary, encoding="utf-8")
+          print("trusted_base_reporter_missing: bootstrap fallback output written; full lifecycle compliance report was not evaluated.")
+          PY
+          fi
           echo "HC PR lifecycle compliance report is advisory-only/report-only; human review remains required."
 
       - name: Upload HC PR lifecycle compliance report artifacts
