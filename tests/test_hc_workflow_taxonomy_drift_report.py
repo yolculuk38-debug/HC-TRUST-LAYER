@@ -56,6 +56,14 @@ def test_empty_changed_file_list_is_ok() -> None:
     assert "Changed workflow files:\n- None" in report
 
 
+def test_previous_workflow_path_for_rename_triggers_warning() -> None:
+    report = _report(["docs/renamed-workflow.yml", ".github/workflows/old-name.yml"])
+
+    assert "status: warning" in report
+    assert "Workflow files changed without workflow taxonomy update. Human review required." in report
+    assert "`.github/workflows/old-name.yml`" in report
+
+
 def test_duplicate_paths_are_deduplicated() -> None:
     report = _report([".github/workflows/foo.yml", ".github/workflows/foo.yml"])
 

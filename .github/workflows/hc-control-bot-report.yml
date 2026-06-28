@@ -56,6 +56,10 @@ jobs:
           page = 1
           filenames = []
 
+          def append_changed_path(path):
+              if path:
+                  filenames.append(path)
+
           while True:
               url = f"https://api.github.com/repos/{repo}/pulls/{pr_number}/files?per_page=100&page={page}"
               request = urllib.request.Request(
@@ -72,14 +76,17 @@ jobs:
               if not items:
                   break
 
-              filenames.extend(item["filename"] for item in items)
+              for item in items:
+                  append_changed_path(item.get("filename"))
+                  append_changed_path(item.get("previous_filename"))
               page += 1
 
+          unique_filenames = sorted(set(filenames))
           with open("hc-control-bot-changed-paths.txt", "w", encoding="utf-8") as handle:
-              for filename in filenames:
+              for filename in unique_filenames:
                   handle.write(filename + "\n")
 
-          print(f"Collected {len(filenames)} changed path(s).")
+          print(f"Collected {len(unique_filenames)} changed path(s), including previous filenames for renames when present.")
           PY
 
       - name: Run workflow taxonomy drift report
