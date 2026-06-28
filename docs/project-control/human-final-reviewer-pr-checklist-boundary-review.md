@@ -129,11 +129,11 @@ It only means the repository change passed the agreed HC review process for that
 
 ### 10. Review window review
 
-- **Reviewer checks**: Confirm the 90-second review window has passed after PR creation or the latest relevant update.
-- **Evidence used**: created_at, updated_at, latest commit time, and current review timing.
-- **Blocks merge**: Review window has not passed or timing is unclear.
-- **Advisory only**: Automated timing notes.
-- **Human judgment required**: Decide whether enough time has passed for comments and checks to settle.
+- **Reviewer checks**: Read the HC review-window marker/report when available and confirm Observed at, Eligible after, marker/report head SHA, and current PR head SHA.
+- **Evidence used**: HC review-window marker/report, Observed at, Eligible after, marker/report head SHA, current PR head SHA, current time, and newer relevant commit or update evidence. PR created_at, updated_at, and latest commit time are supporting context only when a marker/report exists.
+- **Blocks merge**: Review window has not passed, marker/report head SHA does not match the current PR head SHA, a newer relevant commit/update invalidated the marker, expected marker/report evidence is missing or stale, or timing is unclear.
+- **Advisory only**: Automated timing notes and marker/report summaries until evaluated by the human reviewer.
+- **Human judgment required**: Decide whether the marker/report evidence applies to the current PR head SHA and whether enough time has passed for comments and checks to settle.
 
 ### 11. Merge readiness review
 
@@ -224,7 +224,7 @@ If the PR body is vague, contradicts the diff, or hides a protected-path impact,
 | Validator surface | `validators/**` | Public validation behavior or error meaning may change. | Explicit scope and validator-impact review. | Decide whether validation evidence remains accurate within scope. |
 | Records/evidence | `records/**` | Provenance-bearing artifacts may change audit meaning. | Explicit scope and evidence-preservation review. | Decide whether record continuity is preserved. |
 | Generated artifacts | `generated/**` | Generated output may be mistaken for canonical source. | Explicit scope and generation evidence. | Decide whether generated meaning is clear. |
-| Canonical artifacts | `canonical/**` | Canonical references may alter review baselines. | Explicit scope and canonical-boundary review. | Decide whether canonical meaning remains intact. |
+| Canonical artifacts | `canonical/**`, `protocol-graph.json`, `verification-map.json`, `trust-kernel-index.json` | Canonical references or top-level canonical/trust-kernel root artifacts may alter review baselines. This list is not exhaustive if repository inventory or governance documents define more canonical roots. | Explicit scope and canonical/trust-kernel boundary review if touched. | Decide whether canonical and trust-kernel meaning remains intact. |
 | Policy surface | `policy/**` | Governance interpretation may change. | Explicit scope and policy-boundary review. | Decide whether policy impact is acceptable. |
 | Federation surface | `federation/**` | Federation assumptions or boundaries may change. | Explicit scope and federation-boundary review. | Decide whether federation meaning remains bounded. |
 | Signing surface | `signing/**` | Signing expectations may change. | Explicit scope and signing-boundary review. | Decide whether signing meaning remains clear. |
@@ -328,13 +328,23 @@ The checklist must not claim every check is an enforcement check. Checks may be 
 
 ## 12. Review window rule
 
-The 90-second review window is an HC review practice for PRs before merge readiness is considered.
+The 90-second review window is an HC review practice for PRs before merge readiness is considered. When an HC review-window marker/report exists, it is the primary readiness source for the review-window decision. PR created_at, updated_at, and latest commit time remain supporting context only.
 
-- [ ] PR created_at was checked.
-- [ ] Latest commit time or update time was considered.
+- [ ] HC review-window marker/report was read when available.
+- [ ] Observed at was checked when a marker/report exists.
+- [ ] Eligible after was checked when a marker/report exists.
+- [ ] Marker/report head SHA was checked when a marker/report exists.
+- [ ] Current PR head SHA was checked against the marker/report head SHA when a marker/report exists.
+- [ ] PR created_at was checked as supporting context.
+- [ ] Latest commit time or update time was considered as supporting context.
+- [ ] Current time is after Eligible after when a marker/report exists.
+- [ ] Marker/report head SHA matches the current PR head SHA when a marker/report exists.
+- [ ] No newer relevant commit/update invalidated the marker/report.
 - [ ] Review window has passed before merge.
 - [ ] If review window has not passed, merge is held.
 - [ ] Review window is a human review discipline, not proof of correctness.
+
+The review window is considered passed only when current time is after Eligible after, the marker/report head SHA matches the current PR head SHA, and no newer relevant commit/update invalidated the marker. If no marker/report exists where one is expected, merge is held until the missing evidence is resolved.
 
 The review window helps prevent rushed merges, stale evaluation, and missed comments. It does not replace diff review, checks, thread review, or human judgment.
 
@@ -406,6 +416,7 @@ Post-merge audit is part of the HC review lifecycle. It confirms what happened; 
 - Cancelled run is misread as success.
 - New commit arrived after review but checks were not re-read.
 - Review window has not passed.
+- Review-window marker/report is missing, stale, or mismatched where the marker/report is expected.
 - Authority expansion is unclear.
 - HC boundary flags are weakened.
 - Public output meaning is unclear.
