@@ -13,7 +13,8 @@ This review does not change public API behavior, CLI behavior, validators, schem
 - `advisory_only=true`.
 - `public_safe=true`.
 - `truth_guarantee=false`.
-- `human_review_required=true`.
+- `human_review_required=true` for repository/governance review decisions.
+- Runtime/API `human_review_required` response fields are conditional based on warnings or escalation.
 - Public outputs are evidence or advisory signals, not trust authority.
 - API, CLI, QR, and demo outputs do not establish legal truth, identity finality, forensic certainty, certification, or production readiness.
 - The human maintainer remains the final authority.
@@ -80,7 +81,7 @@ The review is conservative. Paths under `src/` and `scripts/` may produce public
 | `advisory_only` | Output is guidance/evidence for review. | Enforcement, approval, merge authority, or certification. | Always required. | Expected value is `true` for public-safe advisory outputs. |
 | `public_safe` | Output is intended to avoid private or sensitive internal context. | A guarantee that no sensitive material exists in every caller context. | Required for publication decisions. | Public-safe outputs must avoid secrets, private paths, tokens, and internal-only context. |
 | `truth_guarantee` | Whether the output claims truth authority. | A hidden legal or factual guarantee when `false`. | Always required. | Expected value is `false`. |
-| `human_review_required` | Human maintainer or authorized reviewer must make the final decision. | Optional review for consequential interpretation. | Always required. | Expected value is `true`. |
+| `human_review_required` | Runtime/API response field indicating that public warnings exist or escalation is required for that response. | A universal claim that every clean advisory runtime/API payload requires this field to be `true`, or that project governance review is optional when it is `false`. | Conditional for runtime/API responses; repository/governance decisions still require human final authority. | Expected runtime/API value is `true` when public warnings exist or escalation is required, and `false` for a clean advisory payload without warnings/escalation. |
 | `warnings` | Advisory concerns, ambiguity, or negative-path signals. | Definitive legal or forensic findings. | Required before public claims. | Warnings should be explicit and understandable. |
 | `missing_evidence` | Required or expected evidence was not observed locally. | Proof that evidence does not exist anywhere. | Required. | Indicates a local evidence gap. |
 | `conflicting_evidence` | Observed evidence appears inconsistent under local rules. | Final dispute resolution or fraud determination. | Required. | Needs reviewer evaluation and context. |
@@ -103,7 +104,7 @@ Advisory/report-only surfaces include local scripts, package viewers, output for
 
 Outputs most likely to be misunderstood include `valid`, `verified`, hash/digest matches, QR payload matches, `record_id`, provenance summaries, audit summaries, witness fields, timestamps, and readiness/status labels. Each should be paired with boundary language when exposed publicly.
 
-Areas needing maintainer confirmation before promotion include stable public API contract status, CLI output contract status, public explorer maturity, QR validation contract status, browser/mobile demo status, public-safe telemetry scope, and any transition from demo/advisory output to enforcement or production use.
+Areas needing maintainer confirmation before promotion include stable public API contract status, CLI output contract status, public explorer maturity, QR validation contract status, browser/mobile demo status, public-safe telemetry scope, and any transition from demo/advisory output to enforcement or production use. Runtime/API response documentation should distinguish the repository governance boundary, where human final authority remains required, from the `human_review_required` response field, which is conditional based on public warnings or escalation.
 
 The test taxonomy shows observed coverage for public response contracts, CLI behavior, QR parsing/validation/bridge behavior, demo runner behavior, static viewer/explorer behavior, browser/mobile flows, result formatting, SDK response, verification output summary, and package validation. It does not by itself prove complete public contract coverage, and maintainers should confirm coverage before treating any surface as stable.
 
