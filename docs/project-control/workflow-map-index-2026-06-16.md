@@ -23,7 +23,7 @@ Synchronized through: current post-#1120 state; the relevant HC Review Window wo
 
 ## Related taxonomy
 
-See `docs/project-control/workflow-taxonomy.md` for the advisory role and authority classification of current GitHub Actions workflows. See `docs/project-control/workflow-naming-review.md` for the advisory review of workflow names against observed behavior.
+See `docs/project-control/workflow-taxonomy.md` for the advisory role and authority classification of current GitHub Actions workflows. See `docs/project-control/workflow-naming-review.md` for the advisory review of workflow names against observed behavior. See `docs/project-control/workflow-permissions-review.md` for the advisory least-privilege permissions review.
 
 ## Workflow inventory
 

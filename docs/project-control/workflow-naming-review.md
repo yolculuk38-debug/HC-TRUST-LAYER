@@ -97,5 +97,5 @@ Do not rename workflows in this PR. Recommended follow-up rules:
 ## 7. Follow-up items
 
 - 3-2b optional: rename materially misleading workflows in separate PRs, one workflow family at a time.
-- 3-3: least-privilege permissions review.
+- 3-3: least-privilege permissions review. See `docs/project-control/workflow-permissions-review.md`.
 - 3-4: duplicate or obsolete workflow review.
