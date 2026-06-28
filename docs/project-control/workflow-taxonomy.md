@@ -92,7 +92,7 @@ This PR and document do not:
 
 ## Related naming review
 
-See `docs/project-control/workflow-naming-review.md` for the advisory backlog item 3-2 review of workflow names against observed behavior and authority boundaries. See `docs/project-control/workflow-permissions-review.md` for the advisory backlog item 3-3 least-privilege permissions review.
+See `docs/project-control/workflow-naming-review.md` for the advisory backlog item 3-2 review of workflow names against observed behavior and authority boundaries. See `docs/project-control/workflow-permissions-review.md` for the advisory backlog item 3-3 least-privilege permissions review. See `docs/project-control/workflow-overlap-review.md` for the advisory backlog item 3-4 duplicate or obsolete workflow overlap review.
 
 ## 7. Follow-up items
 
@@ -103,4 +103,4 @@ See `docs/project-control/workflow-naming-review.md` for the advisory backlog it
   - It emits: “Workflow files changed without workflow taxonomy update. Human review required.”
 - 3-2: review workflow names vs actual behavior.
 - 3-3: review least-privilege permissions. See `docs/project-control/workflow-permissions-review.md`.
-- 3-4: review duplicate or obsolete workflow overlap.
+- 3-4: duplicate or obsolete workflow overlap review is documented in `docs/project-control/workflow-overlap-review.md`.
