@@ -130,3 +130,5 @@ def test_changed_path_collector_includes_previous_filenames_for_renames() -> Non
         'unique_filenames = sorted(set(filenames))',
     ):
         assert expected in text
+
+    assert text.index('item.get("previous_filename")') < text.index("Run workflow taxonomy drift report")

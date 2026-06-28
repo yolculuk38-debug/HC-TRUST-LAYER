@@ -64,6 +64,18 @@ def test_previous_workflow_path_for_rename_triggers_warning() -> None:
     assert "`.github/workflows/old-name.yml`" in report
 
 
+def test_previous_workflow_path_with_taxonomy_update_is_ok() -> None:
+    report = _report([
+        "docs/renamed-workflow.yml",
+        ".github/workflows/old-name.yml",
+        "docs/project-control/workflow-taxonomy.md",
+    ])
+
+    assert "status: ok" in report
+    assert "Workflow taxonomy update was detected" in report
+    assert "`.github/workflows/old-name.yml`" in report
+
+
 def test_duplicate_paths_are_deduplicated() -> None:
     report = _report([".github/workflows/foo.yml", ".github/workflows/foo.yml"])
 
