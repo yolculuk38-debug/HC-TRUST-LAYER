@@ -33,7 +33,7 @@ Observed onboarding and boundary surfaces:
 - `HC_BOOTSTRAP.md` is observed and referenced by onboarding docs; it was inspected but not edited.
 - `AGENTS.md` is observed and referenced by onboarding docs; it was inspected but not edited.
 - `.github/ISSUE_TEMPLATE/` is observed; issue templates were noted by path but not edited.
-- A pull request template was not observed.
+- `.github/pull_request_template.md` is observed as an onboarding / PR review surface; it was inspected but not edited.
 
 Relationship to previous boundary reviews:
 
@@ -62,7 +62,7 @@ Relationship to previous boundary reviews:
 | `HC_BOOTSTRAP.md` | Operational bootstrap and handoff guide. | Humans, AI agents, maintainers. | governance | docs-only when explicitly scoped | yes | onboarding contributor boundary | Observed and referenced; not edited in this PR. |
 | `AGENTS.md` | Repository-wide contributor and agent rules. | Agents and contributors. | governance | docs-only when explicitly scoped | yes | onboarding contributor boundary | Observed and referenced; not edited in this PR. |
 | `.github/ISSUE_TEMPLATE/` | Issue intake templates. | Contributors and maintainers. | governance | not in this PR | yes | maintainer workflow follow-up | Observed but not edited; workflow/template changes need separate scope. |
-| Pull request template | Contributor PR body guidance. | Contributors and reviewers. | not observed | not observed | needs maintainer confirmation | maintainer workflow follow-up | No pull request template was observed in this review. |
+| `.github/pull_request_template.md` | Contributor PR body guidance, validation prompts, self-audit checklist, and risk notes. | Contributors and reviewers. | governance, medium | not in this PR | yes | maintainer workflow follow-up | Observed but not edited; future checklist improvements should tighten or link from the existing PR template. |
 | `.github/workflows/**` | CI and automation workflows. | Maintainers and CI operators. | protected path, high | not safe for docs-only PRs | yes | test taxonomy; public API / CLI | CI evidence does not replace human review. |
 | `scripts/**` | Checks, validators, report generators, and local helpers. | Maintainers and developers. | high | not safe for docs-only PRs | yes | test taxonomy; generated/canonical | Script behavior changes can alter evidence production. |
 | `src/**` | Runtime and library implementation. | Developers and reviewers. | code/runtime, critical | code/runtime only with explicit scope | yes | core package; public API / CLI | Runtime changes are not onboarding-doc work. |
@@ -128,14 +128,14 @@ A safe practical workflow is:
 - Protected path map.
 - Demo/generated/canonical/public-output rules linked from onboarding.
 - AI-assisted contribution rules visible.
-- PR body template includes boundary confirmation.
+- Existing PR body template includes or links boundary confirmation.
 - Every contributor knows CI is evidence, not final trust.
 
 ### Current practical next step
 
 - Document observed onboarding/contributor boundaries first.
 - Do not edit templates or protected files in this PR.
-- Propose small follow-up PRs for missing onboarding links, checklist wording, or template improvements.
+- Propose small follow-up PRs for missing onboarding links, checklist wording, or changes that tighten or link from the existing PR template.
 
 ## 9. Real-world analogy
 
@@ -146,7 +146,7 @@ HC-TRUST-LAYER contributors should follow the same principle: small changes, cle
 ## 10. Follow-up items
 
 - 5-1b optional: add contributor-facing boundary links to onboarding docs where missing.
-- 5-1c optional: add PR body checklist wording for docs-only/test-only/protected-path claims.
+- 5-1c optional: tighten or link from the existing PR template for docs-only/test-only/protected-path claims.
 - 5-1d optional: add AI-assisted contribution note if missing.
 - 5-2: maintainer workflow / PR review checklist boundary review.
 - 5-3: protected path contributor guide review.
