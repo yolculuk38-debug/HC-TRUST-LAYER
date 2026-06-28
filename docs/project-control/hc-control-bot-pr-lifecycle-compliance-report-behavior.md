@@ -171,6 +171,10 @@ The report evidence model should include these fields:
 - `base_branch`: Base branch observed by the report.
 - `head_branch`: Head branch observed by the report.
 - `head_sha`: Current PR head SHA observed by the report.
+- `pr_updated_at`: Public-safe PR metadata update time observed by the report, when available.
+- `pr_metadata_observed_at`: Time when PR title, body, and metadata evidence were observed.
+- `pr_body_observed_at`: Time when PR body evidence was observed, when tracked separately from other metadata.
+- `pr_body_snapshot_signal`: Optional public-safe body freshness signal, such as a generic body snapshot identifier, when separately governed. This document does not implement hashing or storage.
 - `observed_at`: Time when evidence was observed.
 - `evidence_sources`: Public-safe evidence inputs used by the report.
 - `lifecycle_summary`: Concise summary of lifecycle alignment signals.
@@ -183,6 +187,8 @@ The report evidence model should include these fields:
 - `generated_at`: Time when the report output was generated.
 
 The bot reports possible blockers for a human reviewer to evaluate. It does not block merge by itself.
+
+Head SHA is primary for diff and check evidence. PR title, PR body, and PR metadata timestamps or equivalent public-safe freshness signals are required for PR body evidence freshness. A report can remain current for head SHA checks while becoming stale for PR body evidence if title, body, or metadata changed after report generation.
 
 ## 7. Finding severity
 
@@ -462,12 +468,19 @@ A report is stale as current merge-readiness evidence when any of these conditio
 - PR head SHA changed
 - PR state changed
 - draft state changed
+- PR title changed
+- PR body changed
+- PR metadata changed in a way that affects scope, testing/check claims, authority boundary claims, follow-up classification, or review meaning
+- PR body section presence changed
+- PR body changed in a way that affects mismatch risk between PR body and changed files
 - changed files changed
 - relevant checks changed
 - review-window marker/report changed
 - new review comment added
 - thread state changed
 - merge state changed
+
+Head SHA remains the primary freshness signal for diff and check evidence. PR body, title, and metadata freshness requires PR metadata timing or equivalent public-safe snapshot signals. A report can be current for head SHA checks but stale for PR body evidence if PR metadata changed after report generation.
 
 A stale report is still audit evidence, but not current merge-readiness evidence.
 
