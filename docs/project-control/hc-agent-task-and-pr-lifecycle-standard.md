@@ -15,7 +15,7 @@ This document defines a shared HC standard for:
 - merging only after human final review
 - producing post-merge audit evidence
 
-This document is advisory and documentation-only. It does not create automation authority. It does not approve, reject, merge, label, assign, comment, or request reviewers.
+This document is advisory and documentation-only. It does not create automation authority. It does not approve, reject, merge, label, assign, request reviewers, or create new or expanded comment authority.
 
 ## 2. HC boundary
 
@@ -49,10 +49,10 @@ Agents must not claim:
 - **coding agent**: An AI system asked to inspect files, edit scoped files, run checks, and report results under HC boundaries.
 - **executor**: The role that writes code, documentation, or tests and runs checks within the approved scope.
 - **orchestrator**: The role that tracks state, routes work, stores memory, and reports compliance without replacing human final review.
-- **HC Control Bot**: A report-only compliance observer unless a later governed PR explicitly changes that behavior.
+- **HC Control Bot**: A report-only compliance observer that may use the existing advisory single-comment path, without new or expanded comment authority unless a later governed PR explicitly changes that boundary.
 - **HC Check Digest**: A summarized evidence view of relevant checks, signals, and review status for human evaluation.
 - **maintainer / human final reviewer**: The human role that performs final review and decides whether a PR may merge.
-- **report-only**: A mode that observes and reports findings without approving, rejecting, merging, labeling, assigning, commenting, requesting reviewers, or mutating governance state.
+- **report-only**: A mode that observes and reports findings without approving, rejecting, merging, labeling, assigning, requesting reviewers, mutating governance state, or creating new or expanded comment authority.
 - **advisory-only**: A boundary that makes output useful for review but not authoritative by itself.
 - **compliance signal**: Evidence that a task, PR body, diff, check, thread, or audit step appears aligned or misaligned with HC expectations.
 - **protected path**: A path that affects record identity, provenance continuity, policy interpretation, signing expectations, federation behavior, validation semantics, governance controls, or other trust-kernel surfaces.
@@ -60,7 +60,7 @@ Agents must not claim:
 - **generated/canonical artifact**: A generated or canonical file whose meaning, provenance, or review boundary must be preserved.
 - **records/evidence**: HC artifacts that preserve what happened, what was checked, what changed, and what remains uncertain.
 
-The executor writes code, documentation, or tests and runs checks. The orchestrator tracks state, routes work, stores memory, and reports compliance. HC Control Bot remains a report-only compliance observer unless a later governed PR explicitly changes that behavior.
+The executor writes code, documentation, or tests and runs checks. The orchestrator tracks state, routes work, stores memory, and reports compliance. HC Control Bot remains a report-only compliance observer and retains only the existing advisory single-comment path unless a later governed PR explicitly changes that boundary.
 
 ## 4. Whole-system impact analysis rule
 
@@ -308,7 +308,7 @@ Future report-only signals HC Control Bot may produce include:
 - follow-up unclear
 - agent added authority it should not have
 
-Initial HC Control Bot behavior remains report-only. It must not merge, approve, reject, label, request reviewers, comment, close issues, or mutate governance state unless a future governed PR explicitly adds such behavior.
+Initial HC Control Bot behavior remains report-only and advisory-only. The existing advisory single-comment path is preserved. HC Control Bot must not merge, approve, reject, label, request reviewers, close issues, mutate governance state, or add new or expanded comment authority unless a future governed PR explicitly adds such behavior.
 
 ## 14. Ideal vs practical path
 
