@@ -1,0 +1,122 @@
+name: HC PR Lifecycle Compliance Report
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, edited]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: hc-pr-lifecycle-compliance-report-${{ github.event.pull_request.number }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  report:
+    name: HC PR lifecycle compliance report-only evidence
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out trusted base code
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: trusted-base
+          persist-credentials: false
+
+      - name: Check out PR head as data
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: pr-data
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+
+      - name: Collect PR changed files from merge base
+        working-directory: pr-data
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git fetch --no-tags --prune origin "${BASE_SHA}"
+          git diff --name-only "${BASE_SHA}...${HEAD_SHA}" > ../trusted-base/changed-files.txt
+
+      - name: Generate lifecycle compliance report from trusted base
+        working-directory: trusted-base
+        run: |
+          if [ -f scripts/hc_pr_lifecycle_compliance_report.py ]; then
+            python scripts/hc_pr_lifecycle_compliance_report.py \
+              --changed-files changed-files.txt \
+              --output report.json
+            cat > summary.md <<'EOF'
+          ## HC PR Lifecycle Compliance Report
+
+          - status: trusted_base_reporter_used
+          - advisory_only=true
+          - report_only=true
+          - public_safe=true
+          - truth_guarantee=false
+          - human_review_required: see `report.json`
+          - note: Full lifecycle compliance report was generated from trusted base code.
+          EOF
+          else
+            cat > report.json <<'EOF'
+          {
+            "report_name": "HC Control Bot PR Lifecycle Compliance Report",
+            "report_version": "bootstrap-1.0",
+            "bootstrap_report": true,
+            "advisory_only": true,
+            "report_only": true,
+            "public_safe": true,
+            "truth_guarantee": false,
+            "human_review_required": true,
+            "full_lifecycle_compliance_report_evaluated": false,
+            "blockers_for_human_review": [
+              "trusted_base_reporter_missing"
+            ],
+            "not_evaluated": [
+              "trusted_base_reporter_missing"
+            ],
+            "notes": [
+              "trusted base reporter is not available yet",
+              "full lifecycle compliance report is not evaluated",
+              "human maintainer must review manually"
+            ]
+          }
+          EOF
+            cat > summary.md <<'EOF'
+          ## HC PR Lifecycle Compliance Report Bootstrap Fallback
+
+          - trusted base reporter is not available yet
+          - full lifecycle compliance report is not evaluated
+          - advisory_only=true
+          - report_only=true
+          - public_safe=true
+          - truth_guarantee=false
+          - human_review_required=true
+          - blockers_for_human_review includes `trusted_base_reporter_missing`
+          - not_evaluated includes `trusted_base_reporter_missing`
+          - human maintainer must review manually
+          - this bootstrap fallback does not claim checks passed
+          - this bootstrap fallback does not claim merge-readiness
+          - this bootstrap fallback does not run PR-head reporter code
+          EOF
+          fi
+          cat summary.md >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Upload lifecycle compliance report artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: hc-pr-lifecycle-compliance-report
+          path: |
+            trusted-base/changed-files.txt
+            trusted-base/report.json
+            trusted-base/summary.md
+          if-no-files-found: error
