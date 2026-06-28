@@ -90,6 +90,10 @@ This PR and document do not:
 - replace maintainer review;
 - certify workflow security.
 
+## Related naming review
+
+See `docs/project-control/workflow-naming-review.md` for the advisory backlog item 3-2 review of workflow names against observed behavior and authority boundaries.
+
 ## 7. Follow-up items
 
 - 3-1b: HC Control Bot Report now includes a report-only workflow taxonomy drift checker.
