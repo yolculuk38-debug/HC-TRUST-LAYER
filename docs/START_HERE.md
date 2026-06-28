@@ -73,10 +73,11 @@ Use these HC:// Public Validator demo entry points for a fast, public-safe, advi
 
 1. **Start here:** This file (you're reading it)
 2. **Then read:** [`README.md`](../README.md) — project overview and demo
-3. **Then read:** [`CONTRIBUTING.md`](../CONTRIBUTING.md) — contribution workflow and PR policy
-4. **Then read:** [`docs/contributor-start-here.md`](contributor-start-here.md) — detailed beginner guidance
-5. **Pick work from:** Issues marked `good-first-issue` or make a small documentation improvement
-6. **Before opening PR:** Run checks in section 5 below
+3. **Then read:** [`docs/repo-map.md`](repo-map.md) — current repository map and advisory ownership boundaries
+4. **Then read:** [`CONTRIBUTING.md`](../CONTRIBUTING.md) — contribution workflow and PR policy
+5. **Then read:** [`docs/contributor-start-here.md`](contributor-start-here.md) — detailed beginner guidance
+6. **Pick work from:** Issues marked `good-first-issue` or make a small documentation improvement
+7. **Before opening PR:** Run checks in section 5 below
 
 **Timeline:** 30 minutes reading + 15 minutes local setup = ~45 minutes to first PR-ready change.
 
