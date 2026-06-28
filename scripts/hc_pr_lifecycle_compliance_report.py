@@ -41,6 +41,21 @@ CANONICAL_ROOT_ARTIFACTS = {
     "verification-map.json",
     "trust-kernel-index.json",
 }
+PROTECTED_SURFACE_PREFIXES = (
+    ".github/",
+    "validators/",
+    "src/hc_runtime/",
+    "records/",
+    "docs/project-control/",
+    "schema/",
+    "policy/",
+    "federation/",
+    "signing/",
+    "signatures/",
+    "canonical/",
+    "generated/",
+)
+PROTECTED_SURFACE_FILES = {"CODEOWNERS", *CANONICAL_ROOT_ARTIFACTS}
 PACKAGE_FILES = {
     "package.json", "package-lock.json", "npm-shrinkwrap.json", "yarn.lock",
     "pnpm-lock.yaml", "pyproject.toml", "poetry.lock", "requirements.txt",
@@ -169,7 +184,7 @@ def generate_report(event: dict[str, Any], changed_files: list[str], observed_at
         warnings.append("head_sha_stale")
         findings.append(finding("warning", "Head SHA mismatch", "Expected head SHA does not match observed PR head SHA."))
 
-    protected_touched = any(p.startswith(("schema/", "policy/", "federation/", "signing/", "signatures/", "canonical/")) for p in changed_files)
+    protected_touched = any(p.startswith(PROTECTED_SURFACE_PREFIXES) or p in PROTECTED_SURFACE_FILES for p in changed_files)
     workflow_bot_surface = cats["workflows_touched"] or any("bot" in p.lower() for p in changed_files)
     authority_adjacent = workflow_bot_surface or cats["templates_touched"]
     if protected_touched:

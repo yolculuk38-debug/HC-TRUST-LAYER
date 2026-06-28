@@ -40,11 +40,26 @@ def test_docs_only_changed_file_classification():
 
 
 def test_protected_path_signal_detection():
-    report = generate_report(_event(), ["schema/record.schema.json"])
+    protected_paths = [
+        ".github/workflows/example.yml",
+        "validators/check.py",
+        "src/hc_runtime/runtime.py",
+        "records/pending/example.json",
+        "CODEOWNERS",
+        "docs/project-control/example.md",
+        "schema/record.schema.json",
+        "policy/example.md",
+        "federation/example.json",
+        "signing/example.md",
+        "signatures/example.sig",
+        "canonical/example.json",
+        "generated/example.json",
+    ]
 
-    assert report["changed_file_categories"]["schema_touched"] is True
-    assert report["protected_path_signals"]["protected_path_touched"] is True
-    assert "protected_path_touched_requires_human_review" in report["blockers_for_human_review"]
+    for path in protected_paths:
+        report = generate_report(_event(), [path])
+        assert report["protected_path_signals"]["protected_path_touched"] is True
+        assert "protected_path_touched_requires_human_review" in report["blockers_for_human_review"]
 
 
 def test_canonical_trust_kernel_root_artifact_detection():

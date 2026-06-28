@@ -21,26 +21,35 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - name: Check out repository
+      - name: Check out trusted base reporter code
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: trusted-base
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Check out PR head as evidence data
         uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.sha }}
+          path: pr-evidence
           persist-credentials: false
           fetch-depth: 0
 
-      - name: Collect changed files from local git evidence
+      - name: Collect changed files from merge-base evidence
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          git diff --name-only "$BASE_SHA" "$HEAD_SHA" > changed-files.txt
+          git -C pr-evidence diff --name-only "$BASE_SHA...$HEAD_SHA" > changed-files.txt
           printf 'Current PR head SHA: %s\n' "$HEAD_SHA"
 
-      - name: Generate HC PR lifecycle compliance report
+      - name: Generate HC PR lifecycle compliance report from trusted base code
         env:
           GITHUB_EVENT_PATH: ${{ github.event_path }}
         run: |
-          python scripts/hc_pr_lifecycle_compliance_report.py \
+          python trusted-base/scripts/hc_pr_lifecycle_compliance_report.py \
             --event-json "$GITHUB_EVENT_PATH" \
             --changed-files changed-files.txt \
             --output-dir reports/hc-pr-lifecycle-compliance
