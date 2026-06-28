@@ -47,7 +47,7 @@ jobs:
           echo "HC PR lifecycle compliance report is advisory-only/report-only; human review remains required."
 
       - name: Upload HC PR lifecycle compliance report artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: hc-pr-lifecycle-compliance-report
           path: |
