@@ -1,0 +1,56 @@
+name: HC PR Lifecycle Compliance Report
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, edited]
+
+permissions:
+  contents: read
+  pull-requests: read
+  actions: read
+  checks: read
+
+concurrency:
+  group: hc-pr-lifecycle-compliance-report-${{ github.event.pull_request.number }}-${{ github.event.pull_request.head.sha }}
+  cancel-in-progress: true
+
+jobs:
+  report:
+    name: Report-only PR lifecycle compliance artifact
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Collect changed files from local git evidence
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git diff --name-only "$BASE_SHA" "$HEAD_SHA" > changed-files.txt
+          printf 'Current PR head SHA: %s\n' "$HEAD_SHA"
+
+      - name: Generate HC PR lifecycle compliance report
+        env:
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
+        run: |
+          python scripts/hc_pr_lifecycle_compliance_report.py \
+            --event-json "$GITHUB_EVENT_PATH" \
+            --changed-files changed-files.txt \
+            --output-dir reports/hc-pr-lifecycle-compliance
+          echo "HC PR lifecycle compliance report is advisory-only/report-only; human review remains required."
+
+      - name: Upload HC PR lifecycle compliance report artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: hc-pr-lifecycle-compliance-report
+          path: |
+            reports/hc-pr-lifecycle-compliance/report.json
+            reports/hc-pr-lifecycle-compliance/summary.md
+          if-no-files-found: error
