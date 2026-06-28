@@ -82,6 +82,30 @@ jobs:
           print(f"Collected {len(filenames)} changed path(s).")
           PY
 
+      - name: Run workflow taxonomy drift report
+        run: |
+          if [ -f trusted-base/scripts/hc_workflow_taxonomy_drift_report.py ]; then
+            python trusted-base/scripts/hc_workflow_taxonomy_drift_report.py \
+              --paths-file trusted-base/hc-control-bot-changed-paths.txt \
+              | tee trusted-base/hc-workflow-taxonomy-drift.md
+          else
+            cat > trusted-base/hc-workflow-taxonomy-drift.md <<'EOF'
+          ## HC Workflow Taxonomy Drift
+
+          - status: skipped
+          - message: Trusted-base workflow taxonomy drift checker is unavailable on this base revision. Future PRs run this report after the checker lands.
+          - advisory_only=true
+          - public_safe=true
+          - truth_guarantee=false
+          - human_review_required=true
+          - expected_taxonomy_path: `docs/project-control/workflow-taxonomy.md`
+          - merge_blocking: false
+          - note: This report is advisory only and does not block merge.
+          EOF
+          fi
+          cat trusted-base/hc-workflow-taxonomy-drift.md >> "${GITHUB_STEP_SUMMARY}"
+          exit 0
+
       - name: Run deterministic scanner
         working-directory: trusted-base
         run: |
@@ -176,6 +200,7 @@ jobs:
           path: |
             trusted-base/hc-control-bot-report.json
             trusted-base/hc-control-bot-changed-paths.txt
+            trusted-base/hc-workflow-taxonomy-drift.md
             trusted-base/hc-review-window-status.md
             trusted-base/hc-stale-baseline-scanner.md
           if-no-files-found: error
