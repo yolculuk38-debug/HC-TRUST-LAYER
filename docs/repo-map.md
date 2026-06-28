@@ -27,6 +27,7 @@ HC-TRUST-LAYER documentation, checks, demos, records, and automation must not be
 | `scripts/` | Checks, report generators, validation helpers, local demo runners, and bounded maintenance utilities. | automation/report-only | Maintainers and contributors may update scoped helpers. | Medium to high: scripts can produce evidence, but are not trust authority. |
 | `.github/` | GitHub Actions, control-bot wiring, issue/PR automation, and repository automation configuration. | automation/report-only | Maintainers only unless explicitly authorized. | High: automation may influence review flow, but does not grant approval authority. |
 | `schema/` | Record schema definitions and verification contracts. | schema/contract | Schema maintainers; changes need explicit justification. | Very high: canonical/protected surface. |
+| `validators/` | Protected validation and verification surfaces. | schema/contract | Validation maintainers; changes need explicit justification. | High: can affect validation semantics and verification interpretation. |
 | `records/` | Evidence-bearing examples, verified records, archived records, pending records, and audit/provenance material. | audit/provenance record | Maintainers must preserve historical evidence and audit continuity. | Very high: historical evidence surface; avoid mutation unless explicitly authorized. |
 | `docs/` | Architecture, onboarding, governance references, demos, planning notes, and explanatory material. | documentation/onboarding | Contributors may make small scoped documentation changes. | Varies by subarea; governance, security, and canonical references need extra care. |
 | `docs/governance/` | Governance procedures, review expectations, migration notes, and maintainer decision references. | governance | Maintainers and governance reviewers. | High: may affect interpretation of authority boundaries. |
@@ -54,7 +55,7 @@ HC-TRUST-LAYER documentation, checks, demos, records, and automation must not be
 
 ## Boundary distinctions
 
-- **Canonical / protected surfaces:** schemas, policy, federation, signatures, hash, QR, generated/canonical artifacts, trust-kernel references, and other protected paths require explicit human review and should not be modified opportunistically.
+- **Canonical / protected surfaces:** schemas, validators, policy, federation, signatures, hash, QR, generated/canonical artifacts, trust-kernel references, and other protected paths require explicit human review and should not be modified opportunistically.
 - **Advisory/report-only surfaces:** checks, scripts, control-bot reports, demos, and project-control coordination can provide evidence, but they do not approve changes or establish truth authority.
 - **Experimental/research surfaces:** future, vision, draft, explorer, federation-planning, and research documents describe possible directions unless separately implemented and reviewed.
 - **Historical evidence surfaces:** records, archived materials, witness/timeline material, legacy names, and provenance examples preserve audit history and should not be silently rewritten.
