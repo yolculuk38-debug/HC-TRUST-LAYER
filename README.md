@@ -98,6 +98,8 @@ Core architecture/status references:
 
 Use the CLI + viewer workflow to inspect verification packages and provenance timeline signals.
 
+CLI examples run local advisory evidence checks. Their output supports human review and reviewer handoff; it is not legal truth, identity finality, forensic certainty, certification authority, production readiness, autonomous governance authority, or guaranteed correctness. Human maintainers/reviewers make the final decision.
+
 ### Try the Public Validator Demo
 
 Use the HC:// Public Validator demo entry points to inspect a public-safe, advisory-only validation flow without claiming production readiness, certification, legal authority, autonomous finality, or truth finality. Demo outputs preserve `public_safe: true` and `truth_guarantee: false` posture and require human-supervised review.
