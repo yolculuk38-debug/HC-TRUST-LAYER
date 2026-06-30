@@ -6,6 +6,8 @@ This document is an advisory, documentation-only review of HC-TRUST-LAYER contri
 
 It helps a new human contributor, AI-assisted contributor, maintainer, or reviewer understand observed project boundaries before opening issues or pull requests. It does not change code, tests, workflows, scripts, schemas, validators, records, generated/canonical artifacts, demo fixtures, runtime behavior, API behavior, CLI behavior, CI behavior, or governance enforcement.
 
+This 5-3 follow-up is documentation-only. It intentionally updates `AGENTS.md` because that file is a protected/high-risk operating-layer file that contributors and agents read before changing HC:// verification surfaces. The update does not expand authority for bots or AI systems and does not change runtime, workflow, schema, validator, record, generated, or canonical behavior.
+
 ## 2. HC boundary
 
 - `advisory_only=true`.
@@ -32,7 +34,7 @@ Observed onboarding and boundary surfaces:
 - `docs/repo-map.md` is observed as a repository map.
 - `docs/project-control/` is observed as the project-control report, status, and operating-layer area.
 - `HC_BOOTSTRAP.md` is observed and referenced by onboarding docs; it was inspected but not edited.
-- `AGENTS.md` is observed and referenced by onboarding docs; it was inspected but not edited.
+- `AGENTS.md` is observed and referenced by onboarding docs; this 5-3 follow-up intentionally updates it as contributor-facing protected-path guidance.
 - `.github/ISSUE_TEMPLATE/` is observed; issue templates were noted by path but not edited.
 - `.github/pull_request_template.md` is observed as an onboarding / PR review surface; it was inspected but not edited.
 
@@ -61,7 +63,7 @@ Relationship to previous boundary reviews:
 | `docs/project-control/generated-canonical-artifact-ownership-review.md` | Advisory generated/canonical ownership review. | Maintainers, release reviewers, artifact contributors. | critical | docs-only pointer or report-only | yes | generated/canonical | Generated/canonical artifacts must not be hand-edited casually. |
 | `docs/project-control/demo-example-boundary-review.md` | Advisory demo/example boundary review. | Demo, example, docs, and reviewer audiences. | medium | docs-only pointer | yes | demo/example | Demo fixtures are not real records and should not be promoted casually. |
 | `HC_BOOTSTRAP.md` | Operational bootstrap and handoff guide. | Humans, AI agents, maintainers. | governance | docs-only when explicitly scoped | yes | onboarding contributor boundary | Observed and referenced; not edited in this PR. |
-| `AGENTS.md` | Repository-wide contributor and agent rules. | Agents and contributors. | governance | docs-only when explicitly scoped | yes | onboarding contributor boundary | Observed and referenced; not edited in this PR. |
+| `AGENTS.md` | Repository-wide contributor and agent rules. | Agents and contributors. | governance, protected/high-risk operating-layer file | docs-only when explicitly scoped | yes | onboarding contributor boundary | Intentionally updated in this 5-3 follow-up to clarify contributor-facing protected-path guidance; no authority expansion for bots or AI systems. |
 | `.github/ISSUE_TEMPLATE/` | Issue intake templates. | Contributors and maintainers. | governance | not in this PR | yes | maintainer workflow follow-up | Observed but not edited; workflow/template changes need separate scope. |
 | `.github/pull_request_template.md` | Contributor PR body guidance, validation prompts, self-audit checklist, and risk notes. | Contributors and reviewers. | governance, medium | not in this PR | yes | maintainer workflow follow-up | Observed but not edited; future checklist improvements should tighten or link from the existing PR template. |
 | `.github/workflows/**` | CI and automation workflows. | Maintainers and CI operators. | protected path, high | not safe for docs-only PRs | yes | test taxonomy; public API / CLI | CI evidence does not replace human review. |
@@ -137,7 +139,7 @@ A safe practical workflow is:
 ### Current practical next step
 
 - Document observed onboarding/contributor boundaries first.
-- Do not edit templates or protected files in this PR.
+- Do not edit templates or unrelated protected files in this PR. This 5-3 follow-up intentionally updates `AGENTS.md` as a protected/high-risk operating-layer file within the allowed contributor-facing guidance scope.
 - Propose small follow-up PRs for missing onboarding links, checklist wording, or changes that tighten or link from the existing PR template.
 
 ## 9. Real-world analogy
