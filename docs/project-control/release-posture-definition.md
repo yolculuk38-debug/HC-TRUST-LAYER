@@ -22,8 +22,8 @@ Preserved HC boundaries:
 - `merge_authority=false`
 - `label_reviewer_mutation=false`
 - `issue_comment_automation=false`
-- no automatic comments
-- no automatic labels
+- no new automatic comments introduced by this document
+- no new automatic labels introduced by this document
 - no reviewer requests
 - no approvals
 - no merges
@@ -34,6 +34,8 @@ Preserved HC boundaries:
 - no schema, validator, record, generated, or canonical behavior change
 
 CI/checks are evidence, not trust authority. Human maintainers make the final decision.
+
+Existing governed/report-only workflow behavior is documented elsewhere and is not changed by this release posture document. Existing PR Risk Labeler and HC Control Bot advisory comment behavior, where present, remains bounded by existing workflow taxonomy and governance documentation. Those workflows do not create release authority, approval authority, rejection authority, merge authority, certification authority, truth authority, or human-review replacement authority.
 
 ## Scope and non-effects
 
