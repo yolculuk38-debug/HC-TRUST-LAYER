@@ -66,20 +66,17 @@ Keep safe first contributions narrow. A good first PR should be easy to review, 
 
 ## 6. Work That Requires Review First
 
-Stop and ask for review before working on changes involving:
+Stop and ask for review before working on changes involving protected or high-risk surfaces. In contributor-facing terms, these are paths where a small edit can change how HC:// evidence is produced, interpreted, reviewed, or routed.
 
-- workflows
-- runtime
-- schemas
-- validators
-- records
-- policy
-- federation
-- signing
-- trust-kernel indexes
-- governance-control changes
+Examples include:
 
-Human-supervised validation remains required for sensitive trust-kernel-impacting changes.
+- workflows, CI, repository automation, and bot configuration
+- schemas, validators, runtime code, and public verification behavior
+- records, signatures, canonical artifacts, and generated artifacts
+- governance and project-control files that shape review expectations
+- ownership and operating-layer files such as `CODEOWNERS`, `AGENTS.md`, and `HC_BOOTSTRAP.md`
+
+Touching one of these surfaces does not mean a PR is automatically rejected. It means the PR needs explicit scope, stronger explanation, and extra human review before merge. Human-supervised validation remains required for sensitive trust-kernel-impacting changes.
 
 If you are unsure whether a change is trust-kernel-impacting, treat it as review-required.
 
@@ -89,23 +86,23 @@ Do not modify protected paths unless the task explicitly requests it and the exp
 
 Protected or sensitive surfaces include:
 
-- `.github/workflows/**`
-- `schema/**`
-- `validators/**`
-- `records/**`
-- `policy/**`
-- `federation/**`
-- `signatures/**`
-- `canonical/**`
-- trust-kernel indexes
-- runtime verification behavior
-- signing and trust anchor semantics
-- validator logic
-- policy evaluator behavior
-- federation behavior
-- governance-control changes
+- `.github/workflows/**` and other workflow, CI, automation, or bot-routing files
+- `schema/**`, `validators/**`, runtime code, and verification behavior
+- `records/**`, `signatures/**`, `canonical/**`, `generated/**`, and evidence-bearing or derived artifacts
+- `policy/**`, `federation/**`, signing and trust-anchor semantics, policy evaluator behavior, and federation behavior
+- governance and project-control files that can change review boundaries or authority interpretation
+- `CODEOWNERS`, `AGENTS.md`, `HC_BOOTSTRAP.md`, trust-kernel indexes, and root governance references
 
 Canonical record boundaries are high-sensitivity surfaces. Changes that affect deterministic serialization, hash-linked artifacts, record identity, or provenance continuity require explicit reviewer attention.
+
+When a PR touches a protected or high-risk surface, explain in the PR body:
+
+- why the protected path is touched
+- what repository evidence was checked
+- what tests or checks were run
+- whether behavior, authority, or trust boundary changed
+
+CI green is evidence, not trust authority. Bot and AI comments are advisory only. Human maintainers make the final decision and retain final authority over review and merge outcomes.
 
 ## 8. Local Setup Quickstart
 

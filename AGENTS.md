@@ -23,16 +23,16 @@ HC-TRUST-LAYER is not a substitute for reviewer judgment. Governance remains hum
 
 The trust kernel includes protected areas that affect record identity, provenance continuity, policy interpretation, signing expectations, federation behavior, validation semantics, or governance controls.
 
-Protected areas include:
+Protected and high-risk areas include:
 
-- `schema/**`
-- `policy/**`
-- `federation/**`
-- `signing/**`
-- trust-kernel artifacts
-- protected governance paths
+- workflow, CI, automation, and bot-routing files such as `.github/workflows/**`
+- schema, validator, runtime, and public verification surfaces such as `schema/**`, `validators/**`, and runtime code
+- records, signatures, canonical artifacts, generated artifacts, and other evidence-bearing or derived surfaces
+- policy, federation, signing, trust-anchor, and trust-kernel artifacts
+- governance and project-control files that affect review boundaries or authority interpretation
+- root ownership and operating-layer files such as `CODEOWNERS`, `AGENTS.md`, and `HC_BOOTSTRAP.md`
 
-Changes to trust-critical components require additional review, explicit justification, and human-supervised validation before merge. Do not infer production guarantees from draft, advisory, or experimental material.
+Touching these areas does not mean a PR is rejected. It means additional human review, explicit justification, and human-supervised validation are required before merge. Contributors and agents should explain why the protected path is touched, what evidence was checked, what tests were run, and whether behavior, authority, or trust boundary changed. CI green is evidence, not trust authority. Bot and AI comments are advisory only. Human maintainers make the final decision. Do not infer production guarantees from draft, advisory, or experimental material.
 
 ## Contributor Rules
 
