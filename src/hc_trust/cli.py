@@ -108,10 +108,19 @@ def _format_verify_package_summary(result):
 
 
 def build_parser():
-    parser = argparse.ArgumentParser(prog="hc-trust", description="HC Trust Layer CLI")
+    parser = argparse.ArgumentParser(
+        prog="hc-trust",
+        description=(
+            "HC Trust Layer CLI for local advisory evidence checks. "
+            "Outputs support human review; they are not trust authority."
+        ),
+    )
     sub = parser.add_subparsers(dest="command", required=True)
 
-    p_verify = sub.add_parser("verify", help="Verify record content hashes")
+    p_verify = sub.add_parser(
+        "verify",
+        help="Run a local record content-hash check for reviewer handoff",
+    )
     p_verify.add_argument("path", nargs="?", default="records")
     p_verify.set_defaults(func=cmd_verify)
 
@@ -119,7 +128,7 @@ def build_parser():
     p_hash.add_argument("file_path")
     p_hash.set_defaults(func=cmd_hash)
 
-    p_qr = sub.add_parser("qr", help="Generate verification QR")
+    p_qr = sub.add_parser("qr", help="Generate a verification QR payload/link helper")
     p_qr.add_argument("record_id", nargs="?")
     p_qr.add_argument("content_hash", nargs="?")
     p_qr.add_argument("archive_ref", nargs="?")
@@ -128,7 +137,7 @@ def build_parser():
 
     p_verify_package = sub.add_parser(
         "verify-package",
-        help="Verify a local HC verification package manifest and SHA-256 file integrity",
+        help="Run a local HC verification package manifest and file integrity check",
     )
     p_verify_package.add_argument("package_path")
     p_verify_package.add_argument(
