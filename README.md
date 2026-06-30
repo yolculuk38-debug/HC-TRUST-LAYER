@@ -14,7 +14,7 @@
 
 > HC:// trust infrastructure for verification workflow transparency, provenance visibility, and human-supervised validation.
 
-HC-TRUST-LAYER is an early-stage verification infrastructure that helps teams evaluate integrity and provenance signals through an auditable verification map and protocol graph. It supports reproducible technical checks and structured review boundaries; it does **not** claim objective-truth finality, forensic certainty, or autonomous finality.
+HC-TRUST-LAYER is early-stage, advisory, human-supervised verification infrastructure. It helps produce and inspect evidence for HC records, hash, QR, witness, and audit workflows, but it does not provide legal truth, identity finality, forensic certainty, certification authority, production readiness, autonomous governance authority, or guaranteed correctness. CI checks and bot reports are evidence or advisory support, not trust authority; human maintainers/reviewers make the final decision.
 
 ## What Works Today
 
