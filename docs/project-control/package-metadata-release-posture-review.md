@@ -131,14 +131,14 @@ Any future package metadata change should be based on this review and should pre
 
 A bank can publish a mobile app, internal audit tools, compliance reports, developer SDKs, and training demos. The package label must not promise the authority of the whole bank. HC package metadata should describe the narrow package surface, not overclaim the full trust ecosystem.
 
-## External standards reference posture
+## External reference-model posture
 
-External standards and institutional practices are useful reference models for cautious wording, not equivalence claims.
+External reference models can help reviewers keep wording cautious, but they must not be treated as equivalence, compliance, endorsement, partnership, certification, or authority claims.
 
-- C2PA-style provenance does not mean truth finality.
-- W3C Verifiable Credentials-style claims still require issuer, verifier, and trust-context boundaries.
-- OpenTimestamps-style timestamp evidence does not certify semantic truth.
-- SSL/TLS certificates prove bounded cryptographic assertions, not that all content is true.
-- Bank and e-government systems separate customer-facing services, internal audit logs, compliance reports, and legal authority.
+- Provenance metadata systems can record source and transformation context without creating truth finality.
+- Verifiable-claim frameworks still require issuer, verifier, and trust-context boundaries.
+- Independent timestamp evidence systems can support timing evidence without certifying semantic truth.
+- Certificate-chain based trust practice proves bounded assertions, not that all related content is true.
+- Regulated audit flows and public-sector verification flows often separate customer-facing services, internal audit logs, compliance reports, and legal authority.
 
-This PR does not claim HC-TRUST-LAYER equivalence with those systems. It does not claim certification, legal authority, production readiness, standards compliance, or guaranteed correctness.
+This PR does not claim HC-TRUST-LAYER equivalence with any external model. It does not claim certification, legal authority, production readiness, standards compliance, partnership, endorsement, or guaranteed correctness.
