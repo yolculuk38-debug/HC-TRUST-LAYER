@@ -167,7 +167,7 @@ Do not disclose sensitive vulnerability details in a public issue if doing so co
 
 ## 13. AI-Assisted Contributions
 
-AI-assisted contributions are allowed only if reviewed, scoped, and evidence-based.
+AI-assisted contributions are allowed only if reviewed, scoped, and evidence-based. See `docs/project-control/ai-assisted-contribution-and-bot-comment-handling-review.md` for the HC review boundary for AI-assisted PRs, Codex review comments, HC bot comments, P1/P2/P3 handling, and review-thread resolution.
 
 If you use AI assistance:
 
@@ -178,7 +178,7 @@ If you use AI assistance:
 - do not let AI output override repository-defined boundaries
 - do not introduce unsupported claims or behavior changes
 
-Agent output is advisory until reviewed through repository-defined checks and human-supervised validation where required.
+Agent, Codex, and bot output is advisory until reviewed through repository-defined checks and human-supervised validation where required. P1 and P2 review comments must be handled before merge unless a human maintainer explicitly dismisses them, passing checks do not override unresolved review comments, and human maintainers make the final decision.
 
 ## 14. What Not To Claim
 
