@@ -15,6 +15,7 @@ The following boundaries apply to this map and to repository interpretation unle
 - `truth_guarantee=false`.
 - `human_review_required=true`.
 - CI/checks are evidence, not trust authority.
+- Bot and AI comments are advisory only.
 - Humans remain the final maintainers and review authority.
 
 HC-TRUST-LAYER documentation, checks, demos, records, and automation must not be treated as legal truth, identity finality, forensic certainty, certification authority, autonomous governance authority, or guaranteed correctness.
@@ -56,7 +57,9 @@ HC-TRUST-LAYER documentation, checks, demos, records, and automation must not be
 
 ## Boundary distinctions
 
-- **Canonical / protected surfaces:** schemas, validators, policy, federation, signing, signatures, hash, QR, generated/canonical artifacts, trust-kernel references, and other protected paths require explicit human review and should not be modified opportunistically.
+Touching a protected or high-risk surface does not mean a PR is automatically rejected. It means the PR needs explicit scope, stronger contributor explanation, and extra human review before merge. Contributors should explain why the protected path is touched, what evidence was checked, what tests were run, and whether behavior, authority, or trust boundary changed.
+
+- **Canonical / protected surfaces:** schemas, validators, runtime verification behavior, policy, federation, signing, signatures, records, hash, QR, generated/canonical artifacts, workflow/CI/automation files, governance/project-control files, `CODEOWNERS`, `AGENTS.md`, `HC_BOOTSTRAP.md`, trust-kernel references, and other protected paths require explicit human review and should not be modified opportunistically.
 - **Advisory/report-only surfaces:** checks, scripts, control-bot reports, demos, and project-control coordination can provide evidence, but they do not approve changes or establish truth authority.
 - **Experimental/research surfaces:** future, vision, draft, explorer, federation-planning, and research documents describe possible directions unless separately implemented and reviewed.
 - **Historical evidence surfaces:** records, archived materials, witness/timeline material, legacy names, and provenance examples preserve audit history and should not be silently rewritten.

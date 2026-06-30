@@ -2,9 +2,11 @@
 
 ## 1. Purpose
 
-This document is an advisory, documentation-only review of HC-TRUST-LAYER contributor and onboarding boundaries for backlog item 5-1, "onboarding / contributor guide boundary review."
+This document is an advisory, documentation-only review of HC-TRUST-LAYER contributor and onboarding boundaries for backlog items 5-1, "onboarding / contributor guide boundary review," and 5-3, "protected path contributor guide review."
 
 It helps a new human contributor, AI-assisted contributor, maintainer, or reviewer understand observed project boundaries before opening issues or pull requests. It does not change code, tests, workflows, scripts, schemas, validators, records, generated/canonical artifacts, demo fixtures, runtime behavior, API behavior, CLI behavior, CI behavior, or governance enforcement.
+
+This 5-3 follow-up is documentation-only. It intentionally updates `AGENTS.md` because that file is a protected/high-risk operating-layer file that contributors and agents read before changing HC:// verification surfaces. The update does not expand authority for bots or AI systems and does not change runtime, workflow, schema, validator, record, generated, or canonical behavior.
 
 ## 2. HC boundary
 
@@ -14,7 +16,8 @@ It helps a new human contributor, AI-assisted contributor, maintainer, or review
 - `human_review_required=true`.
 - AI-assisted contribution is advisory only.
 - Contributors do not gain approval, merge, label, reviewer, comment, or governance authority from this document.
-- CI produces evidence but does not replace human review.
+- CI produces evidence but does not replace human review or become trust authority.
+- Bot and AI comments are advisory only.
 - The human maintainer remains the final authority.
 
 This review does not establish legal truth, identity finality, forensic certainty, certification, production readiness, guaranteed correctness, or autonomous governance authority.
@@ -31,7 +34,7 @@ Observed onboarding and boundary surfaces:
 - `docs/repo-map.md` is observed as a repository map.
 - `docs/project-control/` is observed as the project-control report, status, and operating-layer area.
 - `HC_BOOTSTRAP.md` is observed and referenced by onboarding docs; it was inspected but not edited.
-- `AGENTS.md` is observed and referenced by onboarding docs; it was inspected but not edited.
+- `AGENTS.md` is observed and referenced by onboarding docs; this 5-3 follow-up intentionally updates it as contributor-facing protected-path guidance.
 - `.github/ISSUE_TEMPLATE/` is observed; issue templates were noted by path but not edited.
 - `.github/pull_request_template.md` is observed as an onboarding / PR review surface; it was inspected but not edited.
 
@@ -60,7 +63,7 @@ Relationship to previous boundary reviews:
 | `docs/project-control/generated-canonical-artifact-ownership-review.md` | Advisory generated/canonical ownership review. | Maintainers, release reviewers, artifact contributors. | critical | docs-only pointer or report-only | yes | generated/canonical | Generated/canonical artifacts must not be hand-edited casually. |
 | `docs/project-control/demo-example-boundary-review.md` | Advisory demo/example boundary review. | Demo, example, docs, and reviewer audiences. | medium | docs-only pointer | yes | demo/example | Demo fixtures are not real records and should not be promoted casually. |
 | `HC_BOOTSTRAP.md` | Operational bootstrap and handoff guide. | Humans, AI agents, maintainers. | governance | docs-only when explicitly scoped | yes | onboarding contributor boundary | Observed and referenced; not edited in this PR. |
-| `AGENTS.md` | Repository-wide contributor and agent rules. | Agents and contributors. | governance | docs-only when explicitly scoped | yes | onboarding contributor boundary | Observed and referenced; not edited in this PR. |
+| `AGENTS.md` | Repository-wide contributor and agent rules. | Agents and contributors. | governance, protected/high-risk operating-layer file | docs-only when explicitly scoped | yes | onboarding contributor boundary | Intentionally updated in this 5-3 follow-up to clarify contributor-facing protected-path guidance; no authority expansion for bots or AI systems. |
 | `.github/ISSUE_TEMPLATE/` | Issue intake templates. | Contributors and maintainers. | governance | not in this PR | yes | maintainer workflow follow-up | Observed but not edited; workflow/template changes need separate scope. |
 | `.github/pull_request_template.md` | Contributor PR body guidance, validation prompts, self-audit checklist, and risk notes. | Contributors and reviewers. | governance, medium | not in this PR | yes | maintainer workflow follow-up | Observed but not edited; future checklist improvements should tighten or link from the existing PR template. |
 | `.github/workflows/**` | CI and automation workflows. | Maintainers and CI operators. | protected path, high | not safe for docs-only PRs | yes | test taxonomy; public API / CLI | CI evidence does not replace human review. |
@@ -79,7 +82,7 @@ The safest surfaces for new contributors are small docs-only edits to explanator
 
 Areas requiring maintainer confirmation include contributor policy, governance wording, project-control status, public API/CLI output wording, generated/canonical ownership claims, demo/example interpretation, test coverage claims, and any path that could affect records, schemas, validators, runtime behavior, workflows, package metadata, or protected trust-kernel interpretation.
 
-Protected paths must not be changed casually. This includes schemas, validators, records, policy, federation, signing, signatures, generated/canonical artifacts, workflow automation, trust-kernel indexes, and runtime or public validator behavior. If a requested task touches these areas, contributors should confirm explicit scope before editing.
+Protected paths must not be changed casually. In contributor-facing terms, protected or high-risk surfaces are paths where a small edit can change how HC:// evidence is produced, interpreted, reviewed, or routed. Examples include workflows, CI, automation, schemas, validators, runtime code, records, signatures, canonical/generated artifacts, governance/project-control files, `CODEOWNERS`, `AGENTS.md`, and `HC_BOOTSTRAP.md`. Touching these surfaces does not mean a PR is rejected. It means extra human review is required, and contributors should confirm explicit scope before editing.
 
 Docs-only work changes explanatory text and should not alter behavior. Test-only work changes evidence checks and coverage but still does not establish trust authority. Code/runtime work can change behavior and needs implementation review, tests, and maintainer confirmation. Protected-path work needs explicit scope and human-supervised validation.
 
@@ -89,19 +92,20 @@ Demo/examples differ from real records. Demo fixtures and examples may help expl
 
 Public API/CLI output wording must stay bounded. Public validator, QR, API, CLI, and package-facing docs should avoid claims of legal truth, identity finality, forensic certainty, certification, production readiness, guaranteed correctness, or autonomous governance authority.
 
-Project-control reports are advisory evidence, not authority. They may help route work, identify boundaries, and preserve review context, but they do not approve, merge, label, request reviewers, close issues, or establish governance outcomes.
+Project-control reports are advisory evidence, not authority. They may help route work, identify boundaries, and preserve review context, but they do not approve, merge, label, request reviewers, close issues, or establish governance outcomes. CI green is evidence, not trust authority. Bot and AI comments are advisory only. Human maintainers make the final decision.
 
 ## 6. Recommended contributor rules
 
 - Start with small docs-only or test-only PRs.
 - Do not modify protected paths without explicit scope.
-- Do not modify records, schemas, validators, signing, federation, policy, generated/canonical artifacts, or workflows casually.
+- Do not modify records, schemas, validators, signing, federation, policy, generated/canonical artifacts, workflows, CI, automation, governance/project-control files, `CODEOWNERS`, `AGENTS.md`, or `HC_BOOTSTRAP.md` casually.
 - Do not move, delete, normalize, regenerate, or rewrite records without human review.
 - Do not promote demo/example fixtures into real records without a separate PR and maintainer review.
 - Do not claim legal truth, identity finality, forensic certainty, certification, production readiness, guaranteed correctness, or autonomous governance authority.
 - Do not add approval, merge, label, reviewer-request, issue-close, or autonomous governance authority.
 - AI-generated suggestions must be treated as advisory.
 - CI success is evidence, not trust authority.
+- Bot and AI comments are advisory only.
 - The human maintainer remains the final authority.
 
 ## 7. Contributor workflow recommendation
@@ -114,10 +118,11 @@ A safe practical workflow is:
 4. Keep the PR small and scoped to one task.
 5. State docs-only, test-only, code/runtime, protected-path, or other relevant scope in the PR body.
 6. List forbidden paths not changed when the task has sensitive boundaries.
-7. Run local checks when applicable and report exact results.
-8. Wait for the review window and maintainer comments.
-9. Resolve review feedback before merge.
-10. Treat human final review as required.
+7. If a protected or high-risk surface is touched, explain why it is touched, what evidence was checked, what tests were run, and whether behavior, authority, or trust boundary changed.
+8. Run local checks when applicable and report exact results.
+9. Wait for the review window and maintainer comments.
+10. Resolve review feedback before merge.
+11. Treat human final review as required.
 
 ## 8. Ideal vs current practical state
 
@@ -134,7 +139,7 @@ A safe practical workflow is:
 ### Current practical next step
 
 - Document observed onboarding/contributor boundaries first.
-- Do not edit templates or protected files in this PR.
+- Do not edit templates or unrelated protected files in this PR. This 5-3 follow-up intentionally updates `AGENTS.md` as a protected/high-risk operating-layer file within the allowed contributor-facing guidance scope.
 - Propose small follow-up PRs for missing onboarding links, checklist wording, or changes that tighten or link from the existing PR template.
 
 ## 9. Real-world analogy
@@ -149,4 +154,4 @@ HC-TRUST-LAYER contributors should follow the same principle: small changes, cle
 - 5-1c optional: tighten or link from the existing PR template for docs-only/test-only/protected-path claims.
 - 5-1d optional: add AI-assisted contribution note if missing.
 - 5-2: maintainer workflow / PR review checklist boundary review.
-- 5-3: protected path contributor guide review.
+- 5-3: protected path contributor guide review completed by clarifying contributor-facing protected-path review expectations.
