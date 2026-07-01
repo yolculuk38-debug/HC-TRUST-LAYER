@@ -55,4 +55,4 @@ The objective is stronger review quality, not autonomous decision-making.
 
 - Experimental trust score foundation: [HC:// Experimental Trust Score Foundation](./trust-score.md)
 - Reviewer registry and independent review pool: [Reviewer Registry and Independent Review Pool](./reviewer-registry.md)
-- Architecture roadmap (planned): [Architecture Roadmap](./architecture-roadmap.md)
+- Architecture planning/status: [HC-TRUST-LAYER Project Status](./project-status.md)

@@ -45,8 +45,8 @@ Use this minimal trial flow to keep evaluation scoped and auditable:
 
 - Runtime limits and boundaries: [`docs/limitations-and-risks.md`](limitations-and-risks.md)
 - Verification map orientation: [`docs/verification-map.md`](verification-map.md)
-- Protocol graph orientation: [`docs/protocol-graph.md`](protocol-graph.md)
-- Trust kernel orientation: [`docs/trust-kernel.md`](trust-kernel.md)
+- Protocol graph orientation: [`docs/protocol-graph-index.md`](protocol-graph-index.md)
+- Trust kernel orientation: [`docs/trust-kernel-index.md`](trust-kernel-index.md)
 - Runtime contract tests:
   - [`tests/test_hc_runtime_app.py`](../tests/test_hc_runtime_app.py)
   - [`tests/test_hc_runtime_pipeline.py`](../tests/test_hc_runtime_pipeline.py)
