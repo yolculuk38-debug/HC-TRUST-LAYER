@@ -38,10 +38,12 @@ IMPORT_CONTRACT_MODULES = (
     "hc_runtime.contracts.redaction",
     "hc_runtime.contracts.abuse_signals",
     "hc_runtime.contracts.decision_engine",
+    "hc_runtime.contracts.event_store",
     "hc_runtime.redaction",
     "hc_runtime.abuse_signals",
     "hc_runtime.decision_engine",
     "hc_runtime.events",
+    "hc_runtime.events.store",
     "hc_runtime.public_validator_lookup",
     "hc_runtime.qr_payload_parser",
     "hc_runtime.qr_record_bridge",
@@ -156,14 +158,16 @@ def test_runtime_decision_engine_namespace_move_preserves_old_import_compatibili
 
 
 def test_runtime_event_store_public_import_contract_preserves_identity() -> None:
-    """Event store public imports stay aligned before any namespace move."""
+    """Event store old and new public imports stay aligned after namespace move."""
 
+    contracts_module = importlib.import_module("hc_runtime.contracts.event_store")
     public_module = importlib.import_module("hc_runtime.events")
     store_module = importlib.import_module("hc_runtime.events.store")
     from hc_runtime.events import RuntimeEventStore
 
-    assert public_module.RuntimeEventStore is store_module.RuntimeEventStore
-    assert public_module.RuntimeEventStore is RuntimeEventStore
+    assert contracts_module.RuntimeEventStore is store_module.RuntimeEventStore
+    assert contracts_module.RuntimeEventStore is public_module.RuntimeEventStore
+    assert contracts_module.RuntimeEventStore is RuntimeEventStore
 
     event_store = RuntimeEventStore()
     assert isinstance(event_store, RuntimeEventStore)
