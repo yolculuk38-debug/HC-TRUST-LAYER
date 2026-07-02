@@ -154,7 +154,54 @@ Future runtime namespace moves require at least one of the following before impl
 
 This checkpoint is advisory documentation only. It does not claim production readiness, legal truth, identity finality, forensic certainty, certification authority, autonomous governance authority, or guaranteed correctness. Human maintainers and reviewers retain final authority.
 
-## 9. Do-not-touch without explicit approval
+## 9. Final closeout: runtime helper namespace migration phase
+
+This closeout records that the low-risk runtime helper namespace migration phase is complete. It is a docs-only checkpoint after #1173, #1174, #1175, #1176, and #1177. It does not reopen the helper migration phase, authorize new source moves, change runtime behavior, change CLI behavior, change package metadata, change workflows, or change schema, validator, record, hash, QR, signing, federation, policy, canonical, or generated artifacts.
+
+Completed sequence:
+
+- #1173 added import, CLI, and package-discovery contract coverage before namespace moves.
+- #1174 moved `hc_runtime.redaction` to `hc_runtime.contracts.redaction` while preserving old import compatibility.
+- #1175 moved `hc_runtime.abuse_signals` to `hc_runtime.contracts.abuse_signals` while preserving old import compatibility.
+- #1176 moved `hc_runtime.decision_engine` to `hc_runtime.contracts.decision_engine` while preserving old import compatibility.
+- #1177 recorded the checkpoint that no fourth clearly low-risk helper move is currently safe.
+
+Compatibility wrappers remain required for the moved helpers. They must not be removed without a separate deprecation and removal plan that is explicitly approved, scoped, tested, and documented.
+
+The following areas were intentionally not moved in this phase:
+
+- public validator
+- canonical lookup/loader
+- QR parser/bridge/spoof protection
+- runtime pipeline/state/app/router
+- event store
+- federation/policy/queue
+- schema/validator/record/hash/signing
+- generated/canonical artifacts
+
+Future work in those areas is not a continuation of the low-risk helper phase. It is a new higher-risk workstream that requires separate planning and approval before implementation. At minimum, future higher-risk runtime namespace work must include:
+
+- explicit human approval
+- affected-file list
+- behavior-impact analysis
+- rollback path
+- targeted tests
+- CI evidence
+- compatibility plan
+
+HC:// and HC-TRUST-LAYER authority boundaries remain unchanged:
+
+- advisory-only
+- public-safe
+- no truth guarantee
+- human review required
+- no bot approval authority
+- no bot merge authority
+- no autonomous governance authority
+
+This closeout is advisory documentation only. It does not claim production readiness, legal truth, identity finality, forensic certainty, certification authority, autonomous governance authority, or guaranteed correctness. Human maintainers and reviewers retain final authority. Any further runtime namespace movement requires a new higher-risk plan.
+
+## 10. Do-not-touch without explicit approval
 
 Do not touch these surfaces for namespace/refactor implementation without explicit human-maintainer approval and dedicated evidence:
 
@@ -173,7 +220,7 @@ Do not touch these surfaces for namespace/refactor implementation without explic
 - governance/security/contribution root docs
 - auto-merge and bot authority surfaces
 
-## 10. Safe PR shape for future refactor implementation
+## 11. Safe PR shape for future refactor implementation
 
 Future refactor PRs must state:
 
@@ -190,6 +237,6 @@ Future refactor PRs must state:
 - tests run
 - human-maintainer authorization statement
 
-## 11. Real-world analogy
+## 12. Real-world analogy
 
 Treat namespace/refactor implementation like reorganizing bank branch departments or public-sector archive rooms: first map every control, record, and approval route; then move one shelf at a time only when audit evidence and rollback path are preserved.
