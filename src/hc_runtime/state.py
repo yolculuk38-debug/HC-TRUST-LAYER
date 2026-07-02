@@ -1,6 +1,6 @@
 """Shared advisory runtime state containers for HC:// operational prototype."""
 
-from hc_runtime.abuse_signals import AdvisoryAbuseSignalTracker
+from hc_runtime.contracts.abuse_signals import AdvisoryAbuseSignalTracker
 from hc_runtime.canonical_record_loader import default_canonical_record_loader
 from hc_runtime.decision_engine import TrustStateDecisionEngine
 from hc_runtime.events import RuntimeEventStore
