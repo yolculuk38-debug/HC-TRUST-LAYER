@@ -132,6 +132,7 @@ jobs:
           tests/test_hc_runtime_app.py
           tests/test_hc_runtime_pipeline.py
           tests/test_hc_runtime_response_contracts.py
+          tests/test_refactor_contracts.py
           tests/runtime
 
       - name: Run explicit runtime/API contract subset
