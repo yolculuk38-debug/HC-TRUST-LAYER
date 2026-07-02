@@ -9,7 +9,7 @@ description = "HC Trust Layer utilities"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
-  "fastapi==0.138.1",
+  "fastapi==0.139.0",
   "jsonschema==4.26.0",
   "pydantic==2.13.4",
   "qrcode[pil]==8.2",
