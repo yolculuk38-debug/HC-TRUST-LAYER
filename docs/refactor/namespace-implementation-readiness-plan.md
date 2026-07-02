@@ -201,7 +201,63 @@ HC:// and HC-TRUST-LAYER authority boundaries remain unchanged:
 
 This closeout is advisory documentation only. It does not claim production readiness, legal truth, identity finality, forensic certainty, certification authority, autonomous governance authority, or guaranteed correctness. Human maintainers and reviewers retain final authority. Any further runtime namespace movement requires a new higher-risk plan.
 
-## 10. Do-not-touch without explicit approval
+## 10. Higher-risk runtime namespace workstream
+
+This section defines a new higher-risk runtime namespace workstream. It is not a continuation of the completed low-risk runtime helper phase from #1173, #1174, #1175, #1176, #1177, and #1178. It does not authorize implementation, source moves, behavior changes, wrapper removals, CLI changes, package metadata changes, workflow changes, or protected-path changes.
+
+### Higher-risk surfaces and required evidence
+
+Each surface below requires the listed evidence before any implementation PR is opened:
+
+| Surface | Required evidence before implementation |
+|---|---|
+| Public validator | Affected-file list, behavior-impact analysis, compatibility/deprecation plan, rollback path, targeted tests, CI evidence, and explicit human approval. |
+| Canonical lookup/loader | Affected-file list, behavior-impact analysis, compatibility/deprecation plan, rollback path, targeted tests, CI evidence, and explicit human approval. |
+| QR parser/bridge/spoof protection | Affected-file list, behavior-impact analysis, compatibility/deprecation plan, rollback path, targeted tests, CI evidence, and explicit human approval. |
+| Runtime pipeline/state/app/router | Affected-file list, behavior-impact analysis, compatibility/deprecation plan, rollback path, targeted tests, CI evidence, and explicit human approval. |
+| Event store | Affected-file list, behavior-impact analysis, compatibility/deprecation plan, rollback path, targeted tests, CI evidence, and explicit human approval. |
+| Federation/policy/queue | Affected-file list, behavior-impact analysis, compatibility/deprecation plan, rollback path, targeted tests, CI evidence, and explicit human approval. |
+| Schema/validator/record/hash/signing | Affected-file list, behavior-impact analysis, compatibility/deprecation plan, rollback path, targeted tests, CI evidence, and explicit human approval. |
+| Generated/canonical artifacts | Affected-file list, behavior-impact analysis, compatibility/deprecation plan, rollback path, targeted tests, CI evidence, and explicit human approval. |
+
+### Implementation rules
+
+Future higher-risk runtime namespace implementation must follow these rules:
+
+- one surface per PR
+- no mixed refactor and behavior changes
+- no wrapper removal without a separate deprecation and removal plan
+- no CLI, package, or workflow change mixed into runtime namespace work
+- no schema, validator, record, hash, QR, signing, federation, policy, canonical, or generated change without a dedicated PR and explicit human approval
+
+### First recommended candidate for future coverage planning only
+
+The first recommended higher-risk candidate is the event store surface, for coverage planning only. It appears to be the least risky among the higher-risk group because it is narrower than public validator, canonical lookup/loader, QR parser/bridge/spoof protection, federation/policy/queue, schema/validator/record/hash/signing, and generated/canonical artifact surfaces. This plan does not implement event store namespace work and does not authorize source movement. A future planning PR should map affected files, current callers, behavior boundaries, compatibility expectations, rollback path, targeted tests, CI evidence, and required human approval before any implementation is proposed.
+
+### Not authorized by this plan
+
+This plan does not authorize:
+
+- source moves
+- behavior changes
+- wrapper removals
+- bot authority expansion
+- workflow or package changes
+
+### Authority boundaries
+
+HC:// and HC-TRUST-LAYER authority boundaries remain unchanged for this workstream:
+
+- `advisory_only=true`
+- `public_safe=true`
+- `truth_guarantee=false`
+- `human_review_required=true`
+- `approval_authority=false`
+- `merge_authority=false`
+- `autonomous_governance_authority=false`
+
+
+## 11. Do-not-touch without explicit approval
 
 Do not touch these surfaces for namespace/refactor implementation without explicit human-maintainer approval and dedicated evidence:
 
@@ -220,7 +276,7 @@ Do not touch these surfaces for namespace/refactor implementation without explic
 - governance/security/contribution root docs
 - auto-merge and bot authority surfaces
 
-## 11. Safe PR shape for future refactor implementation
+## 12. Safe PR shape for future refactor implementation
 
 Future refactor PRs must state:
 
@@ -237,6 +293,6 @@ Future refactor PRs must state:
 - tests run
 - human-maintainer authorization statement
 
-## 12. Real-world analogy
+## 13. Real-world analogy
 
 Treat namespace/refactor implementation like reorganizing bank branch departments or public-sector archive rooms: first map every control, record, and approval route; then move one shelf at a time only when audit evidence and rollback path are preserved.
