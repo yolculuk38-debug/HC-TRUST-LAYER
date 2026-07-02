@@ -234,6 +234,93 @@ Future higher-risk runtime namespace implementation must follow these rules:
 
 The first recommended higher-risk candidate is the event store surface, for coverage planning only. It appears to be the least risky among the higher-risk group because it is narrower than public validator, canonical lookup/loader, QR parser/bridge/spoof protection, federation/policy/queue, schema/validator/record/hash/signing, and generated/canonical artifact surfaces. This plan does not implement event store namespace work and does not authorize source movement. A future planning PR should map affected files, current callers, behavior boundaries, compatibility expectations, rollback path, targeted tests, CI evidence, and required human approval before any implementation is proposed.
 
+### Event store coverage map
+
+This subsection maps the event store surface for future coverage planning only. It is documentation-only and does not authorize implementation, source movement, behavior changes, wrapper removal, CLI/package/workflow changes, protected-path changes, or bot authority expansion.
+
+Event store files discovered:
+
+- `src/hc_runtime/events/__init__.py` re-exports `RuntimeEventStore` from the event store module.
+- `src/hc_runtime/events/store.py` defines the append-only advisory in-memory `RuntimeEventStore`.
+
+Current direct callers/importers discovered:
+
+- `src/hc_runtime/state.py` imports `RuntimeEventStore` through `hc_runtime.events` and creates the shared `EVENT_STORE`.
+- `src/hc_runtime/runtime.py` imports `RuntimeEventStore` through `hc_runtime.events` for runtime flow support.
+- `src/hc_runtime/routes/verify.py` uses the shared `EVENT_STORE` history and append behavior through runtime route flows.
+- `src/hc_runtime/routes/health.py` reads `EVENT_STORE._events` for advisory degraded-runtime telemetry counts.
+- `tests/test_hc_runtime_pipeline.py` imports `RuntimeEventStore` through `hc_runtime.events` and checks deterministic history and append-only behavior.
+- `tests/runtime/test_replay_continuity_edge_cases.py` imports and instantiates `RuntimeEventStore` for replay warning and continuity history checks.
+- `tests/runtime/test_secret_redaction_runtime_outputs.py` imports and instantiates `RuntimeEventStore` for public-safe runtime event redaction checks.
+- `tests/runtime/test_degraded_recovery_edge_cases.py` imports and instantiates `RuntimeEventStore` for degraded recovery history and telemetry checks.
+- Runtime app and telemetry tests use the shared `EVENT_STORE` and its `_events` list to reset state or verify public response and telemetry behavior.
+
+Existing tests discovered:
+
+- `tests/test_hc_runtime_pipeline.py` includes event store checks for deterministic history ordering, append-only preservation, replay warning, and continuity history behavior.
+- `tests/test_hc_runtime_app.py` covers runtime history response shape, record-scoped missing history, event visibility, append-only history growth, advisory/public-safe event markers, and degraded runtime event telemetry.
+- `tests/runtime/test_replay_continuity_edge_cases.py` covers isolated replay warning history, record scoping, event ordering, advisory/public-safe markers, and replay visibility.
+- `tests/runtime/test_secret_redaction_runtime_outputs.py` covers event details and history redaction boundaries for public runtime outputs.
+- `tests/runtime/test_degraded_recovery_edge_cases.py` covers degraded recovery events, event ordering, advisory/public-safe markers, degraded telemetry counts, malformed degraded details, and empty-history behavior.
+- `tests/runtime/test_telemetry_payload_contract.py`, `tests/runtime/test_telemetry_payload_safety_contract.py`, `tests/test_hc_runtime_response_contracts.py`, and related runtime tests cover telemetry keys, event counts, public response contracts, and shared event-store reset behavior.
+- `tests/test_refactor_contracts.py` includes the `hc_runtime.events` import namespace in refactor contract coverage.
+
+Behavior boundaries that must not change:
+
+- `RuntimeEventStore` remains append-only for recorded advisory runtime events.
+- Event order remains deterministic in append order for history and telemetry consumers.
+- `history(record_id)` remains record-scoped and returns no events for unrelated or missing records.
+- Public event payloads remain redacted through existing redaction helpers before storage or exposure.
+- Event dictionaries retain current public markers, including `advisory_only=True`, `public_safe=True`, and timestamped `occurred_at` values.
+- Existing event types and details used by runtime flows remain compatible, including `trust_state_transition`, `continuity_checkpoint`, `replay_warning`, and `runtime_recovery_mode`.
+- Runtime history and telemetry outputs remain advisory and do not imply truth guarantee, final identity determination, forensic certainty, production readiness, certification authority, or autonomous governance authority.
+- Shared runtime state continues to expose the existing `EVENT_STORE` behavior expected by routes and tests.
+
+Compatibility expectations if a future namespace move is attempted:
+
+- Preserve the public `hc_runtime.events` import path through a compatibility wrapper unless a separately approved deprecation/removal plan exists.
+- Preserve `RuntimeEventStore` construction, method names, method signatures, return shapes, and event dictionary keys.
+- Preserve `EVENT_STORE` behavior in `hc_runtime.state` and all route-level consumers.
+- Preserve direct test and runtime access to `_events` unless a future PR explicitly maps, tests, and approves a replacement compatibility path.
+- Keep CLI behavior, package discovery, package metadata, workflow behavior, schema/validator/record/hash/QR/signing/federation/policy/canonical/generated artifacts, and bot authority unchanged.
+
+Rollback expectations:
+
+- A future event store namespace implementation PR must be reversible by restoring the prior `src/hc_runtime/events/` module layout and `hc_runtime.events` import behavior.
+- Compatibility wrappers must remain until rollback risk and downstream import usage are explicitly reviewed.
+- Rollback must preserve existing event history semantics, public-safe redaction, telemetry counts, route response shapes, and advisory authority markers.
+- Any failed future implementation must be reverted without modifying workflows, package metadata, CLI entrypoints, schema, validators, records, hash, QR, signing, federation, policy, canonical artifacts, generated artifacts, or bot authority.
+
+Targeted tests required before any implementation PR:
+
+- Run focused event store unit coverage in `tests/test_hc_runtime_pipeline.py`.
+- Run runtime app/history coverage in `tests/test_hc_runtime_app.py`.
+- Run replay continuity edge-case coverage in `tests/runtime/test_replay_continuity_edge_cases.py`.
+- Run degraded recovery edge-case coverage in `tests/runtime/test_degraded_recovery_edge_cases.py`.
+- Run secret-redaction runtime output coverage in `tests/runtime/test_secret_redaction_runtime_outputs.py`.
+- Run telemetry payload contract and safety coverage in `tests/runtime/test_telemetry_payload_contract.py` and `tests/runtime/test_telemetry_payload_safety_contract.py`.
+- Run refactor contract coverage in `tests/test_refactor_contracts.py` to confirm `hc_runtime.events` compatibility.
+- Run repository documentation and canonical checks required for the implementation scope.
+
+This PR does not authorize:
+
+- event store source move
+- event store behavior change
+- wrapper removal
+- CLI/package/workflow change
+- schema/validator/record/hash/QR/signing/federation/policy/canonical/generated change
+- bot authority expansion
+
+HC:// and HC-TRUST-LAYER authority boundaries remain unchanged for this event store coverage map:
+
+- `advisory_only=true`
+- `public_safe=true`
+- `truth_guarantee=false`
+- `human_review_required=true`
+- `approval_authority=false`
+- `merge_authority=false`
+- `autonomous_governance_authority=false`
+
 ### Not authorized by this plan
 
 This plan does not authorize:
