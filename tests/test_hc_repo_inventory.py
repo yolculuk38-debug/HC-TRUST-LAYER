@@ -10,11 +10,13 @@ from hc_repo_inventory import build_inventory, render_markdown
 def test_inventory_classifies_source_test_docs_and_workflow(tmp_path: Path) -> None:
     repo = tmp_path
     (repo / "src" / "hc_trust").mkdir(parents=True)
+    (repo / "legacy").mkdir()
     (repo / "tests").mkdir()
     (repo / "docs" / "project-control").mkdir(parents=True)
     (repo / ".github" / "workflows").mkdir(parents=True)
 
     (repo / "src" / "hc_trust" / "verification_package.py").write_text("", encoding="utf-8")
+    (repo / "legacy" / "test_integration.py").write_text("", encoding="utf-8")
     (repo / "tests" / "test_verification_package.py").write_text("", encoding="utf-8")
     (repo / "docs" / "project-control" / "state.md").write_text("", encoding="utf-8")
     (repo / ".github" / "workflows" / "inventory.yml").write_text("", encoding="utf-8")
@@ -28,6 +30,9 @@ def test_inventory_classifies_source_test_docs_and_workflow(tmp_path: Path) -> N
     assert report["modifies_repository"] is False
     assert by_path["src/hc_trust/verification_package.py"]["category"] == "trust_layer_source"
     assert by_path["src/hc_trust/verification_package.py"]["direct_test_anchor"] == "tests/test_verification_package.py"
+    assert by_path["legacy/test_integration.py"]["category"] == "legacy_test"
+    assert by_path["legacy/test_integration.py"]["lifecycle"] == "legacy_test_support"
+    assert by_path["legacy/test_integration.py"]["owner_role"] == "test-reviewer"
     assert by_path["tests/test_verification_package.py"]["lifecycle"] == "test_support"
     assert by_path["docs/project-control/state.md"]["category"] == "project_control_doc"
     assert by_path[".github/workflows/inventory.yml"]["protected_surface"] is True
@@ -35,6 +40,15 @@ def test_inventory_classifies_source_test_docs_and_workflow(tmp_path: Path) -> N
     assert by_path[".github/CODEOWNERS"]["protected_surface"] is True
     assert by_path[".github/CODEOWNERS"]["lifecycle"] == "protected_review_required"
     assert by_path[".github/CODEOWNERS"]["owner_role"] == "protected-surface-reviewer"
+
+
+def test_inventory_includes_moved_legacy_integration_test() -> None:
+    report = build_inventory(Path(__file__).resolve().parents[1])
+    by_path = {entry["path"]: entry for entry in report["files"]}
+
+    assert "legacy/test_integration.py" in by_path
+    assert by_path["legacy/test_integration.py"]["category"] == "legacy_test"
+    assert by_path["legacy/test_integration.py"]["lifecycle"] == "legacy_test_support"
 
 
 def test_inventory_orders_entries_and_renders_markdown(tmp_path: Path) -> None:
