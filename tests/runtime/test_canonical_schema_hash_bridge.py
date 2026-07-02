@@ -7,7 +7,7 @@ from copy import deepcopy
 from typing import Any
 
 from hc_runtime.contracts.responses import advisory_response
-from hc_runtime.decision_engine import TrustStateDecisionEngine
+from hc_runtime.contracts.decision_engine import TrustStateDecisionEngine
 from hc_runtime.runtime import RuntimePolicyEngine, ValidatorPipeline
 
 EXPECTED_BRIDGE_KEYS = [

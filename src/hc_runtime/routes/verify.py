@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 from hc_runtime.contracts import advisory_response
 from hc_runtime.contracts import QR_VERIFICATION_RESPONSE_KEYS
-from hc_runtime.decision_engine import TrustState
+from hc_runtime.contracts.decision_engine import TrustState
 from hc_runtime.qr_spoof_protection import QRRiskLevel, inspect_qr_spoof_protection
 from hc_runtime.contracts.redaction import redact_secret_like_text
 from hc_runtime.state import ABUSE_SIGNAL_TRACKER, DECISION_ENGINE, EVENT_STORE, FEDERATION_RELAY, PIPELINE, POLICY_ENGINE, QUEUE_STORE
