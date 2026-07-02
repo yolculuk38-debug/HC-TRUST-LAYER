@@ -25,12 +25,15 @@ E. `workflow-map-index-2026-06-16.md` synchronized through #1008 by #1009.
 Current immediate operator path:
 
 1. Treat #1005, #1006, #1007, #1008, and #1009 as completed workflow noise-reduction follow-up, not active work.
-2. Use `repository-index-chain-2026-06-16.md` to locate the root, docs, src, scripts, generated/reference, historical/evidence, and public/demo indexes.
-3. Use `repository-cleanup-phase1-checkpoint-2026-06-16.md` to confirm phase 1 completion before proposing phase 2 work.
-4. Use `first-safe-repo-plan-2026-06-16.md` before proposing any structure change.
-5. Do not widen workflow permissions, enable auto-merge, delete workflows, remove checks, or change authority boundaries from cleanup candidates.
-6. Keep write-capable or authority-adjacent workflows parked unless a future human-reviewed PR has a concrete reason, narrow diff, green checks, and no unresolved review comments.
-7. Before proposing new work, cross-check `project-state.md`, `task-ledger.md`, current GitHub PR history, and repository evidence.
+2. Treat the public surface line through #1161-#1166 as complete for now; do not repeat Pages landing, Public Surface checklist, or HC Check Digest integration work without new repository evidence or human reviewer direction.
+3. Use `repository-index-chain-2026-06-16.md` to locate the root, docs, src, scripts, generated/reference, historical/evidence, and public/demo indexes.
+4. Use `repository-cleanup-phase1-checkpoint-2026-06-16.md` to confirm phase 1 completion before proposing phase 2 work.
+5. Use `first-safe-repo-plan-2026-06-16.md` before proposing any structure change.
+6. The next safe technical direction is the public validator / QR UX real-use path, demo runner/static viewer contract, record_id to advisory result flow, then runtime/protocol hardening. Keep each step small, evidence-backed, and human-reviewed.
+7. Do not widen workflow permissions, enable auto-merge, delete workflows, remove checks, or change authority boundaries from cleanup candidates.
+8. HC Control Bot / HC Trust Engineer Agent core remains a GitHub-native advisory layer: a report-only runner, controlled assistant, and project-control queue aid. Bot authority expansion remains parked.
+9. Do not add a GitHub App, LLM memory, auto-assignment, auto-reviewer request, auto-labeling, auto-merge, approval/rejection/close authority, issue-comment automation, or label/reviewer mutation without a new governance review.
+10. Before proposing new work, cross-check `project-state.md`, `task-ledger.md`, current GitHub PR history, and repository evidence.
 
 ## Parked work
 

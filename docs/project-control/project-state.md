@@ -204,6 +204,10 @@ The `v0.1.0` tag remains the initial protected protocol infrastructure and relea
 - #831 synchronized the Operator Entry Map after #826/#828 so command-surface and repository-assistant baseline references are current.
 - #811, #813, #814, #826, #828, and #831 are do-not-repeat references for assistant-console, command-surface, repository-assistant baseline, or operator-entry-map synchronization unless new repository evidence appears.
 
+## Public surface status
+
+The public landing / public surface line is completed through #1161, #1162, #1163, #1164, #1165, and #1166. The Pages landing is active-public-preview oriented, mobile/translation friendly, and linked to clear visitor actions. The Public Surface checklist now exists as the reviewer baseline, and Public Surface is integrated into HC Check Digest as report-only PASS/WARN output. The #1166 integration did not create a new independent workflow or check. Human final authority and advisory-only/public-safe governance boundaries remain unchanged.
+
 ## Current focus
 
 - Keep onboarding, navigation, and project-control documents synchronized with current repository state.
