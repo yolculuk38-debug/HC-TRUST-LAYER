@@ -76,6 +76,7 @@ Use these HC:// Public Validator demo entry points for a fast, public-safe, advi
 3. **Then read:** [`docs/repo-map.md`](repo-map.md) — current repository map and advisory ownership boundaries
 4. **Then read:** [`CONTRIBUTING.md`](../CONTRIBUTING.md) — contribution workflow and PR policy
 5. **Then read:** [`docs/contributor-start-here.md`](contributor-start-here.md) — detailed beginner guidance
+   For a timed contributor path, see [`docs/contributor-start-here.md`](contributor-start-here.md).
 6. **Pick work from:** Issues marked `good-first-issue` or make a small documentation improvement
 7. **Before opening PR:** Run checks in section 5 below
 

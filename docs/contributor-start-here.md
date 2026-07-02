@@ -36,6 +36,60 @@ Recommended path:
 6. Run the required checks before opening a PR.
 7. Ask for review before changing sensitive surfaces.
 
+
+## First 15 minutes / first hour / first day
+
+Use this timed path to make a first contribution without expanding HC:// authority, workflow behavior, or protected surfaces. Keep the work advisory, public-safe, and human-supervised.
+
+### First 15 minutes
+
+- Read `README.md` for project identity and public posture.
+- Read `docs/START_HERE.md` for role-based navigation.
+- Read `docs/governance/canonical-vs-advisory-governance-surfaces.md` to understand canonical vs advisory governance surfaces.
+- Check `docs/repo-map.md` before touching files.
+- Avoid protected or high-risk paths unless the PR explicitly explains why they are touched.
+- Remember: CI/checks are evidence, not trust authority; human maintainers and reviewers make final decisions.
+
+### First hour
+
+- Set up the local environment according to the existing contributor docs.
+- Run only the existing documented checks; do not invent new required checks.
+- Inspect the relevant package, docs, or test area before editing.
+- Keep the first PR small.
+- Prefer docs-only, test-only, or other low-risk changes for a first contribution.
+- Clearly state changed files, non-effects, and boundary preservation in the PR body.
+- Use `docs/repo-map.md` and governance classification to decide whether a change is normal, protected, high-risk, project-control, public-facing, or generated/canonical.
+
+### First day
+
+- Study the active project-control state and task ledger before opening larger work.
+- Read the relevant architecture, release, workflow, or core boundary review only if the work touches that surface.
+- Avoid namespace refactors, workflow cleanup, generated/canonical changes, schema or validator changes, signing, federation, or policy changes, bot authority changes, and release automation changes unless a human maintainer explicitly authorizes that scope.
+- For larger tasks, open a narrow PR plan first or keep the first PR documentation-only.
+- Do not treat historical docs, AI output, bot output, or old task lists as active authority unless current project-state, next-actions, or human maintainer direction confirms it.
+
+### Good first PR shape
+
+- One purpose.
+- One small scope.
+- Explicit changed files.
+- Explicit non-effects.
+- Tests/checks run.
+- Protected-path statement when applicable.
+- Human final authority preserved.
+
+### Do not do as a first PR
+
+- Do not refactor broad namespaces.
+- Do not rename or move protected files.
+- Do not disable or add workflows.
+- Do not change bot authority.
+- Do not change schema, validators, records, generated artifacts, or canonical artifacts.
+- Do not introduce production-readiness, certification, legal truth, identity finality, forensic certainty, autonomous governance, partnership, endorsement, or guaranteed-correctness claims.
+- Do not use casual or chat-style language in repository docs.
+
+HC Trust Engineer Agent, report-only runner, controlled assistant, and GitHub-native advisory layer work remains advisory only. The project-control queue can guide sequencing, but it does not replace the governance boundary or human final authority.
+
 ## 4. Recommended Read Order
 
 For a first pass, read in this order:
