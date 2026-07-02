@@ -321,6 +321,65 @@ HC:// and HC-TRUST-LAYER authority boundaries remain unchanged for this event st
 - `merge_authority=false`
 - `autonomous_governance_authority=false`
 
+### Event store implementation readiness checkpoint
+
+This checkpoint records event store namespace readiness after #1180 and #1181 for future implementation planning only. It is documentation-only and does not authorize implementation, source movement, runtime behavior change, wrapper removal, test changes, workflow changes, package metadata changes, CLI changes, protected-path changes, or bot authority expansion.
+
+After #1181, event store coverage now includes:
+
+- explicit `hc_runtime.events` import contract coverage
+- `RuntimeEventStore` public import compatibility
+- object identity between `hc_runtime.events.RuntimeEventStore`, `hc_runtime.events.store.RuntimeEventStore`, and imported `RuntimeEventStore`
+- minimal construction coverage
+
+Before any future event store implementation PR, the future PR must still include:
+
+- affected-file list
+- behavior-impact analysis
+- rollback path
+- compatibility wrapper plan
+- targeted runtime tests
+- CI evidence
+- explicit human approval
+
+A future implementation PR, if separately approved, must remain narrow:
+
+- one event store namespace move only
+- preserve the `hc_runtime.events` compatibility wrapper
+- preserve the `RuntimeEventStore` API and return shapes
+- preserve `EVENT_STORE` behavior in `hc_runtime.state`
+- preserve `_events` compatibility unless a separate approved plan exists
+- no behavior changes
+- no wrapper removal
+- no CLI/package/workflow change
+- no schema/validator/record/hash/QR/signing/federation/policy/canonical/generated change
+
+Required implementation-time validation for any future event store namespace implementation PR:
+
+- `python -m pytest tests/test_refactor_contracts.py`
+- `python -m pytest tests/test_hc_runtime_pipeline.py`
+- `python -m pytest tests/test_hc_runtime_app.py`
+- `python -m pytest tests/runtime/test_replay_continuity_edge_cases.py`
+- `python -m pytest tests/runtime/test_degraded_recovery_edge_cases.py`
+- `python -m pytest tests/runtime/test_secret_redaction_runtime_outputs.py`
+- `python -m pytest tests/runtime/test_telemetry_payload_contract.py`
+- `python -m pytest tests/runtime/test_telemetry_payload_safety_contract.py`
+- `python scripts/check_terminology.py`
+- `python scripts/check_canonical_artifacts.py`
+- `git diff --check`
+
+HC:// and HC-TRUST-LAYER authority boundaries remain unchanged for this checkpoint:
+
+- `advisory_only=true`
+- `public_safe=true`
+- `truth_guarantee=false`
+- `human_review_required=true`
+- `approval_authority=false`
+- `merge_authority=false`
+- `autonomous_governance_authority=false`
+
+This checkpoint is advisory documentation only. Event store implementation is not authorized by this plan. Human maintainers and reviewers retain final authority.
+
 ### Not authorized by this plan
 
 This plan does not authorize:
