@@ -84,4 +84,6 @@ This documentation-only classification does not perform or authorize:
 
 ## Follow-up work
 
+Namespace/refactor readiness is documented in [`docs/refactor/namespace-implementation-readiness-plan.md`](refactor/namespace-implementation-readiness-plan.md); actual source moves require separate human-approved PRs.
+
 Deeper refactors may be considered separately after maintainer review. Possible follow-up work includes core namespace split, workflow taxonomy, test taxonomy, governance canonical split, and clearer promotion paths for draft or research material. Those follow-ups are outside this docs-only PR.
