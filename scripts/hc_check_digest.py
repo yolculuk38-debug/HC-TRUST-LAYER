@@ -78,10 +78,12 @@ RISKY_PUBLIC_SURFACE_CLAIMS = (
     "guaranteed truth",
     "legal finality",
     "institutional finality",
+    "identity finality",
     "certification authority",
     "autonomous authority",
     "autonomous system authority",
     "forensic certainty",
+    "guaranteed correctness",
 )
 NEGATIVE_CONTEXT_MARKERS = (
     "no ",
@@ -98,12 +100,12 @@ NEGATIVE_CONTEXT_MARKERS = (
 )
 
 
-def _repo_root() -> Path:
-    return Path(__file__).resolve().parents[1]
+def _resolve_repo_root(repo_root: str | Path | None = None) -> Path:
+    return Path(repo_root or Path.cwd()).resolve()
 
 
-def _read_repo_text(relative_path: str) -> str:
-    path = _repo_root() / relative_path
+def _read_repo_text(repo_root: Path, relative_path: str) -> str:
+    path = repo_root / relative_path
     if not path.is_file():
         return ""
     return path.read_text(encoding="utf-8")
@@ -129,10 +131,10 @@ def _risky_public_claims(text: str) -> list[str]:
     return risky
 
 
-def evaluate_public_surface() -> dict[str, Any]:
+def evaluate_public_surface(repo_root: str | Path | None = None) -> dict[str, Any]:
     """Return report-only public surface status for HC Check Digest."""
-    root = _repo_root()
-    index_text = _read_repo_text("docs/index.md")
+    root = _resolve_repo_root(repo_root)
+    index_text = _read_repo_text(root, "docs/index.md")
     index_lower = index_text.lower()
 
     landing_warnings: list[str] = []
@@ -155,7 +157,7 @@ def evaluate_public_surface() -> dict[str, Any]:
     ]
 
     boundary_warnings: list[str] = []
-    combined_entry_text = "\n".join(_read_repo_text(path) for path in PUBLIC_SURFACE_ENTRY_DOCS)
+    combined_entry_text = "\n".join(_read_repo_text(root, path) for path in PUBLIC_SURFACE_ENTRY_DOCS)
     combined_lower = combined_entry_text.lower()
     if "advisory" not in combined_lower:
         boundary_warnings.append("advisory-only boundary language is missing")
@@ -398,6 +400,7 @@ def build_digest(
     threads: Any = None,
     artifacts: Any = None,
     repo_health: Any = None,
+    repo_root: str | Path | None = None,
 ) -> dict[str, Any]:
     blocking: list[dict[str, str]] = []
     advisory: list[dict[str, str]] = []
@@ -464,7 +467,7 @@ def build_digest(
         "external_review": external_review,
         "artifacts": artifact_entries,
         "repo_health_signals": repo_health_signals,
-        "public_surface": evaluate_public_surface(),
+        "public_surface": evaluate_public_surface(repo_root),
         "merge_guidance": merge_guidance,
         "summary": summary,
     }

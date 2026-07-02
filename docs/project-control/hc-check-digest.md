@@ -187,9 +187,10 @@ required check, production readiness, correctness certification, legal authority
 or autonomous decision authority. Warnings indicate material for human review;
 they do not fail the digest or change merge authority.
 
-The section preserves the same authority boundary as the rest of HC Check Digest:
-`advisory_only=true`, `public_safe=true`, `truth_guarantee=false`, and human final
-authority remains required.
+The section evaluates repository-local files from the checked-out repository root
+used by the digest run. It preserves the same authority boundary as the rest of
+HC Check Digest: `advisory_only=true`, `public_safe=true`,
+`truth_guarantee=false`, and human final authority remains required.
 
 ## Merge guidance
 
