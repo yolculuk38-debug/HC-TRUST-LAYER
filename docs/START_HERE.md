@@ -88,7 +88,8 @@ Use these HC:// Public Validator demo entry points for a fast, public-safe, advi
 3. **Then read:** [`CHANGELOG.md`](../CHANGELOG.md) — version history and release evidence
 4. **Then read:** [`HC_CONSTITUTION.md`](../HC_CONSTITUTION.md) — immutable core principles
 5. **Reference:** [`docs/governance/`](governance/) — detailed governance, disputes, moderation
-6. **For v0.1.0 decisions:** [`docs/governance/v0.1.0-tag-readiness-review.md`](governance/v0.1.0-tag-readiness-review.md) and [`docs/v0.1.0-release-notes.md`](v0.1.0-release-notes.md)
+6. **Governance surface classification:** [`docs/governance/canonical-vs-advisory-governance-surfaces.md`](governance/canonical-vs-advisory-governance-surfaces.md) — conservative guide to canonical, advisory, project-control, historical/reference, and onboarding surfaces.
+7. **For v0.1.0 decisions:** [`docs/governance/v0.1.0-tag-readiness-review.md`](governance/v0.1.0-tag-readiness-review.md) and [`docs/v0.1.0-release-notes.md`](v0.1.0-release-notes.md)
 
 **Key roles:**
 - Merge approval: repository owner (`@yolculuk38-debug`)
