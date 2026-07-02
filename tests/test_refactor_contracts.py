@@ -36,7 +36,9 @@ IMPORT_CONTRACT_MODULES = (
     "hc_runtime.app",
     "hc_runtime.contracts",
     "hc_runtime.contracts.redaction",
+    "hc_runtime.contracts.abuse_signals",
     "hc_runtime.redaction",
+    "hc_runtime.abuse_signals",
     "hc_runtime.public_validator_lookup",
     "hc_runtime.qr_payload_parser",
     "hc_runtime.qr_record_bridge",
@@ -83,6 +85,33 @@ def test_runtime_redaction_namespace_move_preserves_old_import_compatibility() -
     assert old_module.redact_public_payload is new_module.redact_public_payload
     assert old_module.redact_secret_like_text is new_module.redact_secret_like_text
     assert new_module.redact_secret_like_text("api_key=example-secret") == "[REDACTED]"
+
+
+def test_runtime_abuse_signals_namespace_move_preserves_old_import_compatibility() -> None:
+    """Second low-risk runtime helper move keeps old and new import paths aligned."""
+
+    old_module = importlib.import_module("hc_runtime.abuse_signals")
+    new_module = importlib.import_module("hc_runtime.contracts.abuse_signals")
+
+    assert old_module.AbuseSignalLevel is new_module.AbuseSignalLevel
+    assert old_module.AbuseSignalResult is new_module.AbuseSignalResult
+    assert old_module.AdvisoryAbuseSignalTracker is new_module.AdvisoryAbuseSignalTracker
+
+    tracker = new_module.AdvisoryAbuseSignalTracker()
+    result = tracker.inspect(
+        record_id="namespace-helper-001",
+        schema_valid=True,
+        qr_risk_level=importlib.import_module("hc_runtime.qr_spoof_protection").QRRiskLevel.LOW,
+        qr_risk_reasons=[],
+        qr_risk_group_keys=[],
+        replay_warning=False,
+        degraded_mode=False,
+    )
+
+    assert result.summary()["advisory_only"] is True
+    assert result.summary()["public_safe"] is True
+    assert result.summary()["truth_guarantee"] is False
+    assert result.summary()["human_final_authority"] is True
 
 
 def test_configured_cli_entrypoint_target_resolves() -> None:
