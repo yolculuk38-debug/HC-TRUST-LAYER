@@ -91,6 +91,7 @@ Use these HC:// Public Validator demo entry points for a fast, public-safe, advi
 5. **Reference:** [`docs/governance/`](governance/) — detailed governance, disputes, moderation
 6. **Governance surface classification:** [`docs/governance/canonical-vs-advisory-governance-surfaces.md`](governance/canonical-vs-advisory-governance-surfaces.md) — conservative guide to canonical, advisory, project-control, historical/reference, and onboarding surfaces.
 7. **For v0.1.0 decisions:** [`docs/governance/v0.1.0-tag-readiness-review.md`](governance/v0.1.0-tag-readiness-review.md) and [`docs/v0.1.0-release-notes.md`](v0.1.0-release-notes.md)
+8. **Namespace/refactor readiness:** See [`docs/refactor/namespace-implementation-readiness-plan.md`](refactor/namespace-implementation-readiness-plan.md) before proposing source moves.
 
 **Key roles:**
 - Merge approval: repository owner (`@yolculuk38-debug`)
