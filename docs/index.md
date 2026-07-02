@@ -1,14 +1,22 @@
 # HC-TRUST-LAYER
 
+Status: Active public preview / partial implementation / advisory-only.
+
 HC-TRUST-LAYER is an open verification protocol and provenance infrastructure for HC:// records, review boundaries, and evidence-preserving workflows.
 
-This GitHub Pages landing page is an active public navigation entrypoint for the repository:
+This GitHub Pages landing page is an active public navigation entrypoint for the repository.
 
-- [Official GitHub repository](https://github.com/yolculuk38-debug/HC-TRUST-LAYER)
-- [README](https://github.com/yolculuk38-debug/HC-TRUST-LAYER#readme)
+## What You Can Do Here
+
+Use this page to inspect the official repository, start with the guide, try public-safe verification previews, review project status, and contribute or report issues through GitHub.
+
+- [Try the public-safe demo](demo/mini-public-validator-demo.md)
+- [Try browser-side preview](self-service-verify.html)
 - [Start here](START_HERE.md)
-- [Mini public validator demo](demo/mini-public-validator-demo.md)
-- [Project state](project-control/project-state.md)
+- [Read README](https://github.com/yolculuk38-debug/HC-TRUST-LAYER#readme)
+- [Open official GitHub repository](https://github.com/yolculuk38-debug/HC-TRUST-LAYER)
+- [Review project status](project-control/project-state.md)
+- [Report issues / contribute](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues)
 
 ## What This Page Does Not Claim
 
