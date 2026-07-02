@@ -35,6 +35,8 @@ IMPORT_CONTRACT_MODULES = (
     "hc_runtime",
     "hc_runtime.app",
     "hc_runtime.contracts",
+    "hc_runtime.contracts.redaction",
+    "hc_runtime.redaction",
     "hc_runtime.public_validator_lookup",
     "hc_runtime.qr_payload_parser",
     "hc_runtime.qr_record_bridge",
@@ -70,6 +72,17 @@ def test_current_import_contract_modules_resolve() -> None:
     for module_name in IMPORT_CONTRACT_MODULES:
         module = importlib.import_module(module_name)
         assert module.__name__ == module_name
+
+
+def test_runtime_redaction_namespace_move_preserves_old_import_compatibility() -> None:
+    """First low-risk runtime helper move keeps old and new import paths aligned."""
+
+    old_module = importlib.import_module("hc_runtime.redaction")
+    new_module = importlib.import_module("hc_runtime.contracts.redaction")
+
+    assert old_module.redact_public_payload is new_module.redact_public_payload
+    assert old_module.redact_secret_like_text is new_module.redact_secret_like_text
+    assert new_module.redact_secret_like_text("api_key=example-secret") == "[REDACTED]"
 
 
 def test_configured_cli_entrypoint_target_resolves() -> None:
