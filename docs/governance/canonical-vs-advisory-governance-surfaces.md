@@ -23,7 +23,7 @@ This document preserves the following HC:// and HC-TRUST-LAYER boundaries:
 - `approval_authority=false`
 - `merge_authority=false`
 - `label_reviewer_mutation=false`
-- `issue_comment_automation=false`
+- `issue_comment_automation=false` for this PR; no new or unauthorized issue-comment automation
 - no new workflow
 - no new check
 - no workflow permission change
@@ -33,7 +33,7 @@ This document preserves the following HC:// and HC-TRUST-LAYER boundaries:
 - no schema, validator, record, generated, or canonical behavior change
 - no bot authority expansion
 
-CI/checks are evidence, not trust authority. Human maintainers and reviewers make final repository decisions. A report-only runner, controlled assistant, HC Trust Engineer Agent, or other GitHub-native advisory layer can support review, but cannot approve, merge, label, request reviewers, close issues, mutate issue comments, or replace the governance boundary set by human maintainers.
+CI/checks are evidence, not trust authority. Human maintainers and reviewers make final repository decisions. A report-only runner, controlled assistant, HC Trust Engineer Agent, or other GitHub-native advisory layer can support review, but cannot approve, merge, label, request reviewers, close issues, or replace the governance boundary set by human maintainers. This PR introduces no new issue-comment automation authority. Existing reviewed advisory comment workflows, including `.github/workflows/hc-control-bot-advisory-comment.yml` and `.github/workflows/hc-assistant-command.yml`, remain governed by their own workflow files and prior governance boundaries; their advisory comments remain evidence only.
 
 ## Classification vocabulary
 
@@ -63,7 +63,7 @@ A document that helps users or contributors enter the project safely but does no
 |---|---|---|---|---|
 | `CODEOWNERS` | Canonical governance rule | Identifies ownership and protected review expectations. | High-authority repository control surface; this document does not change it. | Treat as a maintained authority surface and verify actual repository state. |
 | `AGENTS.md` | Canonical governance rule | Defines agent operating expectations, claim boundaries, and protected-path care. | Binding for agents working within its scope. | Preserve HC:// terminology and human final authority. |
-| `HC_BOOTSTRAP.md` | Canonical governance rule | Provides startup and handoff expectations for operating-layer work. | High-authority operating-layer file; this document does not change it. | Use for startup context without treating agents as final authority. |
+| `HC_BOOTSTRAP.md` | Advisory governance guidance | Provides startup and handoff context for operating-layer work. | Defers to `HC_BOOTSTRAP.md` and its own stated boundary; it is not independent governance authority and does not override `CODEOWNERS`, branch protection, required checks, `CONTRIBUTING.md`, `SECURITY.md`, `GOVERNANCE.md`, or maintainer decisions. | Use as startup context without treating agents as final authority. |
 | `SECURITY.md` | Canonical governance rule | Defines security reporting and vulnerability handling expectations. | Security-sensitive governance surface. | Follow security handling directions; do not route sensitive content through public project-control material. |
 | `CONTRIBUTING.md` | Canonical governance rule | Defines contribution workflow, PR expectations, and contributor boundaries. | Contributor-facing rule surface unless a more specific maintained rule applies. | Use for PR readiness and contribution conduct. |
 | `GOVERNANCE.md` | Canonical governance rule | Defines maintainer decision process and escalation expectations. | Maintainer authority surface; human review remains required. | Read before interpreting disputed authority or merge expectations. |
@@ -127,6 +127,7 @@ This document does not:
 - grant bot or controlled-assistant authority;
 - approve auto-merge;
 - change issue, comment, label, reviewer, close, or other mutation behavior;
+- introduce new issue-comment automation;
 - change runtime behavior;
 - change CLI behavior;
 - change package metadata;
