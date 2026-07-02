@@ -50,6 +50,158 @@ FAIL_STATUSES = {"failure", "failed", "error", "cancelled", "timed_out", "action
 WARNING_LEVELS = {"warning", "notice", "advisory"}
 PRIORITY_TOKEN_RE = re.compile(r"(?<![a-z0-9])p([123])(?![a-z0-9])")
 
+PUBLIC_SURFACE_REQUIRED_ACTIONS = {
+    "public-safe demo link": "demo/mini-public-validator-demo.md",
+    "browser-side preview link": "self-service-verify.html",
+    "Start here link": "START_HERE.md",
+    "README link": "readme",
+    "official repository link": "git" + "hub.com/yolculuk38-debug/HC-TRUST-LAYER",
+    "project status link": "project-control/project-state.md",
+    "Issues / contribute link": "issues",
+}
+PUBLIC_SURFACE_REQUIRED_TARGETS = (
+    "docs/demo/mini-public-validator-demo.md",
+    "docs/self-service-verify.html",
+    "docs/START_HERE.md",
+    "README.md",
+    "docs/project-control/project-state.md",
+)
+PUBLIC_SURFACE_ENTRY_DOCS = (
+    "docs/index.md",
+    "README.md",
+    "docs/START_HERE.md",
+    "docs/demo/mini-public-validator-demo.md",
+)
+RISKY_PUBLIC_SURFACE_CLAIMS = (
+    "production-ready",
+    "production readiness",
+    "guaranteed truth",
+    "legal finality",
+    "institutional finality",
+    "identity finality",
+    "certification authority",
+    "autonomous authority",
+    "autonomous system authority",
+    "forensic certainty",
+    "guaranteed correctness",
+)
+NEGATIVE_CONTEXT_MARKERS = (
+    "no ",
+    "not ",
+    "does not ",
+    "do not ",
+    "without ",
+    "is not ",
+    "are not ",
+    "doesn't ",
+    "isn't ",
+    "limitations",
+    "risks",
+)
+
+
+def _resolve_repo_root(repo_root: str | Path | None = None) -> Path:
+    return Path(repo_root or Path.cwd()).resolve()
+
+
+def _read_repo_text(repo_root: Path, relative_path: str) -> str:
+    path = repo_root / relative_path
+    if not path.is_file():
+        return ""
+    return path.read_text(encoding="utf-8")
+
+
+def _public_surface_item(status: str, detail: str) -> dict[str, str]:
+    return {"status": status, "detail": detail}
+
+
+def _sentence_has_negative_context(sentence: str) -> bool:
+    lowered = sentence.lower()
+    return any(marker in lowered for marker in NEGATIVE_CONTEXT_MARKERS)
+
+
+def _risky_public_claims(text: str) -> list[str]:
+    risky: list[str] = []
+    sentences = re.split(r"(?<=[.!?])\s+|\n+", text)
+    for phrase in RISKY_PUBLIC_SURFACE_CLAIMS:
+        for sentence in sentences:
+            if phrase in sentence.lower() and not _sentence_has_negative_context(sentence):
+                risky.append(phrase)
+                break
+    return risky
+
+
+def evaluate_public_surface(repo_root: str | Path | None = None) -> dict[str, Any]:
+    """Return report-only public surface status for HC Check Digest."""
+    root = _resolve_repo_root(repo_root)
+    index_text = _read_repo_text(root, "docs/index.md")
+    index_lower = index_text.lower()
+
+    landing_warnings: list[str] = []
+    if "archived" in index_lower:
+        landing_warnings.append("ARCHIVED appears in docs/index.md")
+    if not any(term in index_lower for term in ("active", "partial", "advisory")):
+        landing_warnings.append("active / partial / advisory status language is missing")
+    if "active public navigation" not in index_lower or "hc-trust-layer" not in index_lower:
+        landing_warnings.append("HC-TRUST-LAYER active public navigation identity is unclear")
+    if any(name in index_lower for name in ("insanlik-zinciri", "humanity chain", "İnsanlık Zinciri".lower())):
+        landing_warnings.append("legacy project name appears in active landing identity")
+
+    missing_actions = [
+        label
+        for label, needle in PUBLIC_SURFACE_REQUIRED_ACTIONS.items()
+        if needle.lower() not in index_lower
+    ]
+    missing_targets = [
+        relative_path for relative_path in PUBLIC_SURFACE_REQUIRED_TARGETS if not (root / relative_path).is_file()
+    ]
+
+    boundary_warnings: list[str] = []
+    combined_entry_text = "\n".join(_read_repo_text(root, path) for path in PUBLIC_SURFACE_ENTRY_DOCS)
+    combined_lower = combined_entry_text.lower()
+    if "advisory" not in combined_lower:
+        boundary_warnings.append("advisory-only boundary language is missing")
+    if "human" not in combined_lower or not any(
+        term in combined_lower for term in ("final authority", "review remains", "review required", "human review")
+    ):
+        boundary_warnings.append("human review / human final authority language is missing")
+    risky_claims = _risky_public_claims(combined_entry_text)
+    if risky_claims:
+        boundary_warnings.append(
+            "risky public claim wording appears outside limitation context: " + ", ".join(sorted(set(risky_claims)))
+        )
+
+    checks = {
+        "landing_status_clarity": _public_surface_item(
+            "WARN" if landing_warnings else "PASS",
+            "; ".join(landing_warnings) if landing_warnings else "active advisory public navigation is visible",
+        ),
+        "visitor_action_links": _public_surface_item(
+            "WARN" if missing_actions else "PASS",
+            "missing: " + ", ".join(missing_actions) if missing_actions else "required visitor action paths are present",
+        ),
+        "public_preview_targets": _public_surface_item(
+            "WARN" if missing_targets else "PASS",
+            "missing: " + ", ".join(missing_targets) if missing_targets else "required public preview targets exist",
+        ),
+        "boundary_language": _public_surface_item(
+            "WARN" if boundary_warnings else "PASS",
+            "; ".join(boundary_warnings)
+            if boundary_warnings
+            else "advisory-only, public-safe, and human final authority boundaries are visible",
+        ),
+    }
+    status = "WARN" if any(item["status"] == "WARN" for item in checks.values()) else "PASS"
+    return {
+        "status": status,
+        "checks": checks,
+        "notes": [
+            "report-only",
+            "no runtime behavior changed",
+            "human final authority remains required",
+        ],
+    }
+
 
 def _load_json(path: str | None) -> Any:
     if not path:
@@ -248,6 +400,7 @@ def build_digest(
     threads: Any = None,
     artifacts: Any = None,
     repo_health: Any = None,
+    repo_root: str | Path | None = None,
 ) -> dict[str, Any]:
     blocking: list[dict[str, str]] = []
     advisory: list[dict[str, str]] = []
@@ -314,6 +467,7 @@ def build_digest(
         "external_review": external_review,
         "artifacts": artifact_entries,
         "repo_health_signals": repo_health_signals,
+        "public_surface": evaluate_public_surface(repo_root),
         "merge_guidance": merge_guidance,
         "summary": summary,
     }
@@ -349,6 +503,23 @@ def render_markdown(digest: dict[str, Any]) -> str:
         for entry in entries:
             lines.append(f"- {entry['name']} ({entry['status']}, {entry['level']}): {entry['reason']}")
         lines.append("")
+    public_surface = digest.get("public_surface", evaluate_public_surface())
+    lines.extend(["## Public Surface", "", f"Status: {public_surface['status']}", ""])
+    labels = {
+        "landing_status_clarity": "Landing status clarity",
+        "visitor_action_links": "Visitor action links",
+        "public_preview_targets": "Public preview targets",
+        "boundary_language": "Boundary language",
+    }
+    for key, label in labels.items():
+        item = public_surface["checks"][key]
+        detail = item.get("detail", "")
+        suffix = f" — {detail}" if detail else ""
+        lines.append(f"- {label}: {item['status']}{suffix}")
+    lines.extend(["", "Notes:"])
+    for note in public_surface.get("notes", []):
+        lines.append(f"- {note}")
+    lines.append("")
     lines.extend(["## Merge guidance", "", digest["merge_guidance"], ""])
     return "\n".join(lines)
 

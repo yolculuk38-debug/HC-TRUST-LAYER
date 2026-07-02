@@ -4,7 +4,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
-from hc_check_digest import SAFETY_MARKERS, build_digest, render_markdown
+from hc_check_digest import SAFETY_MARKERS, build_digest, evaluate_public_surface, render_markdown
 
 
 def test_required_safety_markers() -> None:
@@ -110,6 +110,76 @@ def test_markdown_contains_required_sections() -> None:
     ):
         assert section in markdown
     assert "none" in markdown
+
+
+def test_public_surface_uses_explicit_repo_root(tmp_path: Path) -> None:
+    docs = tmp_path / "docs"
+    demo = docs / "demo"
+    project_control = docs / "project-control"
+    demo.mkdir(parents=True)
+    project_control.mkdir(parents=True)
+    (tmp_path / "README.md").write_text(
+        "HC-TRUST-LAYER advisory-only. Human final authority remains required.\n", encoding="utf-8"
+    )
+    (docs / "START_HERE.md").write_text("Advisory only. Human review remains required.\n", encoding="utf-8")
+    (demo / "mini-public-validator-demo.md").write_text(
+        "Advisory-only public-safe demo. Human review remains required.\n", encoding="utf-8"
+    )
+    (docs / "self-service-verify.html").write_text("<p>preview</p>\n", encoding="utf-8")
+    (project_control / "project-state.md").write_text("# Project state\n", encoding="utf-8")
+    (docs / "index.md").write_text(
+        "# HC-TRUST-LAYER\n"
+        "Status: Active public preview / partial implementation / advisory-only.\n"
+        "This is active public navigation for HC-TRUST-LAYER.\n"
+        "[demo](demo/mini-public-validator-demo.md) [preview](self-service-verify.html) "
+        "[start](START_HERE.md) [readme](../README.md) "
+        "[repo](https://github.com/yolculuk38-debug/HC-TRUST-LAYER) "
+        "[status](project-control/project-state.md) [issues](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues)\n",
+        encoding="utf-8",
+    )
+
+    digest = build_digest(repo_root=tmp_path)
+
+    assert digest["public_surface"]["status"] == "PASS"
+
+
+def test_public_surface_risky_claims_include_new_phrases(tmp_path: Path) -> None:
+    docs = tmp_path / "docs"
+    demo = docs / "demo"
+    project_control = docs / "project-control"
+    demo.mkdir(parents=True)
+    project_control.mkdir(parents=True)
+    for relative_path in (
+        "README.md",
+        "docs/START_HERE.md",
+        "docs/demo/mini-public-validator-demo.md",
+    ):
+        path = tmp_path / relative_path
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(
+            "HC-TRUST-LAYER is advisory-only. Human final authority remains required. "
+            "This does not claim identity finality and has no guaranteed correctness.\n",
+            encoding="utf-8",
+        )
+    (docs / "self-service-verify.html").write_text("<p>preview</p>\n", encoding="utf-8")
+    (project_control / "project-state.md").write_text("# Project state\n", encoding="utf-8")
+    (docs / "index.md").write_text(
+        "# HC-TRUST-LAYER\n"
+        "Status: Active public preview / partial implementation / advisory-only.\n"
+        "This is active public navigation for HC-TRUST-LAYER.\n"
+        "[demo](demo/mini-public-validator-demo.md) [preview](self-service-verify.html) "
+        "[start](START_HERE.md) [readme](../README.md) "
+        "[repo](https://github.com/yolculuk38-debug/HC-TRUST-LAYER) "
+        "[status](project-control/project-state.md) [issues](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues)\n"
+        "Identity finality is available here. Guaranteed correctness is available here.\n",
+        encoding="utf-8",
+    )
+
+    public_surface = evaluate_public_surface(tmp_path)
+
+    assert public_surface["checks"]["boundary_language"]["status"] == "WARN"
+    assert "identity finality" in public_surface["checks"]["boundary_language"]["detail"]
+    assert "guaranteed correctness" in public_surface["checks"]["boundary_language"]["detail"]
 
 
 def test_no_network_or_github_api_behavior_exists() -> None:

@@ -55,6 +55,32 @@
   "merge_guidance": "do_not_merge",
   "network_access": false,
   "public_safe": true,
+  "public_surface": {
+    "checks": {
+      "boundary_language": {
+        "detail": "advisory-only, public-safe, and human final authority boundaries are visible",
+        "status": "PASS"
+      },
+      "landing_status_clarity": {
+        "detail": "active advisory public navigation is visible",
+        "status": "PASS"
+      },
+      "public_preview_targets": {
+        "detail": "required public preview targets exist",
+        "status": "PASS"
+      },
+      "visitor_action_links": {
+        "detail": "required visitor action paths are present",
+        "status": "PASS"
+      }
+    },
+    "notes": [
+      "report-only",
+      "no runtime behavior changed",
+      "human final authority remains required"
+    ],
+    "status": "PASS"
+  },
   "repo_health_signals": {
     "changelog": [],
     "codeql": [],
