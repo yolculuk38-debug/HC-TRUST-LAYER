@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from hc_runtime.redaction import redact_public_payload, redact_secret_like_text
+from hc_runtime.contracts.redaction import redact_public_payload, redact_secret_like_text
 
 PUBLIC_RESPONSE_BASE_KEYS: tuple[str, ...] = (
     "status",

@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
 
-from hc_runtime.redaction import redact_public_payload, redact_secret_like_text
+from hc_runtime.contracts.redaction import redact_public_payload, redact_secret_like_text
 
 
 @dataclass(slots=True)

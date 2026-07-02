@@ -7,7 +7,7 @@ from enum import StrEnum
 from typing import Any
 
 from hc_runtime.qr_spoof_protection import QRRiskLevel
-from hc_runtime.redaction import redact_public_payload
+from hc_runtime.contracts.redaction import redact_public_payload
 
 
 class AbuseSignalLevel(StrEnum):
