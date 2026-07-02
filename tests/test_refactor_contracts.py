@@ -37,8 +37,10 @@ IMPORT_CONTRACT_MODULES = (
     "hc_runtime.contracts",
     "hc_runtime.contracts.redaction",
     "hc_runtime.contracts.abuse_signals",
+    "hc_runtime.contracts.decision_engine",
     "hc_runtime.redaction",
     "hc_runtime.abuse_signals",
+    "hc_runtime.decision_engine",
     "hc_runtime.public_validator_lookup",
     "hc_runtime.qr_payload_parser",
     "hc_runtime.qr_record_bridge",
@@ -112,6 +114,44 @@ def test_runtime_abuse_signals_namespace_move_preserves_old_import_compatibility
     assert result.summary()["public_safe"] is True
     assert result.summary()["truth_guarantee"] is False
     assert result.summary()["human_final_authority"] is True
+
+
+def test_runtime_decision_engine_namespace_move_preserves_old_import_compatibility() -> None:
+    """Third low-risk runtime helper move keeps old and new import paths aligned."""
+
+    old_module = importlib.import_module("hc_runtime.decision_engine")
+    new_module = importlib.import_module("hc_runtime.contracts.decision_engine")
+
+    assert old_module.TrustState is new_module.TrustState
+    assert old_module.TrustStateDecisionEngine is new_module.TrustStateDecisionEngine
+
+    engine = new_module.TrustStateDecisionEngine()
+    trust_state, warnings = engine.classify(
+        record_id="namespace-helper-002",
+        qr_input="local advisory input",
+        schema_valid=True,
+        hash_verified=True,
+        continuity_ok=True,
+        replay_warning=False,
+    )
+
+    assert trust_state is new_module.TrustState.ADVISORY
+    assert warnings == []
+
+    degraded_state, degraded_warnings = engine.classify(
+        record_id="namespace-helper-degraded-002",
+        qr_input="local advisory input",
+        schema_valid=True,
+        hash_verified=True,
+        continuity_ok=True,
+        replay_warning=False,
+    )
+
+    assert degraded_state is old_module.TrustState.DEGRADED
+    assert degraded_warnings == [
+        "Runtime is operating in degraded advisory mode for this verification request.",
+        "Human-supervised validation is required before trust interpretation.",
+    ]
 
 
 def test_configured_cli_entrypoint_target_resolves() -> None:

@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 from typing import Any, Mapping
 
 from hc_runtime.canonical_record_loader import MALFORMED_RECORD, CanonicalRecordLoader
-from hc_runtime.decision_engine import TrustState, TrustStateDecisionEngine
+from hc_runtime.contracts.decision_engine import TrustState, TrustStateDecisionEngine
 from hc_runtime.events import RuntimeEventStore
 from hc_runtime.contracts.redaction import redact_public_payload, redact_secret_like_text
 

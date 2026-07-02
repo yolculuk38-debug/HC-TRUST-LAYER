@@ -6,7 +6,7 @@ from copy import deepcopy
 
 from hc_runtime.abuse_signals import AdvisoryAbuseSignalTracker
 from hc_runtime.contracts.responses import advisory_response
-from hc_runtime.decision_engine import TrustState, TrustStateDecisionEngine
+from hc_runtime.contracts.decision_engine import TrustState, TrustStateDecisionEngine
 from hc_runtime.events import RuntimeEventStore
 from hc_runtime.qr_spoof_protection import QRRiskLevel
 from hc_runtime.runtime import RuntimePolicyEngine, RuntimeQueueStore, ValidatorPipeline

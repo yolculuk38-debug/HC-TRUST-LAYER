@@ -3,7 +3,7 @@
 from copy import deepcopy
 
 from hc_runtime.events import RuntimeEventStore
-from hc_runtime.decision_engine import TrustState
+from hc_runtime.contracts.decision_engine import TrustState
 from hc_runtime.runtime import RuntimePolicyEngine, RuntimeQueueStore, TrustStateDecisionEngine, ValidatorPipeline
 
 
