@@ -122,7 +122,39 @@ Before any implementation PR moves, renames, splits, merges, or edits namespace-
 5. Runtime/API/CLI changes only after contract coverage exists.
 6. Protected/generated/canonical/schema/validator/policy/federation/signing/QR/hash changes only with explicit human approval and dedicated evidence.
 
-## 8. Do-not-touch without explicit approval
+
+## 8. Runtime namespace migration checkpoint after #1174, #1175, and #1176
+
+This checkpoint records the current docs-only namespace/refactor migration status after the completed low-risk runtime helper moves in #1174, #1175, and #1176. It does not authorize additional source moves, change runtime behavior, expand bot authority, or replace human review. HC:// and HC-TRUST-LAYER authority boundaries remain advisory-only, public-safe, and subject to human final authority.
+
+Completed low-risk runtime helper moves:
+
+- #1174 moved `hc_runtime.redaction` to `hc_runtime.contracts.redaction`.
+- #1175 moved `hc_runtime.abuse_signals` to `hc_runtime.contracts.abuse_signals`.
+- #1176 moved `hc_runtime.decision_engine` to `hc_runtime.contracts.decision_engine`.
+
+Old import compatibility wrappers remain required for these moved helpers. They preserve reviewable compatibility while callers, downstream references, and future coverage are evaluated. Removing those wrappers is not part of this checkpoint.
+
+A follow-up candidate scan found no fourth clearly low-risk runtime helper move that is currently safe. Remaining runtime candidates appear to touch protected or higher-risk behavior, integration, evidence, or authority-adjacent surfaces, including:
+
+- public validator
+- canonical lookup/loader
+- QR parser/bridge/spoof protection
+- runtime pipeline/state/app/router
+- event store
+- federation/policy/queue
+- schema/validator/record/hash/signing
+- generated/canonical artifacts
+
+Future runtime namespace moves require at least one of the following before implementation:
+
+- new targeted tests for the affected surface
+- a separate risk plan with affected files, behavior impact, rollback path, and validation evidence
+- human-approved higher-risk refactor scope
+
+This checkpoint is advisory documentation only. It does not claim production readiness, legal truth, identity finality, forensic certainty, certification authority, autonomous governance authority, or guaranteed correctness. Human maintainers and reviewers retain final authority.
+
+## 9. Do-not-touch without explicit approval
 
 Do not touch these surfaces for namespace/refactor implementation without explicit human-maintainer approval and dedicated evidence:
 
@@ -141,7 +173,7 @@ Do not touch these surfaces for namespace/refactor implementation without explic
 - governance/security/contribution root docs
 - auto-merge and bot authority surfaces
 
-## 9. Safe PR shape for future refactor implementation
+## 10. Safe PR shape for future refactor implementation
 
 Future refactor PRs must state:
 
@@ -158,6 +190,6 @@ Future refactor PRs must state:
 - tests run
 - human-maintainer authorization statement
 
-## 10. Real-world analogy
+## 11. Real-world analogy
 
 Treat namespace/refactor implementation like reorganizing bank branch departments or public-sector archive rooms: first map every control, record, and approval route; then move one shelf at a time only when audit evidence and rollback path are preserved.
