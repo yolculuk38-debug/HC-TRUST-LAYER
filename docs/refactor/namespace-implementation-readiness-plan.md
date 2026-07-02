@@ -380,6 +380,59 @@ HC:// and HC-TRUST-LAYER authority boundaries remain unchanged for this checkpoi
 
 This checkpoint is advisory documentation only. Event store implementation is not authorized by this plan. Human maintainers and reviewers retain final authority.
 
+### Event store post-implementation checkpoint
+
+This checkpoint records the post-implementation state after #1183. It is documentation-only and records that the narrow event store implementation move completed while compatibility wrappers, runtime behavior, and HC:// authority boundaries remain preserved. It does not authorize wrapper removal, another implementation step, or any event store behavior change.
+
+#1183 completed the narrow event store implementation move with these boundaries:
+
+- the concrete `RuntimeEventStore` implementation now lives at `hc_runtime.contracts.event_store`
+- `hc_runtime.events.store` remains a thin compatibility wrapper
+- `hc_runtime.events` remains a public re-export path
+
+Compatibility remains required for all of these import paths and forms:
+
+- `import hc_runtime.events`
+- `from hc_runtime.events import RuntimeEventStore`
+- `import hc_runtime.events.store`
+- `import hc_runtime.contracts.event_store`
+
+Wrapper removal is not authorized. Behavior changes are not authorized. The following must remain unchanged:
+
+- `RuntimeEventStore` constructor
+- append/runtime event methods
+- `history(record_id)`
+- append-only event ordering
+- record-scoped history
+- event dictionary keys and return shapes
+- advisory/public-safe markers
+- redaction behavior
+- telemetry behavior
+- route behavior
+- `EVENT_STORE` behavior in `hc_runtime.state`
+- `_events` compatibility
+
+Any future wrapper-removal or behavior-change proposal must be a separate explicitly approved PR with:
+
+- downstream import audit
+- migration/deprecation plan
+- rollback path
+- targeted tests
+- CI evidence
+- explicit human approval
+
+HC:// and HC-TRUST-LAYER authority boundaries remain unchanged for this post-implementation checkpoint:
+
+- `advisory_only=true`
+- `public_safe=true`
+- `truth_guarantee=false`
+- `human_review_required=true`
+- `approval_authority=false`
+- `merge_authority=false`
+- `autonomous_governance_authority=false`
+
+Human maintainers and reviewers retain final authority. This checkpoint does not claim production readiness, legal truth, identity finality, forensic certainty, certification authority, autonomous governance authority, or guaranteed correctness.
+
 ### Not authorized by this plan
 
 This plan does not authorize:
