@@ -172,6 +172,25 @@ expansion, no PR comments, no labels, no assignments, no approvals, no merge or
 auto-merge authority, no repository mutation, and no network access to the local
 digest engine. Humans retain final authority.
 
+
+## Public Surface report section
+
+HC Check Digest includes a report-only `Public Surface` section based on
+`docs/project-control/public-surface-checklist.md`. The section helps reviewers
+notice when public entry points look archived, have missing visitor action links,
+point to missing local preview targets, or contain unclear / overclaiming boundary
+language.
+
+The Public Surface section is advisory and non-blocking. It appears inside the
+existing HC Check Digest output and does not create a new workflow, a separate
+required check, production readiness, correctness certification, legal authority,
+or autonomous decision authority. Warnings indicate material for human review;
+they do not fail the digest or change merge authority.
+
+The section preserves the same authority boundary as the rest of HC Check Digest:
+`advisory_only=true`, `public_safe=true`, `truth_guarantee=false`, and human final
+authority remains required.
+
 ## Merge guidance
 
 Merge guidance is deterministic and advisory:

@@ -49,6 +49,20 @@ none
 
 - Weekly repo health summary (reported, informational): Recurring report-only summary for human maintainers.
 
+## Public Surface
+
+Status: PASS
+
+- Landing status clarity: PASS — active advisory public navigation is visible
+- Visitor action links: PASS — required visitor action paths are present
+- Public preview targets: PASS — required public preview targets exist
+- Boundary language: PASS — advisory-only, public-safe, and human final authority boundaries are visible
+
+Notes:
+- report-only
+- no runtime behavior changed
+- human final authority remains required
+
 ## Merge guidance
 
 human_review_before_merge
