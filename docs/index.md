@@ -13,6 +13,7 @@ Use this page to inspect the official repository, start with the guide, try publ
 - [Try the public-safe demo](demo/mini-public-validator-demo.md)
 - [Try browser-side preview](self-service-verify.html)
 - [Start here](START_HERE.md)
+- [Read README](https://github.com/yolculuk38-debug/HC-TRUST-LAYER#readme)
 - [Open official GitHub repository](https://github.com/yolculuk38-debug/HC-TRUST-LAYER)
 - [Review project status](project-control/project-state.md)
 - [Report issues / contribute](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues)
