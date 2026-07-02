@@ -263,7 +263,6 @@ Existing tests discovered:
 - `tests/runtime/test_secret_redaction_runtime_outputs.py` covers event details and history redaction boundaries for public runtime outputs.
 - `tests/runtime/test_degraded_recovery_edge_cases.py` covers degraded recovery events, event ordering, advisory/public-safe markers, degraded telemetry counts, malformed degraded details, and empty-history behavior.
 - `tests/runtime/test_telemetry_payload_contract.py`, `tests/runtime/test_telemetry_payload_safety_contract.py`, `tests/test_hc_runtime_response_contracts.py`, and related runtime tests cover telemetry keys, event counts, public response contracts, and shared event-store reset behavior.
-- `tests/test_refactor_contracts.py` includes the `hc_runtime.events` import namespace in refactor contract coverage.
 
 Behavior boundaries that must not change:
 
@@ -299,7 +298,8 @@ Targeted tests required before any implementation PR:
 - Run degraded recovery edge-case coverage in `tests/runtime/test_degraded_recovery_edge_cases.py`.
 - Run secret-redaction runtime output coverage in `tests/runtime/test_secret_redaction_runtime_outputs.py`.
 - Run telemetry payload contract and safety coverage in `tests/runtime/test_telemetry_payload_contract.py` and `tests/runtime/test_telemetry_payload_safety_contract.py`.
-- Run refactor contract coverage in `tests/test_refactor_contracts.py` to confirm `hc_runtime.events` compatibility.
+- Add explicit `hc_runtime.events` import contract coverage before any event store namespace move, including `RuntimeEventStore` compatibility through the public import path.
+- Run the new import contract coverage with the targeted event store tests before any implementation PR.
 - Run repository documentation and canonical checks required for the implementation scope.
 
 This PR does not authorize:
