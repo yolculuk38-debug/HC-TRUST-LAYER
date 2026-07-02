@@ -34,7 +34,7 @@ def cmd_verify(args):
 def cmd_hash(args):
     file_path = args.file_path
     if not Path(file_path).exists():
-        print(f"Hata: Dosya bulunamadı: {file_path}")
+        print(f"Error: File not found: {file_path}")
         return 1
     print(f"SHA256: {calculate_sha256(file_path)}")
     return 0
@@ -46,19 +46,19 @@ def cmd_qr(args):
         if verified_records is None:
             return 1
         if not verified_records:
-            print("ℹ️ Verified kayıt bulunamadı, QR üretimi atlandı.")
+            print("ℹ️ No verified records found, skipping QR generation.")
             return 0
-        print(f"{len(verified_records)} verified kayıt için QR üretiliyor...")
+        print(f"{len(verified_records)} verified records found; generating QR payloads...")
         for record_id, content_hash, archive_ref, source_path in verified_records:
-            print(f"- Kaynak: {source_path}")
+            print(f"- Source: {source_path}")
             out, url = generate_qr(record_id, content_hash, archive_ref)
-            print(f"✅ Secure QR oluşturuldu: {out}")
+            print(f"✅ Secure QR generated: {out}")
             print(f"🔗 URL: {url}")
-        print("✅ Batch QR üretimi tamamlandı.")
+        print("✅ Batch QR generation completed.")
         return 0
 
     out, url = generate_qr(args.record_id, args.content_hash, args.archive_ref)
-    print(f"✅ Secure QR oluşturuldu: {out}")
+    print(f"✅ Secure QR generated: {out}")
     print(f"🔗 URL: {url}")
     return 0
 
@@ -153,9 +153,9 @@ def main(argv=None):
     parser = build_parser()
     args = parser.parse_args(argv)
     if args.command == "qr" and not args.batch and not (args.record_id and args.content_hash and args.archive_ref):
-        parser.error("qr için <record_id> <content_hash> <archive_ref> veya --batch gerekli")
+        parser.error("qr requires <record_id> <content_hash> <archive_ref>, or use --batch")
     if args.command == "qr" and args.batch and (args.record_id or args.content_hash or args.archive_ref):
-        parser.error("--batch positional parametrelerle birlikte kullanılamaz.")
+        parser.error("--batch cannot be used with positional arguments")
     return args.func(args)
 
 

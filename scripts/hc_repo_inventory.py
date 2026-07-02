@@ -21,6 +21,7 @@ DEFAULT_ROOTS = (
     ".github",
     "docs",
     "examples",
+    "legacy",
     "records",
     "schema",
     "scripts",
@@ -196,6 +197,8 @@ def _category(relative_path: str) -> str:
         return "github_workflow"
     if relative_path.startswith(".github/"):
         return "github_configuration"
+    if relative_path.startswith("legacy/"):
+        return "legacy_test"
     if relative_path.startswith("tests/") or relative_path == "test_integration.py":
         return "test"
     if relative_path.startswith("src/hc_trust/"):
@@ -238,7 +241,7 @@ def _owner_role(category: str, protected: bool) -> str:
         return "trust-layer-reviewer"
     if category == "runtime_source":
         return "runtime-reviewer"
-    if category == "test":
+    if category in {"test", "legacy_test"}:
         return "test-reviewer"
     if category in {"github_workflow", "github_configuration"}:
         return "governance-reviewer"
@@ -250,6 +253,8 @@ def _owner_role(category: str, protected: bool) -> str:
 def _lifecycle(category: str, protected: bool, direct_test_anchor: str | None) -> str:
     if protected:
         return "protected_review_required"
+    if category == "legacy_test":
+        return "legacy_test_support"
     if category == "test":
         return "test_support"
     if direct_test_anchor:
