@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Humanity Chain v1 Protocol - Integration Test Suite
-Tests all core components: schema, validator, hash, QR
+HC-TRUST-LAYER Legacy Integration Test Suite
+Legacy explicit checks for schema, validator, hash, and QR surfaces
 """
 
 import json
@@ -369,7 +369,7 @@ def main() -> int:
 
     print("\n" + "="*60)
     if failed == 0:
-        print("🎉 ALL TESTS PASSED - PROTOCOL CORE READY!")
+        print("🎉 ALL LEGACY CHECKS PASSED")
     else:
         print(f"⚠️  {failed} TEST(S) FAILED - CHECK ABOVE")
     print("="*60 + "\n")
