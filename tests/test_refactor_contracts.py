@@ -41,6 +41,7 @@ IMPORT_CONTRACT_MODULES = (
     "hc_runtime.redaction",
     "hc_runtime.abuse_signals",
     "hc_runtime.decision_engine",
+    "hc_runtime.events",
     "hc_runtime.public_validator_lookup",
     "hc_runtime.qr_payload_parser",
     "hc_runtime.qr_record_bridge",
@@ -152,6 +153,20 @@ def test_runtime_decision_engine_namespace_move_preserves_old_import_compatibili
         "Runtime is operating in degraded advisory mode for this verification request.",
         "Human-supervised validation is required before trust interpretation.",
     ]
+
+
+def test_runtime_event_store_public_import_contract_preserves_identity() -> None:
+    """Event store public imports stay aligned before any namespace move."""
+
+    public_module = importlib.import_module("hc_runtime.events")
+    store_module = importlib.import_module("hc_runtime.events.store")
+    from hc_runtime.events import RuntimeEventStore
+
+    assert public_module.RuntimeEventStore is store_module.RuntimeEventStore
+    assert public_module.RuntimeEventStore is RuntimeEventStore
+
+    event_store = RuntimeEventStore()
+    assert isinstance(event_store, RuntimeEventStore)
 
 
 def test_configured_cli_entrypoint_target_resolves() -> None:
