@@ -49,19 +49,20 @@ Expected output path (example only):
 `qr/HC-CHATGPT-2026-0001-demo.png`
 
 
-## HC-TEST-2026-0001 QR Target Reconciliation
+## HC-TEST-2026-0001 QR Path Reconciliation
 
-`qr/HC-TEST-2026-0001.txt` is the reviewable text QR target artifact for `HC-TEST-2026-0001`. It points to the current archived record:
+`qr/HC-TEST-2026-0001.txt` is a post-migration QR/path reconciliation artifact and reviewable access aid for `HC-TEST-2026-0001`.
 
-`https://github.com/yolculuk38-debug/Insanlik-Zinciri/blob/main/records/archived/HC-TEST-2026-0001.md`
+It is not production QR evidence and is not replacement historical QR evidence. Existing binary QR evidence, including `qr/qr-code.jpg`, is preserved and not overwritten by this text-only reconciliation.
 
-Path reconciliation note:
+Reconciliation note:
 
 - Old target: `records/verified/HC-TEST-2026-0001.md`
-- Current target: `records/archived/HC-TEST-2026-0001.md`
+- Archived record path: `records/archived/HC-TEST-2026-0001.md`
+- Reviewable access aid URL: `https://github.com/yolculuk38-debug/HC-TRUST-LAYER/blob/main/records/archived/HC-TEST-2026-0001.md`
 - Reason: post-migration QR/path reconciliation
 
-The old verified-path target is legacy/stale and should not be presented as the current active QR target. Existing binary QR evidence, including `qr/qr-code.jpg`, is preserved and not overwritten by this text-only reconciliation.
+The old verified-path target is legacy/stale and should not be presented as active QR evidence.
 
 ## Security Notice
 
