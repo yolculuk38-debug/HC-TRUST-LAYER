@@ -26,7 +26,7 @@ Historical references should not be silently deleted when they are evidence-bear
 
 Do not rewrite these areas without explicit review because they preserve audit history, migration context, or witness/provenance evidence:
 
-- `halkalar/**`
+- `witness-archive/**`
 - `records/archived/**`
 - `GENESIS_BLOCK.md`
 - migration/governance evidence documents
@@ -51,7 +51,7 @@ If a legacy term appears in an active user-facing guide, quickstart, QR/security
 
 ### Preserved
 
-- `halkalar/**`
+- `witness-archive/**`
 - `records/archived/**`
 - `GENESIS_BLOCK.md`
 - `docs/START_HERE.md` legacy-name explanation

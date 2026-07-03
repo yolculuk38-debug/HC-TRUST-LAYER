@@ -147,7 +147,7 @@ def main() -> int:
     print("TEST 2: Repository Record Discovery")
     print("="*60 + "\n")
 
-    record_directories = ["examples", "records", "records/verified", "records/archive", "witness", "halkalar"]
+    record_directories = ["examples", "records", "records/verified", "records/archive", "witness", "witness-archive"]
     record_paths = collect_record_paths(record_directories)
     json_record_paths = [path for path in record_paths if should_validate_schema_path(path)]
 

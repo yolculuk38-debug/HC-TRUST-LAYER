@@ -32,7 +32,7 @@ This pass does not claim to be a complete repository tree listing. A complete hi
 | `GENESIS_BLOCK.md` | `ORIGIN_RECORD` | Historical origin and early multi-model witness/hash-reference record. | Preserve caveats; do not convert candidates into canonical claims. |
 | `records/` | `HISTORICAL_EVIDENCE` | Evidence-bearing records and archived records. | Protected evidence; no casual cleanup. |
 | `hash/` | `HASH_REFERENCE` | Hash references and integrity artifacts. | Do not overstate as verified/canonical without source content. |
-| `halkalar/` | `WITNESS_REFERENCE` | Early witness/origin/provenance trail from Humanity Chain / HC evolution. | Preserve historical naming when it documents origin. |
+| `witness-archive/` | `WITNESS_REFERENCE` | Early witness/origin/provenance trail from Humanity Chain / HC evolution. | Preserve historical naming when it documents origin. |
 | `witness/` | `WITNESS_REFERENCE` | Witness-related records or references if present. | Index before any move/archive proposal. |
 | `timeline/` | `HISTORICAL_EVIDENCE` | Timeline/provenance chronology if present. | Preserve sequence context. |
 | `council/` | `WITNESS_REFERENCE` | Council or multi-reviewer context if present. | Classify before movement. |

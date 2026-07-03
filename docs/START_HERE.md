@@ -38,7 +38,7 @@ The project was previously known by these names during early experimental phases
 
 **Important:** Legacy names appear intentionally in:
 - Historical records in `records/archived/`
-- Witness records in `halkalar/` directory
+- Witness records in `witness-archive/` directory
 - Migration documentation in `docs/governance/`
 - Test fixtures (to validate QR safety checks)
 - Schema backward-compatibility references
@@ -205,7 +205,7 @@ The **trust kernel** is the set of files and paths that affect record identity, 
 ✗ **Evidence-bearing files** (preserve exactly for audit trail):
 - `records/archived/` — all files
 - `GENESIS_BLOCK.md`
-- `halkalar/` — all files
+- `witness-archive/` — all files
 - `docs/governance/post-migration-qr-review.md` (migration evidence)
 
 ✗ **Canonical artifacts** (do not regenerate without task):
@@ -398,7 +398,7 @@ If you cannot run checks in your environment, **state that in the PR** and do no
 | Document | Purpose |
 |----------|---------|
 | [`GENESIS_BLOCK.md`](../GENESIS_BLOCK.md) | Historical origin record and project genesis |
-| [`halkalar/`](../halkalar/) | Witness records of early AI interactions |
+| [`witness-archive/`](../witness-archive/) | Witness records of early AI interactions |
 | [`records/archived/`](../records/archived/) | Verified and archived interaction records |
 | [`docs/governance/post-migration-qr-review.md`](governance/post-migration-qr-review.md) | Migration from Insanlik-Zinciri to HC-TRUST-LAYER |
 
@@ -409,7 +409,7 @@ If you cannot run checks in your environment, **state that in the PR** and do no
 These directories contain evidence-bearing records that preserve project provenance and audit trail continuity. **Do not modify, delete, or silently rewrite files in these locations:**
 
 - **`records/archived/`** — Verified interaction records and release evidence
-- **`halkalar/`** — Witness records of early AI system interactions (Turkish: "rings/circles")
+- **`witness-archive/`** — Witness records of early AI system interactions (preserved witness archive)
 - **`GENESIS_BLOCK.md`** — Project genesis and historical origin documentation
 
 These files intentionally use legacy project names ("Humanity Chain", "Insanlik-Zinciri") as historical evidence. This is correct and should not be changed. When referencing these files in new documentation, clarify: "See historical record [filename]" or "This is legacy documentation".
@@ -420,7 +420,7 @@ These files intentionally use legacy project names ("Humanity Chain", "Insanlik-
 
 ### Q: I found "Humanity Chain" in the README. Should I fix it?
 
-**A:** If it's in the main README.md or active public-facing docs (quickstart, user guides), yes—update to `HC-TRUST-LAYER`. If it's in `records/archived/`, `halkalar/`, `GENESIS_BLOCK.md`, or historical docs, **leave it exactly as-is**. It's evidence.
+**A:** If it's in the main README.md or active public-facing docs (quickstart, user guides), yes—update to `HC-TRUST-LAYER`. If it's in `records/archived/`, `witness-archive/`, `GENESIS_BLOCK.md`, or historical docs, **leave it exactly as-is**. It's evidence.
 
 ### Q: Can I make changes to the schema files?
 
@@ -432,7 +432,7 @@ These files intentionally use legacy project names ("Humanity Chain", "Insanlik-
 
 ### Q: Can I delete old records to clean up?
 
-**A:** **No.** Historical records in `records/archived/` and witness records in `halkalar/` are evidence-bearing. Deleting them breaks the audit trail and violates the immutable core principles in `HC_CONSTITUTION.md`.
+**A:** **No.** Historical records in `records/archived/` and witness records in `witness-archive/` are evidence-bearing. Deleting them breaks the audit trail and violates the immutable core principles in `HC_CONSTITUTION.md`.
 
 ### Q: Why do the tests reference "Insanlik-Zinciri"?
 

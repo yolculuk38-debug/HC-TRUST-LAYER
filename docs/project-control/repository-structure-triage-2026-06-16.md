@@ -128,7 +128,7 @@ Purpose: preserve origin, witness, migration, and historical context.
 Examples:
 
 - `GENESIS_BLOCK.md`
-- `halkalar/`
+- `witness-archive/`
 - `witness/`
 - `timeline/`
 - `council/`

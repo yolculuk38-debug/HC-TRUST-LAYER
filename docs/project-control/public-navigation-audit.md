@@ -176,7 +176,7 @@ Confusing or potentially misleading navigation surfaces:
 
 - `docs/index.md` uses archived status language but still acts as a public landing page.
 - `docs/index.md` uses lower-case `protocol.md`, while the active protocol file is `docs/PROTOCOL.md`.
-- `docs/index.md` links to `witnesses.md`, while current witness-related documentation appears elsewhere, including `docs/PROVENANCE.md`, `docs/witness-layer.md`, `witness/README.md`, and `halkalar/` legacy witness records.
+- `docs/index.md` links to `witnesses.md`, while current witness-related documentation appears elsewhere, including `docs/PROVENANCE.md`, `docs/witness-layer.md`, `witness/README.md`, and `witness-archive/` legacy witness records.
 - The current Mini Public Validator Demo is not linked from `docs/index.md`.
 - README `What Works Today` is not linked from `docs/index.md`.
 - `docs/demo-index.md`, `docs/self-service-verify.html`, `docs/verify.html`, `docs/verification-viewer.html`, and `docs/demo/mini-public-validator-demo.md` provide multiple public/demo entry points without a single Pages-facing hierarchy that clearly says which one is the current first-click route.

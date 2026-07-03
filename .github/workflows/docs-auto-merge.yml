@@ -49,7 +49,7 @@ jobs:
               /^records\/.*\.md$/,
               /^examples\/.*\.md$/,
               /^timeline\/.*\.md$/,
-              /^halkalar\/.*\.md$/,
+              /^witness-archive\/.*\.md$/,
               /^ROADMAP\.md$/,
               /^GENESIS_BLOCK\.md$/
             ];

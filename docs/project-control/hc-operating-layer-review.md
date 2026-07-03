@@ -146,7 +146,7 @@ Historical evidence discoverability is conditionally sufficient.
 Strong signals:
 
 - `docs/START_HERE.md` explicitly explains legacy names and states that historical/evidence-bearing files must not be silently rewritten or deleted.
-- Historical and migration references are present in `records/`, `records/archive/`, `records/archived/`, `halkalar/`, and `docs/governance/`.
+- Historical and migration references are present in `records/`, `records/archive/`, `records/archived/`, `witness-archive/`, and `docs/governance/`.
 - Governance reports cover archive migration, historical record classification, hash handling, QR handling, generated artifact handling, and release evidence handling.
 - `AGENTS.md` and `HC_BOOTSTRAP.md` both reinforce evidence preservation and source-of-truth discipline.
 

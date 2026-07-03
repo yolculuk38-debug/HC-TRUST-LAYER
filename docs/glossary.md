@@ -20,7 +20,7 @@ This glossary defines the core naming structure and terms used in this repositor
 - **provenance**: the documented origin and transformation trail of content.
 - **trust score**: a computed indicator that summarizes trust-related signals for integrity/provenance review.
 - **verification confidence**: confidence level derived from available verification evidence.
-- **halkalar**: historical project term meaning **rings/links**; used for continuity with earlier project structure.
+- **witness archive**: English repository name for preserved witness records and provenance-adjacent historical material.
 - **archive**: long-term storage area for records preserved for traceability and re-checks.
 - **revocation**: explicit invalidation of a previously accepted record or claim.
 - **dispute**: a formal challenge to a record, witness statement, or verification outcome.
