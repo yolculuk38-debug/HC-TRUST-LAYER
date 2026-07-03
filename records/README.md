@@ -1,8 +1,8 @@
-# Humanity Chain Records System
+# HC-TRUST-LAYER Records System
 
 ## Purpose
 
-The records system is used to organize, verify, and archive interaction records within Humanity Chain.
+The records system is used to organize, verify, and archive interaction records within HC-TRUST-LAYER.
 
 ## Structure
 

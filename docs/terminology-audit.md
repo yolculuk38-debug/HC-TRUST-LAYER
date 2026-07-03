@@ -15,9 +15,7 @@ Use these terms for active public-facing and technical documentation:
 
 These terms may appear in preserved historical context:
 
-- `Humanity Chain`
-- `İnsanlık Zinciri`
-- `Insanlik-Zinciri`
+- legacy repository names from earlier public identity phases
 - `Project Origin Record`
 
 Historical references should not be silently deleted when they are evidence-bearing or provenance-bearing.
@@ -35,19 +33,16 @@ Do not rewrite these areas without explicit review because they preserve audit h
 
 ## Active Documentation Cleanup Rule
 
-If a legacy term appears in an active user-facing guide, quickstart, QR/security guide, or runtime-facing document and is not clearly historical, prefer active wording:
-
-- Replace active `Humanity Chain` wording with `HC://` or `HC-TRUST-LAYER` as appropriate.
-- Preserve historical origin wording with an explicit qualifier such as: `legacy origin`, `historical record`, or `archived provenance`.
+If a legacy term appears in an active user-facing guide, quickstart, QR/security guide, or runtime-facing document and is not clearly historical, prefer active wording. Use `HC://`, `HC-TRUST-LAYER`, `Project Origin Record`, `witness archive`, `provenance record`, or `historical/provenance context` as appropriate. Preserve historical origin wording only when it is evidence-bearing and explicitly qualified as legacy origin, historical record, or archived provenance.
 
 ## Findings From This Pass
 
 ### Updated
 
 - `qr/README.md`
-  - Replaced active QR guidance that referred to `Humanity Chain archive records` with `HC:// archive records`.
-  - Replaced active QR link wording from `official public Humanity Chain archive links` with `official public HC:// archive links`.
-  - Replaced active security wording from `official Humanity Chain archive domain` with `official HC:// archive location or approved GitHub Pages/GitHub repository address`.
+  - Replaced active legacy QR archive wording with `HC:// archive records`.
+  - Replaced active legacy public archive link wording with `official public HC:// archive links`.
+  - Replaced active legacy security wording with `official HC:// archive location or approved GitHub Pages/GitHub repository address`.
 
 ### Preserved
 
@@ -61,6 +56,6 @@ These are intentionally preserved because the repository already documents them 
 ### Follow-Up Candidate
 
 - `test_integration.py`
-  - Header currently uses legacy wording: `Humanity Chain v1 Protocol - Integration Test Suite`.
-  - Suggested future change: `HC:// Trust Layer Legacy Integration Test Suite`.
+  - Header currently uses legacy project naming in a legacy test suite.
+  - Suggested future change: `HC:// TRUST LAYER Legacy Integration Test Suite`.
   - This should be done in a separate small PR because it is a legacy script and should not be mixed with broad terminology cleanup.

@@ -4,7 +4,7 @@ Date: 2026-05-11
 
 ## Event
 
-Humanity Chain verification structure became operational.
+HC-TRUST-LAYER verification structure became operational.
 
 ## Components
 
@@ -21,4 +21,4 @@ Active
 
 ## Notes
 
-This entry marks the beginning of the structured verification era inside the Humanity Chain archive.
+This entry marks the beginning of the structured verification era inside the HC-TRUST-LAYER archive.

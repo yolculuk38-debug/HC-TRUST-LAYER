@@ -1,10 +1,10 @@
 # Record ID Standard
 
-This document defines the standard format used for Humanity Chain interaction record identifiers.
+This document defines the standard format used for HC-TRUST-LAYER interaction record identifiers.
 
 ## Purpose
 
-Record IDs are used to uniquely identify archived interaction records across the Humanity Chain system.
+Record IDs are used to uniquely identify archived interaction records across the HC-TRUST-LAYER system.
 
 ## Recommended Format
 
@@ -20,7 +20,7 @@ Examples:
 
 ## Components
 
-- HC → Humanity Chain prefix
+- HC → HC:// record prefix
 - MODEL → AI model or source
 - YEAR → Record year
 - NUMBER → Sequential archive number

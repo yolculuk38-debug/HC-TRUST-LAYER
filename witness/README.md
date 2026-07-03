@@ -1,6 +1,6 @@
 # Witness Layer
 
-This directory contains witness-related records and references for Humanity Chain.
+This directory contains witness-related records and references for HC-TRUST-LAYER.
 
 ## Purpose
 
