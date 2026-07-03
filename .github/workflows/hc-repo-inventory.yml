@@ -39,13 +39,13 @@ jobs:
 
       - name: Attest repository inventory JSON
         if: github.event_name != 'pull_request'
-        uses: actions/attest-build-provenance@v4
+        uses: actions/attest-build-provenance@v4.1.1
         with:
           subject-path: hc-repo-inventory.json
 
       - name: Attest repository inventory Markdown
         if: github.event_name != 'pull_request'
-        uses: actions/attest-build-provenance@v4
+        uses: actions/attest-build-provenance@v4.1.1
         with:
           subject-path: hc-repo-inventory.md
 
