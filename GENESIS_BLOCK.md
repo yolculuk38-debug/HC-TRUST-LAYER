@@ -21,6 +21,21 @@ Principle: Trust the record, not the narrative.
 
 ---
 
+# Initial Turkish-Language Response Prefix Records
+
+DATE: May 7, 2026
+
+These entries preserve historical display prefixes for Turkish-language response records. Full SHA-256 values are not available in this file, and these prefixes are not canonical verification anchors.
+
+1. ChatGPT: `14a13a3f…` — historical display prefix only; full SHA-256 not available in this file.
+2. Copilot: `158a701a…` — historical display prefix only; full SHA-256 not available in this file.
+3. Muse Spark: `1036ae5e…` — historical display prefix only; full SHA-256 not available in this file.
+4. Gemini: `d89b9c04…` — historical display prefix only; full SHA-256 not available in this file.
+5. Claude: `5a01c2dc…` — historical display prefix only; full SHA-256 not available in this file.
+6. Grok: `02156cf3…` — historical display prefix only; full SHA-256 not available in this file.
+
+---
+
 # Initial English Response Records
 
 DATE: May 7, 2026
