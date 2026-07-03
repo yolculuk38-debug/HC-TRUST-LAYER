@@ -7,7 +7,7 @@ Date: 2026-05-08
 
 ## Context
 
-This document archives a public interaction between a human participant and an AI system during the early Humanity Chain experiment.
+This document archives a public interaction between a human participant and an AI system during an early HC-TRUST-LAYER record setup.
 
 ---
 ## Prompt
@@ -28,8 +28,8 @@ The AI response discussed:
 
 ## Archive Notice
 
-This file is a public interaction archive.
+This file is a repository interaction record.
 
-It does not represent autonomous participation, official partnership, institutional affiliation, or endorsement by the AI system.
+It does not represent autonomous AI participation, official partnership, institutional affiliation, endorsement, legal identity verification, forensic certainty, or truth finality.
 
 The associated hash represents a response snapshot recorded at the time of archiving.
