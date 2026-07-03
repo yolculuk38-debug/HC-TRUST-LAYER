@@ -43,7 +43,7 @@ These anchors were checked during this indexing pass:
 
 | Path | Class | Purpose |
 |---|---|---|
-| `GENESIS_BLOCK.md` | `ORIGIN_RECORD` | Preserves the early multi-model response archive and hash-reference origin of HC:// TRUST LAYER. |
+| `PROJECT_ORIGIN_RECORD.md` | `ORIGIN_RECORD` | Preserves the early multi-model response archive and hash-reference origin of HC:// TRUST LAYER. |
 | `records/` | `HISTORICAL_EVIDENCE` | Evidence-bearing records and archived records. |
 | `hash/` | `HASH_REFERENCE` | Hash references and integrity artifacts. |
 | `witness-archive/` | `WITNESS_REFERENCE` | Early witness/origin/provenance trail from Humanity Chain / HC evolution. |
@@ -52,9 +52,9 @@ These anchors were checked during this indexing pass:
 | `council/` | `WITNESS_REFERENCE` | Council or multi-reviewer context if present. |
 | `media/` | `HISTORICAL_EVIDENCE` | Media/provenance examples or historical references if present. |
 
-## Genesis Block boundary
+## Project Origin Record boundary
 
-`GENESIS_BLOCK.md` is historical/provenance context. It documents origin, witness experimentation, and hash-reference preservation.
+`PROJECT_ORIGIN_RECORD.md` is historical/provenance context. It documents origin, witness experimentation, and hash-reference preservation.
 
 Its own text states that historical prefixes and screenshot-derived full-hash candidates are not canonical verification anchors unless original canonical source text and verification evidence are available.
 

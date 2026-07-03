@@ -4,7 +4,7 @@
 
 ## 2026-05-07
 
-- Genesis Block created
+- Project Origin Record created
 - Initial multi-model interaction archive started
 
 ---

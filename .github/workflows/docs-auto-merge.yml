@@ -51,7 +51,7 @@ jobs:
               /^timeline\/.*\.md$/,
               /^witness-archive\/.*\.md$/,
               /^ROADMAP\.md$/,
-              /^GENESIS_BLOCK\.md$/
+              /^PROJECT_ORIGIN_RECORD\.md$/
             ];
 
             const alwaysManualPatterns = [
