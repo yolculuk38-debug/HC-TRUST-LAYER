@@ -22,7 +22,7 @@ This note records outside review findings and keeps them separated from reposito
 | --- | --- | --- | --- |
 | Record normalizer risk. | Resolved for current main behavior | Current script uses explicit safe-write controls. | Do not remove those controls. |
 | Integration coverage may be narrow. | Partially corrected / needs broader review | Root script exists, but full coverage still requires inventory. | Inventory `tests/` and root-level integration scripts before changing tests. |
-| Genesis or historical hashes are shortened. | Historical context confirmed | `GENESIS_BLOCK.md` labels short values as historical display prefixes and not canonical verification anchors. | Do not rewrite without original canonical source text. |
+| Genesis or historical hashes are shortened. | Historical context confirmed | `PROJECT_ORIGIN_RECORD.md` labels short values as historical display prefixes and not canonical verification anchors. | Do not rewrite without original canonical source text. |
 | Source tree may include parked or experimental files. | Needs inventory | File count and implementation status require source inventory. | Use source inventory output first. |
 | Branch count may be high. | Needs manual confirmation | Current branch search tooling did not return reliable inventory. | Verify in GitHub UI or reliable branch listing. |
 

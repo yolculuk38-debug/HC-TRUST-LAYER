@@ -127,7 +127,7 @@ Purpose: preserve origin, witness, migration, and historical context.
 
 Examples:
 
-- `GENESIS_BLOCK.md`
+- `PROJECT_ORIGIN_RECORD.md`
 - `witness-archive/`
 - `witness/`
 - `timeline/`

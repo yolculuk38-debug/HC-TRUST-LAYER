@@ -18,7 +18,7 @@ These terms may appear in preserved historical context:
 - `Humanity Chain`
 - `İnsanlık Zinciri`
 - `Insanlik-Zinciri`
-- `GENESIS_BLOCK`
+- `Project Origin Record`
 
 Historical references should not be silently deleted when they are evidence-bearing or provenance-bearing.
 
@@ -28,7 +28,7 @@ Do not rewrite these areas without explicit review because they preserve audit h
 
 - `witness-archive/**`
 - `records/archived/**`
-- `GENESIS_BLOCK.md`
+- `PROJECT_ORIGIN_RECORD.md`
 - migration/governance evidence documents
 - generated artifacts derived from canonical sources
 - schema fixtures or tests that intentionally validate legacy safety behavior
@@ -53,7 +53,7 @@ If a legacy term appears in an active user-facing guide, quickstart, QR/security
 
 - `witness-archive/**`
 - `records/archived/**`
-- `GENESIS_BLOCK.md`
+- `PROJECT_ORIGIN_RECORD.md`
 - `docs/START_HERE.md` legacy-name explanation
 
 These are intentionally preserved because the repository already documents them as provenance/evidence-bearing or historical context.

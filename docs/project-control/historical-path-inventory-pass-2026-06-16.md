@@ -20,7 +20,7 @@ This document records a directly verified historical/evidence path inventory pas
 This pass uses direct evidence from:
 
 1. `historical-evidence-index-2026-06-16.md`;
-2. `GENESIS_BLOCK.md`;
+2. `PROJECT_ORIGIN_RECORD.md`;
 3. current project-control root classification notes.
 
 This pass does not claim to be a complete repository tree listing. A complete historical inventory requires a dedicated full tree listing or deterministic inventory artifact.
@@ -29,7 +29,7 @@ This pass does not claim to be a complete repository tree listing. A complete hi
 
 | Path | Class | Role | Review posture |
 |---|---|---|---|
-| `GENESIS_BLOCK.md` | `ORIGIN_RECORD` | Historical origin and early multi-model witness/hash-reference record. | Preserve caveats; do not convert candidates into canonical claims. |
+| `PROJECT_ORIGIN_RECORD.md` | `ORIGIN_RECORD` | Historical origin and early multi-model witness/hash-reference record. | Preserve caveats; do not convert candidates into canonical claims. |
 | `records/` | `HISTORICAL_EVIDENCE` | Evidence-bearing records and archived records. | Protected evidence; no casual cleanup. |
 | `hash/` | `HASH_REFERENCE` | Hash references and integrity artifacts. | Do not overstate as verified/canonical without source content. |
 | `witness-archive/` | `WITNESS_REFERENCE` | Early witness/origin/provenance trail from Humanity Chain / HC evolution. | Preserve historical naming when it documents origin. |
@@ -38,16 +38,16 @@ This pass does not claim to be a complete repository tree listing. A complete hi
 | `council/` | `WITNESS_REFERENCE` | Council or multi-reviewer context if present. | Classify before movement. |
 | `media/` | `HISTORICAL_EVIDENCE` | Media/provenance examples or historical references if present. | Preserve source/status notes. |
 
-## Genesis Block evidence status
+## Project Origin Record evidence status
 
-`GENESIS_BLOCK.md` states that:
+`PROJECT_ORIGIN_RECORD.md` states that:
 
 - it preserves the historical origin of the HC:// TRUST LAYER experiment;
 - historical hash prefixes are display-level references;
 - recovered full-hash values are screenshot-derived candidates;
 - it is historical/provenance context, not a canonical verification anchor.
 
-Therefore, any future change touching `GENESIS_BLOCK.md` must preserve:
+Therefore, any future change touching `PROJECT_ORIGIN_RECORD.md` must preserve:
 
 1. original chronology;
 2. historical prefix/candidate distinction;

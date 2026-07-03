@@ -171,7 +171,7 @@ Historical:
 - Humanity Chain
 - İnsanlık Zinciri
 - Insanlik-Zinciri
-- GENESIS_BLOCK
+- Project Origin Record
 
 Historical provenance records must not be silently rewritten.
 
