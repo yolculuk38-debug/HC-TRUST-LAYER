@@ -10,6 +10,7 @@
   "merge_authority": false,
   "merge_guidance": "human_review_before_merge",
   "network_access": false,
+  "project_control_proposals": [],
   "public_safe": true,
   "public_surface": {
     "checks": {

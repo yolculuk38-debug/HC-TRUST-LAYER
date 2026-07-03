@@ -31,6 +31,10 @@ none
 
 none
 
+## Project-control maintenance proposals
+
+none
+
 ## Repo health signals
 
 ### changelog

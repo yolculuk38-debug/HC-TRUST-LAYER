@@ -35,6 +35,10 @@ none
 
 - hc-check-digest (available): local artifact signal
 
+## Project-control maintenance proposals
+
+none
+
 ## Repo health signals
 
 ### changelog
