@@ -1,6 +1,6 @@
 # Timeline Layer
 
-This directory contains chronological references related to Humanity Chain records and archive events.
+This directory contains chronological references related to HC-TRUST-LAYER provenance records and archive events.
 
 ## Purpose
 
@@ -32,7 +32,7 @@ Examples of timeline events:
 
 ## Transparency Principle
 
-Timeline records help preserve transparency and historical continuity within the Humanity Chain workflow system.
+Timeline records help preserve transparency and historical continuity within the HC:// TRUST LAYER workflow system.
 
 ## Security Notice
 

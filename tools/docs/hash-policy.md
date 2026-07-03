@@ -1,6 +1,6 @@
 # Hash Policy
 
-## Humanity Chain Verification Reference
+## HC:// TRUST LAYER Verification Reference
 
 Version: 0.1  
 Status: Experimental
@@ -9,7 +9,7 @@ Status: Experimental
 
 ## Purpose
 
-Humanity Chain uses hash references to improve archive consistency, public verification, and snapshot integrity.
+HC-TRUST-LAYER uses hash references to improve archive consistency, public verification, and snapshot integrity.
 
 Hashes are used as verification references for archived interaction records and documentation snapshots.
 
@@ -21,7 +21,7 @@ A hash is a unique cryptographic output generated from a specific data input.
 
 Even small changes to the original content produce a completely different hash result.
 
-Humanity Chain currently uses SHA256-based reference generation.
+HC-TRUST-LAYER currently uses SHA256-based reference generation.
 
 ---
 
@@ -81,6 +81,6 @@ Hash references do not replace human review, moderation, or contextual analysis.
 
 ## Experimental Notice
 
-Humanity Chain is an experimental archive and verification protocol.
+HC-TRUST-LAYER is an experimental archive and verification protocol.
 
 Hash policies may evolve over time through transparent public revision history.

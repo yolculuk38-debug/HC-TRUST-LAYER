@@ -2,7 +2,7 @@
 
 This directory contains reviewed and verified interaction records.
 
-Records placed here are considered confirmed within the Humanity Chain archive workflow.
+Records placed here are considered confirmed within the HC-TRUST-LAYER archive workflow.
 
 ## Status
 

@@ -14,7 +14,7 @@ Status: Example Record
 
 ## Statement
 
-This is an example witness record used to demonstrate how Humanity Chain stores and documents AI interaction references.
+This is an example witness record used to demonstrate how HC-TRUST-LAYER stores and documents AI interaction references.
 
 The purpose of this file is educational and structural.
 

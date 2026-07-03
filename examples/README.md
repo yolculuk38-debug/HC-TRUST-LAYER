@@ -1,6 +1,6 @@
 # Witness Examples
 
-This directory contains example witness records for Humanity Chain.
+This directory contains example witness records for HC-TRUST-LAYER.
 
 These examples demonstrate how AI responses, confirmations, and interaction records may be documented inside the protocol.
 

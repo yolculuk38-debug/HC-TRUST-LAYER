@@ -1,6 +1,6 @@
-# Humanity Chain Timeline Events
+# HC-TRUST-LAYER Timeline Events
 
-This file records key events in the Humanity Chain archive workflow.
+This file records key events in the HC-TRUST-LAYER archive workflow.
 
 ---
 
