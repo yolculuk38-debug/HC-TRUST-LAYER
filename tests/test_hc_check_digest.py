@@ -112,6 +112,58 @@ def test_markdown_contains_required_sections() -> None:
     assert "none" in markdown
 
 
+def test_no_stale_action_signal_has_no_project_control_proposal() -> None:
+    digest = build_digest(checks=[{"name": "Validation", "status": "success"}])
+    markdown = render_markdown(digest)
+
+    assert digest["project_control_proposals"] == []
+    assert "## Project-control maintenance proposals" in markdown
+    assert "## Project-control maintenance proposals\n\nnone" in markdown
+
+
+def test_node_js_20_warning_in_checks_emits_project_control_proposal() -> None:
+    digest = build_digest(
+        checks=[{"name": "Signal Watch Report", "status": "warning", "summary": "Node.js 20 deprecation warning"}]
+    )
+
+    proposal = digest["project_control_proposals"][0]
+    assert proposal["title"] == "Refresh repository-controlled GitHub Actions for Node 24 compatibility"
+    assert proposal["human_action_required"] is True
+    assert proposal["repository_mutation"] is False
+    assert digest["merge_guidance"] == "human_review_before_merge"
+    assert digest["merge_authority"] is False
+
+
+def test_deprecated_action_in_repo_health_emits_project_control_proposal() -> None:
+    digest = build_digest(
+        repo_health={
+            "changelog": [
+                {
+                    "name": "deprecated GitHub Action notice",
+                    "status": "published",
+                    "reason": "actions/checkout@v4 uses Node 20",
+                }
+            ]
+        }
+    )
+
+    assert len(digest["project_control_proposals"]) == 1
+    assert digest["project_control_proposals"][0]["repository_mutation"] is False
+    assert digest["blocking"] == []
+    assert digest["merge_guidance"] == "human_review_before_merge"
+
+
+def test_project_control_proposal_preserves_report_only_safety_markers() -> None:
+    digest = build_digest(
+        checks=[{"name": "Maintenance signal", "status": "success", "summary": "actions/upload-artifact@v4"}]
+    )
+
+    assert digest["project_control_proposals"]
+    assert digest["repository_mutation"] is False
+    assert digest["approval_authority"] is False
+    assert digest["merge_authority"] is False
+    assert digest["merge_guidance"] == "merge_allowed_after_human_review"
+
 def test_public_surface_uses_explicit_repo_root(tmp_path: Path) -> None:
     docs = tmp_path / "docs"
     demo = docs / "demo"

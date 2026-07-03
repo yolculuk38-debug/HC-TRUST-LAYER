@@ -46,6 +46,41 @@ AUTOMATION_KEYWORDS = (
     "terminology autofix suggest",
 )
 
+STALE_ACTION_SIGNAL_PHRASES = (
+    "Node.js 20",
+    "Node 20",
+    "Node.js 20 deprecation",
+    "stale GitHub Actions",
+    "deprecated GitHub Action",
+    "actions/checkout@v4",
+    "actions/upload-artifact@v4",
+    "actions/download-artifact@v4",
+    "actions/setup-python@v5",
+    "actions/setup-python@v4",
+    "github/codeql-action@v3",
+    "attest-build-provenance@v4",
+)
+
+PROJECT_CONTROL_MAINTENANCE_PROPOSAL = {
+    "title": "Refresh repository-controlled GitHub Actions for Node 24 compatibility",
+    "status": "proposed",
+    "reason": "Local digest input contains stale GitHub Actions or Node.js deprecation signals.",
+    "suggested_scope": (
+        "Audit .github/workflows, scripts/check_github_actions_versions.py, "
+        "tests/test_check_github_actions_versions.py, and related governance docs."
+    ),
+    "suggested_validation": [
+        "python scripts/check_github_actions_versions.py",
+        "python -m pytest tests/test_check_github_actions_versions.py",
+        "python scripts/check_terminology.py",
+        "python scripts/check_docs_drift.py",
+        "python scripts/check_canonical_artifacts.py",
+        "git diff --check",
+    ],
+    "human_action_required": True,
+    "repository_mutation": False,
+}
+
 FAIL_STATUSES = {"failure", "failed", "error", "cancelled", "timed_out", "action_required"}
 WARNING_LEVELS = {"warning", "notice", "advisory"}
 PRIORITY_TOKEN_RE = re.compile(r"(?<![a-z0-9])p([123])(?![a-z0-9])")
@@ -259,6 +294,37 @@ def _is_resolved(item: dict[str, Any]) -> bool:
     return bool(item.get("resolved") or item.get("is_resolved") or state in {"resolved", "closed", "dismissed"})
 
 
+def _signal_text(item: dict[str, Any]) -> str:
+    values = []
+    for value in item.values():
+        if isinstance(value, (str, int, float, bool)):
+            values.append(str(value))
+        elif isinstance(value, list):
+            values.extend(str(child) for child in value if isinstance(child, (str, int, float, bool)))
+    return " ".join(values)
+
+
+def _has_stale_action_signal_text(text: str) -> bool:
+    lowered = text.lower()
+    return any(phrase.lower() in lowered for phrase in STALE_ACTION_SIGNAL_PHRASES)
+
+
+def _project_control_proposals(
+    checks: Any = None,
+    repo_health: Any = None,
+    repo_health_signals: dict[str, list[dict[str, str]]] | None = None,
+) -> list[dict[str, Any]]:
+    check_match = any(_has_stale_action_signal_text(_signal_text(check)) for check in _items(checks))
+    raw_repo_health_match = any(_has_stale_action_signal_text(_signal_text(item)) for item in _items(repo_health))
+    normalized_repo_health_match = False
+    for entries in (repo_health_signals or {}).values():
+        normalized_repo_health_match = normalized_repo_health_match or any(
+            _has_stale_action_signal_text(_signal_text(entry)) for entry in entries
+        )
+    if not check_match and not raw_repo_health_match and not normalized_repo_health_match:
+        return []
+    return [dict(PROJECT_CONTROL_MAINTENANCE_PROPOSAL)]
+
 def _codex_severity(item: dict[str, Any]) -> str:
     text = _text(item, "severity", "priority", "level", "body", "comment", "title", "name").lower()
     match = PRIORITY_TOKEN_RE.search(text)
@@ -438,6 +504,7 @@ def build_digest(
         artifact_entries.append(_entry(artifact, "local artifact signal"))
 
     repo_health_signals = normalize_repo_health_signals(repo_health)
+    project_control_proposals = _project_control_proposals(checks, repo_health, repo_health_signals)
     repo_health_counts = _repo_health_counts(repo_health_signals)
     for group, entries in repo_health_signals.items():
         for entry in entries:
@@ -472,6 +539,7 @@ def build_digest(
         "external_review": external_review,
         "artifacts": artifact_entries,
         "repo_health_signals": repo_health_signals,
+        "project_control_proposals": project_control_proposals,
         "public_surface": evaluate_public_surface(repo_root),
         "merge_guidance": merge_guidance,
         "summary": summary,
@@ -498,6 +566,20 @@ def render_markdown(digest: dict[str, Any]) -> str:
     _render_section(lines, "Automation helpers", digest["automation_helpers"])
     _render_section(lines, "External review", digest["external_review"])
     _render_section(lines, "Artifacts", digest["artifacts"])
+    lines.extend(["## Project-control maintenance proposals", ""])
+    proposals = digest.get("project_control_proposals", [])
+    if not proposals:
+        lines.extend(["none", ""])
+    else:
+        for proposal in proposals:
+            lines.append(f"- {proposal['title']} ({proposal['status']}): {proposal['reason']}")
+            lines.append(f"  - suggested_scope: {proposal['suggested_scope']}")
+            lines.append("  - suggested_validation:")
+            for command in proposal['suggested_validation']:
+                lines.append(f"    - {command}")
+            lines.append(f"  - human_action_required: {str(proposal['human_action_required']).lower()}")
+            lines.append(f"  - repository_mutation: {str(proposal['repository_mutation']).lower()}")
+        lines.append("")
     lines.extend(["## Repo health signals", ""])
     for group in REPO_HEALTH_GROUPS:
         lines.extend([f"### {group}", ""])
