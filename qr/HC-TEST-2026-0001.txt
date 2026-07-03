@@ -1,0 +1,7 @@
+QR Target:
+https://github.com/yolculuk38-debug/Insanlik-Zinciri/blob/main/records/archived/HC-TEST-2026-0001.md
+
+Record ID: HC-TEST-2026-0001
+Current path: records/archived/HC-TEST-2026-0001.md
+Legacy/stale path: records/verified/HC-TEST-2026-0001.md
+Reason: post-migration QR/path reconciliation
