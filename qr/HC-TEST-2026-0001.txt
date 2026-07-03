@@ -1,0 +1,9 @@
+Post-migration QR/path reconciliation artifact
+Reviewable access aid target:
+https://github.com/yolculuk38-debug/HC-TRUST-LAYER/blob/main/records/archived/HC-TEST-2026-0001.md
+
+Record ID: HC-TEST-2026-0001
+Archived record path: records/archived/HC-TEST-2026-0001.md
+Legacy/stale path: records/verified/HC-TEST-2026-0001.md
+Evidence boundary: not production QR evidence; not replacement historical QR evidence
+Reason: post-migration QR/path reconciliation

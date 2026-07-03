@@ -39,7 +39,9 @@ GitHub currently acts as the public archive mirror layer for HC:// records.
 - AI witness pool
 
 **Source archive:**
-`records/verified/HC-TEST-2026-0001.md`
+`records/archived/HC-TEST-2026-0001.md`
+
+**QR/path reconciliation note:** `qr/HC-TEST-2026-0001.txt` is a post-migration QR/path reconciliation artifact and reviewable access aid. It is not production QR evidence and is not replacement historical QR evidence. The former `records/verified/HC-TEST-2026-0001.md` path is legacy/stale after archive migration.
 
 Verification badges: [`docs/verification-badges.md`](verification-badges.md).
 
