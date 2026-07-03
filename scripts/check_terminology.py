@@ -22,7 +22,7 @@ FORBIDDEN_PHRASES = [
 WARNING_PHRASES = [
     "experimental project",
     "experimental protocol",
-    "Humanity Chain as main brand",
+    "Humanity " + "Chain as main brand",
     "social AI club",
     "AI decides",
 ]

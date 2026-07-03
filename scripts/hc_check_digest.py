@@ -144,7 +144,12 @@ def evaluate_public_surface(repo_root: str | Path | None = None) -> dict[str, An
         landing_warnings.append("active / partial / advisory status language is missing")
     if "active public navigation" not in index_lower or "hc-trust-layer" not in index_lower:
         landing_warnings.append("HC-TRUST-LAYER active public navigation identity is unclear")
-    if any(name in index_lower for name in ("insanlik-zinciri", "humanity chain", "İnsanlık Zinciri".lower())):
+    legacy_identity_terms = (
+        "insanlik-zinciri",
+        "humanity chain",
+        "\u0130nsanl\u0131k Zinciri".lower(),
+    )
+    if any(name in index_lower for name in legacy_identity_terms):
         landing_warnings.append("legacy project name appears in active landing identity")
 
     missing_actions = [

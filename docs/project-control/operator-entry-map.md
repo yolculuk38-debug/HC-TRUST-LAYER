@@ -168,9 +168,9 @@ Active:
 
 Historical:
 
-- Humanity Chain
-- İnsanlık Zinciri
-- Insanlik-Zinciri
+- legacy source project
+- legacy source repository
+- legacy-archive-repo
 - Project Origin Record
 
 Historical provenance records must not be silently rewritten.

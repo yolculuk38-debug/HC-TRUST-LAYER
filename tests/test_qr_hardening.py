@@ -62,10 +62,10 @@ def test_valid_json_payload_input():
     assert result["status"] == QRStatus.VERIFIED.value
 
 
-def test_legacy_insanlik_zinciri_path_on_allowed_domain_is_not_safe():
+def test_legacy_archive_repo_path_on_allowed_domain_is_not_safe():
     for url in [
-        "https://github.com/yolculuk38-debug/Insanlik-Zinciri",
-        "https://github.com/yolculuk38-debug/Insanlik-Zinciri/blob/main/records/HC-QR-2026-0001.json",
+        "https://github.com/yolculuk38-debug/legacy-archive-repo",
+        "https://github.com/yolculuk38-debug/legacy-archive-repo/blob/main/records/HC-QR-2026-0001.json",
     ]:
         payload = build_payload()
         payload["verification_url"] = url

@@ -107,7 +107,7 @@ These may look unusual in a standard software repo, but they may preserve HC pro
 
 | Path | Class | Purpose | Cleanup rule |
 |---|---|---|---|
-| `witness-archive/` | `HISTORICAL_EVIDENCE` | Witness/origin/provenance trail from early Humanity Chain / HC evolution. | Preserve; index before any archive proposal. |
+| `witness-archive/` | `HISTORICAL_EVIDENCE` | Witness/origin/provenance trail from early legacy source project / HC evolution. | Preserve; index before any archive proposal. |
 | `witness/` | `HISTORICAL_EVIDENCE` | Witness-related references or records. | Preserve; protected review if signing/witness semantics. |
 | `timeline/` | `HISTORICAL_EVIDENCE` | Timeline/provenance chronology. | Preserve; index first. |
 | `council/` | `VISION_REFERENCE` | Council or multi-reviewer concept records if present. | Classify before moving. |

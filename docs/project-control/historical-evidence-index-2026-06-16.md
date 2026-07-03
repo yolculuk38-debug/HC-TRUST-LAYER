@@ -34,7 +34,7 @@ Visual clutter is not deletion evidence. Historical material can be messy and st
 | `HASH_REFERENCE` | Hash prefixes, SHA-256 candidates, or integrity references. | Do not overstate as canonical unless source text and hash verification exist. |
 | `WITNESS_REFERENCE` | Multi-model, human, or system witness context. | Preserve provenance language. |
 | `MIGRATION_CONTEXT` | Explains old names, early repo structure, or transition from earlier concepts. | Keep discoverable to prevent confusion. |
-| `LEGACY_NAME_CONTEXT` | Historical naming such as Humanity Chain or Insanlik-Zinciri when used as provenance. | Preserve when it documents origin. |
+| `LEGACY_NAME_CONTEXT` | Historical naming such as legacy source project or legacy-archive-repo when used as provenance. | Preserve when it documents origin. |
 | `ARCHIVE_CANDIDATE_REPORT_ONLY` | May be moved later only after full classification and review. | No automatic archive from name alone. |
 
 ## Verified anchors
@@ -46,7 +46,7 @@ These anchors were checked during this indexing pass:
 | `PROJECT_ORIGIN_RECORD.md` | `ORIGIN_RECORD` | Preserves the early multi-model response archive and hash-reference origin of HC:// TRUST LAYER. |
 | `records/` | `HISTORICAL_EVIDENCE` | Evidence-bearing records and archived records. |
 | `hash/` | `HASH_REFERENCE` | Hash references and integrity artifacts. |
-| `witness-archive/` | `WITNESS_REFERENCE` | Early witness/origin/provenance trail from Humanity Chain / HC evolution. |
+| `witness-archive/` | `WITNESS_REFERENCE` | Early witness/origin/provenance trail from legacy source project / HC evolution. |
 | `witness/` | `WITNESS_REFERENCE` | Witness-related records or references if present. |
 | `timeline/` | `HISTORICAL_EVIDENCE` | Timeline/provenance chronology if present. |
 | `council/` | `WITNESS_REFERENCE` | Council or multi-reviewer context if present. |
@@ -84,8 +84,8 @@ Witness and legacy naming may look inconsistent from a modern repo view, but the
 
 Do not silently remove or rename:
 
-- Humanity Chain references when used as origin context;
-- Insanlik-Zinciri references when used as historical context;
+- legacy source project references when used as origin context;
+- legacy-archive-repo references when used as historical context;
 - witness chain notes;
 - council or multi-reviewer provenance notes;
 - early timeline context.

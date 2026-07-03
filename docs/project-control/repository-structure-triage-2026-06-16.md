@@ -139,7 +139,7 @@ Notes:
 
 - These files can look messy from a flat browser view, but many are evidence/provenance references.
 - They should be indexed before any archive/move/delete proposal.
-- Legacy names such as Humanity Chain / Insanlik-Zinciri can remain when they preserve historical provenance.
+- Legacy source-project and legacy repository names can remain when they preserve historical provenance.
 
 ### 6. Planning, vision, and future design layer
 

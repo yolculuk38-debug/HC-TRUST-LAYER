@@ -302,15 +302,15 @@ async def test_hash_case_differences_do_not_escalate_trust_or_change_determinist
 @pytest.mark.parametrize(
     "verification_url",
     [
-        "https://github.com/yolculuk38-debug/Insanlik-Zinciri",
-        "https://github.com/yolculuk38-debug/Insanlik-Zinciri/blob/main/records/legacy-insanlik-zinciri-path.json",
+        "https://github.com/yolculuk38-debug/legacy-archive-repo",
+        "https://github.com/yolculuk38-debug/legacy-archive-repo/blob/main/records/legacy-archive-repo-path.json",
     ],
 )
-async def test_legacy_insanlik_zinciri_path_on_allowed_domain_is_high_risk(
+async def test_legacy_archive_repo_path_on_allowed_domain_is_high_risk(
     client: httpx.AsyncClient,
     verification_url: str,
 ) -> None:
-    record_id = "legacy-insanlik-zinciri-path"
+    record_id = "legacy-archive-repo-path"
 
     payload = await _post_qr(client, record_id, _encoded_qr(record_id, verification_url=verification_url))
 

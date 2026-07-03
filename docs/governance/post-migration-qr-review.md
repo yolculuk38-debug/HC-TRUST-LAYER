@@ -43,7 +43,9 @@ QR Target:
 https://github.com/yolculuk38-debug/Insanlik-Zinciri/blob/main/records/verified/HC-CHATGPT-2026-0001.md
 ```
 
-This target remains bound to the pre-migration `records/verified/` path. The corresponding record now exists at:
+This target is preserved as historical pre-migration QR evidence. It records the original QR artifact target exactly and must not be interpreted as the current active brand, current canonical repository identity, or an active HC-TRUST-LAYER verification target.
+
+The target remains bound to the pre-migration `records/verified/` path. The corresponding record now exists at:
 
 ```text
 records/archived/HC-CHATGPT-2026-0001.md
