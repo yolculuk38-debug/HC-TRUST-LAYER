@@ -12,12 +12,32 @@ from typing import Iterable
 DEFAULT_WORKFLOWS_DIR = Path(".github/workflows")
 USES_RE = re.compile(r"\buses:\s*([^\s#]+)")
 
-# Explicit denylist for action major versions known to emit Node.js 20 runtime
-# deprecation warnings in this repository. Keep this local and deterministic;
-# Dependabot remains responsible for discovering routine upstream updates.
+# Explicit denylist for GitHub-maintained action versions known or expected to
+# emit Node.js 20 runtime deprecation warnings in repository-controlled
+# workflows. Keep this narrow, local, and deterministic; Dependabot remains
+# responsible for discovering routine upstream updates.
 DEPRECATED_ACTION_MAJORS: dict[tuple[str, str], str] = {
-    ("actions/checkout", "v4"): "actions/checkout@v6",
+    ("actions/checkout", "v4"): "actions/checkout@v7",
+    ("actions/checkout", "v5"): "actions/checkout@v7",
+    ("actions/checkout", "v6"): "actions/checkout@v7",
     ("actions/upload-artifact", "v4"): "actions/upload-artifact@v7",
+    ("actions/upload-artifact", "v5"): "actions/upload-artifact@v7",
+    ("actions/upload-artifact", "v6"): "actions/upload-artifact@v7",
+    ("actions/download-artifact", "v4"): "actions/download-artifact@v8",
+    ("actions/download-artifact", "v5"): "actions/download-artifact@v8",
+    ("actions/download-artifact", "v6"): "actions/download-artifact@v8",
+    ("actions/download-artifact", "v7"): "actions/download-artifact@v8",
+    ("actions/setup-python", "v4"): "actions/setup-python@v6",
+    ("actions/setup-python", "v5"): "actions/setup-python@v6",
+    ("github/codeql-action/init", "v3"): "github/codeql-action/init@v4",
+    ("github/codeql-action/analyze", "v3"): "github/codeql-action/analyze@v4",
+    ("github/codeql-action/upload-sarif", "v3"): "github/codeql-action/upload-sarif@v4",
+}
+
+# Same-major stale refs where a stable Node.js 24-compatible patch is required.
+DEPRECATED_ACTION_REFS: dict[str, str] = {
+    "actions/attest-build-provenance@v4": "actions/attest-build-provenance@v4.1.1",
+    "actions/attest-build-provenance@v4.0.0": "actions/attest-build-provenance@v4.1.1",
 }
 
 
@@ -32,7 +52,7 @@ class Finding:
     def render(self) -> str:
         return (
             f"ERROR: {self.path}:{self.line}: deprecated GitHub Action "
-            f"'{self.reference}' detected for stale major '{self.deprecated_major}'; "
+            f"'{self.reference}' detected for stale ref '{self.deprecated_major}'; "
             f"use '{self.replacement}'"
         )
 
@@ -51,6 +71,10 @@ def matches_major(ref: str, major: str) -> bool:
 
 
 def deprecated_replacement(reference: str) -> tuple[str, str] | None:
+    exact_replacement = DEPRECATED_ACTION_REFS.get(reference)
+    if exact_replacement is not None:
+        return reference.rsplit("@", 1)[1], exact_replacement
+
     parsed = split_action_reference(reference)
     if parsed is None:
         return None
