@@ -46,7 +46,7 @@ These anchors were checked during this indexing pass:
 | `GENESIS_BLOCK.md` | `ORIGIN_RECORD` | Preserves the early multi-model response archive and hash-reference origin of HC:// TRUST LAYER. |
 | `records/` | `HISTORICAL_EVIDENCE` | Evidence-bearing records and archived records. |
 | `hash/` | `HASH_REFERENCE` | Hash references and integrity artifacts. |
-| `halkalar/` | `WITNESS_REFERENCE` | Early witness/origin/provenance trail from Humanity Chain / HC evolution. |
+| `witness-archive/` | `WITNESS_REFERENCE` | Early witness/origin/provenance trail from Humanity Chain / HC evolution. |
 | `witness/` | `WITNESS_REFERENCE` | Witness-related records or references if present. |
 | `timeline/` | `HISTORICAL_EVIDENCE` | Timeline/provenance chronology if present. |
 | `council/` | `WITNESS_REFERENCE` | Council or multi-reviewer context if present. |

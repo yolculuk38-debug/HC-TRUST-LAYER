@@ -10,7 +10,7 @@ on:
       - LICENSE
       - GENESIS_BLOCK.md
       - docs/**
-      - halkalar/**
+      - witness-archive/**
       - hash/**
       - records/**
       - schema/**
@@ -45,7 +45,7 @@ jobs:
             "LICENSE"
             "GENESIS_BLOCK.md"
             "docs"
-            "halkalar"
+            "witness-archive"
             "hash"
             "records"
             "schema"

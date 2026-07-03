@@ -125,7 +125,7 @@ Rules:
 - Auto-merge remains bounded/report-only unless explicitly changed by human-reviewed governance.
 - Workflows should be documented by workflow maps.
 
-### `records/`, `hash/`, `qr/`, `witness/`, `halkalar/`, `timeline/`
+### `records/`, `hash/`, `qr/`, `witness/`, `witness-archive/`, `timeline/`
 
 Purpose: evidence, provenance, witness, and historical continuity.
 

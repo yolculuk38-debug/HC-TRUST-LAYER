@@ -81,7 +81,7 @@ If a requested category was not observed as a top-level or clear nested reposito
 | `hash/` | Hash references or integrity artifacts. | generated/artifact | Indirect integrity interpretation impact. | High. | Do not hand-edit without audit path. | Treat as evidence-adjacent. |
 | `qr/` | QR-related verification artifacts or references. | generated/artifact | Indirect verification interpretation impact. | High. | Do not hand-edit without audit path. | Treat as evidence-adjacent. |
 | `reviewers/` | Reviewer registry material. | high | Governance interpretation impact. | High. | Maintainer review. | Can affect perceived reviewer boundaries. |
-| `council/`, `witness/`, `timeline/`, `halkalar/` | Governance, witness, timeline, or historical/evidence-adjacent material. | high | Indirect provenance or governance interpretation impact. | High. | Preserve evidence and historical context. | Do not silently rewrite history. |
+| `council/`, `witness/`, `timeline/`, `witness-archive/` | Governance, witness, timeline, or historical/evidence-adjacent material. | high | Indirect provenance or governance interpretation impact. | High. | Preserve evidence and historical context. | Do not silently rewrite history. |
 | `agents/`, `hc_context/` | Agent and context material. | medium | Operator guidance impact. | Medium. | Advisory wording and human-final-authority review. | Helpful context, not final trust authority. |
 | `media/` | Media assets and public-facing support material. | low | No direct runtime impact. | Low to medium. | Docs/public review when changed. | Sensitivity rises if media becomes evidence-bearing. |
 | Root governance files such as `AGENTS.md`, `CODEOWNERS`, `CONTRIBUTING.md`, `GOVERNANCE.md`, `HC_CONSTITUTION.md`, `SUPPORT.md`, and `LICENSE` | Contributor rules, governance, ownership, support, and licensing. | high | Governance and contribution interpretation impact. | High. | Maintainer review; ownership files require special care. | `CODEOWNERS` and `AGENTS.md` are not changed by this review. |
@@ -97,7 +97,7 @@ Documentation and support-only paths include most explanatory material under `do
 
 Generated or canonical-adjacent paths include `generated/`, `exports/`, `hash/`, `qr/`, root trust references, and any future `canonical/` path. These should not be hand-edited without a clear generation, review, and audit path. Where generated status is unclear, maintainer confirmation is required before mutation.
 
-Paths needing maintainer confirmation before refactor include `src/api/`, `src/security/`, `exports/`, `reviewers/`, `council/`, `witness/`, `timeline/`, `halkalar/`, `agents/`, `hc_context/`, and specification-like documentation under `docs/core/`, `docs/runtime/`, `docs/spec/`, `docs/architecture/`, and `docs/verification/`.
+Paths needing maintainer confirmation before refactor include `src/api/`, `src/security/`, `exports/`, `reviewers/`, `council/`, `witness/`, `timeline/`, `witness-archive/`, `agents/`, `hc_context/`, and specification-like documentation under `docs/core/`, `docs/runtime/`, `docs/spec/`, `docs/architecture/`, and `docs/verification/`.
 
 ## 6. Protected surface recommendations
 
