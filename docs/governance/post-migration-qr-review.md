@@ -40,7 +40,7 @@ The confirmed path-bound QR text artifact is:
 ```text
 qr/HC-CHATGPT-2026-0001.txt
 QR Target:
-https://github.com/yolculuk38-debug/Insanlik-Zinciri/blob/main/records/verified/HC-CHATGPT-2026-0001.md
+https://github.com/yolculuk38-debug/legacy-archive-repo/blob/main/records/verified/HC-CHATGPT-2026-0001.md
 ```
 
 This target remains bound to the pre-migration `records/verified/` path. The corresponding record now exists at:

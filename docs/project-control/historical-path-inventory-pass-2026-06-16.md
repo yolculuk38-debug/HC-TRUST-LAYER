@@ -32,7 +32,7 @@ This pass does not claim to be a complete repository tree listing. A complete hi
 | `PROJECT_ORIGIN_RECORD.md` | `ORIGIN_RECORD` | Historical origin and early multi-model witness/hash-reference record. | Preserve caveats; do not convert candidates into canonical claims. |
 | `records/` | `HISTORICAL_EVIDENCE` | Evidence-bearing records and archived records. | Protected evidence; no casual cleanup. |
 | `hash/` | `HASH_REFERENCE` | Hash references and integrity artifacts. | Do not overstate as verified/canonical without source content. |
-| `witness-archive/` | `WITNESS_REFERENCE` | Early witness/origin/provenance trail from Humanity Chain / HC evolution. | Preserve historical naming when it documents origin. |
+| `witness-archive/` | `WITNESS_REFERENCE` | Early witness/origin/provenance trail from legacy source project / HC evolution. | Preserve historical naming when it documents origin. |
 | `witness/` | `WITNESS_REFERENCE` | Witness-related records or references if present. | Index before any move/archive proposal. |
 | `timeline/` | `HISTORICAL_EVIDENCE` | Timeline/provenance chronology if present. | Preserve sequence context. |
 | `council/` | `WITNESS_REFERENCE` | Council or multi-reviewer context if present. | Classify before movement. |
@@ -72,7 +72,7 @@ A future PR must state:
 
 ## Witness and legacy-name posture
 
-Historical names such as Humanity Chain, Insanlik-Zinciri, and witness-chain phrasing may be part of the provenance trail.
+Historical names such as legacy source project, legacy-archive-repo, and witness-chain phrasing may be part of the provenance trail.
 
 Do not silently normalize those names when they document origin.
 
