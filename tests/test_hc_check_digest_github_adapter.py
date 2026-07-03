@@ -60,6 +60,8 @@ def test_adapter_normalizes_completed_failure_check_run_for_digest_blocker() -> 
             "status": "completed",
             "conclusion": "failure",
             "workflow": "",
+            "summary": "",
+            "text": "",
             "url": "https://github.example/checks/1",
         }
     ]
@@ -67,6 +69,35 @@ def test_adapter_normalizes_completed_failure_check_run_for_digest_blocker() -> 
     assert digest["merge_guidance"] == "do_not_merge"
     assert digest["blocking"][0]["name"] == "Validation"
 
+
+
+def test_adapter_preserves_check_run_output_summary_for_stale_action_proposal() -> None:
+    checks = normalize_check_runs(
+        {
+            "check_runs": [
+                {
+                    "name": "Action runtime report",
+                    "status": "completed",
+                    "conclusion": "success",
+                    "output": {
+                        "summary": "Node.js 20 deprecation notice for repository-controlled actions.",
+                        "text": "Audit action versions before a scoped maintenance PR.",
+                    },
+                    "html_url": "https://github.example/checks/2",
+                }
+            ]
+        }
+    )
+
+    assert checks[0]["summary"] == "Node.js 20 deprecation notice for repository-controlled actions."
+    assert checks[0]["text"] == "Audit action versions before a scoped maintenance PR."
+    digest = build_digest(checks=checks)
+    assert digest["project_control_proposals"]
+    assert digest["project_control_proposals"][0]["repository_mutation"] is False
+    assert digest["repository_mutation"] is False
+    assert digest["approval_authority"] is False
+    assert digest["merge_authority"] is False
+    assert digest["merge_guidance"] == "merge_allowed_after_human_review"
 
 def test_adapter_preserves_codex_p2_review_text_for_digest_blocker() -> None:
     reviews = normalize_reviews(

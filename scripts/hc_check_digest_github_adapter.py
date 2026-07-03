@@ -37,12 +37,15 @@ def normalize_check_runs(payload: Any) -> list[dict[str, Any]]:
     """Normalize GitHub check-run payloads for the local digest engine."""
     checks: list[dict[str, Any]] = []
     for check in _items(payload, "check_runs"):
+        output = check.get("output") if isinstance(check.get("output"), dict) else {}
         checks.append(
             {
                 "name": check.get("name") or check.get("check_suite", {}).get("app", {}).get("name") or "GitHub check run",
                 "status": check.get("status") or "unknown",
                 "conclusion": check.get("conclusion") or "",
                 "workflow": check.get("check_suite", {}).get("app", {}).get("name") or "",
+                "summary": output.get("summary") or "",
+                "text": output.get("text") or "",
                 "url": check.get("html_url") or check.get("url") or "",
             }
         )
