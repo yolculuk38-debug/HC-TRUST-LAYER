@@ -28,29 +28,17 @@ Do not repeat #811, #813, #814, #815, or assistant-console rotation work unless 
 - **Repository:** `yolculuk38-debug/HC-TRUST-LAYER`
 - **Status:** v0.1.0 (MVP / Early Stage)
 
-### Legacy Names (Archived)
+### Repository Language Policy
 
-The project was previously known by these names during early experimental phases (May 2026):
+Repository-facing content should use professional English and current HC:// / HC-TRUST-LAYER identity. Previous branding should not be displayed in normal repository content. Witness archive records may be normalized to current HC-TRUST-LAYER terminology while preserving concise audit context.
 
-- `Humanity Chain` (original project name)
-- `Insanlik-Zinciri` (legacy repository name)
-- `İnsanlık Zinciri` (Turkish form)
-
-**Important:** Legacy names appear intentionally in:
-- Historical records in `records/archived/`
-- Witness records in `witness-archive/` directory
-- Migration documentation in `docs/governance/`
-- Test fixtures (to validate QR safety checks)
-- Schema backward-compatibility references
-
-**Do not silently rewrite or delete these references.** They preserve evidence of project provenance and audit trail continuity. When encountering old names in active public-facing documentation (e.g., README, user guides, quickstart), they should be updated to `HC-TRUST-LAYER` or `HC://`, but historical/evidence-bearing files must remain unchanged.
+Do not claim endorsement, legal identity verification, forensic certainty, production verification, truth finality, certification authority, autonomous governance authority, or guaranteed correctness. Preserve human final authority and advisory-only boundaries.
 
 ### Repository Relationship
 
-- **Old Repository:** `yolculuk38-debug/Insanlik-Zinciri` (legacy origin, now archived/redirected)
 - **Current Repository:** `yolculuk38-debug/HC-TRUST-LAYER` (canonical active implementation)
-- **New Contributors:** All work should target `HC-TRUST-LAYER`, not the old repository
-- **Evidence Preservation:** Migration history is documented in `docs/governance/post-migration-qr-review.md` for audit trail purposes
+- **New Contributors:** All work should target `HC-TRUST-LAYER` and HC:// terminology.
+- **Evidence Preservation:** Migration history is documented in governance notes for audit trail purposes
 
 ---
 
@@ -204,8 +192,7 @@ The **trust kernel** is the set of files and paths that affect record identity, 
 
 ✗ **Evidence-bearing files** (preserve exactly for audit trail):
 - `records/archived/` — all files
-- `GENESIS_BLOCK.md`
-- `witness-archive/` — all files
+- Project origin records and witness archive files require explicit task scope before editing.
 - `docs/governance/post-migration-qr-review.md` (migration evidence)
 
 ✗ **Canonical artifacts** (do not regenerate without task):
@@ -397,30 +384,30 @@ If you cannot run checks in your environment, **state that in the PR** and do no
 
 | Document | Purpose |
 |----------|---------|
-| [`GENESIS_BLOCK.md`](../GENESIS_BLOCK.md) | Historical origin record and project genesis |
+| Project origin record | Historical origin and project setup context |
 | [`witness-archive/`](../witness-archive/) | Witness records of early AI interactions |
 | [`records/archived/`](../records/archived/) | Verified and archived interaction records |
-| [`docs/governance/post-migration-qr-review.md`](governance/post-migration-qr-review.md) | Migration from Insanlik-Zinciri to HC-TRUST-LAYER |
+| Governance migration notes | Migration context for HC-TRUST-LAYER |
 
 ---
 
-## 7. HISTORICAL RECORD FOLDERS (DO NOT EDIT)
+## 7. RECORD AND WITNESS ARCHIVE BOUNDARIES
 
-These directories contain evidence-bearing records that preserve project provenance and audit trail continuity. **Do not modify, delete, or silently rewrite files in these locations:**
+Evidence-bearing records preserve project provenance and audit trail continuity. Do not delete records, modify hashes, or change protected record material without explicit task scope and human review.
 
-- **`records/archived/`** — Verified interaction records and release evidence
-- **`witness-archive/`** — Witness records of early AI system interactions (preserved witness archive)
-- **`GENESIS_BLOCK.md`** — Project genesis and historical origin documentation
+- **`records/archived/`** — Verified interaction records and release evidence; preserve record content unless explicitly authorized.
+- **`witness-archive/`** — Witness records of early AI system interactions; visible wording may be normalized to current HC-TRUST-LAYER terminology when explicitly scoped.
+- **Project origin records** — Historical origin and setup documentation; require explicit scope before editing.
 
-These files intentionally use legacy project names ("Humanity Chain", "Insanlik-Zinciri") as historical evidence. This is correct and should not be changed. When referencing these files in new documentation, clarify: "See historical record [filename]" or "This is legacy documentation".
+Repository-facing content should use professional English, current HC:// and HC-TRUST-LAYER identity, and clear authority boundaries. Do not display previous branding in normal repository content. Do not claim endorsement, legal identity verification, forensic certainty, production verification, or truth finality.
 
 ---
 
 ## 8. COMMON QUESTIONS
 
-### Q: I found "Humanity Chain" in the README. Should I fix it?
+### Q: I found previous branding in repository-facing content. Should I fix it?
 
-**A:** If it's in the main README.md or active public-facing docs (quickstart, user guides), yes—update to `HC-TRUST-LAYER`. If it's in `records/archived/`, `witness-archive/`, `GENESIS_BLOCK.md`, or historical docs, **leave it exactly as-is**. It's evidence.
+**A:** In normal repository content, yes—update visible wording to professional HC:// and `HC-TRUST-LAYER` terminology. For evidence-bearing records, keep changes explicitly scoped, preserve audit context, and do not modify hashes or protected record material unless authorized.
 
 ### Q: Can I make changes to the schema files?
 
@@ -434,9 +421,9 @@ These files intentionally use legacy project names ("Humanity Chain", "Insanlik-
 
 **A:** **No.** Historical records in `records/archived/` and witness records in `witness-archive/` are evidence-bearing. Deleting them breaks the audit trail and violates the immutable core principles in `HC_CONSTITUTION.md`.
 
-### Q: Why do the tests reference "Insanlik-Zinciri"?
+### Q: Why do some tests reference prior repository identifiers?
 
-**A:** Tests intentionally check that QR URLs pointing to the old repository are flagged as unsafe/high-risk. This validates the security posture. Don't remove these tests.
+**A:** Some tests intentionally check that outdated QR destinations are flagged as unsafe or high-risk. This validates the security posture. Do not remove these tests without explicit authorization.
 
 ### Q: Who decides whether my PR merges?
 
