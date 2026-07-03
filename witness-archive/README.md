@@ -1,45 +1,33 @@
-# Legacy Witness Archive
+# Witness Archive
 
-> **Status:** historical / provenance archive
-> **Scope:** early witness-style interaction records
-> **Active protocol:** `HC://`
+> **Status:** repository archive  
+> **Scope:** early witness-style records  
+> **Active protocol:** `HC://`  
 > **Active repository:** `HC-TRUST-LAYER`
 
 ## Purpose
 
-This directory preserves early witness-style interaction records from the project origin period.
-
-Some files may mention legacy names such as:
-
-- `Humanity Chain`
-- `İnsanlık Zinciri`
-- `GENESIS_BLOCK`
-
-These references are historical context. They do not mean that the active protocol name has changed back to the legacy terminology.
+This directory contains early witness-style records retained under the current HC-TRUST-LAYER repository structure.
 
 ## Current Terminology
 
-For current public-facing and technical work, use:
+Use the following terms in current public-facing and technical work:
 
-- `HC://` for the active protocol language;
-- `HC-TRUST-LAYER` for the repository and technical implementation;
-- `HC Trust Layer` for readable prose when not referring to the repository slug.
+- `HC://`
+- `HC-TRUST-LAYER`
+- `HC Trust Layer`
+- `HC verification record`
+- `witness record`
+- `verification evidence`
 
-## Preservation Rule
+## Repository Boundary
 
-Files in this directory should not be silently rewritten, translated, normalized, or deleted.
+The files in this directory are repository records only.
 
-Reasons:
+They do not represent autonomous AI participation, official partnership, institutional affiliation, endorsement, legal identity verification, forensic certainty, or truth finality.
 
-- they preserve the project origin trail;
-- they may contain early witness/provenance context;
-- changing them can weaken audit continuity;
-- Turkish/English wording may reflect the original record context.
+## Writing Rule
 
-If terminology clarification is needed, add contextual notes like this README instead of changing the archived record text itself.
+New text in this directory should use professional HC-TRUST-LAYER language only.
 
-## Boundary
-
-These archived records do not represent autonomous AI participation, official partnership, institutional affiliation, endorsement, or contractual involvement by any referenced AI system or organization.
-
-They are preserved as historical interaction records only.
+Do not add external endorsement claims, production-verification claims, legal-identity claims, or truth-finality claims.
