@@ -4,7 +4,7 @@ Date: 2026-05-11
 
 ## Event
 
-HC-TRUST-LAYER verification structure became operational.
+The verification structure that later became part of HC-TRUST-LAYER became operational.
 
 ## Components
 
@@ -21,4 +21,4 @@ Active
 
 ## Notes
 
-This entry marks the beginning of the structured verification era inside the HC-TRUST-LAYER archive.
+This entry marks the beginning of the structured verification era that later became part of the HC-TRUST-LAYER archive.
