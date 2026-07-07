@@ -1,0 +1,257 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HC Council Run v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "mode",
+    "advisory_only",
+    "public_safe",
+    "truth_guarantee",
+    "operator",
+    "repository",
+    "session",
+    "inputs",
+    "model_outputs",
+    "synthesis",
+    "verification"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "enum": [
+        "0.1"
+      ]
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "report_only"
+      ]
+    },
+    "advisory_only": {
+      "type": "boolean",
+      "const": true
+    },
+    "public_safe": {
+      "type": "boolean",
+      "const": true
+    },
+    "truth_guarantee": {
+      "type": "boolean",
+      "const": false
+    },
+    "operator": {
+      "type": "string",
+      "enum": [
+        "human_supervised"
+      ]
+    },
+    "repository": {
+      "type": "string",
+      "minLength": 1
+    },
+    "session": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "meeting_link",
+        "started_at"
+      ],
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": [
+            "manual_command",
+            "calendar_or_command",
+            "calendar_event",
+            "google_chat",
+            "github_issue",
+            "local_fixture"
+          ]
+        },
+        "meeting_link": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "started_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "command",
+        "repo_ref",
+        "pr_number",
+        "evidence_refs"
+      ],
+      "properties": {
+        "command": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "repo_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "pr_number": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "model_outputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "role",
+          "provider",
+          "model",
+          "output",
+          "evidence_refs",
+          "uncertainty",
+          "prompt_sha256",
+          "output_sha256"
+        ],
+        "properties": {
+          "role": {
+            "type": "string",
+            "minLength": 1
+          },
+          "provider": {
+            "type": "string",
+            "minLength": 1
+          },
+          "model": {
+            "type": "string",
+            "minLength": 1
+          },
+          "output": {
+            "type": "string"
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "uncertainty": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "unknown"
+            ]
+          },
+          "prompt_sha256": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "output_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
+      }
+    },
+    "synthesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "summary",
+        "risks",
+        "next_safe_actions",
+        "blocked_items"
+      ],
+      "properties": {
+        "summary": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "risks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "next_safe_actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "blocked_items": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "output_sha256",
+        "advisory_only",
+        "truth_guarantee",
+        "hash_algorithm"
+      ],
+      "properties": {
+        "output_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "advisory_only": {
+          "type": "boolean",
+          "const": true
+        },
+        "truth_guarantee": {
+          "type": "boolean",
+          "const": false
+        },
+        "hash_algorithm": {
+          "type": "string",
+          "enum": [
+            "sha256"
+          ]
+        }
+      }
+    }
+  }
+}
