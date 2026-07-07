@@ -20,15 +20,17 @@ Use a local JSON fixture instead.
 2. Put the intended command in `comment.body`.
 3. Set `event_name` to `issue_comment`.
 4. Set `comment.author_association` to an allowed value such as `OWNER`, `MEMBER`, or `COLLABORATOR`.
-5. Run the local bridge script against the fixture.
+5. Run the local bridge module from the repository root.
 6. Review the emitted public-safe report-only JSON.
 7. Use the result as advisory evidence only.
 
-Example command:
+Example command from the repository root:
 
 ```bash
-python scripts/hc_council_issue_command_bridge.py examples/hc_council_issue_command.example.json --pretty
+python -m scripts.hc_council_issue_command_bridge examples/hc_council_issue_command.example.json --pretty
 ```
+
+Do not use direct script execution for this example. The module form keeps the repository root on Python's import path and matches the bridge import layout.
 
 ## Example fixture shape
 
@@ -97,7 +99,7 @@ Instead:
 1. Open the repository files for reference.
 2. Copy the example fixture content into a controlled local or Codex task context.
 3. Modify the PR number and evidence refs there.
-4. Ask the local runner or Codex task to execute the script against the fixture.
+4. Ask the local runner or Codex task to execute the module command against the fixture.
 5. Bring the emitted JSON back into the PR discussion only as an advisory report after human review.
 
 ## Future automation gate
