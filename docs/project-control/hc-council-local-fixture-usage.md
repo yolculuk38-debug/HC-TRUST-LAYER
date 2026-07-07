@@ -102,6 +102,12 @@ Instead:
 4. Ask the local runner or Codex task to execute the module command against the fixture.
 5. Bring the emitted JSON back into the PR discussion only as an advisory report after human review.
 
+## Check rerun boundary
+
+If a transient platform check fails while this documentation-only PR is open, operators may retry the failed check after the relevant rate-limit window resets.
+
+Do not bypass branch protection rules, and do not expand this documentation-only PR into workflow or credential changes just to address a transient check failure.
+
 ## Future automation gate
 
 A later PR may connect HC Council commands to a report-only workflow, but that must remain separate from this local fixture usage note.
