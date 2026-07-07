@@ -1,0 +1,20 @@
+{
+  "event_name": "issue_comment",
+  "repository": {
+    "full_name": "yolculuk38-debug/HC-TRUST-LAYER"
+  },
+  "issue": {
+    "number": 1201,
+    "pull_request": {
+      "url": "https://api.github.com/repos/yolculuk38-debug/HC-TRUST-LAYER/pulls/1201"
+    }
+  },
+  "comment": {
+    "body": "/hc council review pr 1201",
+    "author_association": "OWNER"
+  },
+  "evidence_refs": [
+    "scripts/hc_council_issue_command_bridge.py",
+    "scripts/hc_council_command.py"
+  ]
+}
