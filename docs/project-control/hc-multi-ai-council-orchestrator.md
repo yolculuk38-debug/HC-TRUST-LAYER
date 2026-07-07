@@ -208,7 +208,7 @@ The first implementation PR should add only a local, report-only schema and exam
 Recommended files for the next PR:
 
 ```text
-schemas/hc_council_run.schema.json
+schema/hc_council_run.schema.json
 examples/hc_council_run.example.json
 scripts/hc_council_report.py
 tests/test_hc_council_report.py
