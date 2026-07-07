@@ -11,11 +11,18 @@ Merged baseline:
 
 ## Current boundary
 
-The current implementation is local-only and report-only.
+The current HC Council bridge implementation is local-only and report-only.
 
-It does not activate any live GitHub webhook, GitHub App, issue-comment automation, or workflow wiring.
+It does not add or modify any live GitHub webhook, GitHub App, issue-comment automation, or workflow wiring.
 
-It does not perform:
+Important repository distinction:
+
+- The repository already has a generic HC Assistant Command Listener workflow for real comments that start with `/hc`.
+- That existing listener is separate from the HC Council local bridge described here.
+- Operators must not treat `/hc council ...` production comments as inert test input; a real GitHub issue or PR comment beginning with `/hc` can still trigger the existing generic listener.
+- The HC Council bridge is not wired into that listener in this baseline.
+
+This bridge does not perform:
 
 - network calls
 - provider API calls
@@ -25,7 +32,7 @@ It does not perform:
 - credential access
 - approval, merge, close, label, assignment, or reviewer authority
 
-Invalid, ambiguous, unsupported, or unauthorized comments fail closed.
+Invalid, ambiguous, unsupported, or unauthorized local fixtures fail closed.
 
 ## Intended use
 
@@ -45,17 +52,17 @@ AI is advisory only.
 Human final authority remains required.
 ```
 
-## Not yet active
+## Council bridge not yet active
 
-The following are intentionally not active yet:
+The following HC Council-specific capabilities are intentionally not active yet:
 
-- live issue-comment trigger
-- automatic PR review posting
+- live HC Council issue-comment trigger
+- automatic HC Council PR review posting
 - automatic labels or reviewer requests
 - automatic approve, reject, close, merge, or assignment actions
 - provider-backed Council synthesis
 
-Any future automation must be introduced in a separate PR with the normal gate:
+Any future HC Council automation must be introduced in a separate PR with the normal gate:
 
 1. single-open-PR discipline
 2. protected-path review when applicable
@@ -66,6 +73,6 @@ Any future automation must be introduced in a separate PR with the normal gate:
 
 ## Next safe slice
 
-The next safe slice is a documentation-only command usage note that explains how an operator would prepare and run local fixtures manually.
+The next safe slice is a documentation-only command usage note that explains how an operator would prepare and run local fixtures manually without posting production issue or PR comments.
 
-A later implementation slice may add a report-only workflow only after the local behavior, security boundary, and operator instructions are stable.
+A later implementation slice may add a report-only workflow only after the local behavior, security boundary, existing listener interaction, and operator instructions are stable.
