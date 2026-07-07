@@ -29,8 +29,8 @@
       ],
       "model": "manual-entry",
       "output": "Do not allow model output to approve, merge, close, label, or mutate protected paths automatically.",
-      "output_sha256": "2274cf4373a758faabde65d76dca5fdc263e976a4ce79ea36ddfc9f8603cc965",
-      "prompt_sha256": "c9855d3908315f2c3dd65810f96c8fe6351dc06c7e8e5e81a61b53f73dd161ba",
+      "output_sha256": "cf0bd14afbe563c5908c5e3544f18e83b5636082ce1add66ff334abc4eafe2b2",
+      "prompt_sha256": "f11028186d8169869d598eec838d4888a60ffddca18395c8ff2abd97d3780991",
       "provider": "local_fixture",
       "role": "risk_reviewer",
       "uncertainty": "low"
