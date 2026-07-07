@@ -1,0 +1,72 @@
+{
+  "advisory_only": true,
+  "inputs": {
+    "command": "/hc council review repo",
+    "evidence_refs": [
+      "docs/project-control/hc-multi-ai-council-orchestrator.md",
+      "https://meet.google.com/eba-vwjy-jti"
+    ],
+    "pr_number": null,
+    "repo_ref": "main"
+  },
+  "mode": "report_only",
+  "model_outputs": [
+    {
+      "evidence_refs": [
+        "docs/project-control/hc-multi-ai-council-orchestrator.md"
+      ],
+      "model": "manual-entry",
+      "output": "The first implementation should remain local, deterministic, and report-only.",
+      "output_sha256": "7ee303327f1a59921a52d08f733028f554e97ee5770c11c4675fa12e6647afb4",
+      "prompt_sha256": "3c69a81a89378808e1bc8af4d324e894b108010847a3b0b787ff54b82acfcb86",
+      "provider": "local_fixture",
+      "role": "engineering_reviewer",
+      "uncertainty": "low"
+    },
+    {
+      "evidence_refs": [
+        "docs/project-control/hc-multi-ai-council-orchestrator.md"
+      ],
+      "model": "manual-entry",
+      "output": "Do not allow model output to approve, merge, close, label, or mutate protected paths automatically.",
+      "output_sha256": "2274cf4373a758faabde65d76dca5fdc263e976a4ce79ea36ddfc9f8603cc965",
+      "prompt_sha256": "c9855d3908315f2c3dd65810f96c8fe6351dc06c7e8e5e81a61b53f73dd161ba",
+      "provider": "local_fixture",
+      "role": "risk_reviewer",
+      "uncertainty": "low"
+    }
+  ],
+  "operator": "human_supervised",
+  "public_safe": true,
+  "repository": "yolculuk38-debug/HC-TRUST-LAYER",
+  "schema_version": "0.1",
+  "session": {
+    "meeting_link": "https://meet.google.com/eba-vwjy-jti",
+    "source": "calendar_or_command",
+    "started_at": "2026-07-07T10:00:00Z"
+  },
+  "synthesis": {
+    "blocked_items": [
+      "auto-merge",
+      "autonomous provider execution",
+      "credential handling"
+    ],
+    "next_safe_actions": [
+      "keep human final authority",
+      "run local report-only fixture",
+      "validate schema"
+    ],
+    "risks": [
+      "model_output_is_not_canonical_truth",
+      "provider_credentials_must_not_be_committed"
+    ],
+    "summary": "Local report-only council output is safe to record before provider adapters are added."
+  },
+  "truth_guarantee": false,
+  "verification": {
+    "advisory_only": true,
+    "hash_algorithm": "sha256",
+    "output_sha256": "7e55afd22161c70f2445dfe9026d69292c12f9019ac9e49a71129de23e0dbf03",
+    "truth_guarantee": false
+  }
+}
