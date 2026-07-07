@@ -1,0 +1,7 @@
+{
+  "command": "/hc council review pr 1199",
+  "evidence_refs": [
+    "docs/project-control/hc-council-command-surface.md",
+    "https://github.com/yolculuk38-debug/HC-TRUST-LAYER/pull/1199"
+  ]
+}
