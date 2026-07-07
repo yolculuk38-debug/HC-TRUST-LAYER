@@ -111,17 +111,21 @@ def test_example_fixture_parses_to_expected_pr_target():
     ]
 
 
-def test_cli_outputs_deterministic_public_safe_json(tmp_path, capsys):
-    fixture = tmp_path / "fixture.json"
-    fixture.write_text(
+def write_cli_fixture(path, command="/hc council review pr 1200"):
+    path.write_text(
         json.dumps(
             {
-                "command": "/hc council review pr 1200",
+                "command": command,
                 "evidence_refs": ["docs/project-control/hc-council-command-surface.md"],
             }
         ),
         encoding="utf-8",
     )
+
+
+def test_cli_outputs_deterministic_public_safe_json(tmp_path, capsys):
+    fixture = tmp_path / "fixture.json"
+    write_cli_fixture(fixture)
 
     exit_code = main([str(fixture)])
 
@@ -132,3 +136,18 @@ def test_cli_outputs_deterministic_public_safe_json(tmp_path, capsys):
     assert payload["accepted"] is True
     assert payload["target_number"] == 1200
     assert payload["evidence_source"] == "local command text only"
+
+
+def test_cli_pretty_output_remains_valid_public_safe_json(tmp_path, capsys):
+    fixture = tmp_path / "fixture.json"
+    write_cli_fixture(fixture, command="/hc council review repo")
+
+    exit_code = main([str(fixture), "--pretty"])
+
+    captured = capsys.readouterr()
+    assert exit_code == 0
+    assert "\n  " in captured.out
+    payload = json.loads(captured.out)
+    assert_public_safe_markers(payload)
+    assert payload["accepted"] is True
+    assert payload["target_type"] == "repo"
