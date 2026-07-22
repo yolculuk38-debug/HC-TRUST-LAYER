@@ -20,26 +20,26 @@ Operating boundaries remain: `advisory_only=true`, `public_safe=true`, `truth_gu
 
 | Field | Status |
 | --- | --- |
-| Current phase | Repository cleanup phase 1 mapping completed; phase 2 must stay small, reversible, and evidence-backed. |
-| Active focus | Active operator views now point to current safe follow-up only. Completed verification, planner, inventory, governance, evidence-inspection, repository purpose-index, inventory pass, and cleanup phase 1 checkpoint blocks are historical references, not active work. Candidate current work is limited to small human-reviewed documentation follow-up when new repository evidence or reviewer direction identifies a concrete gap. |
-| Next up | Keep the next action scoped, documentation-first, and reviewable. Cross-check GitHub PR history, `task-ledger.md`, `repository-index-chain-2026-06-16.md`, and `repository-cleanup-phase1-checkpoint-2026-06-16.md` before reopening any completed topic or proposing phase 2 cleanup. |
+| Current phase | Repository cleanup phase 1 mapping is complete. The 2026-07-22 full remote branch inventory is evidence-complete; destructive branch deletion remains parked. Phase 2 must stay small, reversible, and evidence-backed. |
+| Active focus | Review the documentation-only remote branch inventory and keep operator views synchronized with the three intentional open issue surfaces: #812 assistant console, #1082 Signal Watch console, and #1109 Mission Control. Completed verification, HC Council local runner, QR compatibility repair, planner, inventory, governance, and cleanup phase 1 blocks are historical references, not active work. |
+| Next up | Merge the branch-inventory/status synchronization only after review and checks. Then either prepare a separately authorized small deletion batch from freshly revalidated candidates or continue the public validator / QR real-use path. |
 | Blocked / parked work | Workflow, schema, validator, record, policy, federation, signing, trust-kernel index, generated artifact, QR/hash evidence format, governance-enforcement, authority-changing automation, source deletion/archival, and production-readiness claims remain parked unless explicitly authorized and validated. |
-| Do-not-repeat summary | Completed public-validator/explorer, HC Control Bot, assistant-console, validator pipeline, verification package, HC Trust Engineer, HC Engineer planner, signature/witness planning, PR-flow diagnostic, repository inventory, governance automation, governance evidence review, evidence artifact inspection, repository purpose-index, inventory pass, and cleanup phase 1 checkpoint work should not be repeated without new evidence or reviewer direction. |
+| Do-not-repeat summary | Completed public-validator/explorer planning, HC Control Bot, assistant-console, HC Council local report-only runner/command bridge, validator pipeline, verification package, HC Trust Engineer, HC Engineer planner, signature/witness planning, PR-flow diagnostic, repository inventory, governance automation, evidence review, repository purpose-index, cleanup phase 1 checkpoint, CodeQL default-setup boundary, and #1209 QR compatibility repair should not be repeated without new evidence or reviewer direction. |
 | Review / merge rule | Before merge: verify changed files, checks, review comments, and risk scope. Human final authority remains the governance boundary. |
 | Source-of-truth priority | Markdown project-control docs and repository evidence outrank `hc_context`, chat memory, and advisory summaries. |
 
 
 ## Cleanup navigation status
 
-The #993 repository cleanup audit is the cleanup source-of-truth: [`repository-cleanup-audit-2026-06-15.md`](repository-cleanup-audit-2026-06-15.md). Use [`repository-index-chain-2026-06-16.md`](repository-index-chain-2026-06-16.md) for the completed purpose-index and inventory pass chain, [`repository-cleanup-phase1-checkpoint-2026-06-16.md`](repository-cleanup-phase1-checkpoint-2026-06-16.md) for phase 1 completion, [`next-actions.md`](next-actions.md) for active shift work, this file for current project state, [`task-ledger.md`](task-ledger.md) for milestone history, and GitHub PR history for detailed completed PR history. Cleanup candidates are advisory only; they are not permission to delete files, close issues, delete branches, disable workflows, move files, rename files, archive files, or change repository authority. Issue #812 HC Assistant Console v2 remains `ACTIVE_KEEP` unless explicitly superseded by human review.
+The #993 repository cleanup audit is the cleanup source-of-truth: [`repository-cleanup-audit-2026-06-15.md`](repository-cleanup-audit-2026-06-15.md). Use [`repository-index-chain-2026-06-16.md`](repository-index-chain-2026-06-16.md) for the completed purpose-index and inventory pass chain, [`repository-cleanup-phase1-checkpoint-2026-06-16.md`](repository-cleanup-phase1-checkpoint-2026-06-16.md) for phase 1 completion, [`remote-branch-inventory-2026-07-22.md`](remote-branch-inventory-2026-07-22.md) for the complete remote branch snapshot, [`next-actions.md`](next-actions.md) for active shift work, this file for current project state, [`task-ledger.md`](task-ledger.md) for milestone history, and GitHub PR history for detailed completed PR history. Cleanup candidates are advisory only; they are not permission to delete files, close issues, delete branches, disable workflows, move files, rename files, archive files, or change repository authority.
 
-Cleanup sequence status after #993 through #996: A. docs navigation cleanup was completed by #994; B. report-only test duplicate inventory was completed by #995; C. report-only workflow cleanup recommendation was completed by #996; D. issue cleanup was checked, only #812 HC Assistant Console v2 remains open and it must stay `ACTIVE_KEEP`, and closed issues are audit/history records, not deletion targets; E. branch cleanup remains open for complete branch-list triage. A previous connector check only confirmed no current `codex/cleanup` prefix candidates; it was prefix-specific only and was not a full remote branch cleanup review. Branch deletion remains parked unless a future complete branch-list review proves a branch is merged, stale, unused by open PRs, and human-approved. Full cleanup is not complete.
+Cleanup sequence status: A. docs navigation cleanup was completed by #994; B. report-only test duplicate inventory was completed by #995; C. report-only workflow cleanup recommendation was completed by #996; D. the current open issues are intentional operator surfaces—#812 HC Assistant Console v2, #1082 HC Signal Watch Console, and #1109 HC Mission Control / Active Task Queue—and are not cleanup candidates; E. the complete branch-list triage is now recorded in the 2026-07-22 remote branch inventory. That snapshot classifies 76 branches as deletion candidates and 36 as hold, but performs no deletion. Branch deletion remains a separate destructive action requiring fresh evidence, an exact target list, and explicit human approval. Full destructive cleanup is not complete.
 
 Repository cleanup phase 1 mapping is completed and recorded by [`repository-cleanup-phase1-checkpoint-2026-06-16.md`](repository-cleanup-phase1-checkpoint-2026-06-16.md). Phase 1 completed mapping and inventory anchors only; it did not approve file moves, deletions, branch deletion, workflow changes, authority-boundary changes, or protected-path work.
 
 ## Current phase
 
-Repository cleanup phase 1 mapping completed; phase 2 must stay small, reversible, and evidence-backed.
+Repository cleanup phase 1 mapping and full remote branch-list triage are complete. Destructive cleanup remains parked; phase 2 must stay small, reversible, evidence-backed, and human-reviewed.
 
 ## Repository status
 
@@ -208,22 +208,34 @@ The `v0.1.0` tag remains the initial protected protocol infrastructure and relea
 
 The public landing / public surface line is completed through #1161, #1162, #1163, #1164, #1165, and #1166. The Pages landing is active-public-preview oriented, mobile/translation friendly, and linked to clear visitor actions. The Public Surface checklist now exists as the reviewer baseline, and Public Surface is integrated into HC Check Digest as report-only PASS/WARN output. The #1166 integration did not create a new independent workflow or check. Human final authority and advisory-only/public-safe governance boundaries remain unchanged.
 
+## Recent completed council, scanning, dependency, and QR sequence
+
+- #1197 through #1203 completed the HC Multi-AI Council documentation, deterministic local report-only runner, command parser, local fixture bridge, status note, and operator usage guidance. The implementation remains local, advisory-only, public-safe, and without approval, merge, close, label, assignment, reviewer-request, or truth-finality authority.
+- #1204 was closed without merge. #1205 recorded that the repository uses GitHub CodeQL default setup and that an advanced CodeQL workflow must not be added while default setup remains enabled.
+- #1207 and #1208 completed the reviewed FastAPI and AnyIO patch updates.
+- #1209 restored the legacy QR compatibility bridge while preserving the archived record's canonical hash, preventing auto-hash overwrite, and covering the exact non-canonical bridge exception with regression checks. It does not make the legacy bridge canonical evidence or create a truth guarantee.
+- Do not repeat these completed lines unless new repository evidence or human reviewer direction identifies a concrete gap.
+
 ## Current focus
 
 - Keep onboarding, navigation, and project-control documents synchronized with current repository state.
+- Use `remote-branch-inventory-2026-07-22.md` as the branch snapshot. Its 76 candidates are not deletion authority; preserve all 36 hold branches and re-run the gate before any later batch.
+- Keep #812, #1082, and #1109 open for their distinct assistant-console, notification-console, and mission-control roles unless a human maintainer explicitly supersedes them.
 - Continue the working verification core in small, reviewable slices.
 - Repository cleanup phase 1 mapping is complete; phase 2 must be small, reversible, evidence-backed, and human-reviewed.
 - First practical layer is local package integrity: manifest + SHA-256 + missing/conflicting evidence + local CLI entry point + sample package.
 - HC Trust Engineer report and task-planning helpers now provide local operator evidence and planning discipline for small PR flow.
 - Signature/witness planning, signature/witness fixture-format planning, a non-canonical signature/witness fixture package, and quickstart navigation now exist as documentation/example next-layer boundaries; implementation remains parked unless explicitly authorized.
 - Outside-review and inventory follow-up are synchronized through #919. Use repository evidence first; do not act on unverified outside-review claims.
+- The HC Council local report-only and command bridge line is complete through #1203; authority expansion remains parked.
+- The legacy QR compatibility repair is complete through #1209; future QR work should advance the real-use public validator flow rather than recreate the bridge.
 - GitHub issue/comment assisted PR creation was tested as diagnostic evidence; do not rely on reported success until GitHub source-of-truth confirms branch, PR, changed files, and checks.
 - Later layers are example navigation, demo index references, QR/canonical-domain binding, C2PA/OpenTimestamps references, federation, dispute/governance, and public UX.
 - Avoid repeating completed public validator/public explorer planning, HC Control Bot comment governance, HC Control Bot reviewer-role roadmap synchronization, HC Engineer command-surface status checkpointing, repository assistant baseline work, operator-entry-map synchronization, assistant-console rotation, telemetry contract, replay / continuity, runtime stabilization review, validator pipeline nested response contract work, verification package hash-core/CLI/sample work, report-generator work, task-planner work, signature/witness proposal work, signature/witness fixture-format proposal work, signature/witness example-package work, GitHub PR-flow diagnostic work, outside-review follow-up triage, branch-count finding status, source-inventory review checklist work, governance automation review findings follow-up, CODEOWNERS protected governance ownership metadata classification, AI Agent Supply-Chain Threat Model work, #978 late-review follow-up, Governance Evidence Review Checklist work, Governance Evidence Checklist State note work, generated governance evidence review work, evidence artifact inspection guidance, repository purpose-index work, inventory pass work, cleanup phase 1 checkpoint work, or phase 1 navigation sync unless new repository evidence appears.
 
 ## Next safe task
 
-The next safe task is human-reviewed phase 2 follow-up only: record a small documentation note or report if repository evidence or a human reviewer identifies a concrete gap after the cleanup phase 1 checkpoint. Do not delete, move, archive, rewrite source files, change workflows, change rulesets, change releases, or change authority from inventory output alone.
+The immediate safe task is to review and merge the documentation-only branch-inventory/status synchronization. After that, the next product-facing direction is a small public validator / QR real-use slice. A branch deletion batch is a separate option only after fresh revalidation of an exact subset and explicit human approval. Do not delete, move, archive, rewrite source files, change workflows, change rulesets, change releases, or change authority from inventory output alone.
 
 ## Shift-change checklist
 
