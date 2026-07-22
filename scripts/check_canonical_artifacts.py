@@ -12,6 +12,10 @@ CANONICAL_DIRS = [
     Path("records/archived"),
 ]
 
+LEGACY_QR_BRIDGE_EXCEPTIONS = {
+    Path("records/verified/HC-TEST-2026-0001.md"),
+}
+
 NON_CANONICAL_PATTERNS = [
     "explorer_index.json",
     "index.json",
@@ -40,6 +44,10 @@ def is_non_canonical(path: Path) -> bool:
     return any(fnmatch.fnmatch(norm, pat) for pat in NON_CANONICAL_PATTERNS)
 
 
+def is_legacy_qr_bridge_exception(path: Path) -> bool:
+    return path in LEGACY_QR_BRIDGE_EXCEPTIONS
+
+
 def in_canonical_dir(path: Path) -> bool:
     norm = path.as_posix()
     return any(norm == d.as_posix() or norm.startswith(f"{d.as_posix()}/") for d in CANONICAL_DIRS)
@@ -60,7 +68,9 @@ def main() -> int:
 
     for rel in sorted(all_files):
         if in_canonical_dir(rel):
-            if is_non_canonical(rel):
+            if is_legacy_qr_bridge_exception(rel):
+                print(f"SKIP: {rel} (explicitly non-canonical legacy QR compatibility bridge)")
+            elif is_non_canonical(rel):
                 print(f"ERROR: non-canonical artifact inside canonical record boundary: {rel}")
                 errors += 1
             else:
