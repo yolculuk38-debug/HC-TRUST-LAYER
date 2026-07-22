@@ -15,8 +15,11 @@ This document helps human contributors, AI assistants, and agentic tools quickly
 - HC Trust Engineer command surface is implemented as a narrow deterministic `/hc` command interface and recorded by the #826 status checkpoint.
 - Repository assistant baseline status is recorded by #828.
 - HC Control Bot advisory observation and reviewer-role suggestion behavior is implemented as advisory-only operating-layer support.
+- HC Council local report-only runner, command parser, fixture bridge, and usage guidance are completed through #1203; council output remains advisory and human-reviewed.
+- The legacy QR compatibility bridge repair is completed through #1209 and preserves the archived canonical hash without making the bridge canonical evidence.
 - Local verifier example navigation status is recorded by `docs/project-control/local-verifier-example-navigation-status.md`.
 - Repository cleanup phase 1 mapping is completed and recorded by `docs/project-control/repository-cleanup-phase1-checkpoint-2026-06-16.md`.
+- The complete remote branch snapshot is recorded by `docs/project-control/remote-branch-inventory-2026-07-22.md`; destructive deletion remains parked.
 
 ## Operating Layer Quick Path
 
@@ -24,17 +27,17 @@ Use this path for a new human, AI assistant, or agent taking over HC:// operatin
 
 ## Cleanup Navigation Note
 
-For repository cleanup work, use [`repository-cleanup-audit-2026-06-15.md`](repository-cleanup-audit-2026-06-15.md) as the cleanup source-of-truth, [`repository-structure-triage-2026-06-16.md`](repository-structure-triage-2026-06-16.md) for root/docs/test structure classification, [`repository-index-chain-2026-06-16.md`](repository-index-chain-2026-06-16.md) for the completed purpose-index chain, [`repository-cleanup-phase1-checkpoint-2026-06-16.md`](repository-cleanup-phase1-checkpoint-2026-06-16.md) for phase 1 completion, [`next-actions.md`](next-actions.md) for active shift work, [`project-state.md`](project-state.md) for current project state, and [`task-ledger.md`](task-ledger.md) for milestone history. Use GitHub PR history for detailed completed PR history.
+For repository cleanup work, use [`repository-cleanup-audit-2026-06-15.md`](repository-cleanup-audit-2026-06-15.md) as the cleanup source-of-truth, [`repository-structure-triage-2026-06-16.md`](repository-structure-triage-2026-06-16.md) for root/docs/test structure classification, [`repository-index-chain-2026-06-16.md`](repository-index-chain-2026-06-16.md) for the completed purpose-index chain, [`repository-cleanup-phase1-checkpoint-2026-06-16.md`](repository-cleanup-phase1-checkpoint-2026-06-16.md) for phase 1 completion, [`remote-branch-inventory-2026-07-22.md`](remote-branch-inventory-2026-07-22.md) for the complete branch snapshot, [`next-actions.md`](next-actions.md) for active shift work, [`project-state.md`](project-state.md) for current project state, and [`task-ledger.md`](task-ledger.md) for milestone history. Use GitHub PR history for detailed completed PR history.
 
-Cleanup candidates are advisory only. They are not permission to delete files, close issues, delete branches, disable workflows, move files, rename files, archive files, or change repository authority. Issue #812 HC Assistant Console v2 remains `ACTIVE_KEEP` unless explicitly superseded by human review.
+Cleanup candidates are advisory only. They are not permission to delete files, close issues, delete branches, disable workflows, move files, rename files, archive files, or change repository authority. Issues #812, #1082, and #1109 are intentional operator surfaces and remain active unless explicitly superseded by human review.
 
-Cleanup sequence status after #993 through #996:
+Cleanup sequence status:
 
 A. docs navigation cleanup — completed by #994.
 B. report-only test duplicate inventory — completed by #995.
 C. report-only workflow cleanup recommendation — completed by #996.
-D. issue cleanup — checked; only #812 HC Assistant Console v2 remains open and it must stay `ACTIVE_KEEP`. Closed issues are audit/history records and must not be deletion targets.
-E. branch cleanup remains open for complete branch-list triage. A previous connector check only confirmed no current `codex/cleanup` prefix candidates; it was prefix-specific only and was not a full remote branch cleanup review. Branch deletion remains parked unless a future complete branch-list review proves a branch is merged, stale, unused by open PRs, and human-approved.
+D. issue cleanup — classified. #812 is the assistant command console, #1082 is the Signal Watch notification console, and #1109 is Mission Control / Active Task Queue. They are not cleanup candidates.
+E. complete branch-list triage — evidence-complete in `remote-branch-inventory-2026-07-22.md`: 76 deletion candidates and 36 hold branches, with no deletion performed. Any destructive batch requires fresh evidence, an exact list, explicit human approval, and post-action audit.
 
 
 1. Current project state: [`docs/project-control/project-state.md`](project-state.md)
@@ -53,6 +56,9 @@ E. branch cleanup remains open for complete branch-list triage. A previous conne
 14. Governance evidence review handoff: [`docs/project-control/governance-evidence-review-handoff.md`](governance-evidence-review-handoff.md)
 15. Evidence artifact inspection guide: [`docs/project-control/evidence-artifact-inspection-guide.md`](evidence-artifact-inspection-guide.md)
 16. Active assistant console: [#812 HC Assistant Console v2](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/812)
+17. Signal Watch notification console: [#1082 HC Signal Watch Console](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/1082)
+18. Mission coordination queue: [#1109 HC Mission Control / Active Task Queue](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/1109)
+19. Complete remote branch snapshot: [`docs/project-control/remote-branch-inventory-2026-07-22.md`](remote-branch-inventory-2026-07-22.md)
 
 Do not repeat #811, #813, #814, #826, #828, or assistant-console / command-surface / repository-assistant-baseline synchronization work unless new repository evidence appears. Treat #763 as closed historical evidence only.
 
