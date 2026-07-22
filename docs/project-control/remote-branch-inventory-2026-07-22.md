@@ -38,6 +38,24 @@ Boundary values:
 - CI/checks are evidence, not trust authority
 - human final authority remains required
 
+## Cleanup execution record
+
+Explicit human maintainer approval was given after the candidate tips were revalidated against live GitHub state. The approved cleanup was executed at `2026-07-22T12:42:09Z` in eight bounded API batches: seven batches of 10 branches and one batch of 6 branches.
+
+Post-action audit:
+
+- deleted candidates: `76/76` (`46` reachable from current `main`; `30` exact merged-PR head tips)
+- deletion failures: `0`
+- branch count before cleanup: `113` (`main` plus `112` non-default branches)
+- branch count after cleanup: `37` (`main` plus the `36` held branches listed below)
+- open pull requests before and after cleanup: `0`
+- `main` remained protected and unchanged at `8248407c203a433dc3e1efd7ee5de052bd3dfbd7`
+- `HOLD_CLOSED_UNMERGED`: `32/32` preserved
+- `HOLD_UNMAPPED`: `4/4` preserved
+- source, runtime, workflow, ruleset, issue, pull-request, and HC:// authority state: unchanged by the deletion operation
+
+This execution record supersedes only the earlier statement that no candidate branch had yet been deleted. The original snapshot, evidence method, classifications, branch names, and expected tip SHAs remain below as the audit basis for the action. Deleting a branch removes its named Git reference; it does not alter `main` or erase the associated merged pull-request record. The 36 held branches remain outside cleanup authority pending separate evidence and human review.
+
 ## Evidence method
 
 The inventory used independent Git and GitHub evidence:
