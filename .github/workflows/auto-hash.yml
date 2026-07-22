@@ -34,6 +34,11 @@ jobs:
           for file in records/verified/*.md; do
             [ -e "$file" ] || continue
 
+            if [ "$file" = "records/verified/HC-TEST-2026-0001.md" ]; then
+              echo "Skipping legacy QR compatibility bridge: $file"
+              continue
+            fi
+
             filename=$(basename "$file" .md)
             sha256sum "$file" > "hash/${filename}.sha256"
 
