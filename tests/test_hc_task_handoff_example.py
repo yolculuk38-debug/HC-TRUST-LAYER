@@ -16,8 +16,8 @@ def test_example_handoff_fixture_builds_safe_package():
     assert package["invokes_external_agent"] is False
     assert package["creates_pull_request"] is False
     assert package["requires_human_submit"] is True
-    assert package["task_title"] == "Add focused project-control note"
+    assert package["task_title"] == "Add focused docs note"
     assert package["merge_gate"]["allowed"] is True
     assert package["stop_conditions"] == []
     assert "HC Trust Engineer task handoff package." in package["handoff_prompt_lines"]
-    assert any("Expected files: docs/project-control/example-note.md" == line for line in package["handoff_prompt_lines"])
+    assert any("Expected files: docs/examples/example-note.md" == line for line in package["handoff_prompt_lines"])

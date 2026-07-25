@@ -143,11 +143,9 @@ def test_markdown_list_paths_reach_protected_path_handoff_gate():
     plan = payload["handoff"]["plan"]
     assert set(plan["planned_prs"][0]["expected_files"]) == EXPECTED_MARKDOWN_LIST_PATHS
     assert plan["merge_gate"]["allowed"] is False
-    assert plan["merge_gate"]["human_review_required"] is True
-    assert any(
-        "Protected path touched" in condition and "schema/record-v1.schema.json" in condition
-        for condition in plan["stop_conditions"]
-    )
+    assert plan["merge_gate"]["requires_human_review"] is True
+    assert "protected_paths_require_human_review" in plan["stop_conditions"]
+    assert "scanner_human_review_required" in plan["stop_conditions"]
 
 
 def test_issue_body_handoff_is_advisory_and_does_not_invoke_external_agent():
