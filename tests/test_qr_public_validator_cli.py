@@ -4,6 +4,7 @@ import socket
 import urllib.request
 from pathlib import Path
 
+from hc_runtime import qr_public_validator
 from hc_trust.cli import main
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -106,3 +107,20 @@ def test_qr_public_validator_cli_does_not_call_network(monkeypatch, capsys):
 
     assert exit_code == 0
     assert result["status"] == "qr_record_validated"
+
+
+def test_qr_public_validator_cli_uses_current_checkout_root(
+    monkeypatch, capsys, tmp_path
+):
+    monkeypatch.setattr(
+        qr_public_validator,
+        "ROOT",
+        tmp_path / "installed-package-location",
+    )
+    monkeypatch.chdir(ROOT)
+
+    exit_code, result = _run_cli(_load_matching_payload(), capsys)
+
+    assert exit_code == 0
+    assert result["status"] == "qr_record_validated"
+    assert result["record_lookup_status"] == "found"

@@ -165,6 +165,8 @@ The packaged command exposes the existing combined engine and accepts the same o
 hc-trust qr-public-validator "$(cat docs/demo/fixtures/qr-payload-parser/record-match-payload.json)"
 ```
 
+Run the command from the repository checkout root. The packaged CLI resolves the allowed `records/` paths and canonical schema from the current working directory rather than from the installed Python module directory.
+
 `record-match-payload.json` references the checked-in `HC-RELEASE-2026-0001` record and should return `qr_record_validated` with exit code `0` in an unchanged checkout. The fixture itself remains non-canonical input. The result remains advisory-only and does not prove QR authenticity, signature verification, issuer authority, `canonical_url` control, record truth, legal status, safety, or production readiness.
 
 To exercise the fail-closed mismatch path:
