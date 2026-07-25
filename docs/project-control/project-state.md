@@ -20,11 +20,11 @@ Operating boundaries remain: `advisory_only=true`, `public_safe=true`, `truth_gu
 
 | Field | Status |
 | --- | --- |
-| Current phase | Repository cleanup phase 1 mapping and the explicitly approved 2026-07-22 branch cleanup are complete. The recorded operation deleted 76 verified stale branches and preserved all 36 hold branches. Phase 2 must stay small, reversible, and evidence-backed. |
-| Active focus | Continue the public validator / QR real-use path while keeping the three intentional open issue surfaces distinct: #812 assistant console, #1082 Signal Watch console, and #1109 Mission Control. Completed verification, HC Council local runner, QR compatibility repair, planner, inventory, governance, cleanup phase 1, and branch cleanup blocks are historical references, not active work. |
-| Next up | Align the local demo runner with the static viewer's bundled demo `record_id` contract so a supported fixture ID deterministically resolves to the same advisory result without network or canonical-record lookup. |
+| Current phase | Repository cleanup phase 1 mapping, the explicitly approved 2026-07-22 branch cleanup, the bundled Public Validator `record_id` runner alignment, and the first scannable demo QR entry are complete. The branch operation deleted 76 verified stale branches and preserved all 36 hold branches. Phase 2 and later Public Validator slices must stay small, reversible, and evidence-backed. |
+| Active focus | Review the single live Public Validator QR entry on mobile before widening the demo QR surface, while keeping the three intentional open issue surfaces distinct: #812 assistant console, #1082 Signal Watch console, and #1109 Mission Control. Completed verification, HC Council local runner, QR compatibility repair, planner, inventory, governance, cleanup phase 1, branch cleanup, runner alignment, and first QR entry blocks are historical references, not active work. |
+| Next up | Perform one bounded, report-only mobile acceptance review of the live FOOD fixture QR entry. Confirm that scan or direct open lands on the selected Public Validator result card, that the advisory boundaries remain readable, and that no raw GitHub file or unsupported fallback route appears. |
 | Blocked / parked work | Workflow, schema, validator, record, policy, federation, signing, trust-kernel index, generated artifact, QR/hash evidence format, governance-enforcement, authority-changing automation, source deletion/archival, and production-readiness claims remain parked unless explicitly authorized and validated. |
-| Do-not-repeat summary | Completed public-validator/explorer planning, HC Control Bot, assistant-console, HC Council local report-only runner/command bridge, validator pipeline, verification package, HC Trust Engineer, HC Engineer planner, signature/witness planning, PR-flow diagnostic, repository inventory, governance automation, evidence review, repository purpose-index, cleanup phase 1 checkpoint, CodeQL default-setup boundary, and #1209 QR compatibility repair should not be repeated without new evidence or reviewer direction. |
+| Do-not-repeat summary | Completed public-validator/explorer planning, HC Control Bot, assistant-console, HC Council local report-only runner/command bridge, validator pipeline, verification package, HC Trust Engineer, HC Engineer planner, signature/witness planning, PR-flow diagnostic, repository inventory, governance automation, evidence review, repository purpose-index, cleanup phase 1 checkpoint, CodeQL default-setup boundary, #1209 QR compatibility repair, #1216 runner alignment, and #1217 single demo QR entry should not be repeated without new evidence or reviewer direction. |
 | Review / merge rule | Before merge: verify changed files, checks, review comments, and risk scope. Human final authority remains the governance boundary. |
 | Source-of-truth priority | Markdown project-control docs and repository evidence outrank `hc_context`, chat memory, and advisory summaries. |
 
@@ -214,6 +214,8 @@ The public landing / public surface line is completed through #1161, #1162, #116
 - #1204 was closed without merge. #1205 recorded that the repository uses GitHub CodeQL default setup and that an advanced CodeQL workflow must not be added while default setup remains enabled.
 - #1207 and #1208 completed the reviewed FastAPI and AnyIO patch updates.
 - #1209 restored the legacy QR compatibility bridge while preserving the archived record's canonical hash, preventing auto-hash overwrite, and covering the exact non-canonical bridge exception with regression checks. It does not make the legacy bridge canonical evidence or create a truth guarantee.
+- #1216 aligned the deterministic local demo runner with the static viewer's bundled demo `record_id` mapping while preserving fixture-only, offline, fail-closed, advisory output.
+- #1217 added one deterministic, text-only SVG QR access aid for the bundled FOOD fixture, a reproducible generator, and focused contract tests. The QR targets the live GitHub Pages result card and remains a non-canonical demo pointer; it does not prove QR authenticity, signature validity, canonical lookup, or truth.
 - Do not repeat these completed lines unless new repository evidence or human reviewer direction identifies a concrete gap.
 
 ## Current focus
@@ -228,7 +230,8 @@ The public landing / public surface line is completed through #1161, #1162, #116
 - Signature/witness planning, signature/witness fixture-format planning, a non-canonical signature/witness fixture package, and quickstart navigation now exist as documentation/example next-layer boundaries; implementation remains parked unless explicitly authorized.
 - Outside-review and inventory follow-up are synchronized through #919. Use repository evidence first; do not act on unverified outside-review claims.
 - The HC Council local report-only and command bridge line is complete through #1203; authority expansion remains parked.
-- The legacy QR compatibility repair is complete through #1209; future QR work should advance the real-use public validator flow rather than recreate the bridge.
+- The legacy QR compatibility repair is complete through #1209; do not recreate the bridge.
+- The Public Validator runner `record_id` contract and first scannable demo QR entry are complete through #1216/#1217. Review the single live mobile flow before adding another QR entry or widening runtime, canonical, signing, or protocol boundaries.
 - The complete branch inventory/status synchronization and approved 76-branch cleanup are recorded through #1210/#1211; all 36 hold branches remain preserved.
 - GitHub issue/comment assisted PR creation was tested as diagnostic evidence; do not rely on reported success until GitHub source-of-truth confirms branch, PR, changed files, and checks.
 - Later layers are example navigation, demo index references, QR/canonical-domain binding, C2PA/OpenTimestamps references, federation, dispute/governance, and public UX.
@@ -236,7 +239,7 @@ The public landing / public surface line is completed through #1161, #1162, #116
 
 ## Next safe task
 
-The immediate safe task is a small public validator / QR real-use slice: align the local demo runner with the static viewer's bundled demo `record_id` mapping and preserve the existing advisory fixture result contract. Do not turn this fixture mapping into canonical lookup, remote fetching, QR authenticity proof, signature verification, truth verification, or production authority. The 36 held branches and any later branch remain outside cleanup authority without new evidence and explicit human approval.
+The immediate safe task is a report-only mobile acceptance review of the single Public Validator QR entry introduced by #1217. Confirm that the live QR or fallback link selects `HC-DEMO-PV-FIXTURE-FOOD-0001`, moves the mobile browser to the result card, keeps the advisory and human-review boundaries visible, and does not expose a raw GitHub file or unsupported fallback route. Record concrete findings before proposing another QR entry or any navigation, runtime, canonical, signing, or protocol change. The 36 held branches and any later branch remain outside cleanup authority without new evidence and explicit human approval.
 
 ## Shift-change checklist
 
