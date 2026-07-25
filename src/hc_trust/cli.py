@@ -3,6 +3,8 @@ import json
 import sys
 from pathlib import Path
 
+from hc_runtime.qr_public_validator import run_qr_public_validator
+
 from .hashing import calculate_sha256
 from .qr_tools import generate_qr, find_verified_records
 from .verification import verify_record_hash, find_record_files
@@ -70,6 +72,12 @@ def cmd_verify_package(args):
     else:
         print(json.dumps(result, ensure_ascii=False, sort_keys=True, indent=2))
     return 0 if result["status"] == VerificationPackageStatus.VERIFIED else 1
+
+
+def cmd_qr_public_validator(args):
+    result = run_qr_public_validator(args.payload_json)
+    print(json.dumps(result, ensure_ascii=False, sort_keys=True, indent=2))
+    return 0 if result["status"] == "qr_record_validated" else 1
 
 
 def _summary_value(value):
@@ -146,6 +154,20 @@ def build_parser():
         help="Print a short operator summary instead of full JSON",
     )
     p_verify_package.set_defaults(func=cmd_verify_package)
+
+    p_qr_public_validator = sub.add_parser(
+        "qr-public-validator",
+        help="Check one QR payload against allowed local records",
+        description=(
+            "Run the combined local QR and Public Validator advisory check. "
+            "The command does not fetch URLs, prove QR authenticity, or provide trust authority."
+        ),
+    )
+    p_qr_public_validator.add_argument(
+        "payload_json",
+        help="One local QR payload JSON string",
+    )
+    p_qr_public_validator.set_defaults(func=cmd_qr_public_validator)
     return parser
 
 

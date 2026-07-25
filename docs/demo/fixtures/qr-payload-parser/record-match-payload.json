@@ -1,0 +1,11 @@
+{
+  "qr_version": "1",
+  "record_id": "HC-RELEASE-2026-0001",
+  "canonical_url": "https://example.invalid/record/HC-RELEASE-2026-0001",
+  "payload_hash": "d8cbc1a1f1f3c13cd9eda5093dd638147a662a3bbba6d4f62a634dbf74fa01fe",
+  "content_hash": "3f1bd647e8dd8100329dc92a9cf45c8c42a6ce7922337cd324d6e9577a329d17",
+  "issued_at": "2026-01-01T00:00:00Z",
+  "issuer_id": "demo-review-issuer",
+  "algorithm": "none",
+  "key_id": "demo-key"
+}

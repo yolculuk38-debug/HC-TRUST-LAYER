@@ -7,7 +7,7 @@
 
 ## Purpose
 
-These fixtures make the local HC:// QR payload parser and local QR record bridge easier to review. They provide small payload examples and expected parser behavior for the CLI runner added in #662. PR #664 adds tests that run these fixtures through the parser CLI and compare stable public-safe output fields only. PR #667 adds explicit matching, mismatched, and uppercase `payload_hash` fixture coverage. PR #669 adds a local-only bridge CLI runner that accepts the same one-argument QR payload JSON shape:
+These fixtures make the local HC:// QR payload parser, local QR record bridge, and combined local QR/Public Validator CLI easier to review. They provide small payload examples and expected parser behavior for the CLI runner added in #662. PR #664 adds tests that run these fixtures through the parser CLI and compare stable public-safe output fields only. PR #667 adds explicit matching, mismatched, and uppercase `payload_hash` fixture coverage. PR #669 adds a local-only bridge CLI runner that accepts the same one-argument QR payload JSON shape:
 
 ```bash
 python scripts/run_qr_payload_parser.py '<payload-json-string>'
@@ -49,6 +49,7 @@ To run the fixture-backed parser golden output tests and bridge CLI tests:
 ```bash
 python -m pytest tests/test_qr_payload_parser.py
 python -m pytest tests/test_qr_record_bridge.py
+python -m pytest tests/test_qr_public_validator_cli.py
 ```
 
 ### Valid Payload Example
@@ -156,6 +157,24 @@ python scripts/run_qr_record_bridge.py "$(cat docs/demo/fixtures/qr-payload-pars
 
 Expected behavior for these demo fixtures is usually `record_not_found`, because this fixture directory is intentionally not a canonical record lookup path. A `bridge_match` can occur only when the payload `record_id` resolves to exactly one allowed local canonical record under `records/pending/`, `records/verified/`, or `records/archived/` and the payload `content_hash` matches that record's `content_hash`. `bridge_match` remains advisory-only and does not prove QR authenticity, signature verification, `canonical_url` control, record truth, safety, legality, regulatory status, or production readiness.
 
+## Combined QR/Public Validator CLI Quickstart
+
+The packaged command exposes the existing combined engine and accepts the same one-argument QR payload JSON shape:
+
+```bash
+hc-trust qr-public-validator "$(cat docs/demo/fixtures/qr-payload-parser/record-match-payload.json)"
+```
+
+`record-match-payload.json` references the checked-in `HC-RELEASE-2026-0001` record and should return `qr_record_validated` with exit code `0` in an unchanged checkout. The fixture itself remains non-canonical input. The result remains advisory-only and does not prove QR authenticity, signature verification, issuer authority, `canonical_url` control, record truth, legal status, safety, or production readiness.
+
+To exercise the fail-closed mismatch path:
+
+```bash
+hc-trust qr-public-validator "$(cat docs/demo/fixtures/qr-payload-parser/matching-payload-hash.json)"
+```
+
+That fixture has a parser-consistent `payload_hash` but a `content_hash` that does not match the local `HC-EXAMPLE-2026-0001` record, so the combined command returns `qr_record_mismatch` and exit code `1`. Malformed, invalid, not-found, duplicate, and not-checked outcomes also return `1`. The command prints one sorted JSON result and no extra stdout prose.
+
 ## Status Meanings
 
 | Status | Meaning |
@@ -184,6 +203,7 @@ This is an advisory consistency check, not signature verification, QR authentici
 | --- | --- | --- |
 | [`valid-payload.json`](valid-payload.json) | `valid_payload` | Shows the smallest complete public-safe JSON shape accepted by the parser. |
 | [`matching-payload-hash.json`](matching-payload-hash.json) | `valid_payload` | Shows explicit matching parser-local advisory `payload_hash` behavior. |
+| [`record-match-payload.json`](record-match-payload.json) | `valid_payload`; combined status `qr_record_validated` | References one allowed local record for the combined CLI path without making the fixture canonical. |
 | [`mismatched-payload-hash.json`](mismatched-payload-hash.json) | `invalid_payload` | Shows that a mismatched parser-local advisory `payload_hash` returns a public-safe local integrity-failure signal. |
 | [`uppercase-payload-hash.json`](uppercase-payload-hash.json) | `valid_payload` | Shows that uppercase hexadecimal `payload_hash` input is normalized for comparison. |
 | [`missing-field-payload.json`](missing-field-payload.json) | `invalid_payload` | Shows missing required field handling without falling back to hidden defaults. |

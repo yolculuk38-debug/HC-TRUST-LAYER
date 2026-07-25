@@ -39,6 +39,16 @@ python scripts/run_public_validator_lookup.py HC-EXAMPLE-2026-0001
 
 The lookup returns public-safe advisory JSON for found, unknown, invalid, duplicate, and schema/hash advisory outcomes. It is not a production API, truth verification, QR authenticity proof, signed payload verification, or legal/regulatory/safety certification, and human review remains required.
 
+## Combined Local QR/Public Validator CLI
+
+Use the packaged local CLI to run the existing QR payload parser, allowed-record bridge, and Public Validator lookup as one deterministic advisory result:
+
+```bash
+hc-trust qr-public-validator "$(cat docs/demo/fixtures/qr-payload-parser/record-match-payload.json)"
+```
+
+The command accepts exactly one QR payload JSON string, prints sorted JSON with no extra stdout prose, and returns `0` only for `qr_record_validated`. All other advisory outcomes return `1`. It does not fetch `canonical_url`, call a network or backend, prove QR authenticity, verify signatures, prove issuer authority, or verify truth. See the [combined local QR/Public Validator boundary and CLI guide](security/qr-combined-local-public-validator.md#cli-entry-point).
+
 ## MVP-1 Public Demo Quick Links
 
 Use these shareable viewer hash links to open each bundled MVP-1 verification package state directly:
