@@ -11,7 +11,7 @@ This quickstart helps a new user run the local HC:// Public Validator demo and r
 
 The demo runner is [`scripts/run_public_validator_demo.py`](../../scripts/run_public_validator_demo.py). It prints deterministic, public-safe fixture results for the demo scenarios described in the [Public Validator Static Demo](public-validator-static-demo.md), the [Public Validator Static Viewer MVP](public-validator-static-viewer.html), the [Public Validator Demo Links](public-validator-demo-links.md), and the [Public Validator Demo Fixtures](fixtures/public-validator-demo-fixtures.md).
 
-The runner is local-only. It does not make external network calls, contact live HC:// services, fetch remote evidence, validate signatures, or certify real-world claims.
+The runner is local-only. It accepts either a supported scenario name or the matching bundled demo `record_id`. Both inputs resolve to the same fixture result. It does not make external network calls, contact live HC:// services, fetch remote evidence, validate signatures, or certify real-world claims.
 
 ## Static browser viewer
 
@@ -28,6 +28,7 @@ The viewer is demo-only, local-only, deterministic, and does not use a backend, 
 This demo:
 
 - prints a deterministic JSON result for one selected public validator scenario;
+- accepts the same four bundled demo `record_id` values as the static viewer;
 - shows how a public-safe validation summary might expose provenance, responsibility, evidence, missing evidence, conflicts, and warnings;
 - lets users type supported demo `record_id` values or open supported demo `record_id` query links to select matching bundled fixture scenarios;
 - keeps the output advisory-only and human-review-required;
@@ -65,6 +66,17 @@ python scripts/run_public_validator_demo.py news
 python scripts/run_public_validator_demo.py qr-spoof
 ```
 
+You can also use the corresponding bundled demo `record_id`:
+
+```bash
+python scripts/run_public_validator_demo.py HC-DEMO-PV-FIXTURE-FOOD-0001
+python scripts/run_public_validator_demo.py HC-DEMO-PV-FIXTURE-CONCRETE-0001
+python scripts/run_public_validator_demo.py HC-DEMO-PV-FIXTURE-NEWS-0001
+python scripts/run_public_validator_demo.py HC-DEMO-PV-FIXTURE-QR-0001
+```
+
+Each supported `record_id` returns the same deterministic JSON as its scenario name. Unknown IDs, paths, and URLs are rejected before fixture loading. The runner does not treat them as file locations, remote resources, or canonical record lookup requests.
+
 The script prints JSON to standard output. The output is deterministic for each scenario, so repeated runs of the same command should produce the same result unless the fixture definitions are intentionally changed in a later PR.
 
 ## Result fixtures
@@ -73,12 +85,12 @@ The runner reads demo-only result fixture exports from [`docs/demo/fixtures/resu
 
 ## Available scenarios
 
-| Scenario command | Scenario label in output | Public demo focus |
-| --- | --- | --- |
-| `banana` | `imported_banana_food_provenance` | Food provenance with missing evidence and a carton-count conflict. |
-| `building` | `building_concrete_provenance` | Building/concrete provenance with partial field sample evidence. |
-| `news` | `news_source_provenance` | News source provenance with incomplete confirmation and wording conflict. |
-| `qr-spoof` | `qr_spoof_non_canonical_link` | QR/link review where the scanned URL differs from the expected HC:// canonical reference. |
+| Scenario command | Bundled demo `record_id` | Scenario label in output | Public demo focus |
+| --- | --- | --- | --- |
+| `banana` | `HC-DEMO-PV-FIXTURE-FOOD-0001` | `imported_banana_food_provenance` | Food provenance with missing evidence and a carton-count conflict. |
+| `building` | `HC-DEMO-PV-FIXTURE-CONCRETE-0001` | `building_concrete_provenance` | Building/concrete provenance with partial field sample evidence. |
+| `news` | `HC-DEMO-PV-FIXTURE-NEWS-0001` | `news_source_provenance` | News source provenance with incomplete confirmation and wording conflict. |
+| `qr-spoof` | `HC-DEMO-PV-FIXTURE-QR-0001` | `qr_spoof_non_canonical_link` | QR/link review where the scanned URL differs from the expected HC:// canonical reference. |
 
 ## Example command
 
@@ -178,15 +190,19 @@ Use the Python executable available in your environment, for example:
 python3 scripts/run_public_validator_demo.py banana
 ```
 
-### `invalid choice`
+### Unsupported scenario or demo `record_id`
 
-Use one of the supported scenario names:
+Use one of the supported scenario names or bundled demo `record_id` values:
 
 ```bash
 python scripts/run_public_validator_demo.py banana
 python scripts/run_public_validator_demo.py building
 python scripts/run_public_validator_demo.py news
 python scripts/run_public_validator_demo.py qr-spoof
+python scripts/run_public_validator_demo.py HC-DEMO-PV-FIXTURE-FOOD-0001
+python scripts/run_public_validator_demo.py HC-DEMO-PV-FIXTURE-CONCRETE-0001
+python scripts/run_public_validator_demo.py HC-DEMO-PV-FIXTURE-NEWS-0001
+python scripts/run_public_validator_demo.py HC-DEMO-PV-FIXTURE-QR-0001
 ```
 
 ### File path errors
@@ -203,4 +219,4 @@ The output is intentionally public-safe and fixture-based. Missing or conflictin
 
 ## Recommended next step
 
-After trying the static viewer and running the local demo, compare the JSON output with the static public result examples in [`docs/demo/public-validator-static-demo.md`](public-validator-static-demo.md). For the current checkpoint review, read [`docs/demo/public-validator-demo-checkpoint.md`](public-validator-demo-checkpoint.md). A recommended follow-up PR is **#651 Public Validator demo navigation polish**, kept documentation/demo-only unless explicitly scoped otherwise.
+After trying the static viewer and running the local demo by both scenario name and bundled demo `record_id`, compare the JSON output with the static public result examples in [`docs/demo/public-validator-static-demo.md`](public-validator-static-demo.md). For the current checkpoint review, read [`docs/demo/public-validator-demo-checkpoint.md`](public-validator-demo-checkpoint.md). The next bounded slice should advance the public validator / QR entry experience without turning fixture matching into QR authenticity proof, canonical lookup, remote fetching, or production verification.
