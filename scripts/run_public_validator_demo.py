@@ -18,6 +18,15 @@ SCENARIOS: dict[str, Path] = {
     "news": FIXTURE_DIR / "news.json",
     "qr-spoof": FIXTURE_DIR / "qr-spoof.json",
 }
+SCENARIO_RECORD_IDS: dict[str, str] = {
+    "banana": "HC-DEMO-PV-FIXTURE-FOOD-0001",
+    "building": "HC-DEMO-PV-FIXTURE-CONCRETE-0001",
+    "news": "HC-DEMO-PV-FIXTURE-NEWS-0001",
+    "qr-spoof": "HC-DEMO-PV-FIXTURE-QR-0001",
+}
+RECORD_ID_SCENARIOS = {
+    record_id: scenario for scenario, record_id in SCENARIO_RECORD_IDS.items()
+}
 SAFETY_MARKERS: dict[str, bool] = {
     "advisory_only": True,
     "public_safe": True,
@@ -52,6 +61,13 @@ def load_fixture(scenario: str) -> dict[str, Any]:
         if result[key] is not value:
             raise ValueError(f"Fixture {scenario!r} has invalid safety marker {key!r}")
 
+    expected_record_id = SCENARIO_RECORD_IDS[scenario]
+    if result["record_id"] != expected_record_id:
+        raise ValueError(
+            f"Fixture {scenario!r} has record_id {result['record_id']!r}; "
+            f"expected {expected_record_id!r}"
+        )
+
     return result
 
 
@@ -60,14 +76,33 @@ def build_result(scenario: str) -> dict[str, Any]:
     return deepcopy(load_fixture(scenario))
 
 
+def resolve_scenario(selector: str) -> str:
+    """Resolve a scenario name or bundled demo record ID without external lookup."""
+    candidate = selector.strip()
+    if candidate in SCENARIOS:
+        return candidate
+
+    scenario = RECORD_ID_SCENARIOS.get(candidate.upper())
+    if scenario is not None:
+        return scenario
+
+    raise argparse.ArgumentTypeError(
+        "expected a supported scenario name or bundled demo record_id"
+    )
+
+
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Run a local-only, advisory HC:// Public Validator demo scenario."
+        description=(
+            "Run a local-only, advisory HC:// Public Validator demo by scenario "
+            "name or bundled demo record_id."
+        )
     )
     parser.add_argument(
         "scenario",
-        choices=sorted(SCENARIOS),
-        help="Demo scenario to run.",
+        type=resolve_scenario,
+        metavar="SCENARIO_OR_RECORD_ID",
+        help="Supported demo scenario name or bundled demo record_id.",
     )
     return parser.parse_args(argv)
 

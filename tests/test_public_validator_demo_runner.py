@@ -7,6 +7,12 @@ ROOT = Path(__file__).resolve().parents[1]
 RUNNER = ROOT / "scripts" / "run_public_validator_demo.py"
 FIXTURE_DIR = ROOT / "docs" / "demo" / "fixtures" / "results"
 SCENARIOS = ["banana", "building", "news", "qr-spoof"]
+RECORD_IDS = {
+    "banana": "HC-DEMO-PV-FIXTURE-FOOD-0001",
+    "building": "HC-DEMO-PV-FIXTURE-CONCRETE-0001",
+    "news": "HC-DEMO-PV-FIXTURE-NEWS-0001",
+    "qr-spoof": "HC-DEMO-PV-FIXTURE-QR-0001",
+}
 SAFETY_MARKERS = {
     "advisory_only": True,
     "public_safe": True,
@@ -58,6 +64,14 @@ def test_runner_output_matches_fixture_json_for_each_scenario() -> None:
         assert assert_deterministic_json(scenario) == load_fixture(scenario)
 
 
+def test_runner_record_ids_match_corresponding_scenario_output() -> None:
+    for scenario, record_id in RECORD_IDS.items():
+        expected = run_scenario(scenario)
+        assert run_scenario(record_id) == expected
+        assert run_scenario(record_id.lower()) == expected
+        assert expected["record_id"] == record_id
+
+
 def test_banana_scenario_returns_deterministic_json() -> None:
     result = assert_deterministic_json("banana")
     assert result["record_id"] == "HC-DEMO-PV-FIXTURE-FOOD-0001"
@@ -92,6 +106,27 @@ def test_invalid_scenario_exits_non_zero() -> None:
         text=True,
     )
     assert completed.returncode != 0
+
+
+def test_unknown_record_id_path_and_url_inputs_fail_closed() -> None:
+    unsupported_inputs = [
+        "HC-DEMO-PV-FIXTURE-UNKNOWN-0001",
+        "../docs/demo/fixtures/results/banana.json",
+        "https://example.invalid/HC-DEMO-PV-FIXTURE-FOOD-0001",
+    ]
+
+    for selector in unsupported_inputs:
+        completed = subprocess.run(
+            [sys.executable, str(RUNNER), selector],
+            capture_output=True,
+            text=True,
+        )
+        assert completed.returncode != 0
+        assert completed.stdout == ""
+        assert (
+            "expected a supported scenario name or bundled demo record_id"
+            in completed.stderr
+        )
 
 
 def test_safety_markers_are_always_present() -> None:
