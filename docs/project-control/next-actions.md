@@ -6,7 +6,7 @@ Operating boundaries remain: `advisory_only=true`, `public_safe=true`, `truth_gu
 
 ## Current phase
 
-Repository cleanup phase 1 mapping, the 2026-07-22 complete remote branch-list triage, and the explicitly approved deletion of 76 verified stale branches are complete. All 36 hold branches were preserved; phase 2 must stay small, reversible, evidence-backed, and human-reviewed.
+Repository cleanup phase 1 mapping, the 2026-07-22 complete remote branch-list triage, the explicitly approved deletion of 76 verified stale branches, the bundled Public Validator `record_id` runner alignment, and the first scannable demo QR entry are complete. All 36 hold branches were preserved; phase 2 and later Public Validator slices must stay small, reversible, evidence-backed, and human-reviewed.
 
 ## Next safe actions
 
@@ -25,15 +25,15 @@ E. `workflow-map-index-2026-06-16.md` synchronized through #1008 by #1009.
 Current immediate operator path:
 
 1. Treat #1210/#1211 branch inventory, state synchronization, and approved 76-branch cleanup as complete. Preserve the 36 hold branches.
-2. Implement the smallest public validator / QR real-use slice: let the deterministic local demo runner accept a supported bundled demo `record_id` and return the same advisory fixture result as the static viewer.
+2. Treat #1216 bundled `record_id` runner alignment and #1217 single scannable demo QR entry as complete. Do not recreate either slice.
 3. Keep the three intentional issue surfaces distinct and open unless explicitly superseded: #812 HC Assistant Console v2, #1082 HC Signal Watch Console, and #1109 HC Mission Control / Active Task Queue.
 4. Treat #1005-#1009 workflow noise reduction, #1161-#1166 public surface work, #1197-#1203 HC Council local report-only/command bridge work, #1205 CodeQL default-setup boundary, and #1209 QR compatibility repair as completed lines, not active TODOs.
 5. Use `repository-index-chain-2026-06-16.md` to locate the root, docs, src, scripts, generated/reference, historical/evidence, and public/demo indexes.
 6. Use `repository-cleanup-phase1-checkpoint-2026-06-16.md` to confirm phase 1 completion and `first-safe-repo-plan-2026-06-16.md` before proposing a structure change.
-7. After the demo runner/static viewer `record_id` contract is aligned, continue the public validator / QR UX real-use path one bounded slice at a time before runtime/protocol hardening.
+7. Perform one bounded, report-only mobile acceptance review of the #1217 live FOOD fixture QR entry. Confirm that scan or direct open lands on the selected result card, keeps the advisory boundaries readable, and does not expose a raw GitHub file or unsupported fallback route.
 8. HC Control Bot, HC Trust Engineer Agent, and HC Council local runner remain GitHub-native or local advisory aids. Authority expansion remains parked.
 9. Do not widen workflow permissions, enable auto-merge, delete workflows, remove checks, add uncontrolled issue-comment automation, or add label/assignment/reviewer/approval/merge/close authority without a new governance review.
-10. Before proposing new work, cross-check `project-state.md`, `task-ledger.md`, current GitHub PR history, and repository evidence.
+10. Record concrete mobile findings before proposing another QR entry or any navigation, runtime, canonical, signing, or protocol change. Before proposing new work, cross-check `project-state.md`, `task-ledger.md`, current GitHub PR history, and repository evidence.
 
 ## Parked work
 
@@ -46,7 +46,7 @@ The following remain parked unless explicitly authorized, scoped, reviewed, and 
 
 ## Immediate do-not-repeat summary
 
-Completed public-validator and public-explorer planning, HC Control Bot, assistant-console, HC Council local report-only runner/command bridge, validator pipeline, verification package, HC Trust Engineer, HC Engineer planner, signature/witness planning, PR-flow diagnostic, repository inventory, governance automation, governance evidence review, evidence artifact inspection, workflow noise reduction, repository purpose-index, repository index-chain, inventory passes, first safe repository plan, cleanup phase 1 checkpoint, CodeQL default-setup boundary, #1209 QR compatibility repair, and #1210/#1211 branch inventory/cleanup should not be repeated unless new repository evidence or human reviewer direction identifies a concrete gap.
+Completed public-validator and public-explorer planning, HC Control Bot, assistant-console, HC Council local report-only runner/command bridge, validator pipeline, verification package, HC Trust Engineer, HC Engineer planner, signature/witness planning, PR-flow diagnostic, repository inventory, governance automation, governance evidence review, evidence artifact inspection, workflow noise reduction, repository purpose-index, repository index-chain, inventory passes, first safe repository plan, cleanup phase 1 checkpoint, CodeQL default-setup boundary, #1209 QR compatibility repair, #1210/#1211 branch inventory/cleanup, #1216 bundled `record_id` runner alignment, and #1217 single scannable demo QR entry should not be repeated unless new repository evidence or human reviewer direction identifies a concrete gap.
 
 Use GitHub PR history for detailed completed-work history and `task-ledger.md` for milestone references. Do not list completed work as active next work in this file.
 
