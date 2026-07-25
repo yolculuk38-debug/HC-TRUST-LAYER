@@ -42,6 +42,12 @@ def test_static_viewer_unsupported_record_id_is_public_safe_and_static_only() ->
     html = _viewer_html()
 
     assert "Public-safe demo warning: unsupported demo record_id" in html
+    assert "Public-safe demo warning: unsupported demo scenario" in html
+    assert "No bundled demo result rendered" in html
+    assert 'renderUnsupportedInput("record_id", requestedRecordId)' in html
+    assert "updateUnsupportedRecordIdUrl(requestedRecordId)" in html
+    assert 'key: null' in html
+    assert "did not substitute a different fixture" in html
     assert "does not call a backend" in html
     assert "perform canonical lookup" in html
     assert "verify truth" in html
