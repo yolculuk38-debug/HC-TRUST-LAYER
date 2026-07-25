@@ -19,7 +19,7 @@ This document helps human contributors, AI assistants, and agentic tools quickly
 - The legacy QR compatibility bridge repair is completed through #1209 and preserves the archived canonical hash without making the bridge canonical evidence.
 - Local verifier example navigation status is recorded by `docs/project-control/local-verifier-example-navigation-status.md`.
 - Repository cleanup phase 1 mapping is completed and recorded by `docs/project-control/repository-cleanup-phase1-checkpoint-2026-06-16.md`.
-- The complete remote branch snapshot is recorded by `docs/project-control/remote-branch-inventory-2026-07-22.md`; destructive deletion remains parked.
+- The complete remote branch snapshot and approved 76-branch cleanup are recorded by `docs/project-control/remote-branch-inventory-2026-07-22.md`; all 36 hold branches remain preserved.
 
 ## Operating Layer Quick Path
 
@@ -37,7 +37,7 @@ A. docs navigation cleanup — completed by #994.
 B. report-only test duplicate inventory — completed by #995.
 C. report-only workflow cleanup recommendation — completed by #996.
 D. issue cleanup — classified. #812 is the assistant command console, #1082 is the Signal Watch notification console, and #1109 is Mission Control / Active Task Queue. They are not cleanup candidates.
-E. complete branch-list triage — evidence-complete in `remote-branch-inventory-2026-07-22.md`: 76 deletion candidates and 36 hold branches, with no deletion performed. Any destructive batch requires fresh evidence, an exact list, explicit human approval, and post-action audit.
+E. complete branch-list triage and candidate cleanup — #1210 recorded 76 verified deletion candidates and 36 hold branches; #1211 recorded the explicitly approved deletion of all 76 candidates with zero failures. The 36 hold branches remain preserved. Any action on a hold requires separate content evidence, a fresh exact list, explicit human approval, and post-action audit.
 
 
 1. Current project state: [`docs/project-control/project-state.md`](project-state.md)
@@ -58,7 +58,7 @@ E. complete branch-list triage — evidence-complete in `remote-branch-inventory
 16. Active assistant console: [#812 HC Assistant Console v2](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/812)
 17. Signal Watch notification console: [#1082 HC Signal Watch Console](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/1082)
 18. Mission coordination queue: [#1109 HC Mission Control / Active Task Queue](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/issues/1109)
-19. Complete remote branch snapshot: [`docs/project-control/remote-branch-inventory-2026-07-22.md`](remote-branch-inventory-2026-07-22.md)
+19. Complete remote branch snapshot and cleanup audit: [`docs/project-control/remote-branch-inventory-2026-07-22.md`](remote-branch-inventory-2026-07-22.md)
 
 Do not repeat #811, #813, #814, #826, #828, or assistant-console / command-surface / repository-assistant-baseline synchronization work unless new repository evidence appears. Treat #763 as closed historical evidence only.
 
