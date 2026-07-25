@@ -75,7 +75,7 @@ def cmd_verify_package(args):
 
 
 def cmd_qr_public_validator(args):
-    result = run_qr_public_validator(args.payload_json)
+    result = run_qr_public_validator(args.payload_json, repo_root=Path.cwd())
     print(json.dumps(result, ensure_ascii=False, sort_keys=True, indent=2))
     return 0 if result["status"] == "qr_record_validated" else 1
 

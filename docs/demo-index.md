@@ -47,7 +47,7 @@ Use the packaged local CLI to run the existing QR payload parser, allowed-record
 hc-trust qr-public-validator "$(cat docs/demo/fixtures/qr-payload-parser/record-match-payload.json)"
 ```
 
-The command accepts exactly one QR payload JSON string, prints sorted JSON with no extra stdout prose, and returns `0` only for `qr_record_validated`. All other advisory outcomes return `1`. It does not fetch `canonical_url`, call a network or backend, prove QR authenticity, verify signatures, prove issuer authority, or verify truth. See the [combined local QR/Public Validator boundary and CLI guide](security/qr-combined-local-public-validator.md#cli-entry-point).
+Run this command from the repository checkout root. The command accepts exactly one QR payload JSON string, resolves allowed records and the canonical schema from the current working directory, prints sorted JSON with no extra stdout prose, and returns `0` only for `qr_record_validated`. All other advisory outcomes return `1`. It does not fetch `canonical_url`, call a network or backend, prove QR authenticity, verify signatures, prove issuer authority, or verify truth. See the [combined local QR/Public Validator boundary and CLI guide](security/qr-combined-local-public-validator.md#cli-entry-point).
 
 ## MVP-1 Public Demo Quick Links
 

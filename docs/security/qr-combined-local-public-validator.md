@@ -100,6 +100,7 @@ PYTHONPATH=src python -m hc_trust.cli qr-public-validator \
 The command:
 
 - accepts exactly one QR payload JSON string;
+- resolves `records/` and `schema/` from the current working directory, so run it from the repository checkout root;
 - writes one deterministic, sorted JSON result to stdout with no explanatory prose;
 - returns exit code `0` only for `qr_record_validated`;
 - returns exit code `1` for mismatch, malformed, invalid, not-found, duplicate, or not-checked outcomes;
