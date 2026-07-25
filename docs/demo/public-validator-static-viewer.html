@@ -520,14 +520,14 @@
       document.getElementById(id).textContent = String(value);
     }
 
-    function renderList(id, values) {
+    function renderList(id, values, emptyMessage = "No items in this demo fixture.") {
       const list = document.getElementById(id);
       list.replaceChildren();
 
       if (!values.length) {
         const item = document.createElement("li");
         item.className = "empty";
-        item.textContent = "No items in this demo fixture.";
+        item.textContent = emptyMessage;
         list.appendChild(item);
         return;
       }
@@ -542,6 +542,14 @@
     function renderEvidence(values) {
       const list = document.getElementById("evidence");
       list.replaceChildren();
+
+      if (!values.length) {
+        const item = document.createElement("li");
+        item.className = "empty";
+        item.textContent = "No evidence rendered.";
+        list.appendChild(item);
+        return;
+      }
 
       values.forEach((entry) => {
         const item = document.createElement("li");
@@ -571,6 +579,13 @@
       window.history.replaceState(null, "", url);
     }
 
+    function updateUnsupportedRecordIdUrl(recordId) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("record_id", recordId);
+      url.searchParams.delete("scenario");
+      window.history.replaceState(null, "", url);
+    }
+
     function setRecordIdMessage(message, isWarning = false) {
       const messageElement = document.getElementById("record-id-message");
       messageElement.classList.toggle("notice", isWarning);
@@ -585,6 +600,7 @@
         button.setAttribute("aria-pressed", String(button.dataset.scenario === key));
       });
 
+      setText("result-heading", "Public-safe HC result card");
       setText("scenario-summary", `Selected scenario: ${key}`);
       setText("status-badge", result.status);
       document.getElementById("record-id-input").value = result.record_id;
@@ -603,14 +619,67 @@
       renderList("warnings", result.warnings);
     }
 
+    function renderUnsupportedInput(inputType, inputValue = "") {
+      document.querySelectorAll("[data-scenario]").forEach((button) => {
+        button.setAttribute("aria-pressed", "false");
+      });
+
+      document.getElementById("record-id-input").value = inputValue;
+      setText("result-heading", "No bundled demo result rendered");
+      setText("scenario-summary", `Unsupported ${inputType} input.`);
+      setText("status-badge", "unsupported_input");
+      setText("record-id", "not_rendered");
+      setText("scenario", "not_rendered");
+      setText("status", "unsupported_input");
+      setText("advisory-only", safetyMarkers.advisory_only);
+      setText("public-safe", safetyMarkers.public_safe);
+      setText("truth-guarantee", safetyMarkers.truth_guarantee);
+      setText("human-review-required", safetyMarkers.human_review_required);
+      renderList("source-chain", [], "No source chain rendered.");
+      renderList("responsibility-chain", [], "No responsibility chain rendered.");
+      renderEvidence([]);
+      renderList(
+        "missing-evidence",
+        ["A supported bundled fixture identifier is required before a demo result can be rendered."]
+      );
+      renderList("conflicting-evidence", [], "No conflicting evidence rendered.");
+      renderList("warnings", [
+        `Unsupported demo ${inputType}; no bundled fixture result was rendered.`,
+        "This viewer did not substitute a different fixture, call a backend, perform canonical lookup, verify truth, prove QR authenticity, or validate signed payloads."
+      ]);
+    }
+
     function selectionFromQueryString() {
       const params = new URLSearchParams(window.location.search);
+      const recordIdValues = params.getAll("record_id");
+      const scenarioValues = params.getAll("scenario");
       const requestedRecordId = (params.get("record_id") || "").trim().toUpperCase();
+      const requestedScenario = params.get("scenario");
 
-      if (requestedRecordId) {
+      if (recordIdValues.length > 1 || scenarioValues.length > 1) {
+        return {
+          key: null,
+          inputType: "duplicate query selector",
+          inputValue: "",
+          message: "Public-safe demo warning: duplicate record_id or scenario query parameters are not supported. No bundled fixture result was rendered.",
+          isWarning: true
+        };
+      }
+
+      if (params.has("record_id")) {
         const key = recordIdScenarioMap[requestedRecordId];
 
         if (key) {
+          if (params.has("scenario") && requestedScenario !== key) {
+            return {
+              key: null,
+              inputType: "conflicting query selector",
+              inputValue: requestedRecordId,
+              message: "Public-safe demo warning: record_id and scenario query parameters select different bundled fixtures. No bundled fixture result was rendered.",
+              isWarning: true
+            };
+          }
+
           return {
             key,
             message: `Matched demo record_id query parameter to bundled scenario '${key}' for advisory fixture display only.`,
@@ -619,16 +688,26 @@
         }
 
         return {
-          key: "banana",
-          message: "Public-safe demo warning: unsupported demo record_id query parameter. This static viewer does not call a backend, perform canonical lookup, verify truth, prove QR authenticity, or validate signed payloads.",
+          key: null,
+          inputType: "record_id",
+          inputValue: requestedRecordId,
+          message: "Public-safe demo warning: unsupported demo record_id query parameter. No bundled fixture result was rendered. This static viewer does not call a backend, perform canonical lookup, verify truth, prove QR authenticity, or validate signed payloads.",
           isWarning: true
         };
       }
 
-      const requestedScenario = params.get("scenario");
-
       if (Object.prototype.hasOwnProperty.call(scenarios, requestedScenario)) {
         return { key: requestedScenario, message: null, isWarning: false };
+      }
+
+      if (params.has("scenario")) {
+        return {
+          key: null,
+          inputType: "scenario",
+          inputValue: "",
+          message: "Public-safe demo warning: unsupported demo scenario query parameter. No bundled fixture result was rendered. This static viewer does not substitute a different fixture, call a backend, perform canonical lookup, verify truth, prove QR authenticity, or validate signed payloads.",
+          isWarning: true
+        };
       }
 
       return { key: "banana", message: null, isWarning: false };
@@ -649,8 +728,10 @@
       const key = recordIdScenarioMap[requestedRecordId];
 
       if (!key) {
+        renderUnsupportedInput("record_id", requestedRecordId);
+        updateUnsupportedRecordIdUrl(requestedRecordId);
         setRecordIdMessage(
-          "Public-safe demo warning: unsupported demo record_id. This static viewer does not call a backend, perform canonical lookup, verify truth, prove QR authenticity, or validate signed payloads.",
+          "Public-safe demo warning: unsupported demo record_id. No bundled fixture result was rendered. This static viewer does not call a backend, perform canonical lookup, verify truth, prove QR authenticity, or validate signed payloads.",
           true
         );
         return;
@@ -662,7 +743,11 @@
     });
 
     const initialSelection = selectionFromQueryString();
-    renderScenario(initialSelection.key);
+    if (initialSelection.key) {
+      renderScenario(initialSelection.key);
+    } else {
+      renderUnsupportedInput(initialSelection.inputType, initialSelection.inputValue);
+    }
     if (initialSelection.message) {
       setRecordIdMessage(initialSelection.message, initialSelection.isWarning);
     }

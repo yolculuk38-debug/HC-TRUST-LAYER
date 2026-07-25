@@ -7,7 +7,7 @@
 
 ## What Currently Works
 
-- The static viewer at [`public-validator-static-viewer.html`](public-validator-static-viewer.html) displays the four demo scenarios: `banana`, `building`, `news`, and `qr-spoof`. It also supports static query-string scenario selection for demo links such as `public-validator-static-viewer.html?scenario=banana`, with unsupported or missing values falling back to `banana`.
+- The static viewer at [`public-validator-static-viewer.html`](public-validator-static-viewer.html) displays the four demo scenarios: `banana`, `building`, `news`, and `qr-spoof`. It also supports static query-string scenario selection for demo links such as `public-validator-static-viewer.html?scenario=banana`. A request with no selector keeps `banana` as the default landing fixture; explicit empty, unsupported, duplicate, or conflicting selectors fail closed and render no bundled fixture result.
 - The local runner at [`../../scripts/run_public_validator_demo.py`](../../scripts/run_public_validator_demo.py) accepts the same four scenario commands and prints deterministic JSON from [`fixtures/results/`](fixtures/results/).
 - The result fixtures expose consistent safety markers across scenarios:
   - `advisory_only: true`
@@ -15,8 +15,8 @@
   - `truth_guarantee: false`
   - `human_review_required: true`
 - The viewer links, QR/link fixture entries, quickstart scenario commands, runner scenario names, and Record ID fixture matches align around the same demo keys: `banana`, `building`, `news`, and `qr-spoof`.
-- The static viewer includes a Record ID input for bundled fixture matching only: `HC-DEMO-PV-FIXTURE-FOOD-0001` → `banana`, `HC-DEMO-PV-FIXTURE-CONCRETE-0001` → `building`, `HC-DEMO-PV-FIXTURE-NEWS-0001` → `news`, and `HC-DEMO-PV-FIXTURE-QR-0001` → `qr-spoof`. Unsupported IDs show a public-safe warning without backend, network, API, database, canonical lookup, truth verification, QR authenticity, signed payload verification, or production verification behavior.
-- The README and START_HERE navigation point users to the static viewer, local demo runner, local lookup runner, demo quickstart, and local lookup quickstart without presenting the demo or CLI lookup as production-ready.
+- The static viewer includes a Record ID input for bundled fixture matching only: `HC-DEMO-PV-FIXTURE-FOOD-0001` → `banana`, `HC-DEMO-PV-FIXTURE-CONCRETE-0001` → `building`, `HC-DEMO-PV-FIXTURE-NEWS-0001` → `news`, and `HC-DEMO-PV-FIXTURE-QR-0001` → `qr-spoof`. Unsupported or empty IDs fail closed: the viewer shows a public-safe warning, renders no bundled fixture result, and performs no backend, network, API, database, canonical lookup, truth verification, QR authenticity, signed payload verification, or production verification behavior.
+- The README and START_HERE navigation point users first to the current QR entry and exact live fallback result, then to the static viewer source, local demo runner, local lookup runner, demo quickstart, and local lookup quickstart without presenting the demo or CLI lookup as production-ready.
 - The local record lookup boundary spec defines the next-phase separation between fixture matching and future local canonical record lookup: [`public-validator-local-record-lookup-boundary.md`](public-validator-local-record-lookup-boundary.md).
 
 ## Demo-Only Boundaries
@@ -61,7 +61,7 @@ This checkpoint reviewed the public validator demo surface across:
 
 ## Checkpoint Note
 
-PR **#652 Public Validator Record ID input demo** keeps the work static/demo-only and documents bounded Record ID fixture matching as a viewer convenience layered on top of the existing scenario selection. It does not add backend calls, API calls, external network calls, QR crypto, signing changes, schema changes, validator changes, workflow changes, database/index lookup, canonical lookup, or production-readiness claims. Manual checks for this checkpoint are: query scenario links still work, scenario buttons still work, supported demo `record_id` values select the mapped scenarios, unsupported demo `record_id` values show a safe warning, and no backend/network/API calls are introduced.
+PR **#652 Public Validator Record ID input demo** keeps the work static/demo-only and documents bounded Record ID fixture matching as a viewer convenience layered on top of the existing scenario selection. It does not add backend calls, API calls, external network calls, QR crypto, signing changes, schema changes, validator changes, workflow changes, database/index lookup, canonical lookup, or production-readiness claims. Manual checks for this checkpoint are: query scenario links still work, scenario buttons still work, supported demo `record_id` values select the mapped scenarios, unsupported demo `record_id` values fail closed without rendering another fixture, and no backend/network/API calls are introduced.
 
 PR **#656 Local Public Validator result contract hardening** locks the local lookup result shape after #654 local record lookup and #655 advisory schema/hash validation signals. The contract remains public-safe, advisory-only, local-only, and human-review-required; validation pass values do not create a truth guarantee or production-readiness claim.
 

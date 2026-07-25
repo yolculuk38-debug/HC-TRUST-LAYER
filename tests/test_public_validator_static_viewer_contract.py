@@ -34,11 +34,33 @@ def test_static_viewer_supports_record_id_query_entry() -> None:
 
     assert "?record_id=HC-DEMO-PV-FIXTURE-FOOD-0001" in html
     assert 'params.get("record_id")' in html
+    assert 'params.has("record_id")' in html
     assert "selectionFromQueryString" in html
     assert "Matched demo record_id query parameter" in html
     assert "unsupported demo record_id query parameter" in html
     assert "updateRecordIdUrl" in html
     assert 'url.searchParams.set("record_id", recordId)' in html
+
+
+def test_static_viewer_fails_closed_for_unsupported_query_inputs() -> None:
+    html = _html()
+
+    assert 'params.has("scenario")' in html
+    assert 'params.getAll("record_id")' in html
+    assert 'params.getAll("scenario")' in html
+    assert "recordIdValues.length > 1" in html
+    assert "scenarioValues.length > 1" in html
+    assert "requestedScenario !== key" in html
+    assert "duplicate record_id or scenario query parameters" in html
+    assert "select different bundled fixtures" in html
+    assert "function renderUnsupportedInput(inputType" in html
+    assert 'setText("result-heading", "No bundled demo result rendered")' in html
+    assert 'setText("status-badge", "unsupported_input")' in html
+    assert 'setText("record-id", "not_rendered")' in html
+    assert 'setText("scenario", "not_rendered")' in html
+    assert "no bundled fixture result was rendered" in html
+    assert "did not substitute a different fixture" in html
+    assert "renderUnsupportedInput(initialSelection.inputType" in html
 
 
 def test_static_viewer_keeps_core_result_fields_visible() -> None:

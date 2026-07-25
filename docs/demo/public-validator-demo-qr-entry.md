@@ -91,7 +91,7 @@ The parser checks payload shape only. It does not prove QR authenticity, verify 
 | `news` | `news_source_provenance` | `HC-DEMO-PV-FIXTURE-NEWS-0001` | `public-validator-static-viewer.html?scenario=news` | `docs/demo/public-validator-static-viewer.html` |
 | `qr-spoof` | `qr_spoof_non_canonical_link` | `HC-DEMO-PV-FIXTURE-QR-0001` | `public-validator-static-viewer.html?scenario=qr-spoof` | `docs/demo/public-validator-static-viewer.html` |
 
-The `demo_url` values are static viewer entry points. When opened in a browser, the `scenario` query-string value selects the matching bundled demo scenario automatically. Unsupported or missing scenario values fall back to the `banana` demo scenario. The current viewer remains a client-side static demo surface that matches only bundled fixtures; it does not provide production routing, backend lookup, remote fetching, QR authenticity checks, or signed QR validation.
+The `demo_url` values are static viewer entry points. When opened in a browser, a supported `scenario` query-string value selects the matching bundled demo scenario automatically. A request with no selector keeps `banana` as the default landing fixture. Explicit empty or unsupported selectors, duplicate selector parameters, and a `record_id` paired with a conflicting `scenario` fail closed: the viewer shows an `unsupported_input` warning state and does not substitute or render another bundled fixture. The current viewer remains a client-side static demo surface that matches only bundled fixtures; it does not provide production routing, backend lookup, remote fetching, QR authenticity checks, or signed QR validation.
 
 ## How to Use
 

@@ -11,6 +11,8 @@ GENERATOR = ROOT / "scripts" / "generate_public_validator_demo_qr.py"
 QR_ASSET = ROOT / "docs" / "demo" / "public-validator-demo-qr.svg"
 QR_ENTRY_DOC = ROOT / "docs" / "demo" / "public-validator-demo-qr-entry.md"
 VIEWER = ROOT / "docs" / "demo" / "public-validator-static-viewer.html"
+README = ROOT / "README.md"
+START_HERE = ROOT / "docs" / "START_HERE.md"
 
 spec = spec_from_file_location("generate_public_validator_demo_qr", GENERATOR)
 assert spec is not None and spec.loader is not None
@@ -86,3 +88,20 @@ def test_qr_entry_document_exposes_target_and_safety_boundary() -> None:
     assert "`truth_guarantee: false`" in document
     assert "`human_review_required: true`" in document
     assert "does not prove QR authenticity" in document
+
+
+def test_primary_navigation_exposes_the_current_qr_and_live_result() -> None:
+    readme = README.read_text(encoding="utf-8")
+    start_here = START_HERE.read_text(encoding="utf-8")
+
+    assert "(docs/demo/public-validator-demo-qr-entry.md)" in readme
+    assert "(demo/public-validator-demo-qr-entry.md)" in start_here
+    assert generator.DEMO_TARGET_URL in readme
+    assert generator.DEMO_TARGET_URL in start_here
+
+    assert readme.index("docs/demo/public-validator-demo-qr-entry.md") < readme.index(
+        "docs/demo/public-validator-static-viewer.html"
+    )
+    assert start_here.index("demo/public-validator-demo-qr-entry.md") < start_here.index(
+        "demo/public-validator-static-viewer.html"
+    )
