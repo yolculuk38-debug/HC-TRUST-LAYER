@@ -22,7 +22,7 @@ def test_static_viewer_keeps_query_scenario_and_button_entry_points() -> None:
         assert f"?scenario={scenario}" in html
         assert f'data-scenario="{scenario}"' in html
 
-    assert "function scenarioFromQueryString()" in html
+    assert "function selectionFromQueryString()" in html
     assert 'url.searchParams.set("scenario", key);' in html
 
 

@@ -1,6 +1,6 @@
 # Public Validator Demo QR Entry Point
 
-> **Status:** demo documentation and optional link fixture only
+> **Status:** scannable demo access aid and optional link fixture
 > **Scope:** public-safe QR/link entry flow for HC:// Public Validator demos
 > **Authority:** advisory-only; human review remains required
 > **Production readiness:** not claimed
@@ -11,15 +11,34 @@ This document defines the first demo-level QR/link entry flow for the HC:// Publ
 
 The entry flow is intentionally small and public-safe. A demo QR or ordinary link points a user toward the static viewer, the viewer displays one of the existing demo scenarios, and the result highlights warnings, missing evidence, source-chain context, and the need for human review.
 
-No real QR artifacts are generated here. The links are fixture-level examples only and do not assert signed QR verification, production QR security, legal authority, certification authority, truth finality, or forensic certainty.
+One deterministic, text-only SVG QR access aid is generated for the bundled food-provenance fixture. It is a demo pointer only. It does not assert QR authenticity, signed QR verification, production QR security, legal authority, certification authority, truth finality, or forensic certainty. Existing legacy QR evidence under `qr/**` is not changed or replaced.
 
 For the next trust-boundary specification, see [QR Payload Verification Boundary](../security/qr-payload-verification-boundary.md).
+
+## Scan the Current Demo
+
+[![Scan the Public Validator food-provenance demo](public-validator-demo-qr.svg)](https://yolculuk38-debug.github.io/HC-TRUST-LAYER/demo/public-validator-static-viewer.html?record_id=HC-DEMO-PV-FIXTURE-FOOD-0001#result-heading)
+
+Scan the SVG above with a phone camera, or open the exact fallback link:
+
+<https://yolculuk38-debug.github.io/HC-TRUST-LAYER/demo/public-validator-static-viewer.html?record_id=HC-DEMO-PV-FIXTURE-FOOD-0001#result-heading>
+
+The target uses the official GitHub Pages host, selects only the bundled `HC-DEMO-PV-FIXTURE-FOOD-0001` fixture, and uses `#result-heading` to move a mobile browser directly to the result card. It does not perform canonical record lookup, backend or network verification, QR authenticity verification, signed payload verification, or truth verification.
+
+The committed SVG is reproducible with:
+
+```bash
+python scripts/generate_public_validator_demo_qr.py
+python scripts/generate_public_validator_demo_qr.py --check
+```
+
+The access aid keeps `advisory_only: true`, `public_safe: true`, `truth_guarantee: false`, and `human_review_required: true`. A human reviewer remains responsible for interpreting the result.
 
 ## Purpose
 
 The purpose of this entry point is to show how a future public-facing HC:// validation experience could begin from a QR scan or link click without expanding the protocol, changing validator logic, or claiming production readiness.
 
-This PR keeps the work documentation/demo-fixture only so reviewers can evaluate the user flow before any runtime, security, signing, federation, governance, or record-boundary changes are considered.
+This demo slice keeps the work to a text-only access aid, its deterministic generator, focused contract tests, and documentation so reviewers can evaluate the user flow before any runtime, security, signing, federation, governance, or record-boundary changes are considered.
 
 ## Demo QR / Link Flow
 
@@ -72,7 +91,7 @@ The parser checks payload shape only. It does not prove QR authenticity, verify 
 | `news` | `news_source_provenance` | `HC-DEMO-PV-FIXTURE-NEWS-0001` | `public-validator-static-viewer.html?scenario=news` | `docs/demo/public-validator-static-viewer.html` |
 | `qr-spoof` | `qr_spoof_non_canonical_link` | `HC-DEMO-PV-FIXTURE-QR-0001` | `public-validator-static-viewer.html?scenario=qr-spoof` | `docs/demo/public-validator-static-viewer.html` |
 
-The `demo_url` values are static viewer entry points. When opened in a browser, the `scenario` query-string value selects the matching bundled demo scenario automatically. Unsupported or missing scenario values fall back to the `banana` demo scenario. The current static viewer remains a local static demo surface and does not provide production routing, backend lookup, remote fetching, QR authenticity checks, or signed QR validation.
+The `demo_url` values are static viewer entry points. When opened in a browser, the `scenario` query-string value selects the matching bundled demo scenario automatically. Unsupported or missing scenario values fall back to the `banana` demo scenario. The current viewer remains a client-side static demo surface that matches only bundled fixtures; it does not provide production routing, backend lookup, remote fetching, QR authenticity checks, or signed QR validation.
 
 ## How to Use
 
@@ -87,19 +106,20 @@ The `demo_url` values are static viewer entry points. When opened in a browser, 
 This demo entry point:
 
 - documents a QR/link-style entry flow for the HC:// Public Validator demo;
+- provides one reproducible text-only SVG access aid for the bundled food-provenance fixture;
 - points users toward the existing static viewer and demo scenario results;
 - keeps all scenario outputs public-safe and advisory-only;
 - preserves `public_safe: true`, `truth_guarantee: false`, and `human_review_required: true` posture;
 - surfaces warnings, missing evidence, source-chain context, and review reminders;
-- stays limited to documentation and a small demo fixture.
+- stays limited to documentation, a small demo fixture, a deterministic generator, and focused contract tests.
 
 ## What This Does NOT Do
 
 This demo entry point does not:
 
-- generate real QR artifacts;
+- generate production QR artifacts or replace legacy QR evidence;
 - modify QR production code;
-- modify records, schemas, validators, runtime endpoints, workflows, governance rules, signing, federation, policy, canonical artifacts, or generated artifacts;
+- modify records, schemas, validators, runtime endpoints, workflows, governance rules, signing, federation, policy, canonical artifacts, or generated artifacts outside the explicitly named non-canonical demo SVG access aid;
 - verify signed QR payloads;
 - claim production QR security;
 - fetch remote URLs or perform backend validation;
@@ -130,6 +150,6 @@ human_review_required: true
 
 A human reviewer remains responsible for evaluating evidence, missing evidence, conflicts, source-chain context, issuer authority, and any real-world reliance decision.
 
-## Recommended Next PR
+## Follow-up Boundary
 
-#651 Public Validator demo navigation polish
+Additional demo QR access aids may be considered only after this single-entry flow is reviewed on mobile. Production QR generation, canonical routing, signed payload validation, and repairs to existing runtime QR URL generation remain separate, higher-risk tasks.
