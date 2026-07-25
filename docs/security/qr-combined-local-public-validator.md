@@ -82,6 +82,32 @@ Required safety markers:
 }
 ```
 
+## CLI Entry Point
+
+The existing `hc-trust` console entry point exposes the combined engine without changing its parser, lookup allowlist, result contract, or network boundary:
+
+```bash
+hc-trust qr-public-validator "$(cat docs/demo/fixtures/qr-payload-parser/record-match-payload.json)"
+```
+
+For a repository checkout without an installed console script:
+
+```bash
+PYTHONPATH=src python -m hc_trust.cli qr-public-validator \
+  "$(cat docs/demo/fixtures/qr-payload-parser/record-match-payload.json)"
+```
+
+The command:
+
+- accepts exactly one QR payload JSON string;
+- writes one deterministic, sorted JSON result to stdout with no explanatory prose;
+- returns exit code `0` only for `qr_record_validated`;
+- returns exit code `1` for mismatch, malformed, invalid, not-found, duplicate, or not-checked outcomes;
+- preserves `advisory_only=true`, `public_safe=true`, `truth_guarantee=false`, and `human_review_required=true`;
+- does not read a payload file implicitly, fetch `canonical_url`, call a network/backend/API, or widen the allowed local record paths.
+
+The bundled `record-match-payload.json` is a public-safe, non-canonical CLI input fixture that references the checked-in `HC-RELEASE-2026-0001` record. Its successful local hash comparison is test evidence for the CLI path, not proof that the QR is authentic or that the record content is true.
+
 ## Non-Claims
 
 A combined `qr_record_validated` result does **not** prove:

@@ -44,6 +44,7 @@ Start with the [Mini Public Validator Demo](docs/demo/mini-public-validator-demo
 - [Open the live Public Validator result card](https://yolculuk38-debug.github.io/HC-TRUST-LAYER/demo/public-validator-static-viewer.html?record_id=HC-DEMO-PV-FIXTURE-FOOD-0001#result-heading)
 - [Try the Public Validator Demo](#try-the-public-validator-demo)
 - [Local Public Validator lookup quickstart](docs/demo/public-validator-local-lookup-quickstart.md)
+- [Combined local QR/Public Validator CLI](docs/security/qr-combined-local-public-validator.md#cli-entry-point)
 - [MVP Snapshot](#mvp-snapshot)
 - [Start Here navigation guide](docs/START_HERE.md)
 - [Current project state](docs/project-control/project-state.md)
@@ -115,6 +116,7 @@ Use the HC:// Public Validator demo entry points to inspect a public-safe, advis
 - Run the local demo runner: [`scripts/run_public_validator_demo.py`](scripts/run_public_validator_demo.py)
 - Read the demo quickstart: [`docs/demo/public-validator-demo-quickstart.md`](docs/demo/public-validator-demo-quickstart.md)
 - Run the local `record_id` lookup quickstart: [`docs/demo/public-validator-local-lookup-quickstart.md`](docs/demo/public-validator-local-lookup-quickstart.md). Example: `python scripts/run_public_validator_lookup.py HC-EXAMPLE-2026-0001`. The CLI lookup is local-only, advisory-only, public-safe, not a production API, not truth verification, not QR authenticity proof, not signed payload verification, and not legal/regulatory/safety certification; human review remains required.
+- Run the combined local QR/Public Validator check: [`hc-trust qr-public-validator`](docs/security/qr-combined-local-public-validator.md#cli-entry-point). It accepts one QR payload JSON string, checks only allowed local record paths, prints deterministic advisory JSON, and performs no URL fetch or other network lookup.
 
 ### Try local verification preview entry point
 

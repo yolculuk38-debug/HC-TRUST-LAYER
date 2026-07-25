@@ -192,6 +192,7 @@ def test_cli_help_contract_can_be_rendered_without_side_effects() -> None:
 
     assert "hc-trust" in help_text
     assert "verify-package" in help_text
+    assert "qr-public-validator" in help_text
     assert "local advisory evidence checks" in help_text
     assert "not trust authority" in help_text
 
