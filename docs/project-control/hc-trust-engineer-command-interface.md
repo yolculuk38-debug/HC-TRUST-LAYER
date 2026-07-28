@@ -93,46 +93,6 @@ Use the active console issue for project-level questions such as status, next ta
 Pull-request-specific questions should still be asked on the relevant PR. #1082 HC Signal Watch Console is a notification-only review surface; its issue text must not be treated as `/hc` command input, a task claim, or task coordination authority.
 
 
-## HC Review Window PR convention
-
-A non-blocking PR marker workflow may maintain one visible HC Review Window comment before merge-readiness reporting:
-
-```text
-<!-- hc-review-window -->
-👀 ⏳ HC Review Window
-- Head SHA: <head_sha>
-- Observed at: <utc timestamp>
-- Eligible after: <utc timestamp + 90s>
-- Status: waiting for late Codex review/comments before HC Trust Engineer may report merge-readiness
-- Checks are not delayed by this timer
-- Merge still requires final HC Trust Engineer review and explicit maintainer command
-```
-
-This is a PR review-readiness timer only. The marker is advisory-only. Checks are not delayed by the marker. It must not add or slow a required GitHub check, Automation Gate, status, label, reviewer request, approval, rejection, close, merge, or task authority path. Checks remain fast and uncluttered.
-
-### Operator mental model
-
-In football, the match is not treated as final before 90 minutes. In HC review flow, a PR must not be reported merge-ready before the 90-second advisory review window has elapsed for the current head SHA. This is only a mental model: the HC Review Window is advisory-only, does not delay checks, and does not technically block GitHub merge. It gives late Codex/review/comments time to appear before advisory merge-readiness reporting. Merge still requires final HC Trust Engineer review, explicit maintainer command, and human final authority remains required. If the head SHA changes, the review window must be evaluated again for the new head SHA.
-
-Boundary flags: `advisory_only=true`; `public_safe=true`; `truth_guarantee=false`.
-
-Final pass behavior:
-
-1. Read the HC Review Window marker before any merge-readiness report.
-2. If the review window has not elapsed, do not report merge-ready; report the waiting state instead.
-3. Confirm the head SHA is unchanged since the marker observation.
-4. Inspect comments, Codex comments, reviews, threads, checks, and diff scope.
-5. If Codex P1/P2 feedback, failed checks, unresolved threads, changed head SHA, or a scope issue exists, do not report merge-ready.
-6. Merge-ready may be reported only when the review window has elapsed, head SHA is unchanged, checks are green, PR comments/Codex comments/reviews/threads are clean, and diff scope is acceptable.
-7. If clean, report merge-ready only as advisory output for the maintainer.
-8. Merge still requires explicit maintainer command.
-
-Reaction and comment convention:
-
-- 👀 may indicate review observation has started.
-- ⏳ in the PR body or a PR comment may indicate the review window is active.
-- ✅ in the PR body or a PR comment may indicate the review window elapsed.
-- These markers are advisory only and do not create approval, rejection, merge authority, labels, reviewers, closes, or task authority.
 
 ## Command prefix
 
