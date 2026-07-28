@@ -181,9 +181,13 @@ Before merge-readiness guidance, record:
 ### Provisional bounded timeout
 
 Use 300 seconds from `review_requested_at` as a provisional operator timeout for
-the current head. The two audited response intervals—174 seconds from ready for
-#1222 and 123 seconds from explicit request for #1223—fit inside that bound, but
-two observations are not enough to establish a service-level objective.
+the current head. Direct request-to-result evidence exists only for #1223, where
+the result arrived 123 seconds after the explicit request. #1222 has no recorded
+request timestamp; its 174-second ready-to-result interval shows only that the
+90-second minimum window was insufficient. It does not validate a timeout
+measured from `review_requested_at`. One request interval is not enough to
+establish a service-level objective, so the 300-second value remains an
+operational proposal that must be reassessed as more evidence is recorded.
 
 At timeout:
 
@@ -241,4 +245,3 @@ align the existing review-window, mission-execution, lifecycle, final-reviewer,
 and PR-template wording with this contract. Any workflow, permission, required
 check, comment automation, reviewer request, or merge behavior change requires a
 separate governance review and explicit authorization.
-
