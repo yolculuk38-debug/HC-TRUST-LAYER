@@ -170,8 +170,9 @@ Before merge-readiness guidance, record:
    - its reviewed SHA is the full current head or a hexadecimal prefix of at
      least 10 characters that matches the current head;
    - the PR head has not changed after the review evidence was produced.
-5. An actionable P1 or P2, an unresolved applicable thread, a failed or missing
-   required check, or a head mismatch produces `hold_for_review`.
+5. Any actionable Codex finding, including P0, P1, or P2, an unresolved
+   applicable thread, a failed or missing required check, or a head mismatch
+   produces `hold_for_review`.
 6. A clean current-head Codex result may produce
    `eligible_for_human_decision` only after the minimum window, current-head
    checks, diff/scope review, and thread review are also complete.
