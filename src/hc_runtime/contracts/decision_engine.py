@@ -28,21 +28,21 @@ class TrustStateDecisionEngine:
     ) -> tuple[TrustState, list[str]]:
         warnings: list[str] = []
 
-        if not schema_valid:
-            warnings.append("Schema validation could not confirm a valid HC:// QR request.")
-            state = TrustState.UNRESOLVED
-        elif replay_warning:
+        if replay_warning:
             warnings.append("Replay warning detected in QR verification input.")
             state = TrustState.REPLAY_WARNING
-        elif not hash_verified:
-            warnings.append("Hash marker could not be confirmed in QR verification input.")
-            state = TrustState.REVIEW_REQUIRED
         elif not continuity_ok:
             warnings.append("Continuity warning detected in advisory runtime flow.")
             state = TrustState.DEGRADED
         elif "degraded" in record_id.lower() or "degraded" in qr_input.lower():
             warnings.append("Runtime is operating in degraded advisory mode for this verification request.")
             state = TrustState.DEGRADED
+        elif not schema_valid:
+            warnings.append("Canonical schema verification was not performed or did not validate the record.")
+            state = TrustState.UNRESOLVED
+        elif not hash_verified:
+            warnings.append("Canonical digest verification was not performed or did not match the expected digest.")
+            state = TrustState.REVIEW_REQUIRED
         else:
             state = TrustState.ADVISORY
 

@@ -178,7 +178,7 @@ async def test_malformed_structured_payloads_preserve_public_safe_contract(
     assert payload["qr_risk_reasons"] == []
     assert payload["human_review_recommended"] is False
     assert payload["escalation_queued"] is False
-    assert "hash marker could not be confirmed" in _warning_text(payload)
+    assert "digest verification was not performed" in _warning_text(payload)
     _assert_contract_stability_with_visible_warnings(payload)
 
 
@@ -202,7 +202,7 @@ async def test_invalid_payload_types_remain_advisory_without_qr_spoof_escalation
     assert payload["qr_risk_reasons"] == []
     assert payload["human_review_recommended"] is False
     assert payload["escalation_queued"] is False
-    assert "hash marker could not be confirmed" in _warning_text(payload)
+    assert "digest verification was not performed" in _warning_text(payload)
     _assert_contract_stability_with_visible_warnings(payload)
 
 
@@ -284,10 +284,10 @@ async def test_hash_case_differences_do_not_escalate_trust_or_change_determinist
 
     assert lower["qr_risk_level"] == upper["qr_risk_level"] == "LOW"
     assert lower["qr_risk_reasons"] == upper["qr_risk_reasons"] == []
-    assert lower["warnings"] == upper["warnings"] == []
-    assert lower["trust_state"] == upper["trust_state"] == "ADVISORY"
-    assert lower["hash_verified"] is True
-    assert upper["hash_verified"] is True
+    assert lower["warnings"] == upper["warnings"]
+    assert lower["trust_state"] == upper["trust_state"] == "UNRESOLVED"
+    assert lower["hash_verified"] is False
+    assert upper["hash_verified"] is False
     assert lower["human_review_recommended"] is False
     assert upper["human_review_recommended"] is False
     assert lower["escalation_queued"] is False
@@ -341,7 +341,7 @@ async def test_github_hc_trust_layer_records_path_remains_low_risk(client: httpx
         ),
     )
 
-    assert payload["trust_state"] == "ADVISORY"
+    assert payload["trust_state"] == "UNRESOLVED"
     assert payload["qr_risk_level"] == "LOW"
     assert payload["qr_risk_reasons"] == []
     assert payload["human_review_recommended"] is False
@@ -354,10 +354,10 @@ async def test_canonical_qr_returns_low_risk_automatic_advisory_result(client: h
 
     payload = await _post_qr(client, record_id, _encoded_qr(record_id))
 
-    assert payload["trust_state"] == "ADVISORY"
+    assert payload["trust_state"] == "UNRESOLVED"
     assert payload["qr_risk_level"] == "LOW"
     assert payload["qr_risk_reasons"] == []
-    assert payload["warnings"] == []
+    assert any("no record" in warning.lower() for warning in payload["warnings"])
     assert payload["public_exposure"] == "standard"
     assert payload["human_review_recommended"] is False
     assert payload["escalation_queued"] is False
@@ -371,7 +371,7 @@ async def test_stale_qr_returns_medium_risk_with_visible_warning_without_forced_
 
     payload = await _post_qr(client, record_id, _encoded_qr(record_id, qr_version="v0", stale=True))
 
-    assert payload["trust_state"] == "ADVISORY"
+    assert payload["trust_state"] == "UNRESOLVED"
     assert payload["qr_risk_level"] == "MEDIUM"
     assert "stale_qr_version" in payload["qr_risk_reasons"]
     assert "stale_qr_payload" in payload["qr_risk_reasons"]
@@ -389,7 +389,7 @@ async def test_missing_signed_payload_reference_returns_medium_risk(client: http
 
     payload = await _post_qr(client, record_id, _encoded_qr(record_id, signed_payload_ref=""))
 
-    assert payload["trust_state"] == "ADVISORY"
+    assert payload["trust_state"] == "UNRESOLVED"
     assert payload["qr_risk_level"] == "MEDIUM"
     assert payload["qr_risk_reasons"] == ["signed_payload_ref_missing"]
     assert "signed payload reference is missing" in _warning_text(payload)
@@ -452,7 +452,7 @@ async def test_medium_risk_qr_does_not_force_human_review_by_default(client: htt
     assert payload["qr_risk_level"] == "MEDIUM"
     assert payload["human_review_recommended"] is False
     assert payload["escalation_queued"] is False
-    assert "human-supervised validation" not in _warning_text(payload)
+    assert "canonical record lookup returned no record" in _warning_text(payload)
     assert QUEUE_STORE.escalation_queue == []
 
 

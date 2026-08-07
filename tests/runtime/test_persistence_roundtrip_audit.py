@@ -97,7 +97,7 @@ async def test_validation_output_roundtrips_as_public_safe_contract_data(client:
     reread_payload = _roundtrip(payload)
 
     _assert_roundtrip_contract(reread_payload, record_id=record_id)
-    assert reread_payload["warnings"] == []
+    assert any("no record" in warning.lower() for warning in reread_payload["warnings"])
     assert reread_payload["status"] == "ADVISORY"
     assert reread_payload["public_exposure"] == "standard"
 
@@ -132,8 +132,8 @@ async def test_degraded_warning_remains_visible_after_roundtrip_serialization(cl
 
 
 @pytest.mark.anyio
-async def test_warnings_field_survives_empty_and_non_empty_roundtrip_cases(client: httpx.AsyncClient) -> None:
-    empty_warning_payload = await _post(
+async def test_warnings_field_survives_missing_evidence_and_replay_roundtrip_cases(client: httpx.AsyncClient) -> None:
+    missing_evidence_payload = await _post(
         client,
         "persistence-roundtrip-empty-warnings",
         _structured_qr("persistence-roundtrip-empty-warnings"),
@@ -144,12 +144,12 @@ async def test_warnings_field_survives_empty_and_non_empty_roundtrip_cases(clien
         "hc://runtime hash:ok replay",
     )
 
-    reread_empty = _roundtrip(empty_warning_payload)
+    reread_missing = _roundtrip(missing_evidence_payload)
     reread_non_empty = _roundtrip(non_empty_warning_payload)
 
-    assert "warnings" in reread_empty
+    assert "warnings" in reread_missing
     assert "warnings" in reread_non_empty
-    assert reread_empty["warnings"] == []
+    assert any("no record" in warning.lower() for warning in reread_missing["warnings"])
     assert isinstance(reread_non_empty["warnings"], list)
     assert reread_non_empty["warnings"]
 

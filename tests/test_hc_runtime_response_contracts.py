@@ -253,8 +253,8 @@ def _assert_validator_runtime_contract(payload: dict, expected_record_id: str) -
 async def test_validator_runtime_responses_are_consistent_for_qr_input_cases() -> None:
     cases = [
         ("empty-qr-input", "", "UNRESOLVED", True, False),
-        ("normal-qr-input", "hc://normal hash:ok", "ADVISORY", False, False),
-        ("invalid-hash-marker", "hc://normal sha256:not-a-validator-marker", "REVIEW_REQUIRED", True, False),
+        ("normal-qr-input", "hc://normal hash:ok", "UNRESOLVED", True, False),
+        ("invalid-hash-marker", "hc://normal sha256:not-a-validator-marker", "UNRESOLVED", True, False),
         ("stale-replayed-payload", "hc://normal hash:ok stale replay", "REPLAY_WARNING", True, True),
         ("degraded-validator-state", "hc://normal hash:ok degraded", "DEGRADED", True, False),
     ]
