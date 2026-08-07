@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+
 from fastapi import APIRouter
 from pydantic import BaseModel
 
@@ -38,6 +40,18 @@ def _canonical_qr_payload(payload: dict[str, object]) -> dict[str, object]:
     return {key: payload[key] for key in QR_VERIFICATION_RESPONSE_KEYS}
 
 
+def _qr_input_valid(qr_input: str) -> bool:
+    """Return whether input has a valid HC:// or structured-object shape."""
+
+    stripped = qr_input.strip()
+    if stripped.lower().startswith("hc://"):
+        return bool(stripped[5:])
+    try:
+        return isinstance(json.loads(stripped), dict)
+    except (json.JSONDecodeError, TypeError):
+        return False
+
+
 def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
     QUEUE_STORE.enqueue_verification({"record_id": record_id, "qr_input": qr_input})
 
@@ -53,14 +67,19 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
         risk_level = QRRiskLevel.INCIDENT
 
     high_or_incident = risk_level in {QRRiskLevel.HIGH, QRRiskLevel.INCIDENT}
+    qr_input_valid = _qr_input_valid(qr_input)
     canonical_lookup_status = pipeline_result["canonical_bridge"]["lookup_status"]
     schema_valid = bool(
-        pipeline_result["schema_result"]["checked"] and pipeline_result["schema_result"]["valid"]
+        qr_input_valid
+        and pipeline_result["schema_result"]["checked"]
+        and pipeline_result["schema_result"]["valid"]
     )
     hash_verified = bool(
-        pipeline_result["hash_result"]["checked"] and pipeline_result["hash_result"]["hash_verified"]
+        qr_input_valid
+        and pipeline_result["hash_result"]["checked"]
+        and pipeline_result["hash_result"]["hash_verified"]
     )
-    replay_for_decision = replay_warning and not spoof_protection.structured_payload
+    replay_for_decision = replay_warning
 
     trust_state, warnings = DECISION_ENGINE.classify(
         record_id=record_id,
@@ -87,6 +106,10 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
     }
 
     pipeline_warnings = list(pipeline_result["trust_assignment"]["warnings"])
+    if not qr_input_valid:
+        pipeline_warnings.append(
+            "QR input validation failed; canonical schema and digest results are not promoted to public verification."
+        )
     warnings = [
         *warnings,
         *pipeline_warnings,
@@ -95,7 +118,7 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
     ]
     abuse_signals = ABUSE_SIGNAL_TRACKER.inspect(
         record_id=record_id,
-        schema_valid=bool(qr_input.strip()),
+        schema_valid=qr_input_valid,
         qr_risk_level=risk_level,
         qr_risk_reasons=spoof_protection.risk_reasons,
         qr_risk_group_keys=spoof_protection.risk_group_keys,
@@ -110,6 +133,7 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
     EVENT_STORE.append_continuity_checkpoint(record_id=record_id, continuity_ok=continuity_ok, warnings=warnings)
 
     if replay_warning:
+        escalation_queued = True
         QUEUE_STORE.enqueue_replay_warning({"record_id": record_id, "source": "qr-verification"})
         QUEUE_STORE.enqueue_escalation({"record_id": record_id, "reason": "replay_warning", "source": "qr-verification"})
         EVENT_STORE.append_replay_warning(record_id=record_id, reason="Replay marker detected in advisory QR input.")

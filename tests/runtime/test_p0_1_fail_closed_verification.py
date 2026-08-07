@@ -19,7 +19,7 @@ def _sha256(content: object) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
-def _structured_qr(record_id: str) -> str:
+def _structured_qr(record_id: str, **overrides: object) -> str:
     content = {"safe": True}
     payload: dict[str, object] = {
         "record_id": record_id,
@@ -30,6 +30,7 @@ def _structured_qr(record_id: str) -> str:
         "qr_version": "v1",
         "signed_payload_ref": f"signed-payloads/{record_id}.json",
     }
+    payload.update(overrides)
     payload["payload_hash"] = _sha256(payload)
     return json.dumps(payload, sort_keys=True, separators=(",", ":"))
 
@@ -145,3 +146,77 @@ async def test_get_missing_record_uses_no_fabricated_hash_marker(client: httpx.A
     assert payload["schema_valid"] is False
     assert payload["hash_verified"] is False
     assert QUEUE_STORE.verification_queue[-1]["qr_input"] == "hc://missing"
+
+
+@pytest.mark.anyio
+async def test_empty_input_does_not_promote_real_canonical_results(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    content = {"evidence": "present"}
+    record = {"record_id": "canonical-empty", "content": content, "content_hash": _sha256(content)}
+    pipeline = ValidatorPipeline(canonical_records={"canonical-empty": record})
+    internal = pipeline.run(record_id="canonical-empty", qr_input="   ")
+    monkeypatch.setattr(verify_route, "PIPELINE", pipeline)
+
+    transport = httpx.ASGITransport(app=create_app())
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as local_client:
+        payload = (await local_client.post("/verify/canonical-empty", json={"qr_input": "   "})).json()
+
+    assert internal["hash_result"]["checked"] is True
+    assert internal["hash_result"]["hash_verified"] is True
+    assert payload["schema_valid"] is False
+    assert payload["hash_verified"] is False
+    assert payload["trust_state"] == "UNRESOLVED"
+    assert any("qr input" in warning.lower() for warning in payload["warnings"])
+
+
+@pytest.mark.anyio
+async def test_malformed_non_empty_json_is_tracked_as_malformed(client: httpx.AsyncClient) -> None:
+    first = (await client.post("/verify/malformed-family-001", json={"qr_input": '{"record_id":'})).json()
+    second = (await client.post("/verify/malformed-family-002", json={"qr_input": '{"record_id":'})).json()
+
+    assert first["qr_scan_summary"]["abuse_pattern_counts"]["malformed_input"] == 1
+    assert second["qr_scan_summary"]["abuse_pattern_counts"]["malformed_input"] == 2
+    assert "repeated_malformed_input" in second["qr_scan_summary"]["abuse_signal_reasons"]
+
+
+@pytest.mark.anyio
+async def test_structured_replay_marker_remains_visible_and_queued(client: httpx.AsyncClient) -> None:
+    payload = (
+        await client.post(
+            "/verify/structured-replay",
+            json={"qr_input": _structured_qr("structured-replay", replay_marker=True)},
+        )
+    ).json()
+
+    assert payload["replay_warning"] is True
+    assert payload["trust_state"] == "REPLAY_WARNING"
+    assert payload["public_exposure"] == "restricted"
+    assert payload["escalation_queued"] is True
+    assert QUEUE_STORE.replay_warning_queue[-1]["record_id"] == "structured-replay"
+    assert any(item.get("reason") == "replay_warning" for item in QUEUE_STORE.escalation_queue)
+
+    transport = httpx.ASGITransport(app=create_app())
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as local_client:
+        history = (await local_client.get("/verify/structured-replay/history")).json()
+    assert history["replay_warning_visible"] is True
+
+
+@pytest.mark.anyio
+async def test_get_can_report_genuine_canonical_success_without_hash_marker(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    content = "canonical GET content"
+    record = {"record_id": "canonical-get", "content": content, "content_hash": _sha256(content)}
+    monkeypatch.setattr(
+        verify_route,
+        "PIPELINE",
+        ValidatorPipeline(canonical_records={"canonical-get": record}),
+    )
+    transport = httpx.ASGITransport(app=create_app())
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as local_client:
+        payload = (await local_client.get("/qr/canonical-get")).json()
+
+    assert payload["schema_valid"] is True
+    assert payload["hash_verified"] is True
+    assert QUEUE_STORE.verification_queue[-1]["qr_input"] == "hc://canonical-get"
