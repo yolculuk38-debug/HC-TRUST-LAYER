@@ -177,7 +177,8 @@ async def test_malformed_structured_payloads_preserve_public_safe_contract(
     assert payload["qr_risk_level"] == "LOW"
     assert payload["qr_risk_reasons"] == []
     assert payload["human_review_recommended"] is False
-    assert payload["escalation_queued"] is False
+    assert payload["escalation_queued"] is True
+    assert QUEUE_STORE.escalation_queue[-1]["reason"] == "advisory_downgrade"
     assert "digest verification was not performed" in _warning_text(payload)
     _assert_contract_stability_with_visible_warnings(payload)
 
@@ -201,7 +202,8 @@ async def test_invalid_payload_types_remain_advisory_without_qr_spoof_escalation
     assert payload["qr_risk_level"] == "LOW"
     assert payload["qr_risk_reasons"] == []
     assert payload["human_review_recommended"] is False
-    assert payload["escalation_queued"] is False
+    assert payload["escalation_queued"] is True
+    assert QUEUE_STORE.escalation_queue[-1]["reason"] == "advisory_downgrade"
     assert "digest verification was not performed" in _warning_text(payload)
     _assert_contract_stability_with_visible_warnings(payload)
 

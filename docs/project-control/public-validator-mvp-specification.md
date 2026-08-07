@@ -69,7 +69,7 @@ Use this route only in a local runtime environment with a demo-safe `qr_input` p
 
 ```json
 {
-  "qr_input": "hc://HC-DEMO-2026-0001 hash:advisory demo-public-safe"
+  "qr_input": "hc://HC-DEMO-2026-0001"
 }
 ```
 
@@ -78,7 +78,7 @@ Example local invocation when the reference runtime is already running locally:
 ```sh
 curl -s -X POST "http://127.0.0.1:8000/verify/HC-DEMO-2026-0001" \
   -H "Content-Type: application/json" \
-  -d '{"qr_input":"hc://HC-DEMO-2026-0001 hash:advisory demo-public-safe"}'
+  -d '{"qr_input":"hc://HC-DEMO-2026-0001"}'
 ```
 
 Executable path requirements:

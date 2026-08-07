@@ -1,5 +1,8 @@
 # Public Validator MVP Readiness Review
 
+> **P0-1 amendment:** Hash-marker presence or successful structured QR parsing alone no longer produces
+> `hash_verified=true`. A canonical digest comparison must run and match before that result is reported.
+
 > **Mode:** REPORT ONLY  
 > **Scope:** Public Validator MVP readiness, current record-to-result user path, runtime/API/CLI verification surfaces, schema/hash/advisory response capability, public-safe boundaries, and human-review requirements.  
 > **Decision:** PUBLIC VALIDATOR MVP CONDITIONALLY READY

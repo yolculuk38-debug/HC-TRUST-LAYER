@@ -40,16 +40,22 @@ def _canonical_qr_payload(payload: dict[str, object]) -> dict[str, object]:
     return {key: payload[key] for key in QR_VERIFICATION_RESPONSE_KEYS}
 
 
-def _qr_input_valid(qr_input: str) -> bool:
-    """Return whether input has a valid HC:// or structured-object shape."""
+def _qr_input_valid(*, record_id: str, qr_input: str) -> bool:
+    """Return whether input identifies the requested HC:// record."""
 
     stripped = qr_input.strip()
     if stripped.lower().startswith("hc://"):
-        return bool(stripped[5:])
+        return stripped[5:] == record_id
     try:
-        return isinstance(json.loads(stripped), dict)
+        structured_input = json.loads(stripped)
     except (json.JSONDecodeError, TypeError):
         return False
+    return (
+        isinstance(structured_input, dict)
+        and isinstance(structured_input.get("record_id"), str)
+        and bool(structured_input["record_id"].strip())
+        and structured_input["record_id"] == record_id
+    )
 
 
 def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
@@ -67,7 +73,7 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
         risk_level = QRRiskLevel.INCIDENT
 
     high_or_incident = risk_level in {QRRiskLevel.HIGH, QRRiskLevel.INCIDENT}
-    qr_input_valid = _qr_input_valid(qr_input)
+    qr_input_valid = _qr_input_valid(record_id=record_id, qr_input=qr_input)
     canonical_lookup_status = pipeline_result["canonical_bridge"]["lookup_status"]
     schema_valid = bool(
         qr_input_valid
@@ -108,7 +114,8 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
     pipeline_warnings = list(pipeline_result["trust_assignment"]["warnings"])
     if not qr_input_valid:
         pipeline_warnings.append(
-            "QR input validation failed; canonical schema and digest results are not promoted to public verification."
+            "QR input record identity is missing or does not match the requested record; canonical schema and digest "
+            "results are not promoted to public verification."
         )
     warnings = [
         *warnings,
@@ -155,6 +162,7 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
             }
         )
     elif policy["advisory_downgrade"] and not spoof_protection.structured_payload:
+        escalation_queued = True
         QUEUE_STORE.enqueue_escalation({"record_id": record_id, "reason": "advisory_downgrade"})
 
     if degraded_mode:

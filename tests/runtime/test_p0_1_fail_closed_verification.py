@@ -182,10 +182,11 @@ async def test_malformed_non_empty_json_is_tracked_as_malformed(client: httpx.As
 
 @pytest.mark.anyio
 async def test_structured_replay_marker_remains_visible_and_queued(client: httpx.AsyncClient) -> None:
+    record_id = "structured-marker-record"
     payload = (
         await client.post(
-            "/verify/structured-replay",
-            json={"qr_input": _structured_qr("structured-replay", replay_marker=True)},
+            f"/verify/{record_id}",
+            json={"qr_input": _structured_qr(record_id, replay_marker=True)},
         )
     ).json()
 
@@ -193,12 +194,12 @@ async def test_structured_replay_marker_remains_visible_and_queued(client: httpx
     assert payload["trust_state"] == "REPLAY_WARNING"
     assert payload["public_exposure"] == "restricted"
     assert payload["escalation_queued"] is True
-    assert QUEUE_STORE.replay_warning_queue[-1]["record_id"] == "structured-replay"
+    assert QUEUE_STORE.replay_warning_queue[-1]["record_id"] == record_id
     assert any(item.get("reason") == "replay_warning" for item in QUEUE_STORE.escalation_queue)
 
     transport = httpx.ASGITransport(app=create_app())
     async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as local_client:
-        history = (await local_client.get("/verify/structured-replay/history")).json()
+        history = (await local_client.get(f"/verify/{record_id}/history")).json()
     assert history["replay_warning_visible"] is True
 
 
@@ -220,3 +221,64 @@ async def test_get_can_report_genuine_canonical_success_without_hash_marker(
     assert payload["schema_valid"] is True
     assert payload["hash_verified"] is True
     assert QUEUE_STORE.verification_queue[-1]["qr_input"] == "hc://canonical-get"
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize(
+    "qr_input",
+    [
+        "hc://record-b",
+        _structured_qr("record-b"),
+        json.dumps({"content": {"evidence": "present"}}),
+    ],
+)
+async def test_qr_identity_mismatch_does_not_promote_canonical_results(
+    monkeypatch: pytest.MonkeyPatch,
+    qr_input: str,
+) -> None:
+    content = {"evidence": "present"}
+    record = {"record_id": "record-a", "content": content, "content_hash": _sha256(content)}
+    pipeline = ValidatorPipeline(canonical_records={"record-a": record})
+    internal = pipeline.run(record_id="record-a", qr_input=qr_input)
+    monkeypatch.setattr(verify_route, "PIPELINE", pipeline)
+    transport = httpx.ASGITransport(app=create_app())
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as local_client:
+        payload = (await local_client.post("/verify/record-a", json={"qr_input": qr_input})).json()
+
+    assert internal["hash_result"]["checked"] is True
+    assert internal["hash_result"]["hash_verified"] is True
+    assert payload["schema_valid"] is False
+    assert payload["hash_verified"] is False
+    assert payload["trust_state"] != "ADVISORY"
+    assert any("record" in warning.lower() and "input" in warning.lower() for warning in payload["warnings"])
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize("qr_input", ["hc://record-a", _structured_qr("record-a")])
+async def test_matching_qr_identity_promotes_genuine_canonical_results(
+    monkeypatch: pytest.MonkeyPatch,
+    qr_input: str,
+) -> None:
+    content = {"evidence": "present"}
+    record = {"record_id": "record-a", "content": content, "content_hash": _sha256(content)}
+    monkeypatch.setattr(
+        verify_route,
+        "PIPELINE",
+        ValidatorPipeline(canonical_records={"record-a": record}),
+    )
+    transport = httpx.ASGITransport(app=create_app())
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as local_client:
+        payload = (await local_client.post("/verify/record-a", json={"qr_input": qr_input})).json()
+
+    assert payload["schema_valid"] is True
+    assert payload["hash_verified"] is True
+    assert payload["trust_state"] == "ADVISORY"
+
+
+@pytest.mark.anyio
+async def test_advisory_downgrade_queue_action_is_reported(client: httpx.AsyncClient) -> None:
+    payload = (await client.post("/verify/missing", json={"qr_input": "hc://missing"})).json()
+
+    assert payload["escalation_queued"] is True
+    assert payload["qr_scan_summary"]["escalation_queued"] is True
+    assert any(item.get("reason") == "advisory_downgrade" for item in QUEUE_STORE.escalation_queue)
