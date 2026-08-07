@@ -292,9 +292,12 @@ async def test_hash_case_differences_do_not_escalate_trust_or_change_determinist
     assert upper["hash_verified"] is False
     assert lower["human_review_recommended"] is False
     assert upper["human_review_recommended"] is False
-    assert lower["escalation_queued"] is False
-    assert upper["escalation_queued"] is False
-    assert QUEUE_STORE.escalation_queue == []
+    assert lower["escalation_queued"] is True
+    assert upper["escalation_queued"] is True
+    assert [item["reason"] for item in QUEUE_STORE.escalation_queue] == [
+        "advisory_downgrade",
+        "advisory_downgrade",
+    ]
     assert list(lower.keys()) == list(upper.keys()) == EXPECTED_QR_RESPONSE_KEYS
     assert lower["qr_scan_summary"]["human_final_authority"] is True
     assert upper["qr_scan_summary"]["human_final_authority"] is True
@@ -347,7 +350,8 @@ async def test_github_hc_trust_layer_records_path_remains_low_risk(client: httpx
     assert payload["qr_risk_level"] == "LOW"
     assert payload["qr_risk_reasons"] == []
     assert payload["human_review_recommended"] is False
-    assert payload["escalation_queued"] is False
+    assert payload["escalation_queued"] is True
+    assert QUEUE_STORE.escalation_queue[-1]["reason"] == "advisory_downgrade"
 
 
 @pytest.mark.anyio
@@ -362,8 +366,8 @@ async def test_canonical_qr_returns_low_risk_automatic_advisory_result(client: h
     assert any("no record" in warning.lower() for warning in payload["warnings"])
     assert payload["public_exposure"] == "standard"
     assert payload["human_review_recommended"] is False
-    assert payload["escalation_queued"] is False
-    assert QUEUE_STORE.escalation_queue == []
+    assert payload["escalation_queued"] is True
+    assert QUEUE_STORE.escalation_queue[-1]["reason"] == "advisory_downgrade"
     _assert_review_only_for_high_or_incident(payload)
 
 
@@ -380,8 +384,8 @@ async def test_stale_qr_returns_medium_risk_with_visible_warning_without_forced_
     assert "stale qr version marker" in _warning_text(payload)
     assert "stale qr payload flag" in _warning_text(payload)
     assert payload["human_review_recommended"] is False
-    assert payload["escalation_queued"] is False
-    assert QUEUE_STORE.escalation_queue == []
+    assert payload["escalation_queued"] is True
+    assert QUEUE_STORE.escalation_queue[-1]["reason"] == "advisory_downgrade"
     _assert_review_only_for_high_or_incident(payload)
 
 
@@ -396,7 +400,8 @@ async def test_missing_signed_payload_reference_returns_medium_risk(client: http
     assert payload["qr_risk_reasons"] == ["signed_payload_ref_missing"]
     assert "signed payload reference is missing" in _warning_text(payload)
     assert payload["human_review_recommended"] is False
-    assert payload["escalation_queued"] is False
+    assert payload["escalation_queued"] is True
+    assert QUEUE_STORE.escalation_queue[-1]["reason"] == "advisory_downgrade"
     _assert_review_only_for_high_or_incident(payload)
 
 
@@ -439,12 +444,14 @@ async def test_high_risk_qr_indicators_enter_escalation_queue(
 
 
 @pytest.mark.anyio
-async def test_low_risk_qr_does_not_enter_escalation_queue(client: httpx.AsyncClient) -> None:
+async def test_low_risk_qr_with_missing_canonical_evidence_enters_downgrade_queue(
+    client: httpx.AsyncClient,
+) -> None:
     payload = await _post_qr(client, "low-risk-no-escalation", _encoded_qr("low-risk-no-escalation"))
 
     assert payload["qr_risk_level"] == "LOW"
-    assert payload["escalation_queued"] is False
-    assert QUEUE_STORE.escalation_queue == []
+    assert payload["escalation_queued"] is True
+    assert QUEUE_STORE.escalation_queue[-1]["reason"] == "advisory_downgrade"
 
 
 @pytest.mark.anyio
@@ -453,9 +460,9 @@ async def test_medium_risk_qr_does_not_force_human_review_by_default(client: htt
 
     assert payload["qr_risk_level"] == "MEDIUM"
     assert payload["human_review_recommended"] is False
-    assert payload["escalation_queued"] is False
+    assert payload["escalation_queued"] is True
     assert "canonical record lookup returned no record" in _warning_text(payload)
-    assert QUEUE_STORE.escalation_queue == []
+    assert QUEUE_STORE.escalation_queue[-1]["reason"] == "advisory_downgrade"
 
 
 @pytest.mark.anyio
@@ -543,7 +550,7 @@ async def test_summary_count_behavior_for_qr_scan_outcomes(client: httpx.AsyncCl
     assert payload["qr_scan_summary"] == {
         "warning_count": len(payload["warnings"]),
         "risk_reason_count": len(payload["qr_risk_reasons"]),
-        "escalation_queued": False,
+        "escalation_queued": True,
         "human_review_recommended": False,
         "risk_level": "MEDIUM",
         "abuse_signal_level": "MEDIUM",

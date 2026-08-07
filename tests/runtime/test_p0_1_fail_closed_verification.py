@@ -196,6 +196,7 @@ async def test_structured_replay_marker_remains_visible_and_queued(client: httpx
     assert payload["escalation_queued"] is True
     assert QUEUE_STORE.replay_warning_queue[-1]["record_id"] == record_id
     assert any(item.get("reason") == "replay_warning" for item in QUEUE_STORE.escalation_queue)
+    assert not any(item.get("reason") == "advisory_downgrade" for item in QUEUE_STORE.escalation_queue)
 
     transport = httpx.ASGITransport(app=create_app())
     async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as local_client:
@@ -282,3 +283,37 @@ async def test_advisory_downgrade_queue_action_is_reported(client: httpx.AsyncCl
     assert payload["escalation_queued"] is True
     assert payload["qr_scan_summary"]["escalation_queued"] is True
     assert any(item.get("reason") == "advisory_downgrade" for item in QUEUE_STORE.escalation_queue)
+
+
+@pytest.mark.anyio
+async def test_low_risk_structured_missing_record_queues_advisory_downgrade(client: httpx.AsyncClient) -> None:
+    record_id = "structured-missing-record"
+    payload = (await client.post(f"/verify/{record_id}", json={"qr_input": _structured_qr(record_id)})).json()
+
+    assert payload["qr_risk_level"] == "LOW"
+    assert payload["trust_state"] == "UNRESOLVED"
+    assert payload["schema_valid"] is False
+    assert payload["hash_verified"] is False
+    assert payload["escalation_queued"] is True
+    assert payload["qr_scan_summary"]["escalation_queued"] is True
+    assert [item.get("reason") for item in QUEUE_STORE.escalation_queue] == ["advisory_downgrade"]
+
+
+@pytest.mark.anyio
+async def test_structured_canonical_success_remains_unqueued(
+    client: httpx.AsyncClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    record_id = "structured-canonical-success"
+    content = {"evidence": "present"}
+    record = {"record_id": record_id, "content": content, "content_hash": _sha256(content)}
+    monkeypatch.setattr(verify_route, "PIPELINE", ValidatorPipeline(canonical_records={record_id: record}))
+
+    payload = (await client.post(f"/verify/{record_id}", json={"qr_input": _structured_qr(record_id)})).json()
+
+    assert payload["trust_state"] == "ADVISORY"
+    assert payload["schema_valid"] is True
+    assert payload["hash_verified"] is True
+    assert payload["escalation_queued"] is False
+    assert payload["qr_scan_summary"]["escalation_queued"] is False
+    assert QUEUE_STORE.escalation_queue == []

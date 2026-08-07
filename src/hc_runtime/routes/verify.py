@@ -161,7 +161,7 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
                 "truth_guarantee": False,
             }
         )
-    elif policy["advisory_downgrade"] and not spoof_protection.structured_payload:
+    if policy["advisory_downgrade"] and not escalation_queued:
         escalation_queued = True
         QUEUE_STORE.enqueue_escalation({"record_id": record_id, "reason": "advisory_downgrade"})
 
