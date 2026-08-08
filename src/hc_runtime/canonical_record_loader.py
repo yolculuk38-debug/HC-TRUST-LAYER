@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass, field
 from pathlib import Path
+
 APPROVED_CANONICAL_RECORD_DIRS: tuple[Path, ...] = (
     Path("records/pending"),
     Path("records/verified"),
@@ -21,6 +21,23 @@ IGNORED_ARTIFACT_MARKERS: tuple[str, ...] = (
 MALFORMED_RECORD = object()
 
 
+class _StrictRecordLoadError(Exception):
+    pass
+
+
+def _load_strict_record(path: Path) -> object:
+    try:
+        from hc_trust.canonicalization import CanonicalizationError, strict_json_load
+    except ImportError as exc:
+        raise _StrictRecordLoadError from exc
+
+    try:
+        with path.open(encoding="utf-8") as handle:
+            return strict_json_load(handle)
+    except CanonicalizationError as exc:
+        raise _StrictRecordLoadError from exc
+
+
 @dataclass(slots=True)
 class CanonicalRecordLoader:
     """Load local canonical records from approved directories without granting trust."""
@@ -35,10 +52,10 @@ class CanonicalRecordLoader:
         """Return a canonical record by id, a malformed marker, or the provided default."""
 
         self._ensure_loaded()
-        if record_id in self._records:
-            return self._records[record_id]
         if record_id in self._malformed:
             return MALFORMED_RECORD
+        if record_id in self._records:
+            return self._records[record_id]
         return default
 
     def refresh(self) -> None:
@@ -64,8 +81,8 @@ class CanonicalRecordLoader:
                     continue
                 record_id_hint = path.stem
                 try:
-                    record = json.loads(path.read_text(encoding="utf-8"))
-                except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+                    record = _load_strict_record(path)
+                except (OSError, UnicodeDecodeError, _StrictRecordLoadError):
                     self._malformed[record_id_hint] = path
                     continue
                 if not isinstance(record, dict):

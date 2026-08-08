@@ -2,12 +2,18 @@
 
 from __future__ import annotations
 
-import hashlib
-import json
 from dataclasses import dataclass, field
 from enum import StrEnum
 from typing import Any
 from urllib.parse import urlparse
+
+from hc_trust.canonicalization import CanonicalizationError, strict_json_loads
+from hc_trust.hashing import (
+    CONTENT_HASH_PROFILE_FIELD,
+    ContentHashError,
+    calculate_content_hash,
+    calculate_qr_payload_hash,
+)
 
 TRUSTED_QR_DOMAINS = {"github.com", "yolculuk38-debug.github.io"}
 TRUSTED_REPOSITORY_PATH = "HC-TRUST-LAYER"
@@ -64,23 +70,37 @@ class _RiskSignals:
         return [*self.high, *self.medium]
 
 
-def _canonical_json(data: Any) -> str:
-    return json.dumps(data, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-
-
-def _sha256_text(value: str) -> str:
-    return hashlib.sha256(value.encode("utf-8")).hexdigest()
-
-
-def _load_structured_payload(qr_input: str) -> dict[str, Any] | None:
+def _load_structured_payload(
+    qr_input: str,
+) -> tuple[dict[str, Any] | None, bool, str | None]:
     stripped = qr_input.strip()
-    if not stripped.startswith("{"):
-        return None
+    if not _looks_like_json_value(stripped):
+        return None, False, None
     try:
-        decoded = json.loads(stripped)
-    except json.JSONDecodeError:
-        return None
-    return decoded if isinstance(decoded, dict) else None
+        decoded = strict_json_loads(stripped)
+    except CanonicalizationError as exc:
+        return None, True, exc.reason
+    if not isinstance(decoded, dict):
+        return None, True, "qr_payload_object_required"
+    return decoded, True, None
+
+
+def _looks_like_json_value(value: str) -> bool:
+    candidate = value[1:] if value.startswith("\ufeff") else value
+    if not candidate:
+        return False
+    if candidate[0] in '{["' or candidate in {
+        "true",
+        "false",
+        "null",
+        "NaN",
+        "Infinity",
+        "-Infinity",
+    }:
+        return True
+    if candidate[0].isdigit():
+        return True
+    return candidate[0] == "-" and len(candidate) > 1 and candidate[1].isdigit()
 
 
 def _url_warning(verification_url: object, signals: _RiskSignals) -> str | None:
@@ -88,7 +108,11 @@ def _url_warning(verification_url: object, signals: _RiskSignals) -> str | None:
         signals.add_high("verification_url_missing", "url:missing")
         return "Canonical verification_url is missing from structured QR payload."
 
-    parsed = urlparse(verification_url)
+    try:
+        parsed = urlparse(verification_url)
+    except ValueError:
+        signals.add_high("verification_url_invalid", "url:invalid")
+        return "Malformed QR verification_url detected; HC:// runtime did not silently trust it."
     if parsed.scheme != "https":
         signals.add_high("non_canonical_scheme", f"scheme:{parsed.scheme or 'missing'}")
         return "Non-canonical QR verification_url scheme detected; HC:// runtime did not silently trust it."
@@ -101,10 +125,6 @@ def _url_warning(verification_url: object, signals: _RiskSignals) -> str | None:
         signals.add_high("non_canonical_path", f"path:{parsed.path or 'missing'}")
         return "Non-canonical QR verification_url path detected; HC:// runtime did not silently trust it."
     return None
-
-
-def _payload_without_hash(payload: dict[str, Any]) -> dict[str, Any]:
-    return {key: value for key, value in payload.items() if key != "payload_hash"}
 
 
 def _record_family(record_id: str) -> str:
@@ -131,13 +151,28 @@ def inspect_qr_spoof_protection(*, record_id: str, qr_input: str) -> QRSpoofProt
         signals.add_medium("stale_marker_visible")
         warnings.append("Stale QR marker remains visible in advisory runtime response.")
 
-    payload = _load_structured_payload(qr_input)
+    payload, structured_attempted, structured_error = _load_structured_payload(qr_input)
     if payload is None:
+        if structured_attempted:
+            if structured_error in {
+                "duplicate_json_property",
+                "invalid_unicode_scalar",
+                "json_nesting_too_deep",
+                "non_finite_json_number",
+                "unsafe_integer",
+            }:
+                signals.add_high(
+                    "structured_payload_invalid",
+                    f"payload_pattern:{_record_family(record_id)}",
+                )
+            warnings.append(
+                f"Structured QR payload could not be safely parsed: {structured_error or 'invalid_json'}."
+            )
         return QRSpoofProtectionResult(
             warnings=warnings,
             replay_warning=replay_warning,
             stale_warning=stale_warning,
-            structured_payload=False,
+            structured_payload=structured_attempted,
             risk_level=signals.level(),
             risk_reasons=signals.reasons(),
             risk_group_keys=signals.group_keys,
@@ -160,21 +195,43 @@ def inspect_qr_spoof_protection(*, record_id: str, qr_input: str) -> QRSpoofProt
         signals.add_medium("payload_hash_missing")
         warnings.append("Structured QR payload_hash is missing; payload integrity remains unresolved.")
     else:
-        calculated_payload_hash = _sha256_text(_canonical_json(_payload_without_hash(payload)))
-        if calculated_payload_hash.lower() != payload_hash.lower():
-            signals.add_high("payload_hash_mismatch", f"payload_pattern:{_record_family(record_id)}")
-            warnings.append("Structured QR payload_hash mismatch remains explicit in advisory runtime response.")
+        try:
+            calculated_payload_hash = calculate_qr_payload_hash(payload)
+        except ContentHashError as exc:
+            signals.add_high("payload_hash_unverifiable", f"payload_pattern:{_record_family(record_id)}")
+            warnings.append(
+                f"Structured QR payload_hash could not be safely verified: {exc.reason}."
+            )
+        else:
+            if calculated_payload_hash.lower() != payload_hash.strip().lower():
+                signals.add_high("payload_hash_mismatch", f"payload_pattern:{_record_family(record_id)}")
+                warnings.append("Structured QR payload_hash mismatch remains explicit in advisory runtime response.")
 
     content_hash = payload.get("content_hash")
-    content = payload.get("content")
-    if isinstance(content_hash, str) and content_hash.strip() and "content" in payload:
-        content_text = content if isinstance(content, str) else _canonical_json(content)
-        if _sha256_text(content_text).lower() != content_hash.lower():
-            signals.add_high("content_hash_mismatch", f"payload_pattern:{_record_family(record_id)}")
-            warnings.append("Structured QR content_hash mismatch remains explicit in advisory runtime response.")
-    elif not isinstance(content_hash, str) or not content_hash.strip():
+    calculated_content_hash: str | None = None
+    if "content" in payload:
+        try:
+            if CONTENT_HASH_PROFILE_FIELD in payload:
+                calculated_content_hash = calculate_content_hash(
+                    payload["content"], payload[CONTENT_HASH_PROFILE_FIELD]
+                )
+            else:
+                calculated_content_hash = calculate_content_hash(payload["content"])
+        except ContentHashError as exc:
+            signals.add_high("content_hash_unverifiable", f"payload_pattern:{_record_family(record_id)}")
+            warnings.append(
+                f"Structured QR content_hash could not be safely verified: {exc.reason}."
+            )
+
+    if not isinstance(content_hash, str) or not content_hash.strip():
         signals.add_medium("content_hash_missing")
         warnings.append("Structured QR content_hash is missing; content integrity remains unresolved.")
+    elif (
+        calculated_content_hash is not None
+        and calculated_content_hash.lower() != content_hash.strip().lower()
+    ):
+        signals.add_high("content_hash_mismatch", f"payload_pattern:{_record_family(record_id)}")
+        warnings.append("Structured QR content_hash mismatch remains explicit in advisory runtime response.")
 
     if not payload.get("signed_payload_ref"):
         signals.add_medium("signed_payload_ref_missing")

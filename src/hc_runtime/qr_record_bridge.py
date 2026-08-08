@@ -9,7 +9,6 @@ signatures, issuer authority, canonical URLs, or truth.
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import Any
 
@@ -24,6 +23,12 @@ from hc_runtime.qr_payload_parser import (
     SAFETY_MARKERS,
     VALID_PAYLOAD,
     parse_qr_payload,
+)
+from hc_trust.canonicalization import (
+    CanonicalizationError,
+    canonicalize_json,
+    strict_json_load,
+    strict_json_loads,
 )
 
 ALLOWED_BRIDGE_STATUSES: tuple[str, ...] = (
@@ -80,18 +85,23 @@ def _load_payload_object(payload: str | dict[str, Any]) -> tuple[dict[str, Any] 
     if not isinstance(payload, str):
         return None, "QR payload bridge input must be a JSON string or payload object."
     try:
-        decoded = json.loads(payload)
-    except json.JSONDecodeError as exc:
-        return None, f"QR payload is malformed JSON: {exc.msg}."
+        decoded = strict_json_loads(payload)
+    except CanonicalizationError as exc:
+        return None, f"QR payload is malformed JSON: {exc.reason}."
     if not isinstance(decoded, dict):
         return None, "QR payload JSON must be an object."
     return decoded, None
 
 
-def _parser_input(payload: str | dict[str, Any]) -> str:
+def _parser_input(payload: str | dict[str, Any]) -> tuple[str | None, str | None]:
     if isinstance(payload, str):
-        return payload
-    return json.dumps(payload, sort_keys=True, separators=(",", ":"))
+        return payload, None
+    if type(payload) is not dict:
+        return None, "QR payload bridge input must be a JSON string or payload object."
+    try:
+        return canonicalize_json(payload).decode("utf-8"), None
+    except CanonicalizationError as exc:
+        return None, f"QR payload object could not be canonicalized: {exc.reason}."
 
 
 def _normalize_hash(value: object) -> str | None:
@@ -123,8 +133,8 @@ def _load_record_content_hash(root: Path, source_path: str) -> tuple[str | None,
 
     try:
         with record_path.open(encoding="utf-8") as handle:
-            record = json.load(handle)
-    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+            record = strict_json_load(handle)
+    except (OSError, UnicodeDecodeError, CanonicalizationError) as exc:
         return None, f"Matched local record content_hash could not be loaded: {exc.__class__.__name__}."
 
     if not isinstance(record, dict):
@@ -154,7 +164,13 @@ def check_qr_payload_record_bridge(
     URL control, record truth, or production readiness.
     """
 
-    parser_result = parse_qr_payload(_parser_input(payload_result_or_payload))
+    parser_input, parser_input_error = _parser_input(payload_result_or_payload)
+    if parser_input is None:
+        result = _base_result(MALFORMED_PAYLOAD, "malformed_payload")
+        result["errors"].append(parser_input_error or "QR payload input could not be parsed.")
+        return result
+
+    parser_result = parse_qr_payload(parser_input)
     qr_payload_status = parser_result["status"]
 
     payload, load_error = _load_payload_object(payload_result_or_payload)
@@ -212,6 +228,16 @@ def check_qr_payload_record_bridge(
             "QR payload record bridge was not checked because local record lookup did not find exactly one allowed record."
         )
         result["errors"].extend(lookup_result.get("errors", []))
+        return result
+
+    hash_validation = lookup_result.get("hash_validation")
+    if not isinstance(hash_validation, dict) or hash_validation.get("status") != "pass":
+        result["bridge_status"] = "bridge_not_checked"
+        result["warnings"].append(
+            "QR payload record bridge was not checked because the matched canonical record content hash did not pass shared verification."
+        )
+        if isinstance(hash_validation, dict):
+            result["errors"].extend(hash_validation.get("errors", []))
         return result
 
     source_path = lookup_result.get("source_path")

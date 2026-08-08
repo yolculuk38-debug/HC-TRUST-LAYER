@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import json
-
 from fastapi import APIRouter
 from pydantic import BaseModel
 
@@ -13,6 +11,7 @@ from hc_runtime.contracts.decision_engine import TrustState
 from hc_runtime.qr_spoof_protection import QRRiskLevel, inspect_qr_spoof_protection
 from hc_runtime.contracts.redaction import redact_secret_like_text
 from hc_runtime.state import ABUSE_SIGNAL_TRACKER, DECISION_ENGINE, EVENT_STORE, FEDERATION_RELAY, PIPELINE, POLICY_ENGINE, QUEUE_STORE
+from hc_trust.canonicalization import CanonicalizationError, strict_json_loads
 
 router = APIRouter()
 
@@ -47,8 +46,8 @@ def _qr_input_valid(*, record_id: str, qr_input: str) -> bool:
     if stripped.lower().startswith("hc://"):
         return stripped[5:] == record_id
     try:
-        structured_input = json.loads(stripped)
-    except (json.JSONDecodeError, TypeError):
+        structured_input = strict_json_loads(stripped)
+    except CanonicalizationError:
         return False
     return (
         isinstance(structured_input, dict)
@@ -74,14 +73,15 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
 
     high_or_incident = risk_level in {QRRiskLevel.HIGH, QRRiskLevel.INCIDENT}
     qr_input_valid = _qr_input_valid(record_id=record_id, qr_input=qr_input)
+    qr_input_promotable = qr_input_valid and not high_or_incident
     canonical_lookup_status = pipeline_result["canonical_bridge"]["lookup_status"]
     schema_valid = bool(
-        qr_input_valid
+        qr_input_promotable
         and pipeline_result["schema_result"]["checked"]
         and pipeline_result["schema_result"]["valid"]
     )
     hash_verified = bool(
-        qr_input_valid
+        qr_input_promotable
         and pipeline_result["hash_result"]["checked"]
         and pipeline_result["hash_result"]["hash_verified"]
     )
@@ -114,8 +114,13 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
     pipeline_warnings = list(pipeline_result["trust_assignment"]["warnings"])
     if not qr_input_valid:
         pipeline_warnings.append(
-            "QR input record identity is missing or does not match the requested record; canonical schema and digest "
+            "QR input could not be safely bound to the requested record identity; canonical schema and digest "
             "results are not promoted to public verification."
+        )
+    elif high_or_incident:
+        pipeline_warnings.append(
+            "High-risk or incident-level QR spoof indicators prevent canonical schema and digest results from being "
+            "promoted to public verification."
         )
     warnings = [
         *warnings,

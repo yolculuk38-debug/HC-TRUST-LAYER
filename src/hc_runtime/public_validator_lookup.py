@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import re
 from pathlib import Path
 from typing import Any
@@ -143,26 +142,10 @@ def _check_hash_validation(record_path: Path) -> dict[str, Any]:
     try:
         from hc_trust.verification import verify_record_hash
     except ImportError as exc:
-        try:
-            from hc_trust.hashing import calculate_content_hash
-        except ImportError:
-            return _validation_result("not_checked", [f"Existing content hash verifier is unavailable: {exc.__class__.__name__}."])
-
-        try:
-            with record_path.open(encoding="utf-8") as handle:
-                record = json.load(handle)
-        except (OSError, UnicodeDecodeError, json.JSONDecodeError) as read_exc:
-            return _validation_result("not_checked", [f"Content hash input could not be loaded: {read_exc.__class__.__name__}."])
-        if not isinstance(record, dict):
-            return _validation_result("fail", ["Record JSON must be an object for content_hash validation."])
-        if "content_hash" not in record:
-            return _validation_result("fail", ["Missing 'content_hash' field for content_hash validation."])
-        if "content" not in record:
-            return _validation_result("fail", ["Missing 'content' field for content_hash validation."])
-        calculated_hash = calculate_content_hash(record["content"])
-        if str(record["content_hash"]) == calculated_hash:
-            return _validation_result("pass")
-        return _validation_result("fail", ["content_hash does not match canonical record content."])
+        return _validation_result(
+            "not_checked",
+            [f"Existing content hash verifier is unavailable: {exc.__class__.__name__}."],
+        )
 
     try:
         passed, message = verify_record_hash(record_path)
@@ -215,11 +198,34 @@ def lookup_public_validator_record(record_id: str, *, root: Path | str = ROOT) -
     matches: list[tuple[Path, dict[str, Any]]] = []
 
     try:
+        from hc_trust.canonicalization import CanonicalizationError, strict_json_load
+    except ImportError as exc:
+        result["status"] = "lookup_error"
+        result["errors"].append(
+            f"Strict canonical record parser is unavailable: {exc.__class__.__name__}."
+        )
+        return result
+
+    try:
         for path in _iter_allowed_json_paths(resolved_root):
             try:
                 with path.open(encoding="utf-8") as handle:
-                    payload = json.load(handle)
-            except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+                    payload = strict_json_load(handle)
+            except CanonicalizationError as exc:
+                if exc.reason == "duplicate_json_property":
+                    result["status"] = "lookup_error"
+                    result["errors"].append(
+                        f"Allowed record JSON contains duplicate properties at {_relative_path(resolved_root, path)}."
+                    )
+                    return result
+                if path.stem == record_id:
+                    result["status"] = "lookup_error"
+                    result["errors"].append(
+                        f"Allowed record JSON could not be loaded from {_relative_path(resolved_root, path)}: {exc.reason}."
+                    )
+                    return result
+                continue
+            except (OSError, UnicodeDecodeError) as exc:
                 if path.stem == record_id:
                     result["status"] = "lookup_error"
                     result["errors"].append(

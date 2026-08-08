@@ -8,15 +8,22 @@ import json
 import httpx
 import pytest
 
+import hc_runtime.routes.verify as verify_route
 from hc_runtime.app import create_app
 from hc_runtime.runtime import ValidatorPipeline
 from hc_runtime.state import ABUSE_SIGNAL_TRACKER, EVENT_STORE, QUEUE_STORE
-import hc_runtime.routes.verify as verify_route
+from hc_trust.canonicalization import canonicalize_json
+from hc_trust.hashing import (
+    HC_CONTENT_HASH_PROFILE,
+    calculate_content_hash,
+    calculate_qr_payload_hash,
+)
 
 
 def _sha256(content: object) -> str:
-    text = content if isinstance(content, str) else json.dumps(content, sort_keys=True, separators=(",", ":"))
-    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+    if isinstance(content, str):
+        return calculate_content_hash(content)
+    return calculate_content_hash(content, HC_CONTENT_HASH_PROFILE)
 
 
 def _structured_qr(record_id: str, **overrides: object) -> str:
@@ -26,13 +33,43 @@ def _structured_qr(record_id: str, **overrides: object) -> str:
         "verification_url": f"https://github.com/example/HC-TRUST-LAYER/verify/{record_id}",
         "content": content,
         "content_hash": _sha256(content),
+        "content_hash_profile": HC_CONTENT_HASH_PROFILE,
         "created_at": "2026-08-07T00:00:00Z",
         "qr_version": "v1",
         "signed_payload_ref": f"signed-payloads/{record_id}.json",
     }
     payload.update(overrides)
-    payload["payload_hash"] = _sha256(payload)
-    return json.dumps(payload, sort_keys=True, separators=(",", ":"))
+    payload["payload_hash"] = calculate_qr_payload_hash(payload)
+    return canonicalize_json(payload).decode("utf-8")
+
+
+def _structured_qr_with_explicit_null_profile(record_id: str) -> str:
+    content = "legacy-compatible text"
+    payload: dict[str, object] = {
+        "record_id": record_id,
+        "verification_url": f"https://github.com/example/HC-TRUST-LAYER/verify/{record_id}",
+        "content": content,
+        "content_hash": calculate_content_hash(content),
+        "content_hash_profile": None,
+        "created_at": "2026-08-07T00:00:00Z",
+        "qr_version": "v1",
+        "signed_payload_ref": f"signed-payloads/{record_id}.json",
+    }
+    payload["payload_hash"] = calculate_qr_payload_hash(payload)
+    return canonicalize_json(payload).decode("utf-8")
+
+
+def _structured_qr_without_content_hash_or_profile(record_id: str) -> str:
+    payload: dict[str, object] = {
+        "record_id": record_id,
+        "verification_url": f"https://github.com/example/HC-TRUST-LAYER/verify/{record_id}",
+        "content": {"safe": True},
+        "created_at": "2026-08-07T00:00:00Z",
+        "qr_version": "v1",
+        "signed_payload_ref": f"signed-payloads/{record_id}.json",
+    }
+    payload["payload_hash"] = calculate_qr_payload_hash(payload)
+    return canonicalize_json(payload).decode("utf-8")
 
 
 @pytest.mark.parametrize("qr_input", ["hc://unconfigured", "hash:attacker-controlled"])
@@ -90,7 +127,12 @@ def test_incomplete_record_never_runs_digest_comparison(record: dict[str, object
 
 def test_schema_and_hash_checks_remain_independent_positive_control() -> None:
     content = {"evidence": "present"}
-    record = {"record_id": "different-id", "content": content, "content_hash": _sha256(content)}
+    record = {
+        "record_id": "different-id",
+        "content": content,
+        "content_hash": _sha256(content),
+        "content_hash_profile": HC_CONTENT_HASH_PROFILE,
+    }
     result = ValidatorPipeline(canonical_records={"requested-id": record}).run(
         record_id="requested-id", qr_input="hc://requested-id"
     )
@@ -153,7 +195,12 @@ async def test_empty_input_does_not_promote_real_canonical_results(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     content = {"evidence": "present"}
-    record = {"record_id": "canonical-empty", "content": content, "content_hash": _sha256(content)}
+    record = {
+        "record_id": "canonical-empty",
+        "content": content,
+        "content_hash": _sha256(content),
+        "content_hash_profile": HC_CONTENT_HASH_PROFILE,
+    }
     pipeline = ValidatorPipeline(canonical_records={"canonical-empty": record})
     internal = pipeline.run(record_id="canonical-empty", qr_input="   ")
     monkeypatch.setattr(verify_route, "PIPELINE", pipeline)
@@ -238,7 +285,12 @@ async def test_qr_identity_mismatch_does_not_promote_canonical_results(
     qr_input: str,
 ) -> None:
     content = {"evidence": "present"}
-    record = {"record_id": "record-a", "content": content, "content_hash": _sha256(content)}
+    record = {
+        "record_id": "record-a",
+        "content": content,
+        "content_hash": _sha256(content),
+        "content_hash_profile": HC_CONTENT_HASH_PROFILE,
+    }
     pipeline = ValidatorPipeline(canonical_records={"record-a": record})
     internal = pipeline.run(record_id="record-a", qr_input=qr_input)
     monkeypatch.setattr(verify_route, "PIPELINE", pipeline)
@@ -261,7 +313,12 @@ async def test_matching_qr_identity_promotes_genuine_canonical_results(
     qr_input: str,
 ) -> None:
     content = {"evidence": "present"}
-    record = {"record_id": "record-a", "content": content, "content_hash": _sha256(content)}
+    record = {
+        "record_id": "record-a",
+        "content": content,
+        "content_hash": _sha256(content),
+        "content_hash_profile": HC_CONTENT_HASH_PROFILE,
+    }
     monkeypatch.setattr(
         verify_route,
         "PIPELINE",
@@ -274,6 +331,68 @@ async def test_matching_qr_identity_promotes_genuine_canonical_results(
     assert payload["schema_valid"] is True
     assert payload["hash_verified"] is True
     assert payload["trust_state"] == "ADVISORY"
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize(
+    ("qr_input", "expected_reason"),
+    [
+        (
+            '{"record_id":"attacker","record_id":"record-a"}',
+            "structured_payload_invalid",
+        ),
+        ('{"record_id":"record-a","unsafe":NaN}', "structured_payload_invalid"),
+        (
+            _structured_qr("record-a", content_hash_profile="unknown-profile"),
+            "content_hash_unverifiable",
+        ),
+        (
+            _structured_qr_with_explicit_null_profile("record-a"),
+            "content_hash_unverifiable",
+        ),
+        (
+            _structured_qr("record-a", verification_url="https://["),
+            "verification_url_invalid",
+        ),
+        (
+            _structured_qr_without_content_hash_or_profile("record-a"),
+            "content_hash_unverifiable",
+        ),
+    ],
+)
+async def test_high_risk_structured_qr_never_promotes_valid_canonical_results(
+    client: httpx.AsyncClient,
+    monkeypatch: pytest.MonkeyPatch,
+    qr_input: str,
+    expected_reason: str,
+) -> None:
+    content = {"evidence": "present"}
+    record = {
+        "record_id": "record-a",
+        "content": content,
+        "content_hash": _sha256(content),
+        "content_hash_profile": HC_CONTENT_HASH_PROFILE,
+    }
+    monkeypatch.setattr(
+        verify_route,
+        "PIPELINE",
+        ValidatorPipeline(canonical_records={"record-a": record}),
+    )
+
+    response = await client.post("/verify/record-a", json={"qr_input": qr_input})
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["qr_risk_level"] in {"HIGH", "INCIDENT"}
+    assert expected_reason in payload["qr_risk_reasons"]
+    assert payload["schema_valid"] is False
+    assert payload["hash_verified"] is False
+    assert payload["trust_state"] == "REVIEW_REQUIRED"
+    assert payload["human_review_recommended"] is True
+    assert [item["reason"] for item in QUEUE_STORE.escalation_queue] == ["qr_spoof_risk"]
+    assert payload["advisory_only"] is True
+    assert payload["public_safe"] is True
+    assert payload["truth_guarantee"] is False
 
 
 @pytest.mark.anyio
@@ -306,7 +425,12 @@ async def test_structured_canonical_success_remains_unqueued(
 ) -> None:
     record_id = "structured-canonical-success"
     content = {"evidence": "present"}
-    record = {"record_id": record_id, "content": content, "content_hash": _sha256(content)}
+    record = {
+        "record_id": record_id,
+        "content": content,
+        "content_hash": _sha256(content),
+        "content_hash_profile": HC_CONTENT_HASH_PROFILE,
+    }
     monkeypatch.setattr(verify_route, "PIPELINE", ValidatorPipeline(canonical_records={record_id: record}))
 
     payload = (await client.post(f"/verify/{record_id}", json={"qr_input": _structured_qr(record_id)})).json()
