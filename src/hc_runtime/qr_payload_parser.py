@@ -7,12 +7,18 @@ backend, or make truth claims about an HC:// record.
 
 from __future__ import annotations
 
-import hashlib
-import json
 import re
 from datetime import datetime
 from typing import Any, Optional, Tuple
 from urllib.parse import urlparse
+
+from hc_trust.canonicalization import CanonicalizationError, strict_json_loads
+from hc_trust.hashing import (
+    CONTENT_HASH_PROFILE_FIELD,
+    ContentHashError,
+    calculate_content_hash,
+    calculate_qr_payload_hash,
+)
 
 VALID_PAYLOAD = "valid_payload"
 INVALID_PAYLOAD = "invalid_payload"
@@ -82,9 +88,9 @@ def _load_payload(payload: str) -> Tuple[Optional[dict[str, Any]], list[str]]:
         return None, ["QR payload input must be a JSON string."]
 
     try:
-        decoded = json.loads(payload)
-    except json.JSONDecodeError as exc:
-        return None, [f"QR payload is malformed JSON: {exc.msg}."]
+        decoded = strict_json_loads(payload)
+    except CanonicalizationError as exc:
+        return None, [f"QR payload is malformed JSON: {exc.reason}."]
 
     if not isinstance(decoded, dict):
         return None, ["QR payload JSON must be an object."]
@@ -93,18 +99,9 @@ def _load_payload(payload: str) -> Tuple[Optional[dict[str, Any]], list[str]]:
 
 
 def _compute_advisory_payload_hash(data: dict[str, Any]) -> str:
-    """Compute the parser-local advisory payload hash.
+    """Compute the versioned advisory QR payload digest without granting trust."""
 
-    This MVP rule is intentionally internal to the QR payload parser. It is not
-    a signing canonicalization standard and does not verify authenticity.
-    """
-
-    canonical_data = dict(data)
-    canonical_data.pop("payload_hash", None)
-    canonical_payload = json.dumps(
-        canonical_data, sort_keys=True, separators=(",", ":")
-    ).encode("utf-8")
-    return hashlib.sha256(canonical_payload).hexdigest()
+    return calculate_qr_payload_hash(data)
 
 
 def _has_valid_record_id(record_id: str) -> bool:
@@ -112,7 +109,10 @@ def _has_valid_record_id(record_id: str) -> bool:
 
 
 def _has_valid_canonical_url(canonical_url: str) -> bool:
-    parsed = urlparse(canonical_url)
+    try:
+        parsed = urlparse(canonical_url)
+    except ValueError:
+        return False
     return parsed.scheme == "https" and bool(parsed.netloc)
 
 
@@ -145,7 +145,10 @@ def parse_qr_payload(payload: str) -> dict[str, Any]:
     errors: list[str] = []
 
     required = set(REQUIRED_FIELDS)
-    unknown_fields = sorted(set(data) - required)
+    consumed_optional_fields = (
+        {"content", CONTENT_HASH_PROFILE_FIELD} if "content" in data else set()
+    )
+    unknown_fields = sorted(set(data) - required - consumed_optional_fields)
     for field in unknown_fields:
         warnings.append(f"Unknown QR payload field ignored: {field}.")
 
@@ -192,14 +195,43 @@ def parse_qr_payload(payload: str) -> dict[str, Any]:
             "QR payload issued_at must use UTC format YYYY-MM-DDTHH:MM:SSZ."
         )
 
+    if "content" in data:
+        try:
+            if CONTENT_HASH_PROFILE_FIELD in data:
+                actual_content_hash = calculate_content_hash(
+                    data["content"], data[CONTENT_HASH_PROFILE_FIELD]
+                )
+            else:
+                actual_content_hash = calculate_content_hash(data["content"])
+        except ContentHashError as exc:
+            errors.append(
+                f"QR payload content hash could not be safely calculated: {exc.reason}."
+            )
+        else:
+            declared_content_hash = data.get("content_hash")
+            if (
+                isinstance(declared_content_hash, str)
+                and declared_content_hash.strip()
+                and declared_content_hash.strip().lower() != actual_content_hash.lower()
+            ):
+                errors.append(
+                    "QR payload content_hash does not match actual payload content."
+                )
+
     payload_hash = data.get("payload_hash")
     if isinstance(payload_hash, str) and payload_hash.strip():
         declared_payload_hash = payload_hash.strip().lower()
-        advisory_payload_hash = _compute_advisory_payload_hash(data).lower()
-        if declared_payload_hash != advisory_payload_hash:
+        try:
+            advisory_payload_hash = _compute_advisory_payload_hash(data).lower()
+        except ContentHashError as exc:
             errors.append(
-                "QR payload payload_hash does not match advisory canonical payload hash."
+                f"QR payload hash could not be safely calculated: {exc.reason}."
             )
+        else:
+            if declared_payload_hash != advisory_payload_hash:
+                errors.append(
+                    "QR payload payload_hash does not match advisory canonical payload hash."
+                )
 
     status = INVALID_PAYLOAD if errors else VALID_PAYLOAD
     return _build_result(status, warnings=warnings, errors=errors)

@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-import hashlib
 from copy import deepcopy
 from typing import Any
 
 from hc_runtime.contracts.responses import advisory_response
 from hc_runtime.contracts.decision_engine import TrustStateDecisionEngine
 from hc_runtime.runtime import RuntimePolicyEngine, ValidatorPipeline
+from hc_trust.hashing import HC_CONTENT_HASH_PROFILE, calculate_content_hash
 
 EXPECTED_BRIDGE_KEYS = [
     "checked",
@@ -70,16 +70,15 @@ EXPECTED_RUNTIME_RESPONSE_KEYS = [
 
 def _sha256(content: object) -> str:
     if isinstance(content, str):
-        payload = content
-    else:
-        import json
-
-        payload = json.dumps(content, sort_keys=True, separators=(",", ":"))
-    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+        return calculate_content_hash(content)
+    return calculate_content_hash(content, HC_CONTENT_HASH_PROFILE)
 
 
 def _record(record_id: str, content: object = "canonical content") -> dict[str, object]:
-    return {"record_id": record_id, "content": content, "content_hash": _sha256(content)}
+    record = {"record_id": record_id, "content": content, "content_hash": _sha256(content)}
+    if not isinstance(content, str):
+        record["content_hash_profile"] = HC_CONTENT_HASH_PROFILE
+    return record
 
 
 def _run_pipeline(record_id: str, records: dict[str, object]) -> dict[str, Any]:

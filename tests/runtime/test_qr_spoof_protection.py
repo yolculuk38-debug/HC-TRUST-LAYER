@@ -2,14 +2,17 @@
 
 from __future__ import annotations
 
-import hashlib
-import json
-
 import httpx
 import pytest
 
 from hc_runtime.app import create_app
 from hc_runtime.state import ABUSE_SIGNAL_TRACKER, EVENT_STORE, QUEUE_STORE
+from hc_trust.canonicalization import canonicalize_json
+from hc_trust.hashing import (
+    HC_CONTENT_HASH_PROFILE,
+    calculate_content_hash,
+    calculate_qr_payload_hash,
+)
 
 EXPECTED_QR_RESPONSE_KEYS = [
     "status",
@@ -42,28 +45,33 @@ EXPECTED_QR_RESPONSE_KEYS = [
 
 
 def _canonical_json(data: object) -> str:
-    return json.dumps(data, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-
-
-def _sha256_text(value: str) -> str:
-    return hashlib.sha256(value.encode("utf-8")).hexdigest()
+    return canonicalize_json(data).decode("utf-8")
 
 
 def _structured_qr_payload(record_id: str, **overrides: object) -> dict[str, object]:
     content = overrides.pop("content", {"record_id": record_id, "summary": "HC:// advisory QR test payload"})
-    content_text = content if isinstance(content, str) else _canonical_json(content)
+    content_hash_profile = overrides.pop(
+        "content_hash_profile",
+        None if isinstance(content, str) else HC_CONTENT_HASH_PROFILE,
+    )
     payload: dict[str, object] = {
         "record_id": record_id,
         "verification_url": f"https://github.com/example/HC-TRUST-LAYER/verify/{record_id}",
         "content": content,
-        "content_hash": _sha256_text(content_text),
+        "content_hash": (
+            calculate_content_hash(content)
+            if content_hash_profile is None
+            else calculate_content_hash(content, content_hash_profile)
+        ),
         "created_at": "2026-05-28T00:00:00Z",
         "qr_version": "v1",
         "signed_payload_ref": f"signed-payloads/{record_id}.json",
     }
+    if content_hash_profile is not None:
+        payload["content_hash_profile"] = content_hash_profile
     payload.update(overrides)
     if "payload_hash" not in payload:
-        payload["payload_hash"] = _sha256_text(_canonical_json(payload))
+        payload["payload_hash"] = calculate_qr_payload_hash(payload)
     return payload
 
 
@@ -73,7 +81,7 @@ def _encoded_qr(record_id: str, **overrides: object) -> str:
 
 def _payload_with_current_hash(payload: dict[str, object], *, uppercase_payload_hash: bool = False) -> dict[str, object]:
     payload = dict(payload)
-    payload["payload_hash"] = _sha256_text(_canonical_json({key: value for key, value in payload.items() if key != "payload_hash"}))
+    payload["payload_hash"] = calculate_qr_payload_hash(payload)
     if uppercase_payload_hash:
         payload["payload_hash"] = str(payload["payload_hash"]).upper()
     return payload

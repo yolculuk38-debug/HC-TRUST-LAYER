@@ -2,21 +2,19 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 from pathlib import Path
 from typing import Any
 
 from hc_runtime.canonical_record_loader import CanonicalRecordLoader
 from hc_runtime.runtime import ValidatorPipeline
+from hc_trust.hashing import HC_CONTENT_HASH_PROFILE, calculate_content_hash
 
 
 def _sha256(content: object) -> str:
     if isinstance(content, str):
-        payload = content
-    else:
-        payload = json.dumps(content, sort_keys=True, separators=(",", ":"))
-    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+        return calculate_content_hash(content)
+    return calculate_content_hash(content, HC_CONTENT_HASH_PROFILE)
 
 
 def _write_json(path: Path, payload: dict[str, object]) -> None:
@@ -25,7 +23,10 @@ def _write_json(path: Path, payload: dict[str, object]) -> None:
 
 
 def _record(record_id: str, content: object = "canonical loader content") -> dict[str, object]:
-    return {"record_id": record_id, "content": content, "content_hash": _sha256(content)}
+    record = {"record_id": record_id, "content": content, "content_hash": _sha256(content)}
+    if not isinstance(content, str):
+        record["content_hash_profile"] = HC_CONTENT_HASH_PROFILE
+    return record
 
 
 def _run(root: Path, record_id: str) -> dict[str, Any]:
@@ -71,6 +72,29 @@ def test_malformed_json_returns_explicit_malformed_status_without_unsafe_parse(t
     assert result["canonical_bridge"]["malformed"] is True
     assert result["schema_result"]["valid"] is False
     assert any("malformed" in warning.lower() for warning in result["trust_assignment"]["warnings"])
+
+
+def test_malformed_filename_hint_takes_precedence_over_valid_record_id_collision(
+    tmp_path: Path,
+) -> None:
+    record_id = "HC-LOADER-COLLISION"
+    _write_json(
+        tmp_path / "records" / "pending" / "valid-other-name.json",
+        _record(record_id),
+    )
+    malformed = tmp_path / "records" / "verified" / f"{record_id}.json"
+    malformed.parent.mkdir(parents=True, exist_ok=True)
+    malformed.write_text(
+        f'{{"record_id":"{record_id}","record_id":"attacker"}}',
+        encoding="utf-8",
+    )
+
+    result = _run(tmp_path, record_id)
+
+    assert result["canonical_bridge"]["lookup_status"] == "malformed"
+    assert result["canonical_bridge"]["malformed"] is True
+    assert result["schema_result"]["valid"] is False
+    assert result["hash_result"]["hash_verified"] is False
 
 
 def test_generated_index_cache_and_export_files_are_ignored(tmp_path: Path) -> None:

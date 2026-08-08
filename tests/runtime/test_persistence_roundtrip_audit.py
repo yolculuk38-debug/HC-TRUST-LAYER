@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -13,6 +12,12 @@ import pytest
 from hc_runtime.app import create_app
 from hc_runtime.contracts import QR_VERIFICATION_RESPONSE_KEYS
 from hc_runtime.state import ABUSE_SIGNAL_TRACKER, EVENT_STORE, QUEUE_STORE
+from hc_trust.canonicalization import canonicalize_json
+from hc_trust.hashing import (
+    HC_CONTENT_HASH_PROFILE,
+    calculate_content_hash,
+    calculate_qr_payload_hash,
+)
 
 
 @pytest.fixture()
@@ -37,11 +42,7 @@ async def client() -> httpx.AsyncClient:
 
 
 def _canonical_json(data: object) -> str:
-    return json.dumps(data, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-
-
-def _sha256_text(value: str) -> str:
-    return hashlib.sha256(value.encode("utf-8")).hexdigest()
+    return canonicalize_json(data).decode("utf-8")
 
 
 def _structured_qr(record_id: str, **overrides: object) -> str:
@@ -50,14 +51,15 @@ def _structured_qr(record_id: str, **overrides: object) -> str:
         "record_id": record_id,
         "verification_url": f"https://github.com/example/HC-TRUST-LAYER/verify/{record_id}",
         "content": content,
-        "content_hash": _sha256_text(_canonical_json(content)),
+        "content_hash": calculate_content_hash(content, HC_CONTENT_HASH_PROFILE),
+        "content_hash_profile": HC_CONTENT_HASH_PROFILE,
         "created_at": "2026-05-29T00:00:00Z",
         "qr_version": "v1",
         "signed_payload_ref": f"signed-payloads/{record_id}.json",
     }
     payload.update(overrides)
     if "payload_hash" not in payload:
-        payload["payload_hash"] = _sha256_text(_canonical_json(payload))
+        payload["payload_hash"] = calculate_qr_payload_hash(payload)
     return _canonical_json(payload)
 
 

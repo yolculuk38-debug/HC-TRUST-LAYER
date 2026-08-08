@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 import copy
-import hashlib
-import json
 from dataclasses import dataclass, field
 from typing import Any, Mapping
 
@@ -12,6 +10,11 @@ from hc_runtime.canonical_record_loader import MALFORMED_RECORD, CanonicalRecord
 from hc_runtime.contracts.decision_engine import TrustState, TrustStateDecisionEngine
 from hc_runtime.events import RuntimeEventStore
 from hc_runtime.contracts.redaction import redact_public_payload, redact_secret_like_text
+from hc_trust.hashing import (
+    CONTENT_HASH_PROFILE_FIELD,
+    ContentHashError,
+    calculate_content_hash,
+)
 
 
 class ValidatorPipeline:
@@ -104,7 +107,20 @@ class ValidatorPipeline:
         if "content" not in record_snapshot:
             return result
 
-        calculated_hash = self._canonical_record_content_hash(record_snapshot["content"])
+        try:
+            if CONTENT_HASH_PROFILE_FIELD in record_snapshot:
+                calculated_hash = calculate_content_hash(
+                    record_snapshot["content"],
+                    record_snapshot[CONTENT_HASH_PROFILE_FIELD],
+                )
+            else:
+                calculated_hash = calculate_content_hash(record_snapshot["content"])
+        except ContentHashError as exc:
+            result["lookup_status"] = "hash_unverifiable"
+            warnings.append(
+                f"Canonical record content hash verification could not be performed: {exc.reason}."
+            )
+            return result
         result["hash_verified"] = calculated_hash == record_snapshot["content_hash"]
         if not result["hash_verified"]:
             result["lookup_status"] = "hash_mismatch"
@@ -129,7 +145,7 @@ class ValidatorPipeline:
             bridge_result["found"]
             and not bridge_result["malformed"]
             and bridge_result["content_hash_present"]
-            and bridge_result["lookup_status"] != "schema_invalid"
+            and bridge_result["lookup_status"] in {"verified", "hash_mismatch"}
         )
         # A schema-invalid record can still have usable content and a digest.
         if bridge_result["lookup_status"] == "schema_invalid":
@@ -164,13 +180,6 @@ class ValidatorPipeline:
             and isinstance(record.get("content_hash"), str)
             and bool(record.get("content_hash", "").strip())
         )
-
-    def _canonical_record_content_hash(self, content: object) -> str:
-        if isinstance(content, str):
-            canonical_content = content
-        else:
-            canonical_content = json.dumps(content, sort_keys=True, separators=(",", ":"))
-        return hashlib.sha256(canonical_content.encode("utf-8")).hexdigest()
 
     def _escalation_routing_hook(self, *, warnings: list[str]) -> dict[str, Any]:
         return {
