@@ -60,8 +60,11 @@ def _resolve_default_record_schema_path(module_path: str | Path = __file__) -> P
 DEFAULT_RECORD_SCHEMA_PATH = _resolve_default_record_schema_path()
 RECORD_FORMAT_CHECKER = FormatChecker()
 _RFC3339_DATETIME = re.compile(
-    r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}"
-    r"(?:\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+    r"^(?P<year>[0-9]{4})-(?P<month>0[1-9]|1[0-2])-"
+    r"(?P<day>0[1-9]|[12][0-9]|3[01])[Tt]"
+    r"(?P<hour>[01][0-9]|2[0-3]):(?P<minute>[0-5][0-9]):"
+    r"(?P<second>[0-5][0-9]|60)(?:\.[0-9]+)?"
+    r"(?:[Zz]|[+-](?:[01][0-9]|2[0-3]):[0-5][0-9])$"
 )
 SKIP_HINTS = (
     "index",
@@ -74,12 +77,21 @@ SKIP_HINTS = (
 
 @RECORD_FORMAT_CHECKER.checks("date-time", raises=ValueError)
 def _is_rfc3339_datetime(value: object) -> bool:
-    """Validate the strict RFC 3339 profile used by canonical HC:// records."""
+    """Validate RFC 3339 syntax, including its case and leap-second forms."""
 
-    if not isinstance(value, str) or _RFC3339_DATETIME.fullmatch(value) is None:
+    if not isinstance(value, str):
         return False
-    normalized = f"{value[:-1]}+00:00" if value.endswith("Z") else value
-    datetime.fromisoformat(normalized)
+    match = _RFC3339_DATETIME.fullmatch(value)
+    if match is None:
+        return False
+    # The regular expression enforces time and offset ranges.  Let the standard
+    # library enforce Gregorian calendar validity without parsing the optional
+    # RFC 3339 leap-second value (``60``), which ``datetime`` does not support.
+    datetime(
+        int(match["year"]),
+        int(match["month"]),
+        int(match["day"]),
+    )
     return True
 
 

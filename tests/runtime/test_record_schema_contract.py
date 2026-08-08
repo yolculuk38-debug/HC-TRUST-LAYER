@@ -142,6 +142,47 @@ def test_shared_record_validator_enforces_required_format_and_profile_rules(
     assert expected_rule in message.lower()
 
 
+@pytest.mark.parametrize(
+    "created_at",
+    [
+        "2026-08-08t12:00:00z",
+        "1990-12-31T23:59:60Z",
+        "2026-08-08T12:00:00.123456+03:30",
+    ],
+)
+def test_shared_record_validator_accepts_rfc3339_date_time_forms(
+    created_at: str,
+) -> None:
+    record = _record()
+    record["created_at"] = created_at
+
+    passed, errors = validate_record_payload(record)
+
+    assert passed is True
+    assert errors == []
+
+
+@pytest.mark.parametrize(
+    "created_at",
+    [
+        "2026-02-29T12:00:00Z",
+        "2026-08-08T24:00:00Z",
+        "2026-08-08T12:00:61Z",
+        "2026-08-08T12:00:00+24:00",
+    ],
+)
+def test_shared_record_validator_rejects_invalid_rfc3339_date_time_forms(
+    created_at: str,
+) -> None:
+    record = _record()
+    record["created_at"] = created_at
+
+    passed, errors = validate_record_payload(record)
+
+    assert passed is False
+    assert errors == ["$.created_at: format constraint failed"]
+
+
 def test_runtime_uses_full_schema_instead_of_three_field_partial_check() -> None:
     record_id = "HC-RUNTIME-2026-0001"
     record = _record(record_id)
