@@ -2,7 +2,6 @@ import json
 
 from qr_hardening import QRStatus, sha256_text, verify_qr_payload
 
-
 SAFE_URL = "https://github.com/yolculuk38-debug/HC-TRUST-LAYER/blob/main/docs/index.md"
 
 
@@ -19,10 +18,16 @@ def build_payload(content="HC:// TRUST", signed=True):
     return payload
 
 
-def test_verified_qr_payload():
+def test_signature_presence_stays_unverified_and_untrusted():
     result = verify_qr_payload(build_payload())
-    assert result["status"] == QRStatus.VERIFIED.value
-    assert result["trusted"] is True
+    assert result["status"] == QRStatus.SIGNATURE_UNVERIFIED.value
+    assert result["trusted"] is False
+    assert result["signature_present"] is True
+    assert result["signature_verified"] is False
+    assert result["advisory_only"] is True
+    assert result["public_safe"] is True
+    assert result["truth_guarantee"] is False
+    assert result["human_review_required"] is True
 
 
 def test_unsigned_qr_payload():
@@ -59,7 +64,7 @@ def test_invalid_qr_json_string():
 def test_valid_json_payload_input():
     payload = build_payload()
     result = verify_qr_payload(json.dumps(payload))
-    assert result["status"] == QRStatus.VERIFIED.value
+    assert result["status"] == QRStatus.SIGNATURE_UNVERIFIED.value
 
 
 def test_legacy_archive_repo_path_on_allowed_domain_is_not_safe():
@@ -76,7 +81,7 @@ def test_legacy_archive_repo_path_on_allowed_domain_is_not_safe():
         assert result["trusted"] is False
 
 
-def test_github_hc_trust_layer_records_path_remains_safe():
+def test_github_hc_trust_layer_records_path_passes_url_check_without_trust():
     payload = build_payload()
     payload["verification_url"] = (
         "https://github.com/yolculuk38-debug/HC-TRUST-LAYER/blob/main/records/HC-QR-2026-0001.json"
@@ -84,11 +89,11 @@ def test_github_hc_trust_layer_records_path_remains_safe():
 
     result = verify_qr_payload(payload)
 
-    assert result["status"] == QRStatus.VERIFIED.value
-    assert result["trusted"] is True
+    assert result["status"] == QRStatus.SIGNATURE_UNVERIFIED.value
+    assert result["trusted"] is False
 
 
-def test_github_and_pages_repository_backed_qr_urls_remain_safe():
+def test_github_and_pages_repository_backed_urls_do_not_grant_trust():
     for url in [
         SAFE_URL,
         "https://yolculuk38-debug.github.io/HC-TRUST-LAYER/verify/HC-QR-2026-0001",
@@ -98,5 +103,16 @@ def test_github_and_pages_repository_backed_qr_urls_remain_safe():
 
         result = verify_qr_payload(payload)
 
-        assert result["status"] == QRStatus.VERIFIED.value
-        assert result["trusted"] is True
+        assert result["status"] == QRStatus.SIGNATURE_UNVERIFIED.value
+        assert result["trusted"] is False
+
+
+def test_non_string_signature_is_invalid_and_unverified():
+    payload = build_payload()
+    payload["signature"] = {"value": "not-verified"}
+
+    result = verify_qr_payload(payload)
+
+    assert result["status"] == QRStatus.INVALID_QR.value
+    assert result["trusted"] is False
+    assert result["signature_verified"] is False

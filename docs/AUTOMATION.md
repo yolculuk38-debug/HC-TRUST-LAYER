@@ -150,8 +150,8 @@ This creates `qr/HC-CHATGPT-2026-0001.png`. For the first-flow demo record only,
 
 **Output:**
 ```text
-✅ Secure QR oluşturuldu: qr/HC-CHATGPT-2026-0001.png
-🔗 URL: https://<host>/verify/HC-CHATGPT-2026-0001?record=HC-CHATGPT-2026-0001&hash=...&ref=pending_archive&sig=...
+✅ Advisory QR navigation helper generated: qr/HC-CHATGPT-2026-0001.png
+🔗 URL: https://<host>/verify/HC-CHATGPT-2026-0001?record=HC-CHATGPT-2026-0001&hash=...&ref=pending_archive&checksum=...&checksum_profile=hc-qr-link-checksum-sha256-v1
 ```
 
 ### QR Public Verifier Boundary

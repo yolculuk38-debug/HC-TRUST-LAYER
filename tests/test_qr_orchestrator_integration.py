@@ -3,7 +3,6 @@ import types
 from qr_hardening import sha256_text
 from qr_orchestrator_integration import verify_qr_with_orchestrator
 
-
 SAFE_URL = "https://github.com/yolculuk38-debug/HC-TRUST-LAYER/blob/main/docs/index.md"
 
 
@@ -52,15 +51,24 @@ def install_stub_orchestrator(monkeypatch):
     monkeypatch.setitem(__import__("sys").modules, "verification_orchestrator", stub)
 
 
-def test_valid_signed_qr_returns_verified_or_partial(monkeypatch):
+def test_signature_presence_cannot_promote_qr_result_to_verified(monkeypatch):
     install_stub_orchestrator(monkeypatch)
-    result_verified = verify_qr_with_orchestrator(
-        build_payload(), trust_score_result={"trust_score": 95}, checked_at="2026-05-21T00:00:00Z"
+    high_score_result = verify_qr_with_orchestrator(
+        build_payload(),
+        trust_score_result={"trust_score": 95},
+        checked_at="2026-05-21T00:00:00Z",
     )
-    assert result_verified["decision"] == "VERIFIED"
+    assert high_score_result["decision"] == "PARTIAL"
+    assert high_score_result["trusted"] is False
+    assert (
+        high_score_result["layer_results"]["qr_result"]["status"]
+        == "SIGNATURE_UNVERIFIED"
+    )
 
     result_partial = verify_qr_with_orchestrator(
-        build_payload(), trust_score_result={"trust_score": 70}, checked_at="2026-05-21T00:00:00Z"
+        build_payload(),
+        trust_score_result={"trust_score": 70},
+        checked_at="2026-05-21T00:00:00Z",
     )
     assert result_partial["decision"] == "PARTIAL"
 
@@ -70,7 +78,9 @@ def test_unsafe_qr_returns_untrusted(monkeypatch):
     payload = build_payload()
     payload["verification_url"] = "https://evil.example/phishing"
 
-    result = verify_qr_with_orchestrator(payload, trust_score_result={"trust_score": 99})
+    result = verify_qr_with_orchestrator(
+        payload, trust_score_result={"trust_score": 99}
+    )
 
     assert result["decision"] == "UNTRUSTED"
     assert result["trusted"] is False
@@ -81,7 +91,9 @@ def test_tampered_qr_returns_untrusted(monkeypatch):
     payload = build_payload()
     payload["content"] = "tampered"
 
-    result = verify_qr_with_orchestrator(payload, trust_score_result={"trust_score": 99})
+    result = verify_qr_with_orchestrator(
+        payload, trust_score_result={"trust_score": 99}
+    )
 
     assert result["decision"] == "UNTRUSTED"
 
@@ -89,11 +101,15 @@ def test_tampered_qr_returns_untrusted(monkeypatch):
 def test_unsigned_qr_not_auto_trusted(monkeypatch):
     install_stub_orchestrator(monkeypatch)
 
-    partial = verify_qr_with_orchestrator(build_payload(signed=False), trust_score_result={"trust_score": 70})
+    partial = verify_qr_with_orchestrator(
+        build_payload(signed=False), trust_score_result={"trust_score": 70}
+    )
     assert partial["decision"] == "PARTIAL"
     assert partial["trusted"] is False
 
-    untrusted = verify_qr_with_orchestrator(build_payload(signed=False), trust_score_result={"trust_score": 40})
+    untrusted = verify_qr_with_orchestrator(
+        build_payload(signed=False), trust_score_result={"trust_score": 40}
+    )
     assert untrusted["decision"] == "UNTRUSTED"
     assert untrusted["trusted"] is False
 
@@ -101,7 +117,9 @@ def test_unsigned_qr_not_auto_trusted(monkeypatch):
 def test_response_includes_original_qr_result(monkeypatch):
     install_stub_orchestrator(monkeypatch)
 
-    result = verify_qr_with_orchestrator(build_payload(signed=False), trust_score_result={"trust_score": 70})
+    result = verify_qr_with_orchestrator(
+        build_payload(signed=False), trust_score_result={"trust_score": 70}
+    )
 
     assert "qr_result" in result["layer_results"]
     assert result["layer_results"]["qr_result"]["status"] == "UNSIGNED"
