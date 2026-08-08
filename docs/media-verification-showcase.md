@@ -21,7 +21,7 @@ An image titled `city-council-briefing-photo.jpg` is submitted for advisory revi
 - **Canonical record path:** `records/canonical-media-demo/HC-MEDIA2026-IMG-0001.json` (illustrative reference)
 - **Original registration timestamp:** `2026-05-14T18:22:09Z`
 - **Declared media hash (SHA-256):** `4f4a9d878bf3ef8dd8763ab6be6f3f0901c5e5f63076f0a2f882f266d8a36a11`
-- **HC:// QR navigation route:** `https://<owner>.github.io/HC-TRUST-LAYER/verify/HC-MEDIA2026-IMG-0001?record=HC-MEDIA2026-IMG-0001&hash=4f4a9d878bf3ef8dd8763ab6be6f3f0901c5e5f63076f0a2f882f266d8a36a11&ref=media_showcase&sig=...` (advisory placeholder unless separately deployed and validated)
+- **HC:// QR navigation route:** `https://<owner>.github.io/HC-TRUST-LAYER/verify/HC-MEDIA2026-IMG-0001?record=HC-MEDIA2026-IMG-0001&hash=4f4a9d878bf3ef8dd8763ab6be6f3f0901c5e5f63076f0a2f882f266d8a36a11&ref=media_showcase&checksum=...&checksum_profile=hc-qr-link-checksum-sha256-v1` (advisory placeholder unless separately deployed and validated; the checksum is unkeyed and is not a signature or authenticity proof)
 - **Explorer continuity artifact (non-canonical):** `generated/media_showcase_explorer_index.json`
 - **Audit continuity artifact (non-canonical):** `generated/media_showcase_audit_snapshot.json`
 

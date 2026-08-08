@@ -35,8 +35,8 @@ PYTHONPATH=src python src/qr.py HC-DEMO2026-0001 ae83383b191d02970eb3df834c56b15
 Example output:
 
 ```text
-✅ Secure QR oluşturuldu: qr/HC-DEMO2026-0001.png
-🔗 URL: https://<owner>.github.io/HC-TRUST-LAYER/docs/verify.html?record=HC-DEMO2026-0001&hash=ae83383b191d02970eb3df834c56b15e7a688fcd63f782d3408aaefd60b7b56a&ref=https%3A%2F%2Fgithub.com%2Fowner%2Frepo%2Fblob%2Fmain%2Fexamples%2Fdemo_record.json&sig=...
+✅ Advisory QR navigation helper generated: qr/HC-DEMO2026-0001.png
+🔗 URL: https://<owner>.github.io/HC-TRUST-LAYER/docs/verify.html?record=HC-DEMO2026-0001&hash=ae83383b191d02970eb3df834c56b15e7a688fcd63f782d3408aaefd60b7b56a&ref=https%3A%2F%2Fgithub.com%2Fowner%2Frepo%2Fblob%2Fmain%2Fexamples%2Fdemo_record.json&checksum=...&checksum_profile=hc-qr-link-checksum-sha256-v1
 ```
 
 > Do not commit generated QR image files (`*.png`, `*.jpg`, etc.). Keep demo evidence text-only. Existing QR artifacts should not be treated as active v0.1.0 evidence unless decoded or regenerated after PR #592.

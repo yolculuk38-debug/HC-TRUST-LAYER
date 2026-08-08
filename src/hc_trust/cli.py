@@ -6,8 +6,8 @@ from pathlib import Path
 from hc_runtime.qr_public_validator import run_qr_public_validator
 
 from .hashing import calculate_sha256
-from .qr_tools import generate_qr, find_verified_records
-from .verification import verify_record_hash, find_record_files
+from .qr_tools import find_verified_records, generate_qr
+from .verification import find_record_files, verify_record_hash
 from .verification_package import VerificationPackageStatus, verify_verification_package
 
 
@@ -50,17 +50,19 @@ def cmd_qr(args):
         if not verified_records:
             print("ℹ️ No verified records found, skipping QR generation.")
             return 0
-        print(f"{len(verified_records)} verified records found; generating QR payloads...")
+        print(
+            f"{len(verified_records)} verified records found; generating QR payloads..."
+        )
         for record_id, content_hash, archive_ref, source_path in verified_records:
             print(f"- Source: {source_path}")
             out, url = generate_qr(record_id, content_hash, archive_ref)
-            print(f"✅ Secure QR generated: {out}")
+            print(f"✅ Advisory QR navigation helper generated: {out}")
             print(f"🔗 URL: {url}")
         print("✅ Batch QR generation completed.")
         return 0
 
     out, url = generate_qr(args.record_id, args.content_hash, args.archive_ref)
-    print(f"✅ Secure QR generated: {out}")
+    print(f"✅ Advisory QR navigation helper generated: {out}")
     print(f"🔗 URL: {url}")
     return 0
 
@@ -109,7 +111,9 @@ def _format_verify_package_summary(result):
     if result.get("missing_evidence"):
         lines.append("missing_evidence: " + _summary_list(result["missing_evidence"]))
     if result.get("conflicting_evidence"):
-        lines.append("conflicting_evidence: " + _summary_list(result["conflicting_evidence"]))
+        lines.append(
+            "conflicting_evidence: " + _summary_list(result["conflicting_evidence"])
+        )
     if result.get("warnings"):
         lines.append("warnings: " + _summary_list(result["warnings"]))
     return "\n".join(lines)
@@ -136,7 +140,10 @@ def build_parser():
     p_hash.add_argument("file_path")
     p_hash.set_defaults(func=cmd_hash)
 
-    p_qr = sub.add_parser("qr", help="Generate a verification QR payload/link helper")
+    p_qr = sub.add_parser(
+        "qr",
+        help="Generate an advisory QR navigation payload/link helper",
+    )
     p_qr.add_argument("record_id", nargs="?")
     p_qr.add_argument("content_hash", nargs="?")
     p_qr.add_argument("archive_ref", nargs="?")
@@ -174,9 +181,19 @@ def build_parser():
 def main(argv=None):
     parser = build_parser()
     args = parser.parse_args(argv)
-    if args.command == "qr" and not args.batch and not (args.record_id and args.content_hash and args.archive_ref):
-        parser.error("qr requires <record_id> <content_hash> <archive_ref>, or use --batch")
-    if args.command == "qr" and args.batch and (args.record_id or args.content_hash or args.archive_ref):
+    if (
+        args.command == "qr"
+        and not args.batch
+        and not (args.record_id and args.content_hash and args.archive_ref)
+    ):
+        parser.error(
+            "qr requires <record_id> <content_hash> <archive_ref>, or use --batch"
+        )
+    if (
+        args.command == "qr"
+        and args.batch
+        and (args.record_id or args.content_hash or args.archive_ref)
+    ):
         parser.error("--batch cannot be used with positional arguments")
     return args.func(args)
 

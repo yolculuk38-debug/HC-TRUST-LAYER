@@ -1,12 +1,11 @@
-"""Integration between QR hardening and the verification orchestrator."""
+"""Integration between advisory QR inspection and the verification orchestrator."""
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from qr_hardening import QRStatus, verify_qr_payload
-
 
 _TERMINAL_QR_FAILURES = {
     QRStatus.INVALID_QR.value,
@@ -18,12 +17,13 @@ _TERMINAL_QR_FAILURES = {
 def _checked_at_value(checked_at: str | None) -> str:
     if checked_at:
         return checked_at
-    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+    return datetime.now(UTC).isoformat().replace("+00:00", "Z")
 
 
 def _to_orchestrator_qr_result(qr_result: dict[str, Any]) -> dict[str, Any]:
     return {
-        "trusted": qr_result.get("status") == QRStatus.VERIFIED.value,
+        "trusted": bool(qr_result.get("trusted"))
+        and qr_result.get("signature_verified") is True,
         "status": qr_result.get("status"),
         "reason": qr_result.get("reason"),
     }
@@ -37,7 +37,7 @@ def verify_qr_with_orchestrator(
     signature_result: dict[str, Any] | None = None,
     checked_at: str | None = None,
 ) -> dict[str, Any]:
-    """Verify QR payload first, then merge it into orchestrator decisioning."""
+    """Inspect a QR payload, then merge its fail-closed advisory result."""
 
     qr_result = verify_qr_payload(payload)
     orchestrator_qr_result = _to_orchestrator_qr_result(qr_result)
