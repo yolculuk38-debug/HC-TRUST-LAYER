@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -64,7 +64,8 @@ _RFC3339_DATETIME = re.compile(
     r"(?P<day>0[1-9]|[12][0-9]|3[01])[Tt]"
     r"(?P<hour>[01][0-9]|2[0-3]):(?P<minute>[0-5][0-9]):"
     r"(?P<second>[0-5][0-9]|60)(?:\.[0-9]+)?"
-    r"(?:[Zz]|[+-](?:[01][0-9]|2[0-3]):[0-5][0-9])$"
+    r"(?:(?P<zulu>[Zz])|(?P<offset_sign>[+-])"
+    r"(?P<offset_hour>[01][0-9]|2[0-3]):(?P<offset_minute>[0-5][0-9]))$"
 )
 SKIP_HINTS = (
     "index",
@@ -87,12 +88,34 @@ def _is_rfc3339_datetime(value: object) -> bool:
     # The regular expression enforces time and offset ranges.  Let the standard
     # library enforce Gregorian calendar validity without parsing the optional
     # RFC 3339 leap-second value (``60``), which ``datetime`` does not support.
-    datetime(
+    local_minute = datetime(
         int(match["year"]),
         int(match["month"]),
         int(match["day"]),
+        int(match["hour"]),
+        int(match["minute"]),
     )
-    return True
+    if match["second"] != "60":
+        return True
+
+    offset_minutes = 0
+    if match["zulu"] is None:
+        offset_minutes = int(match["offset_hour"]) * 60 + int(
+            match["offset_minute"]
+        )
+        if match["offset_sign"] == "-":
+            offset_minutes = -offset_minutes
+    try:
+        utc_minute = local_minute - timedelta(minutes=offset_minutes)
+    except OverflowError:
+        return False
+
+    # RFC 3339 section 5.7 permits ``60`` only at the globally simultaneous
+    # leap-second point, shifted into local time by the declared offset.
+    return (utc_minute.month, utc_minute.day, utc_minute.hour, utc_minute.minute) in {
+        (6, 30, 23, 59),
+        (12, 31, 23, 59),
+    }
 
 
 class RecordSchemaError(ValueError):

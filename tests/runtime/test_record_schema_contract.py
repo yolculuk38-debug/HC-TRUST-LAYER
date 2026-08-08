@@ -147,6 +147,8 @@ def test_shared_record_validator_enforces_required_format_and_profile_rules(
     [
         "2026-08-08t12:00:00z",
         "1990-12-31T23:59:60Z",
+        "1990-12-31T15:59:60-08:00",
+        "1991-01-01T00:59:60+01:00",
         "2026-08-08T12:00:00.123456+03:30",
     ],
 )
@@ -169,6 +171,9 @@ def test_shared_record_validator_accepts_rfc3339_date_time_forms(
         "2026-08-08T24:00:00Z",
         "2026-08-08T12:00:61Z",
         "2026-08-08T12:00:00+24:00",
+        "2026-02-01T12:34:60Z",
+        "2026-06-30T23:59:60+01:00",
+        "2026-07-01T00:59:60-01:00",
     ],
 )
 def test_shared_record_validator_rejects_invalid_rfc3339_date_time_forms(
