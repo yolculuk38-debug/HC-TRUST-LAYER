@@ -3,6 +3,7 @@ import json
 import sys
 from pathlib import Path
 from urllib.parse import quote, urlencode
+
 import qrcode
 
 HC_TRUST_LAYER_BASE_URL = "https://yolculuk38-debug.github.io/HC-TRUST-LAYER"
@@ -15,22 +16,26 @@ DEMO_VERIFICATION_URL = f"{HC_TRUST_LAYER_BASE_URL}/docs/verify.html"
 # The route shape is a review/navigation target, not a claim that a live
 # arbitrary-record verifier is implemented.
 ADVISORY_RECORD_VERIFICATION_BASE_URL = f"{HC_TRUST_LAYER_BASE_URL}/verify"
+QR_CHECKSUM_PROFILE = "hc-qr-link-checksum-sha256-v1"
 
 
-def generate_signature(record_id, content_hash, archive_ref):
+def generate_advisory_checksum(record_id, content_hash, archive_ref):
+    """Return an unkeyed navigation checksum, not a signature or authenticity proof."""
+
     raw = f"{record_id}:{content_hash}:{archive_ref}"
     return hashlib.sha256(raw.encode()).hexdigest()
 
 
 def generate_qr(record_id, content_hash, archive_ref, output_dir="qr"):
     Path(output_dir).mkdir(exist_ok=True)
-    signature = generate_signature(record_id, content_hash, archive_ref)
+    checksum = generate_advisory_checksum(record_id, content_hash, archive_ref)
     query = urlencode(
         {
             "record": record_id,
             "hash": content_hash,
             "ref": archive_ref,
-            "sig": signature,
+            "checksum": checksum,
+            "checksum_profile": QR_CHECKSUM_PROFILE,
         }
     )
     if record_id == DEMO_RECORD_ID:
