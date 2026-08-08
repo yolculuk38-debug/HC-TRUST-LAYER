@@ -1,15 +1,72 @@
+import re
+from datetime import datetime, timedelta
 from pathlib import Path
+from typing import Any
 
-from jsonschema import ValidationError, validate
+from jsonschema import Draft202012Validator, FormatChecker
+from jsonschema.exceptions import SchemaError, ValidationError
 
-from .canonicalization import CanonicalizationError, strict_json_load
+from .canonicalization import CanonicalizationError, canonicalize_json, strict_json_load
 from .hashing import (
     CONTENT_HASH_PROFILE_FIELD,
+    HC_CONTENT_HASH_PROFILE,
     ContentHashError,
     calculate_content_hash,
 )
 
 ALLOWED_RECORD_DIRS = ("pending", "verified", "archived")
+RECORD_SCHEMA_DIALECT = "https://json-schema.org/draft/2020-12/schema"
+RECORD_SCHEMA_ID = (
+    "https://raw.githubusercontent.com/yolculuk38-debug/HC-TRUST-LAYER/"
+    "main/schema/record-v1.schema.json"
+)
+RECORD_SCHEMA_VERSION = "hc-record-v1"
+_RECORD_SCHEMA_DATA_PATH = (
+    Path("share") / "hc-trust-layer" / "schema" / "record-v1.schema.json"
+)
+
+
+def _resolve_default_record_schema_path(module_path: str | Path = __file__) -> Path:
+    """Resolve the single schema from this checkout or installation root."""
+
+    module_file = Path(module_path).resolve()
+    package_directory = module_file.parent
+    package_root = package_directory.parent
+
+    if package_root.name == "src":
+        source_schema = package_root.parent / "schema" / "record-v1.schema.json"
+        if source_schema.is_file():
+            return source_schema
+
+    # ``data-files`` is rooted directly under a ``--target`` installation.
+    direct_data_schema = package_root / _RECORD_SCHEMA_DATA_PATH
+    if direct_data_schema.is_file():
+        return direct_data_schema
+
+    # Standard, ``--user``, and ``--prefix`` schemes place the package below
+    # site-packages/dist-packages and the data file below that scheme's prefix.
+    # Search only the bounded installation-prefix ancestry, nearest first.
+    if package_root.name in {"site-packages", "dist-packages"}:
+        for install_root in package_root.parents[:3]:
+            installed_schema = install_root / _RECORD_SCHEMA_DATA_PATH
+            if installed_schema.is_file():
+                return installed_schema
+
+    # Preserve fail-closed behavior without consulting another interpreter's
+    # default sysconfig scheme, which may belong to a different installation.
+    return direct_data_schema
+
+
+DEFAULT_RECORD_SCHEMA_PATH = _resolve_default_record_schema_path()
+RECORD_FORMAT_CHECKER = FormatChecker()
+_RFC3339_DATETIME = re.compile(
+    r"^(?P<year>[0-9]{4})-(?P<month>0[1-9]|1[0-2])-"
+    r"(?P<day>0[1-9]|[12][0-9]|3[01])[Tt]"
+    r"(?P<hour>[01][0-9]|2[0-3]):(?P<minute>[0-5][0-9]):"
+    r"(?P<second>[0-5][0-9]|60)(?:\.[0-9]+)?"
+    r"(?:(?P<zulu>[Zz])|(?P<offset_sign>[+-])"
+    r"(?P<offset_hour>[01][0-9]|2[0-3]):(?P<offset_minute>[0-5][0-9]))$"
+)
 SKIP_HINTS = (
     "index",
     "manifest",
@@ -19,26 +76,156 @@ SKIP_HINTS = (
 )
 
 
-def load_schema(schema_path="schema/record-v1.schema.json"):
-    with open(schema_path, "r", encoding="utf-8") as f:
-        return strict_json_load(f)
+@RECORD_FORMAT_CHECKER.checks("date-time", raises=ValueError)
+def _is_rfc3339_datetime(value: object) -> bool:
+    """Validate RFC 3339 syntax, including its case and leap-second forms."""
 
+    if not isinstance(value, str):
+        return False
+    match = _RFC3339_DATETIME.fullmatch(value)
+    if match is None:
+        return False
+    # The regular expression enforces time and offset ranges.  Let the standard
+    # library enforce Gregorian calendar validity without parsing the optional
+    # RFC 3339 leap-second value (``60``), which ``datetime`` does not support.
+    local_minute = datetime(
+        int(match["year"]),
+        int(match["month"]),
+        int(match["day"]),
+        int(match["hour"]),
+        int(match["minute"]),
+    )
+    if match["second"] != "60":
+        return True
 
-def validate_record(record_path, schema_path="schema/record-v1.schema.json"):
-    schema = load_schema(schema_path)
+    offset_minutes = 0
+    if match["zulu"] is None:
+        offset_minutes = int(match["offset_hour"]) * 60 + int(
+            match["offset_minute"]
+        )
+        if match["offset_sign"] == "-":
+            offset_minutes = -offset_minutes
     try:
-        with open(record_path, "r", encoding="utf-8") as f:
-            record = strict_json_load(f)
+        utc_minute = local_minute - timedelta(minutes=offset_minutes)
+    except OverflowError:
+        return False
+
+    # RFC 3339 section 5.7 permits ``60`` only at the globally simultaneous
+    # leap-second point, shifted into local time by the declared offset.
+    return (utc_minute.month, utc_minute.day, utc_minute.hour, utc_minute.minute) in {
+        (6, 30, 23, 59),
+        (12, 31, 23, 59),
+    }
+
+
+class RecordSchemaError(ValueError):
+    """Fail-closed error raised when the canonical record schema is unusable."""
+
+    def __init__(self, reason: str) -> None:
+        self.reason = reason
+        super().__init__(reason)
+
+
+def load_schema(schema_path: str | Path = DEFAULT_RECORD_SCHEMA_PATH) -> dict[str, Any]:
+    try:
+        with Path(schema_path).open("r", encoding="utf-8") as handle:
+            schema = strict_json_load(handle)
+    except FileNotFoundError as exc:
+        raise RecordSchemaError("record_schema_missing") from exc
+    except (OSError, UnicodeDecodeError, CanonicalizationError) as exc:
+        raise RecordSchemaError("record_schema_unreadable") from exc
+
+    if not isinstance(schema, dict):
+        raise RecordSchemaError("record_schema_object_required")
+    if schema.get("$schema") != RECORD_SCHEMA_DIALECT:
+        raise RecordSchemaError("record_schema_dialect_mismatch")
+    try:
+        Draft202012Validator.check_schema(schema)
+    except SchemaError as exc:
+        raise RecordSchemaError("record_schema_invalid") from exc
+
+    if schema.get("$id") != RECORD_SCHEMA_ID:
+        raise RecordSchemaError("record_schema_id_mismatch")
+    properties = schema.get("properties")
+    if not isinstance(properties, dict):  # pragma: no cover - check_schema guard
+        raise RecordSchemaError("record_schema_invalid")
+    schema_version = properties.get("schema_version")
+    if not isinstance(schema_version, dict) or schema_version.get("const") != RECORD_SCHEMA_VERSION:
+        raise RecordSchemaError("record_schema_version_mismatch")
+    hash_profile = properties.get(CONTENT_HASH_PROFILE_FIELD)
+    if not isinstance(hash_profile, dict) or hash_profile.get("const") != HC_CONTENT_HASH_PROFILE:
+        raise RecordSchemaError("record_schema_hash_profile_mismatch")
+    return schema
+
+
+def _validation_path(error: ValidationError) -> str:
+    path = "$"
+    for segment in error.absolute_path:
+        if isinstance(segment, int):
+            path += f"[{segment}]"
+        else:
+            path += f".{segment}"
+    return path
+
+
+def _validation_error_message(error: ValidationError) -> str:
+    path = _validation_path(error)
+    rule = str(error.validator or "schema")
+    if rule == "required" and isinstance(error.instance, dict):
+        expected = set(error.validator_value) if isinstance(error.validator_value, list) else set()
+        missing = sorted(expected - set(error.instance))
+        if missing:
+            return f"{path}: required constraint failed ({', '.join(missing)})"
+    return f"{path}: {rule} constraint failed"
+
+
+def validate_record_payload(
+    record: object,
+    schema_path: str | Path = DEFAULT_RECORD_SCHEMA_PATH,
+) -> tuple[bool, list[str]]:
+    """Validate one parsed record against the shared Draft 2020-12 contract."""
+
+    if not isinstance(record, dict):
+        return False, ["$: type constraint failed"]
+    try:
+        canonicalize_json(record)
+    except CanonicalizationError as exc:
+        return False, [f"$: strict_json constraint failed ({exc.reason})"]
+    try:
+        schema = load_schema(schema_path)
+    except RecordSchemaError as exc:
+        return False, [f"$: schema unavailable ({exc.reason})"]
+
+    validator = Draft202012Validator(schema, format_checker=RECORD_FORMAT_CHECKER)
+    errors = sorted(
+        validator.iter_errors(record),
+        key=lambda error: (
+            tuple(str(segment) for segment in error.absolute_path),
+            str(error.validator),
+        ),
+    )
+    messages = list(dict.fromkeys(_validation_error_message(error) for error in errors))
+    return not messages, messages
+
+
+def validate_record(
+    record_path: str | Path,
+    schema_path: str | Path = DEFAULT_RECORD_SCHEMA_PATH,
+) -> tuple[bool, str]:
+    try:
+        with Path(record_path).open("r", encoding="utf-8") as handle:
+            record = strict_json_load(handle)
     except FileNotFoundError:
-        return False, f"Hata: Dosya bulunamadı: {record_path}"
+        return False, f"Record file not found: {record_path}"
+    except OSError:
+        return False, f"Record file could not be read: {record_path}"
     except (CanonicalizationError, UnicodeDecodeError):
-        return False, f"Hata: Geçersiz JSON: {record_path}"
+        return False, f"Invalid record JSON: {record_path}"
 
-    try:
-        validate(instance=record, schema=schema)
-        return True, f"✅ VALID RECORD: {record_path}"
-    except ValidationError as e:
-        return False, f"❌ VALIDATION ERROR: {e.message}"
+    passed, errors = validate_record_payload(record, schema_path)
+    if passed:
+        return True, f"VALID RECORD: {record_path}"
+    return False, f"SCHEMA VALIDATION FAILED: {'; '.join(errors)}"
 
 
 def verify_record_hash(record_path):

@@ -26,6 +26,23 @@ def _sha256(content: object) -> str:
     return calculate_content_hash(content, HC_CONTENT_HASH_PROFILE)
 
 
+def _canonical_record(record_id: str, content: object) -> dict[str, object]:
+    return {
+        "schema_version": "hc-record-v1",
+        "record_id": record_id,
+        "created_at": "2026-08-08T12:00:00Z",
+        "title": "P0-1 canonical evidence record",
+        "record_type": "protocol_note",
+        "witness_type": "human",
+        "author": "HC-TRUST-LAYER tests",
+        "content": content,
+        "content_hash": _sha256(content),
+        "content_hash_profile": HC_CONTENT_HASH_PROFILE,
+        "archive_ref": "pending_archive",
+        "verification_status": "draft",
+    }
+
+
 def _structured_qr(record_id: str, **overrides: object) -> str:
     content = {"safe": True}
     payload: dict[str, object] = {
@@ -127,18 +144,16 @@ def test_incomplete_record_never_runs_digest_comparison(record: dict[str, object
 
 def test_schema_and_hash_checks_remain_independent_positive_control() -> None:
     content = {"evidence": "present"}
-    record = {
-        "record_id": "different-id",
-        "content": content,
-        "content_hash": _sha256(content),
-        "content_hash_profile": HC_CONTENT_HASH_PROFILE,
-    }
-    result = ValidatorPipeline(canonical_records={"requested-id": record}).run(
-        record_id="requested-id", qr_input="hc://requested-id"
+    record = _canonical_record("HC-DIFFERENT-2026-0001", content)
+    result = ValidatorPipeline(canonical_records={"HC-REQUESTED-2026-0001": record}).run(
+        record_id="HC-REQUESTED-2026-0001",
+        qr_input="hc://HC-REQUESTED-2026-0001",
     )
 
     assert result["schema_result"]["checked"] is True
-    assert result["schema_result"]["valid"] is False
+    assert result["schema_result"]["valid"] is True
+    assert result["canonical_bridge"]["record_id_match"] is False
+    assert result["canonical_bridge"]["lookup_status"] == "record_id_mismatch"
     assert result["hash_result"]["checked"] is True
     assert result["hash_result"]["hash_verified"] is True
 
@@ -194,20 +209,16 @@ async def test_get_missing_record_uses_no_fabricated_hash_marker(client: httpx.A
 async def test_empty_input_does_not_promote_real_canonical_results(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    record_id = "HC-EMPTYINPUT-2026-0001"
     content = {"evidence": "present"}
-    record = {
-        "record_id": "canonical-empty",
-        "content": content,
-        "content_hash": _sha256(content),
-        "content_hash_profile": HC_CONTENT_HASH_PROFILE,
-    }
-    pipeline = ValidatorPipeline(canonical_records={"canonical-empty": record})
-    internal = pipeline.run(record_id="canonical-empty", qr_input="   ")
+    record = _canonical_record(record_id, content)
+    pipeline = ValidatorPipeline(canonical_records={record_id: record})
+    internal = pipeline.run(record_id=record_id, qr_input="   ")
     monkeypatch.setattr(verify_route, "PIPELINE", pipeline)
 
     transport = httpx.ASGITransport(app=create_app())
     async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as local_client:
-        payload = (await local_client.post("/verify/canonical-empty", json={"qr_input": "   "})).json()
+        payload = (await local_client.post(f"/verify/{record_id}", json={"qr_input": "   "})).json()
 
     assert internal["hash_result"]["checked"] is True
     assert internal["hash_result"]["hash_verified"] is True
@@ -255,28 +266,29 @@ async def test_structured_replay_marker_remains_visible_and_queued(client: httpx
 async def test_get_can_report_genuine_canonical_success_without_hash_marker(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    record_id = "HC-GET-2026-0001"
     content = "canonical GET content"
-    record = {"record_id": "canonical-get", "content": content, "content_hash": _sha256(content)}
+    record = _canonical_record(record_id, content)
     monkeypatch.setattr(
         verify_route,
         "PIPELINE",
-        ValidatorPipeline(canonical_records={"canonical-get": record}),
+        ValidatorPipeline(canonical_records={record_id: record}),
     )
     transport = httpx.ASGITransport(app=create_app())
     async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as local_client:
-        payload = (await local_client.get("/qr/canonical-get")).json()
+        payload = (await local_client.get(f"/qr/{record_id}")).json()
 
     assert payload["schema_valid"] is True
     assert payload["hash_verified"] is True
-    assert QUEUE_STORE.verification_queue[-1]["qr_input"] == "hc://canonical-get"
+    assert QUEUE_STORE.verification_queue[-1]["qr_input"] == f"hc://{record_id}"
 
 
 @pytest.mark.anyio
 @pytest.mark.parametrize(
     "qr_input",
     [
-        "hc://record-b",
-        _structured_qr("record-b"),
+        "hc://HC-OTHER-2026-0001",
+        _structured_qr("HC-OTHER-2026-0001"),
         json.dumps({"content": {"evidence": "present"}}),
     ],
 )
@@ -284,19 +296,15 @@ async def test_qr_identity_mismatch_does_not_promote_canonical_results(
     monkeypatch: pytest.MonkeyPatch,
     qr_input: str,
 ) -> None:
+    record_id = "HC-RECORD-2026-0001"
     content = {"evidence": "present"}
-    record = {
-        "record_id": "record-a",
-        "content": content,
-        "content_hash": _sha256(content),
-        "content_hash_profile": HC_CONTENT_HASH_PROFILE,
-    }
-    pipeline = ValidatorPipeline(canonical_records={"record-a": record})
-    internal = pipeline.run(record_id="record-a", qr_input=qr_input)
+    record = _canonical_record(record_id, content)
+    pipeline = ValidatorPipeline(canonical_records={record_id: record})
+    internal = pipeline.run(record_id=record_id, qr_input=qr_input)
     monkeypatch.setattr(verify_route, "PIPELINE", pipeline)
     transport = httpx.ASGITransport(app=create_app())
     async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as local_client:
-        payload = (await local_client.post("/verify/record-a", json={"qr_input": qr_input})).json()
+        payload = (await local_client.post(f"/verify/{record_id}", json={"qr_input": qr_input})).json()
 
     assert internal["hash_result"]["checked"] is True
     assert internal["hash_result"]["hash_verified"] is True
@@ -307,26 +315,25 @@ async def test_qr_identity_mismatch_does_not_promote_canonical_results(
 
 
 @pytest.mark.anyio
-@pytest.mark.parametrize("qr_input", ["hc://record-a", _structured_qr("record-a")])
+@pytest.mark.parametrize(
+    "qr_input",
+    ["hc://HC-RECORD-2026-0002", _structured_qr("HC-RECORD-2026-0002")],
+)
 async def test_matching_qr_identity_promotes_genuine_canonical_results(
     monkeypatch: pytest.MonkeyPatch,
     qr_input: str,
 ) -> None:
+    record_id = "HC-RECORD-2026-0002"
     content = {"evidence": "present"}
-    record = {
-        "record_id": "record-a",
-        "content": content,
-        "content_hash": _sha256(content),
-        "content_hash_profile": HC_CONTENT_HASH_PROFILE,
-    }
+    record = _canonical_record(record_id, content)
     monkeypatch.setattr(
         verify_route,
         "PIPELINE",
-        ValidatorPipeline(canonical_records={"record-a": record}),
+        ValidatorPipeline(canonical_records={record_id: record}),
     )
     transport = httpx.ASGITransport(app=create_app())
     async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as local_client:
-        payload = (await local_client.post("/verify/record-a", json={"qr_input": qr_input})).json()
+        payload = (await local_client.post(f"/verify/{record_id}", json={"qr_input": qr_input})).json()
 
     assert payload["schema_valid"] is True
     assert payload["hash_verified"] is True
@@ -338,24 +345,24 @@ async def test_matching_qr_identity_promotes_genuine_canonical_results(
     ("qr_input", "expected_reason"),
     [
         (
-            '{"record_id":"attacker","record_id":"record-a"}',
+            '{"record_id":"attacker","record_id":"HC-RISK-2026-0001"}',
             "structured_payload_invalid",
         ),
-        ('{"record_id":"record-a","unsafe":NaN}', "structured_payload_invalid"),
+        ('{"record_id":"HC-RISK-2026-0001","unsafe":NaN}', "structured_payload_invalid"),
         (
-            _structured_qr("record-a", content_hash_profile="unknown-profile"),
+            _structured_qr("HC-RISK-2026-0001", content_hash_profile="unknown-profile"),
             "content_hash_unverifiable",
         ),
         (
-            _structured_qr_with_explicit_null_profile("record-a"),
+            _structured_qr_with_explicit_null_profile("HC-RISK-2026-0001"),
             "content_hash_unverifiable",
         ),
         (
-            _structured_qr("record-a", verification_url="https://["),
+            _structured_qr("HC-RISK-2026-0001", verification_url="https://["),
             "verification_url_invalid",
         ),
         (
-            _structured_qr_without_content_hash_or_profile("record-a"),
+            _structured_qr_without_content_hash_or_profile("HC-RISK-2026-0001"),
             "content_hash_unverifiable",
         ),
     ],
@@ -366,20 +373,16 @@ async def test_high_risk_structured_qr_never_promotes_valid_canonical_results(
     qr_input: str,
     expected_reason: str,
 ) -> None:
+    record_id = "HC-RISK-2026-0001"
     content = {"evidence": "present"}
-    record = {
-        "record_id": "record-a",
-        "content": content,
-        "content_hash": _sha256(content),
-        "content_hash_profile": HC_CONTENT_HASH_PROFILE,
-    }
+    record = _canonical_record(record_id, content)
     monkeypatch.setattr(
         verify_route,
         "PIPELINE",
-        ValidatorPipeline(canonical_records={"record-a": record}),
+        ValidatorPipeline(canonical_records={record_id: record}),
     )
 
-    response = await client.post("/verify/record-a", json={"qr_input": qr_input})
+    response = await client.post(f"/verify/{record_id}", json={"qr_input": qr_input})
 
     assert response.status_code == 200
     payload = response.json()
@@ -423,14 +426,9 @@ async def test_structured_canonical_success_remains_unqueued(
     client: httpx.AsyncClient,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    record_id = "structured-canonical-success"
+    record_id = "HC-STRUCTURED-2026-0001"
     content = {"evidence": "present"}
-    record = {
-        "record_id": record_id,
-        "content": content,
-        "content_hash": _sha256(content),
-        "content_hash_profile": HC_CONTENT_HASH_PROFILE,
-    }
+    record = _canonical_record(record_id, content)
     monkeypatch.setattr(verify_route, "PIPELINE", ValidatorPipeline(canonical_records={record_id: record}))
 
     payload = (await client.post(f"/verify/{record_id}", json={"qr_input": _structured_qr(record_id)})).json()

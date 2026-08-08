@@ -15,6 +15,7 @@ from hc_trust.hashing import (
     ContentHashError,
     calculate_content_hash,
 )
+from hc_trust.verification import validate_record_payload
 
 
 class ValidatorPipeline:
@@ -91,13 +92,16 @@ class ValidatorPipeline:
         result["content_hash_present"] = isinstance(record_snapshot.get("content_hash"), str) and bool(
             record_snapshot.get("content_hash", "").strip()
         )
-        result["schema_valid"] = self._canonical_record_schema_valid(record_id=record_id, record=record_snapshot)
+        result["schema_valid"], schema_errors = validate_record_payload(record_snapshot)
 
         if not result["record_id_match"]:
             warnings.append("Canonical record id does not match the advisory runtime lookup id.")
         if not result["schema_valid"]:
             result["lookup_status"] = "schema_invalid"
             warnings.append("Canonical record schema validation failed within advisory-only runtime boundaries.")
+            warnings.extend(f"Canonical record schema error: {error}." for error in schema_errors)
+        elif not result["record_id_match"]:
+            result["lookup_status"] = "record_id_mismatch"
 
         if not result["content_hash_present"]:
             result["lookup_status"] = "hash_missing"
@@ -125,7 +129,7 @@ class ValidatorPipeline:
         if not result["hash_verified"]:
             result["lookup_status"] = "hash_mismatch"
             warnings.append("Canonical record content_hash mismatch detected during advisory SHA-256 verification.")
-        elif result["schema_valid"]:
+        elif result["schema_valid"] and result["record_id_match"]:
             result["lookup_status"] = "verified"
 
         return result
@@ -148,7 +152,7 @@ class ValidatorPipeline:
             and bridge_result["lookup_status"] in {"verified", "hash_mismatch"}
         )
         # A schema-invalid record can still have usable content and a digest.
-        if bridge_result["lookup_status"] == "schema_invalid":
+        if bridge_result["lookup_status"] in {"schema_invalid", "record_id_mismatch"}:
             checked = bridge_result["content_hash_present"] and bridge_result["hash_verified"]
         return {
             "checked": checked,
@@ -172,14 +176,6 @@ class ValidatorPipeline:
         if not hash_result["checked"]:
             warnings.append("Canonical digest verification was not performed because usable content and an expected digest were unavailable.")
         return {"warnings": warnings}
-
-    def _canonical_record_schema_valid(self, *, record_id: str, record: dict[str, Any]) -> bool:
-        return (
-            record.get("record_id") == record_id
-            and "content" in record
-            and isinstance(record.get("content_hash"), str)
-            and bool(record.get("content_hash", "").strip())
-        )
 
     def _escalation_routing_hook(self, *, warnings: list[str]) -> dict[str, Any]:
         return {

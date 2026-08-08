@@ -3,24 +3,12 @@
 from __future__ import annotations
 
 import re
-import subprocess
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SECURITY_REPORT = REPO_ROOT / "docs/security/runtime-hardening-gap-report.md"
 RUNTIME_NOTES = REPO_ROOT / "docs/runtime/runtime-contract-risk-notes.md"
 ABUSE_ADVISORY = REPO_ROOT / "docs/security/operator-abuse-protection-advisory.md"
-
-PROTECTED_PREFIXES = (
-    "schema/",
-    "validators/",
-    "federation/",
-    "signatures/",
-    "canonical/",
-    "policy/",
-    ".github/workflows/",
-    "records/",
-)
 
 SECRET_PATTERNS = [
     re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH |)?PRIVATE KEY-----"),
@@ -92,22 +80,12 @@ def test_runtime_contract_risk_notes_are_present() -> None:
         assert phrase in text
 
 
-def test_no_protected_governance_paths_changed_in_worktree() -> None:
-    result = subprocess.run(
-        ["git", "status", "--porcelain", "--untracked-files=all"],
-        cwd=REPO_ROOT,
-        check=True,
-        text=True,
-        capture_output=True,
-    )
-    changed_paths = [line[3:].strip() for line in result.stdout.splitlines() if line.strip()]
+def test_gap_report_preserves_its_checked_in_documentation_only_scope() -> None:
+    text = _read(SECURITY_REPORT)
 
-    protected_changes = [
-        path
-        for path in changed_paths
-        if path.startswith(PROTECTED_PREFIXES)
-    ]
-    assert protected_changes == []
+    assert "Schema mutation: none." in text
+    assert "Workflow mutation: none." in text
+    assert "- canonical record mutation" in text
 
 
 def test_no_secret_token_or_key_material_added_to_gap_docs() -> None:

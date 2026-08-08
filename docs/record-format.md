@@ -11,7 +11,10 @@ This document describes the **human-readable record format** used by the HC:// T
 - archived in a stable format,
 - reviewed by humans without ambiguity.
 
-In this repository, schema validation is enforced against `schema/record-v1.schema.json`.
+In this repository, the single executable record schema is
+`schema/record-v1.schema.json`. It uses JSON Schema Draft 2020-12. The shared
+Python validator applies a strict RFC 3339 format checker in addition to schema
+rules.
 
 ---
 
@@ -21,13 +24,16 @@ In this repository, schema validation is enforced against `schema/record-v1.sche
 
 The following fields are required by the active `record-v1` schema:
 
+- `schema_version` (`hc-record-v1`)
 - `record_id`
 - `created_at`
 - `title`
 - `record_type`
 - `witness_type`
 - `author`
+- `content`
 - `content_hash`
+- `content_hash_profile` (`hc-content-sha256-v2`)
 - `archive_ref`
 - `verification_status`
 
@@ -68,17 +74,29 @@ Human or system identifier that authored the record.
 - Min length: `1`
 
 ### `content_hash` (required)
-SHA-256 hash of canonical record content.
+SHA-256 hash of record `content` under the declared profile.
 
 - Type: `string`
 - Pattern: `^[a-f0-9]{64}$`
 - Purpose: integrity verification
 
-### `timestamp` (optional / interop)
-Record creation time in ISO 8601 datetime format.
+### `content_hash_profile` (required)
+Versioned rule used to turn `content` into bytes before SHA-256 hashing.
 
-- In the active schema, the required creation field is `created_at`.
-- Use `timestamp` only for compatibility with systems that expect it.
+- Required value: `hc-content-sha256-v2`
+- Text: raw UTF-8 bytes
+- Structured JSON: RFC 8785 JCS bytes
+
+The profile makes structured-content hashing deterministic. A matching digest
+shows internal integrity consistency only; it does not establish that the
+content was originally true.
+
+### `created_at` (required)
+Record creation time in the strict RFC 3339 profile enforced by the shared
+validator.
+
+- Example: `2026-05-19T00:00:00Z`
+- A timezone (`Z` or numeric offset) is required.
 
 ### `verification_status` (required)
 Current verification lifecycle state.
@@ -120,17 +138,24 @@ Cryptographic signature over canonical record payload.
 
 ```json
 {
+  "schema_version": "hc-record-v1",
   "record_id": "HC-EXAMPLE-2026-0001",
   "created_at": "2026-05-19T00:00:00Z",
   "title": "Minimal valid record",
   "record_type": "ai_witness",
   "witness_type": "ai",
   "author": "hc-system",
-  "content_hash": "9f3a3fb4f7c21ab3a89d4f7db0bf75db6ea9cc57f398a7db53f4a62f5a4d8d57",
+  "content": "Minimal valid record content.",
+  "content_hash": "3bc32e81106ad6849e0772f721c2f925cb69a1d42f5712137c8c82aa5655ce41",
+  "content_hash_profile": "hc-content-sha256-v2",
   "archive_ref": "pending_archive",
   "verification_status": "draft"
 }
 ```
+
+Schema validation, content-digest verification, requested-record binding, and
+trust interpretation are separate checks. Passing one must not be promoted as
+evidence that the others passed.
 
 ---
 

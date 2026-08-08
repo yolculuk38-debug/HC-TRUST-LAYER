@@ -200,7 +200,7 @@ The **trust kernel** is the set of files and paths that affect record identity, 
 - `docs/governance/post-migration-qr-review.md` (migration evidence)
 
 ✗ **Canonical artifacts** (do not regenerate without task):
-- `schema/record-v1.json`
+- `schema/record-v1.schema.json`
 - `trust-kernel-index.json`
 - `verification-map.json`
 - `protocol-graph.json`

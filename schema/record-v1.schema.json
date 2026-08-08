@@ -1,34 +1,43 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Humanity Chain Record v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/yolculuk38-debug/HC-TRUST-LAYER/main/schema/record-v1.schema.json",
+  "title": "HC:// Canonical Record v1",
+  "description": "Structural contract for versioned HC:// canonical JSON records. Conformance is advisory evidence and does not establish truth, identity, signature validity, or governance approval.",
   "type": "object",
   "required": [
+    "schema_version",
     "record_id",
     "created_at",
     "title",
     "record_type",
     "witness_type",
     "author",
+    "content",
     "content_hash",
+    "content_hash_profile",
     "archive_ref",
     "verification_status"
   ],
   "properties": {
+    "schema_version": {
+      "const": "hc-record-v1",
+      "description": "Version identifier for this canonical record contract."
+    },
     "record_id": {
       "type": "string",
       "pattern": "^HC-[A-Z0-9]+-[0-9]{4}-[0-9]{4}$",
-      "description": "Unique record identifier"
+      "description": "Unique canonical HC:// record identifier."
     },
     "created_at": {
       "type": "string",
       "format": "date-time",
-      "description": "Record creation timestamp"
+      "description": "RFC 3339 record creation timestamp."
     },
     "title": {
       "type": "string",
       "minLength": 1,
       "maxLength": 255,
-      "description": "Record title"
+      "description": "Human-readable record title."
     },
     "record_type": {
       "type": "string",
@@ -38,7 +47,7 @@
         "multi_model_record",
         "protocol_note"
       ],
-      "description": "Type of record"
+      "description": "Declared record category; it does not prove issuer or witness authority."
     },
     "witness_type": {
       "type": "string",
@@ -47,21 +56,36 @@
         "human",
         "multi"
       ],
-      "description": "Witness type"
+      "description": "Declared witness category; it is not cryptographic witness verification."
     },
     "author": {
       "type": "string",
       "minLength": 1,
-      "description": "Author name or identifier"
+      "description": "Declared author name or identifier; schema conformance does not verify identity."
+    },
+    "content": {
+      "type": [
+        "null",
+        "boolean",
+        "number",
+        "string",
+        "array",
+        "object"
+      ],
+      "description": "Record content hashed under the declared content_hash_profile."
     },
     "content_hash": {
       "type": "string",
       "pattern": "^[a-f0-9]{64}$",
-      "description": "SHA256 hash of content"
+      "description": "Lowercase SHA-256 digest of content under content_hash_profile."
+    },
+    "content_hash_profile": {
+      "const": "hc-content-sha256-v2",
+      "description": "Versioned content-to-bytes profile used before SHA-256 hashing."
     },
     "archive_ref": {
       "type": "string",
-      "description": "Reference to archived record"
+      "description": "Repository-defined archive or lifecycle reference."
     },
     "verification_status": {
       "type": "string",
@@ -71,39 +95,42 @@
         "verified",
         "archived"
       ],
-      "description": "Current verification status"
+      "description": "Record lifecycle label within this schema; it is not a truth verdict."
     },
     "description": {
       "type": "string",
-      "description": "Record description"
+      "description": "Record description."
     },
     "tags": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "description": "Record tags"
+      "description": "Record tags."
     },
     "version": {
       "type": "string",
-      "description": "Record schema/content version for revision tracking"
+      "description": "Content or revision version distinct from schema_version."
     },
     "supersedes": {
       "type": "string",
-      "description": "Previous record identifier superseded by this revision"
+      "pattern": "^HC-[A-Z0-9]+-[0-9]{4}-[0-9]{4}$",
+      "description": "Canonical record identifier superseded by this revision."
     },
     "revision_reason": {
       "type": "string",
-      "description": "Human/machine-readable reason for this revision"
+      "description": "Human-readable reason for a revision."
     },
     "previous_hash": {
       "type": "string",
-      "description": "Canonical hash of prior revision payload"
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Lowercase SHA-256 digest declared for the prior revision payload."
     },
     "revision_timestamp": {
       "type": "string",
       "format": "date-time",
-      "description": "Timestamp indicating when revision was issued"
+      "description": "RFC 3339 timestamp indicating when a revision was issued."
     }
-  }
+  },
+  "additionalProperties": true
 }

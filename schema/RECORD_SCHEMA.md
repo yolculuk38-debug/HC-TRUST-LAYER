@@ -1,76 +1,40 @@
-# RECORD SCHEMA
+# HC:// Canonical Record Schema
 
-## Purpose
+## Executable source
 
-This document defines the standard structure used for Humanity Chain interaction records.
-
-The schema is designed to support:
-
-- Transparent archival systems
-- Multi-layer verification workflows
-- Human-readable records
-- Machine-readable validation structures
-- Traceable interaction history
-
----
-
-## Standard Record Fields
-
-Each archived record should contain the following fields:
-
-| Field | Description |
-|---|---|
-| Record ID | Unique interaction identifier |
-| Record Type | Type of archived interaction |
-| Model | AI system or participant |
-| Date | Record creation date |
-| Status | Verification status |
-| Prompt | Original input |
-| Response | Archived response |
-| Hash Reference | SHA-256 integrity reference |
-| QR Reference | Verification access layer |
-| Timeline Reference | Chronological archive reference |
-
----
-
-## Verification States
-
-Possible record states:
-
-- Pending
-- Verified
-- Archived
-- Deprecated
-
----
-
-## Supported Formats
-
-Humanity Chain currently supports:
-
-- Markdown (.md)
-- JSON (.json)
-- SHA-256 hash references
-- QR verification references
-
----
-
-## Future Extensions
-
-Future schema versions may include:
-
-- Multi-witness verification
-- Cross-model validation
-- Digital signature layers
-- Timestamp verification
-- Automated integrity workflows
-- Distributed archive synchronization
-
----
-
-## Version
-
-Current schema version:
+The single executable JSON record contract is:
 
 ```text
-record-v1
+schema/record-v1.schema.json
+```
+
+It uses JSON Schema Draft 2020-12 and the payload identifier
+`schema_version=hc-record-v1`. The former conflicting
+`schema/record-v1.json` contract has been retired.
+
+## Required integrity profile
+
+Every canonical JSON record declares:
+
+```text
+content_hash_profile=hc-content-sha256-v2
+```
+
+Text content is hashed as UTF-8 bytes. Structured JSON content is hashed with
+the repository's versioned RFC 8785 JCS primitive. Schema conformance checks
+shape and declared profile; digest verification separately checks whether the
+declared digest matches the available content.
+
+## Validation boundary
+
+The shared validator:
+
+- parses JSON without duplicate properties or non-finite numbers;
+- validates with `Draft202012Validator`;
+- applies a strict RFC 3339 `date-time` checker;
+- returns deterministic, value-redacted rule failures;
+- keeps requested-record binding separate from schema conformance.
+
+Schema conformance does not prove content truth, author identity, witness
+authority, signature validity, timestamp authority, or governance approval.
+HC:// outputs remain advisory-only, public-safe, and subject to human review.

@@ -71,7 +71,10 @@ The conceptual canonical validation path is the evidence-first route a reviewer 
 9. evaluate policy routing separately when the question concerns repository change risk;
 10. escalate sensitive ambiguity to human-supervised validation.
 
-This is a conceptual review path. No single executable validation source of truth is currently declared.
+This is a conceptual review path. `schema/record-v1.schema.json` is the single
+executable structural contract for canonical JSON records, but no one validator
+covers every validation, provenance, policy, identity, signing, and governance
+layer.
 
 ## 5. Executable Validation Paths
 
@@ -105,10 +108,11 @@ Schema validation answers a structural question: does a JSON payload conform to 
 
 It does not answer all trust questions. JSON Schema conformance is not the same as trust approval.
 
-Known schema complexity includes:
+Current schema boundaries include:
 
-- multiple record schemas may exist with different required fields or status models;
-- `schema/record-v1.schema.json` and `schema/record-v1.json` use different required identifiers and status vocabularies;
+- `schema/record-v1.schema.json` is the single executable canonical JSON record contract;
+- the shared validator uses Draft 2020-12 plus a strict RFC 3339 format checker;
+- schema conformance and requested-record binding are evaluated separately;
 - `schema/verification-result-v1.schema.json` defines a verification result vocabulary that differs from runtime, package, viewer, and trust-result terminology;
 - `schema/verification-package-v1.schema.json` validates derived package shape, not canonical record authority.
 
@@ -259,9 +263,9 @@ This map does not create a new schema, validator, runtime result, policy rule, g
 
 Known validation gaps include:
 
-- No single executable validation source of truth is currently declared.
+- No one executable validator covers every validation, provenance, policy, identity, signing, and governance layer.
 - `records/archive` vs `records/archived` ambiguity exists.
-- Multiple record schemas may exist with different required fields or status models.
+- Canonical JSON records use one executable Draft 2020-12 schema; other artifact classes retain their own scoped schemas and vocabularies.
 - Multiple validation vocabularies exist across schemas, runtime, viewer, public validator, package outputs, and trust engines.
 - `VERIFIED` in one component does not automatically mean the same thing as `VERIFIED` in another component.
 - JSON Schema conformance is not the same as trust approval.
@@ -333,7 +337,6 @@ Guardrails:
 - `docs/trust-result-standard.md`
 - `docs/verification-status-ux.md`
 - `schema/record-v1.schema.json`
-- `schema/record-v1.json`
 - `schema/verification-result-v1.schema.json`
 - `schema/verification-package-v1.schema.json`
 - `scripts/check_canonical_artifacts.py`

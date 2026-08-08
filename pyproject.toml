@@ -25,6 +25,9 @@ package-dir = {"" = "src"}
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.data-files]
+"share/hc-trust-layer/schema" = ["schema/record-v1.schema.json"]
+
 [project.optional-dependencies]
 test = [
   "anyio==4.14.2",

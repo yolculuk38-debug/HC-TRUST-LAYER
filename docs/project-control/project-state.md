@@ -20,11 +20,11 @@ Operating boundaries remain: `advisory_only=true`, `public_safe=true`, `truth_gu
 
 | Field | Status |
 | --- | --- |
-| Current phase | Repository cleanup phase 1 mapping, the explicitly approved 2026-07-22 branch cleanup, Public Validator QR/demo hardening, the deterministic combined local QR/Public Validator CLI, the non-editable installed-CLI checkout-root repair, and the report-only PR review-timing audit are complete through #1225. The branch operation deleted 76 verified stale branches and preserved all 36 hold branches. Phase 2 and later Public Validator slices must stay small, reversible, and evidence-backed. |
-| Active focus | Use the merged #1225 audit as evidence for one separate documentation-only alignment of the review-window, mission-execution, lifecycle, final-reviewer, and PR-template wording. Keep the three intentional open issue surfaces distinct: #812 assistant console, #1082 Signal Watch console, and #1109 Mission Control. |
-| Next up | Align existing operator wording with the current-head review-evidence contract: a timer or Automation Gate PASS is not review-completion evidence; require matching current-head Codex evidence or an explicit exact-head human exception before merge guidance. Do not change workflows, permissions, auto-merge behavior, or authority in this documentation-only slice. |
-| Blocked / parked work | Workflow, schema, validator, record, policy, federation, signing, trust-kernel index, generated artifact, QR/hash evidence format, governance-enforcement, authority-changing automation, source deletion/archival, and production-readiness claims remain parked unless explicitly authorized and validated. |
-| Do-not-repeat summary | Completed public-validator/explorer planning, HC Control Bot, assistant-console, HC Council local report-only runner/command bridge, validator pipeline, verification package, HC Trust Engineer, HC Engineer planner, signature/witness planning, PR-flow diagnostic, repository inventory, governance automation, evidence review, repository purpose-index, cleanup phase 1 checkpoint, CodeQL default-setup boundary, #1209 QR compatibility repair, #1216 runner alignment, #1217 single demo QR entry, #1219 live navigation/fail-closed hardening, #1220 task-handoff test repair, #1222 combined CLI, #1223 installed-CLI root repair, and #1225 review-timing audit should not be repeated without new evidence or reviewer direction. |
+| Current phase | Independent external audit P0 hardening. P0-1/#1229 and P0-2/#1230 are merged. P0-3 is implemented in the current change but remains subject to current-head checks, review evidence, and human merge authority. |
+| Active focus | Close P0-3 with one Draft 2020-12 canonical record schema, shared format-checked validation, version/profile declarations, installed-wheel schema availability, and separate schema/hash/requested-record-binding results. |
+| Next up | After P0-3 closes, start P0-4 with a repository-backed inventory of cryptographic-strength names; contain, rename, or relabel unsupported claims without implying new cryptographic capability. |
+| Blocked / parked work | P0-4 implementation remains blocked until P0-3 closes. Workflow, policy, federation, signing, trust-kernel index, generated artifact, governance-enforcement, authority-changing automation, source deletion/archival, and production-readiness claims remain parked unless explicitly authorized and validated. The current P0-3 scope is not general protected-path authority. |
+| Do-not-repeat summary | P0-1/#1229 and P0-2/#1230 are completed. Earlier public-validator/explorer, advisory-agent, verification-package, repository-cleanup, governance, CodeQL, QR, and review-timing lines remain completed unless new evidence or reviewer direction identifies a concrete gap. |
 | Review / merge rule | Before merge: verify changed files, checks, review comments, risk scope, and review evidence tied to the current head SHA. Automation Gate PASS or an elapsed timer does not prove that Codex review completed. Require matching current-head review evidence or an explicit exact-head human exception before merge guidance; human final authority remains the governance boundary. |
 | Source-of-truth priority | Markdown project-control docs and repository evidence outrank `hc_context`, chat memory, and advisory summaries. |
 
@@ -39,7 +39,7 @@ Repository cleanup phase 1 mapping is completed and recorded by [`repository-cle
 
 ## Current phase
 
-Repository cleanup phase 1 mapping, full remote branch-list triage, and the explicitly approved 76-branch cleanup execution are complete. The 36 held branches remain outside cleanup authority; phase 2 must stay small, reversible, evidence-backed, and human-reviewed.
+Independent external audit P0 hardening is active. P0-1/#1229 and P0-2/#1230 are merged; P0-3 is the only active implementation slice. Repository cleanup phase 1 and the explicitly approved 76-branch cleanup remain complete, and all 36 held branches remain outside cleanup authority.
 
 ## Repository status
 
@@ -223,6 +223,8 @@ The public landing / public surface line is completed through #1161, #1162, #116
 - A Codex P1 posted 15 seconds after #1222 merged showed that a non-editable wheel installation resolved `records/` from the installed module directory and returned `record_not_found` from the documented checkout command.
 - #1223 passed the current checkout root explicitly, added installed-module-location regression coverage, documented the checkout-root boundary, reproduced the failure before the fix, verified a non-editable wheel after the fix, and passed 980 repository tests. Codex reviewed the #1223 head and reported no major issue before merge.
 - #1225 recorded the #1222/#1223 timing evidence, distinguished Automation Gate from Codex review evidence, classified #1222 as merged without current-head review evidence, and proposed a manual current-head evidence contract with a provisional 300-second operator timeout and an exact-head human exception record. Two Codex P2 findings were fixed before merge; no workflow, permission, merge, or approval authority changed.
+- #1229 completed independent-audit P0-1 by removing fabricated schema/hash success from advisory API paths and adding fail-closed regressions.
+- #1230 completed independent-audit P0-2 with versioned RFC 8785 JCS canonicalization, strict JSON parsing, and explicit content-hash profiles across direct consumers.
 - Do not repeat these completed lines unless new repository evidence or human reviewer direction identifies a concrete gap.
 
 ## Current focus
@@ -238,7 +240,9 @@ The public landing / public surface line is completed through #1161, #1162, #116
 - Outside-review and inventory follow-up are synchronized through #919. Use repository evidence first; do not act on unverified outside-review claims.
 - The HC Council local report-only and command bridge line is complete through #1203; authority expansion remains parked.
 - The legacy QR compatibility repair is complete through #1209; do not recreate the bridge.
-- The Public Validator runner `record_id` contract, scannable demo QR entry, navigation/fail-closed hardening, combined local CLI, installed-CLI checkout-root repair, and report-only review-timing audit are complete through #1216-#1225. The next bounded work is documentation-only alignment with the merged audit contract, not another demo QR, CLI, backend, signing, workflow, or protocol slice.
+- The Public Validator runner `record_id` contract, scannable demo QR entry, navigation/fail-closed hardening, combined local CLI, installed-CLI checkout-root repair, and report-only review-timing audit are complete through #1216-#1225.
+- Independent-audit P0-1/#1229 and P0-2/#1230 are complete. P0-3 is the current bounded schema/validator slice; [`independent-external-audit-p0-status.md`](independent-external-audit-p0-status.md) records its evidence and remaining gate.
+- P0-4 must wait until P0-3 closes and must begin with an exact symbol/public-surface inventory, not speculative cryptographic implementation.
 - The complete branch inventory/status synchronization and approved 76-branch cleanup are recorded through #1210/#1211; all 36 hold branches remain preserved.
 - GitHub issue/comment assisted PR creation was tested as diagnostic evidence; do not rely on reported success until GitHub source-of-truth confirms branch, PR, changed files, and checks.
 - Later layers are example navigation, demo index references, QR/canonical-domain binding, C2PA/OpenTimestamps references, federation, dispute/governance, and public UX.
@@ -246,7 +250,7 @@ The public landing / public surface line is completed through #1161, #1162, #116
 
 ## Next safe task
 
-The immediate safe task is one documentation-only PR aligning the existing review-window, mission-execution, lifecycle, final-reviewer, and PR-template wording with [`pr-review-timing-audit-2026-07-25.md`](pr-review-timing-audit-2026-07-25.md). Preserve the 90-second value only as a minimum anti-rush observation window; do not present it or Automation Gate PASS as proof of Codex completion. Require matching current-head Codex review evidence or an explicit GitHub-recorded human exception for the exact current head before merge guidance. Do not change `.github/workflows/**`, required checks, permissions, auto-merge behavior, reviewer authority, runtime, schemas, validators, records, signing, federation, or canonical behavior in this documentation-only slice. The 36 held branches and any later branch remain outside cleanup authority without new evidence and explicit human approval.
+The immediate safe task is to complete current-head validation and human-supervised review for the P0-3 unified record-schema change. Do not open P0-4 implementation while that PR is open. After P0-3 closes, the next bounded task is a report-backed P0-4 inventory and containment/renaming slice for cryptographic-strength names that lack corresponding guarantees. Do not add signing, certificate-chain, consensus, provenance-authentication, federation, or production-readiness capability as part of that naming correction. The 36 held branches and any later branch remain outside cleanup authority without new evidence and explicit human approval.
 
 ## Shift-change checklist
 

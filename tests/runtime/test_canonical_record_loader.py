@@ -23,10 +23,20 @@ def _write_json(path: Path, payload: dict[str, object]) -> None:
 
 
 def _record(record_id: str, content: object = "canonical loader content") -> dict[str, object]:
-    record = {"record_id": record_id, "content": content, "content_hash": _sha256(content)}
-    if not isinstance(content, str):
-        record["content_hash_profile"] = HC_CONTENT_HASH_PROFILE
-    return record
+    return {
+        "schema_version": "hc-record-v1",
+        "record_id": record_id,
+        "created_at": "2026-08-08T12:00:00Z",
+        "title": "Canonical loader test record",
+        "record_type": "protocol_note",
+        "witness_type": "human",
+        "author": "HC-TRUST-LAYER tests",
+        "content": content,
+        "content_hash": _sha256(content),
+        "content_hash_profile": HC_CONTENT_HASH_PROFILE,
+        "archive_ref": "pending_archive",
+        "verification_status": "draft",
+    }
 
 
 def _run(root: Path, record_id: str) -> dict[str, Any]:
@@ -37,7 +47,7 @@ def _run(root: Path, record_id: str) -> dict[str, Any]:
 
 
 def test_valid_canonical_record_loads_from_approved_directory_with_verified_status(tmp_path: Path) -> None:
-    record_id = "HC-LOADER-VALID"
+    record_id = "HC-LOADER-2026-0001"
     _write_json(tmp_path / "records" / "pending" / f"{record_id}.json", _record(record_id, {"claim": "HC://"}))
 
     result = _run(tmp_path, record_id)
@@ -77,7 +87,7 @@ def test_malformed_json_returns_explicit_malformed_status_without_unsafe_parse(t
 def test_malformed_filename_hint_takes_precedence_over_valid_record_id_collision(
     tmp_path: Path,
 ) -> None:
-    record_id = "HC-LOADER-COLLISION"
+    record_id = "HC-COLLISION-2026-0001"
     _write_json(
         tmp_path / "records" / "pending" / "valid-other-name.json",
         _record(record_id),
@@ -113,10 +123,12 @@ def test_generated_index_cache_and_export_files_are_ignored(tmp_path: Path) -> N
 
 
 def test_content_hash_mismatch_returns_explicit_hash_mismatch_status(tmp_path: Path) -> None:
-    record_id = "HC-LOADER-HASH-MISMATCH"
+    record_id = "HC-HASHMISMATCH-2026-0001"
+    record = _record(record_id, "canonical content")
+    record["content_hash"] = _sha256("different content")
     _write_json(
         tmp_path / "records" / "archived" / f"{record_id}.json",
-        {"record_id": record_id, "content": "canonical content", "content_hash": _sha256("different content")},
+        record,
     )
 
     result = _run(tmp_path, record_id)
