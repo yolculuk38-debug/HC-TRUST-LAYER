@@ -139,7 +139,10 @@ Public responses should remain understandable, mobile-readable, and explicit tha
 
 The advisory QR verification response also exposes canonical record lookup diagnostics when the runtime bridge is active:
 
-- `canonical_lookup_status`: one of `found`, `missing`, `malformed`, `schema_invalid`, `hash_missing`, `hash_mismatch`, or `verified`.
+- `canonical_lookup_status`: one of `not_configured`, `found`, `missing`,
+  `malformed`, `schema_invalid`, `record_id_mismatch`, `hash_missing`,
+  `hash_unverifiable`, `hash_mismatch`, or `verified`. Schema conformance,
+  requested-record binding, and digest verification remain separate signals.
 - `schema_valid`: public-safe boolean indicating whether the advisory runtime bridge accepted the loaded record shape for the requested record id.
 - `hash_verified`: public-safe boolean indicating whether the loaded record `content_hash` matched deterministic SHA-256 evaluation.
 

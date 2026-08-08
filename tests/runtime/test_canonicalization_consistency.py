@@ -28,10 +28,18 @@ def test_structured_v2_hash_is_identical_across_core_loader_and_runtime(tmp_path
     content = {"z": [{"b": 2, "a": "\u00e9"}], "a": 1.0}
     record_id = "HC-JCS-2026-0001"
     record = {
+        "schema_version": "hc-record-v1",
         "record_id": record_id,
+        "created_at": "2026-08-08T12:00:00Z",
+        "title": "Canonicalization consistency record",
+        "record_type": "protocol_note",
+        "witness_type": "human",
+        "author": "HC-TRUST-LAYER tests",
         "content": content,
         "content_hash": calculate_content_hash(content, HC_CONTENT_HASH_PROFILE),
         "content_hash_profile": HC_CONTENT_HASH_PROFILE,
+        "archive_ref": "pending_archive",
+        "verification_status": "draft",
     }
     path = _write_record(tmp_path, record_id, json.dumps(record, ensure_ascii=False))
 

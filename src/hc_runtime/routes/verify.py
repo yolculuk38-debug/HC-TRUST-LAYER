@@ -77,11 +77,13 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
     canonical_lookup_status = pipeline_result["canonical_bridge"]["lookup_status"]
     schema_valid = bool(
         qr_input_promotable
+        and pipeline_result["canonical_bridge"]["record_id_match"]
         and pipeline_result["schema_result"]["checked"]
         and pipeline_result["schema_result"]["valid"]
     )
     hash_verified = bool(
         qr_input_promotable
+        and pipeline_result["canonical_bridge"]["record_id_match"]
         and pipeline_result["hash_result"]["checked"]
         and pipeline_result["hash_result"]["hash_verified"]
     )

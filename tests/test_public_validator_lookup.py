@@ -44,6 +44,7 @@ def _valid_record_payload(record_id: str, *, content: str = "public validator lo
     import hashlib
 
     return {
+        "schema_version": "hc-record-v1",
         "record_id": record_id,
         "created_at": "2026-05-14T10:35:00Z",
         "title": "Public Validator Lookup Test Record",
@@ -52,6 +53,7 @@ def _valid_record_payload(record_id: str, *, content: str = "public validator lo
         "author": "HC-TRUST-LAYER tests",
         "content": content,
         "content_hash": hashlib.sha256(content.encode("utf-8")).hexdigest(),
+        "content_hash_profile": "hc-content-sha256-v2",
         "archive_ref": "pending_archive",
         "verification_status": "draft",
     }

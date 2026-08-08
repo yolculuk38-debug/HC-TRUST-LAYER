@@ -75,10 +75,20 @@ def _sha256(content: object) -> str:
 
 
 def _record(record_id: str, content: object = "canonical content") -> dict[str, object]:
-    record = {"record_id": record_id, "content": content, "content_hash": _sha256(content)}
-    if not isinstance(content, str):
-        record["content_hash_profile"] = HC_CONTENT_HASH_PROFILE
-    return record
+    return {
+        "schema_version": "hc-record-v1",
+        "record_id": record_id,
+        "created_at": "2026-08-08T12:00:00Z",
+        "title": "Canonical schema/hash bridge record",
+        "record_type": "protocol_note",
+        "witness_type": "human",
+        "author": "HC-TRUST-LAYER tests",
+        "content": content,
+        "content_hash": _sha256(content),
+        "content_hash_profile": HC_CONTENT_HASH_PROFILE,
+        "archive_ref": "pending_archive",
+        "verification_status": "draft",
+    }
 
 
 def _run_pipeline(record_id: str, records: dict[str, object]) -> dict[str, Any]:
@@ -90,13 +100,14 @@ def _run_pipeline(record_id: str, records: dict[str, object]) -> dict[str, Any]:
 
 def _runtime_response(record_id: str, records: dict[str, object]) -> dict[str, object]:
     pipeline_result = _run_pipeline(record_id, records)
+    record_id_match = pipeline_result["canonical_bridge"]["record_id_match"]
     decision_engine = TrustStateDecisionEngine()
     policy_engine = RuntimePolicyEngine()
     trust_state, warnings = decision_engine.classify(
         record_id=record_id,
         qr_input=f"hc://{record_id} hash:advisory",
-        schema_valid=pipeline_result["schema_result"]["valid"],
-        hash_verified=pipeline_result["hash_result"]["hash_verified"],
+        schema_valid=record_id_match and pipeline_result["schema_result"]["valid"],
+        hash_verified=record_id_match and pipeline_result["hash_result"]["hash_verified"],
         continuity_ok=True,
         replay_warning=False,
     )
@@ -108,8 +119,8 @@ def _runtime_response(record_id: str, records: dict[str, object]) -> dict[str, o
     )
     payload["trust_state"] = trust_state.value
     payload["canonical_lookup_status"] = pipeline_result["canonical_bridge"]["lookup_status"]
-    payload["schema_valid"] = pipeline_result["schema_result"]["valid"]
-    payload["hash_verified"] = pipeline_result["hash_result"]["hash_verified"]
+    payload["schema_valid"] = record_id_match and pipeline_result["schema_result"]["valid"]
+    payload["hash_verified"] = record_id_match and pipeline_result["hash_result"]["hash_verified"]
     return payload
 
 
@@ -143,7 +154,7 @@ def _assert_advisory_runtime_contract(payload: dict[str, object], *, record_id: 
 
 
 def test_canonical_record_found_bridges_schema_and_sha256_success_without_mutation() -> None:
-    record_id = "bridge-found-record"
+    record_id = "HC-BRIDGE-2026-0001"
     records = {record_id: _record(record_id, content={"claim": "HC:// advisory bridge"})}
     before = deepcopy(records)
 
@@ -190,21 +201,21 @@ def test_malformed_canonical_record_remains_visible_without_hidden_fallback() ->
     assert any("malformed" in warning.lower() for warning in payload["warnings"])
 
 
-def test_schema_invalid_canonical_record_fails_advisory_schema_bridge() -> None:
-    record_id = "bridge-schema-invalid-record"
+def test_record_id_mismatch_is_separate_from_schema_conformance() -> None:
+    record_id = "HC-BRIDGE-2026-0002"
     content = "schema invalid canonical content"
-    records = {record_id: {"record_id": "different-record", "content": content, "content_hash": _sha256(content)}}
+    records = {record_id: _record("HC-OTHER-2026-0002", content)}
 
     result = _run_pipeline(record_id, records)
     payload = _runtime_response(record_id, records)
 
     _assert_stable_bridge_contract(result, record_id=record_id)
     _assert_advisory_runtime_contract(payload, record_id=record_id)
-    assert result["canonical_bridge"]["lookup_status"] == "schema_invalid"
+    assert result["canonical_bridge"]["lookup_status"] == "record_id_mismatch"
     assert result["canonical_bridge"]["record_id_match"] is False
-    assert result["schema_result"]["valid"] is False
+    assert result["schema_result"]["valid"] is True
     assert result["hash_result"]["hash_verified"] is True
-    assert any("schema validation failed" in warning.lower() for warning in payload["warnings"])
+    assert any("id does not match" in warning.lower() for warning in payload["warnings"])
 
 
 def test_content_hash_missing_warns_and_leaves_sha256_unresolved() -> None:
@@ -223,8 +234,10 @@ def test_content_hash_missing_warns_and_leaves_sha256_unresolved() -> None:
 
 
 def test_content_hash_mismatch_emits_explicit_sha256_warning() -> None:
-    record_id = "bridge-hash-mismatch-record"
-    records = {record_id: {"record_id": record_id, "content": "hash mismatch", "content_hash": _sha256("other")}}
+    record_id = "HC-HASHMISMATCH-2026-0002"
+    record = _record(record_id, "hash mismatch")
+    record["content_hash"] = _sha256("other")
+    records = {record_id: record}
 
     result = _run_pipeline(record_id, records)
     payload = _runtime_response(record_id, records)
@@ -238,18 +251,18 @@ def test_content_hash_mismatch_emits_explicit_sha256_warning() -> None:
 
 
 def test_sha256_verification_success_and_failure_are_deterministic() -> None:
-    success_id = "bridge-sha-success-record"
-    failure_id = "bridge-sha-failure-record"
+    success_id = "HC-SHASUCCESS-2026-0001"
+    failure_id = "HC-SHAFAILURE-2026-0001"
 
     success_a = _run_pipeline(success_id, {success_id: _record(success_id, "stable")})
     success_b = _run_pipeline(success_id, {success_id: _record(success_id, "stable")})
     failure_a = _run_pipeline(
         failure_id,
-        {failure_id: {"record_id": failure_id, "content": "stable", "content_hash": _sha256("changed")}},
+        {failure_id: {**_record(failure_id, "stable"), "content_hash": _sha256("changed")}},
     )
     failure_b = _run_pipeline(
         failure_id,
-        {failure_id: {"record_id": failure_id, "content": "stable", "content_hash": _sha256("changed")}},
+        {failure_id: {**_record(failure_id, "stable"), "content_hash": _sha256("changed")}},
     )
 
     assert success_a == success_b
@@ -260,16 +273,21 @@ def test_sha256_verification_success_and_failure_are_deterministic() -> None:
 
 def test_runtime_output_keys_stay_stable_across_success_missing_invalid_and_mismatch_states() -> None:
     cases = {
-        "success": {"stable-success": _record("stable-success")},
+        "success": {"HC-STABLE-2026-0001": _record("HC-STABLE-2026-0001")},
         "missing": {},
-        "invalid": {"stable-invalid": {"record_id": "other", "content": "invalid", "content_hash": _sha256("invalid")}},
-        "mismatch": {"stable-mismatch": {"record_id": "stable-mismatch", "content": "a", "content_hash": _sha256("b")}},
+        "invalid": {"HC-STABLE-2026-0003": _record("HC-OTHER-2026-0003", "invalid")},
+        "mismatch": {
+            "HC-STABLE-2026-0004": {
+                **_record("HC-STABLE-2026-0004", "a"),
+                "content_hash": _sha256("b"),
+            }
+        },
     }
     ids = {
-        "success": "stable-success",
-        "missing": "stable-missing",
-        "invalid": "stable-invalid",
-        "mismatch": "stable-mismatch",
+        "success": "HC-STABLE-2026-0001",
+        "missing": "HC-STABLE-2026-0002",
+        "invalid": "HC-STABLE-2026-0003",
+        "mismatch": "HC-STABLE-2026-0004",
     }
 
     for state, records in cases.items():

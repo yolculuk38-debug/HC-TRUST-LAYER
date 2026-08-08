@@ -1,4 +1,5 @@
 {
+  "schema_version": "hc-record-v1",
   "record_id": "HC-RELEASE-2026-0001",
   "id": "HC-RELEASE-2026-0001",
   "record_type": "protocol_note",
@@ -10,6 +11,7 @@
   "author": "not_recorded",
   "content": "Initial v0.1.0 canonical release evidence record.",
   "content_hash": "3f1bd647e8dd8100329dc92a9cf45c8c42a6ce7922337cd324d6e9577a329d17",
+  "content_hash_profile": "hc-content-sha256-v2",
   "archive_ref": "pending_archive",
   "status": "pending",
   "lifecycle_status": "pending",

@@ -1,8 +1,10 @@
 {
+  "schema_version": "hc-record-v1",
   "archive_ref": "pending_archive",
   "author": "Fatih",
   "content": "Initial multi-model archive witness record.",
   "content_hash": "7fdd78c9832ea1545921e60cf3b8524e0118dce7db242fbb54aefed8381fe0a3",
+  "content_hash_profile": "hc-content-sha256-v2",
   "created_at": "2026-05-14T10:30:00Z",
   "hash": "",
   "id": "HC-2026-0000-0002",

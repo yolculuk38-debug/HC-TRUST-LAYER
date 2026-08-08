@@ -87,8 +87,22 @@ Canonical records (for example in `records/pending/`, `records/verified/`, `reco
 
 Canonical record fields required by current `record-v1` schema include:
 
-- `content_hash` (required)
-- `verification_status` (required)
+- `schema_version`
+- `record_id`
+- `created_at`
+- `title`
+- `record_type`
+- `witness_type`
+- `author`
+- `content`
+- `content_hash`
+- `content_hash_profile`
+- `archive_ref`
+- `verification_status`
+
+The active schema is `schema/record-v1.schema.json` (Draft 2020-12). Schema
+conformance, content-digest verification, and requested-record binding remain
+separate checks.
 
 Witness metadata expectations:
 

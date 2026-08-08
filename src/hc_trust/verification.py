@@ -1,15 +1,45 @@
+import re
+import sysconfig
+from datetime import datetime
 from pathlib import Path
+from typing import Any
 
-from jsonschema import ValidationError, validate
+from jsonschema import Draft202012Validator, FormatChecker
+from jsonschema.exceptions import SchemaError, ValidationError
 
-from .canonicalization import CanonicalizationError, strict_json_load
+from .canonicalization import CanonicalizationError, canonicalize_json, strict_json_load
 from .hashing import (
     CONTENT_HASH_PROFILE_FIELD,
+    HC_CONTENT_HASH_PROFILE,
     ContentHashError,
     calculate_content_hash,
 )
 
 ALLOWED_RECORD_DIRS = ("pending", "verified", "archived")
+RECORD_SCHEMA_DIALECT = "https://json-schema.org/draft/2020-12/schema"
+RECORD_SCHEMA_ID = (
+    "https://raw.githubusercontent.com/yolculuk38-debug/HC-TRUST-LAYER/"
+    "main/schema/record-v1.schema.json"
+)
+RECORD_SCHEMA_VERSION = "hc-record-v1"
+_SOURCE_RECORD_SCHEMA_PATH = Path(__file__).resolve().parents[2] / "schema" / "record-v1.schema.json"
+_INSTALLED_RECORD_SCHEMA_PATH = (
+    Path(sysconfig.get_path("data"))
+    / "share"
+    / "hc-trust-layer"
+    / "schema"
+    / "record-v1.schema.json"
+)
+DEFAULT_RECORD_SCHEMA_PATH = (
+    _SOURCE_RECORD_SCHEMA_PATH
+    if _SOURCE_RECORD_SCHEMA_PATH.is_file()
+    else _INSTALLED_RECORD_SCHEMA_PATH
+)
+RECORD_FORMAT_CHECKER = FormatChecker()
+_RFC3339_DATETIME = re.compile(
+    r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}"
+    r"(?:\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+)
 SKIP_HINTS = (
     "index",
     "manifest",
@@ -19,26 +49,125 @@ SKIP_HINTS = (
 )
 
 
-def load_schema(schema_path="schema/record-v1.schema.json"):
-    with open(schema_path, "r", encoding="utf-8") as f:
-        return strict_json_load(f)
+@RECORD_FORMAT_CHECKER.checks("date-time", raises=ValueError)
+def _is_rfc3339_datetime(value: object) -> bool:
+    """Validate the strict RFC 3339 profile used by canonical HC:// records."""
+
+    if not isinstance(value, str) or _RFC3339_DATETIME.fullmatch(value) is None:
+        return False
+    normalized = f"{value[:-1]}+00:00" if value.endswith("Z") else value
+    datetime.fromisoformat(normalized)
+    return True
 
 
-def validate_record(record_path, schema_path="schema/record-v1.schema.json"):
-    schema = load_schema(schema_path)
+class RecordSchemaError(ValueError):
+    """Fail-closed error raised when the canonical record schema is unusable."""
+
+    def __init__(self, reason: str) -> None:
+        self.reason = reason
+        super().__init__(reason)
+
+
+def load_schema(schema_path: str | Path = DEFAULT_RECORD_SCHEMA_PATH) -> dict[str, Any]:
     try:
-        with open(record_path, "r", encoding="utf-8") as f:
-            record = strict_json_load(f)
+        with Path(schema_path).open("r", encoding="utf-8") as handle:
+            schema = strict_json_load(handle)
+    except FileNotFoundError as exc:
+        raise RecordSchemaError("record_schema_missing") from exc
+    except (OSError, UnicodeDecodeError, CanonicalizationError) as exc:
+        raise RecordSchemaError("record_schema_unreadable") from exc
+
+    if not isinstance(schema, dict):
+        raise RecordSchemaError("record_schema_object_required")
+    if schema.get("$schema") != RECORD_SCHEMA_DIALECT:
+        raise RecordSchemaError("record_schema_dialect_mismatch")
+    try:
+        Draft202012Validator.check_schema(schema)
+    except SchemaError as exc:
+        raise RecordSchemaError("record_schema_invalid") from exc
+
+    if schema.get("$id") != RECORD_SCHEMA_ID:
+        raise RecordSchemaError("record_schema_id_mismatch")
+    properties = schema.get("properties")
+    if not isinstance(properties, dict):  # pragma: no cover - check_schema guard
+        raise RecordSchemaError("record_schema_invalid")
+    schema_version = properties.get("schema_version")
+    if not isinstance(schema_version, dict) or schema_version.get("const") != RECORD_SCHEMA_VERSION:
+        raise RecordSchemaError("record_schema_version_mismatch")
+    hash_profile = properties.get(CONTENT_HASH_PROFILE_FIELD)
+    if not isinstance(hash_profile, dict) or hash_profile.get("const") != HC_CONTENT_HASH_PROFILE:
+        raise RecordSchemaError("record_schema_hash_profile_mismatch")
+    return schema
+
+
+def _validation_path(error: ValidationError) -> str:
+    path = "$"
+    for segment in error.absolute_path:
+        if isinstance(segment, int):
+            path += f"[{segment}]"
+        else:
+            path += f".{segment}"
+    return path
+
+
+def _validation_error_message(error: ValidationError) -> str:
+    path = _validation_path(error)
+    rule = str(error.validator or "schema")
+    if rule == "required" and isinstance(error.instance, dict):
+        expected = set(error.validator_value) if isinstance(error.validator_value, list) else set()
+        missing = sorted(expected - set(error.instance))
+        if missing:
+            return f"{path}: required constraint failed ({', '.join(missing)})"
+    return f"{path}: {rule} constraint failed"
+
+
+def validate_record_payload(
+    record: object,
+    schema_path: str | Path = DEFAULT_RECORD_SCHEMA_PATH,
+) -> tuple[bool, list[str]]:
+    """Validate one parsed record against the shared Draft 2020-12 contract."""
+
+    if not isinstance(record, dict):
+        return False, ["$: type constraint failed"]
+    try:
+        canonicalize_json(record)
+    except CanonicalizationError as exc:
+        return False, [f"$: strict_json constraint failed ({exc.reason})"]
+    try:
+        schema = load_schema(schema_path)
+    except RecordSchemaError as exc:
+        return False, [f"$: schema unavailable ({exc.reason})"]
+
+    validator = Draft202012Validator(schema, format_checker=RECORD_FORMAT_CHECKER)
+    errors = sorted(
+        validator.iter_errors(record),
+        key=lambda error: (
+            tuple(str(segment) for segment in error.absolute_path),
+            str(error.validator),
+        ),
+    )
+    messages = list(dict.fromkeys(_validation_error_message(error) for error in errors))
+    return not messages, messages
+
+
+def validate_record(
+    record_path: str | Path,
+    schema_path: str | Path = DEFAULT_RECORD_SCHEMA_PATH,
+) -> tuple[bool, str]:
+    try:
+        with Path(record_path).open("r", encoding="utf-8") as handle:
+            record = strict_json_load(handle)
     except FileNotFoundError:
-        return False, f"Hata: Dosya bulunamadı: {record_path}"
+        return False, f"Record file not found: {record_path}"
+    except OSError:
+        return False, f"Record file could not be read: {record_path}"
     except (CanonicalizationError, UnicodeDecodeError):
-        return False, f"Hata: Geçersiz JSON: {record_path}"
+        return False, f"Invalid record JSON: {record_path}"
 
-    try:
-        validate(instance=record, schema=schema)
-        return True, f"✅ VALID RECORD: {record_path}"
-    except ValidationError as e:
-        return False, f"❌ VALIDATION ERROR: {e.message}"
+    passed, errors = validate_record_payload(record, schema_path)
+    if passed:
+        return True, f"VALID RECORD: {record_path}"
+    return False, f"SCHEMA VALIDATION FAILED: {'; '.join(errors)}"
 
 
 def verify_record_hash(record_path):
