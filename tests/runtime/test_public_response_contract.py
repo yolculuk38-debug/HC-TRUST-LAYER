@@ -91,14 +91,14 @@ async def _post(client: httpx.AsyncClient, record_id: str, qr_input: str) -> dic
 
 
 @pytest.mark.anyio
-async def test_normal_validation_response_contract_has_empty_warnings_field(client: httpx.AsyncClient) -> None:
+async def test_missing_canonical_validation_response_contract_keeps_warnings_visible(client: httpx.AsyncClient) -> None:
     record_id = "normal-runtime-contract"
 
     payload = await _post(client, record_id, _structured_qr(record_id))
 
     assert payload["status"] == "ADVISORY"
-    assert payload["trust_state"] == "ADVISORY"
-    assert payload["warnings"] == []
+    assert payload["trust_state"] == "UNRESOLVED"
+    assert any("no record" in warning.lower() for warning in payload["warnings"])
     assert payload["degraded_runtime"] is False
     assert payload["replay_warning"] is False
     assert payload["public_exposure"] == "standard"

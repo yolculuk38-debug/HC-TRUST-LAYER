@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+
 from fastapi import APIRouter
 from pydantic import BaseModel
 
@@ -38,6 +40,24 @@ def _canonical_qr_payload(payload: dict[str, object]) -> dict[str, object]:
     return {key: payload[key] for key in QR_VERIFICATION_RESPONSE_KEYS}
 
 
+def _qr_input_valid(*, record_id: str, qr_input: str) -> bool:
+    """Return whether input identifies the requested HC:// record."""
+
+    stripped = qr_input.strip()
+    if stripped.lower().startswith("hc://"):
+        return stripped[5:] == record_id
+    try:
+        structured_input = json.loads(stripped)
+    except (json.JSONDecodeError, TypeError):
+        return False
+    return (
+        isinstance(structured_input, dict)
+        and isinstance(structured_input.get("record_id"), str)
+        and bool(structured_input["record_id"].strip())
+        and structured_input["record_id"] == record_id
+    )
+
+
 def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
     QUEUE_STORE.enqueue_verification({"record_id": record_id, "qr_input": qr_input})
 
@@ -53,18 +73,19 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
         risk_level = QRRiskLevel.INCIDENT
 
     high_or_incident = risk_level in {QRRiskLevel.HIGH, QRRiskLevel.INCIDENT}
-    structured_payload_checked = spoof_protection.structured_payload
+    qr_input_valid = _qr_input_valid(record_id=record_id, qr_input=qr_input)
     canonical_lookup_status = pipeline_result["canonical_bridge"]["lookup_status"]
-    canonical_record_missing = canonical_lookup_status == "missing"
-    qr_schema_valid = bool(qr_input.strip())
-    qr_hash_marker_present = "hash:" in qr_input.lower()
-    schema_valid = pipeline_result["schema_result"]["valid"] or (canonical_record_missing and qr_schema_valid)
-    hash_verified = (
-        pipeline_result["hash_result"]["hash_verified"]
-        or structured_payload_checked
-        or (canonical_record_missing and qr_hash_marker_present)
+    schema_valid = bool(
+        qr_input_valid
+        and pipeline_result["schema_result"]["checked"]
+        and pipeline_result["schema_result"]["valid"]
     )
-    replay_for_decision = replay_warning and not spoof_protection.structured_payload
+    hash_verified = bool(
+        qr_input_valid
+        and pipeline_result["hash_result"]["checked"]
+        and pipeline_result["hash_result"]["hash_verified"]
+    )
+    replay_for_decision = replay_warning
 
     trust_state, warnings = DECISION_ENGINE.classify(
         record_id=record_id,
@@ -91,27 +112,20 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
     }
 
     pipeline_warnings = list(pipeline_result["trust_assignment"]["warnings"])
-    if canonical_record_missing and qr_schema_valid:
-        pipeline_warnings = [
-            warning
-            for warning in pipeline_warnings
-            if "canonical record lookup returned no record" not in warning.lower()
-        ]
-    if spoof_protection.structured_payload:
-        pipeline_warnings = [
-            warning
-            for warning in pipeline_warnings
-            if "hash verification placeholder could not confirm qr input hash marker" not in warning.lower()
-        ]
+    if not qr_input_valid:
+        pipeline_warnings.append(
+            "QR input record identity is missing or does not match the requested record; canonical schema and digest "
+            "results are not promoted to public verification."
+        )
     warnings = [
+        *warnings,
         *pipeline_warnings,
         *spoof_protection.warnings,
-        *warnings,
         *policy["warnings"],
     ]
     abuse_signals = ABUSE_SIGNAL_TRACKER.inspect(
         record_id=record_id,
-        schema_valid=schema_valid,
+        schema_valid=qr_input_valid,
         qr_risk_level=risk_level,
         qr_risk_reasons=spoof_protection.risk_reasons,
         qr_risk_group_keys=spoof_protection.risk_group_keys,
@@ -119,13 +133,14 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
         degraded_mode=degraded_mode,
     )
     warnings.extend(abuse_signals.warnings)
-    if human_review_recommended and not any("human-supervised validation" in warning.lower() for warning in warnings):
+    if human_review_recommended and not any("high-risk or incident-level qr spoof" in warning.lower() for warning in warnings):
         warnings.append("Human-supervised validation is recommended for high-risk or incident-level QR spoof indicators.")
 
     EVENT_STORE.append_trust_transition(record_id=record_id, trust_state=trust_state.value, warnings=warnings)
     EVENT_STORE.append_continuity_checkpoint(record_id=record_id, continuity_ok=continuity_ok, warnings=warnings)
 
     if replay_warning:
+        escalation_queued = True
         QUEUE_STORE.enqueue_replay_warning({"record_id": record_id, "source": "qr-verification"})
         QUEUE_STORE.enqueue_escalation({"record_id": record_id, "reason": "replay_warning", "source": "qr-verification"})
         EVENT_STORE.append_replay_warning(record_id=record_id, reason="Replay marker detected in advisory QR input.")
@@ -146,7 +161,8 @@ def _run_qr_flow(*, record_id: str, qr_input: str) -> dict[str, object]:
                 "truth_guarantee": False,
             }
         )
-    elif policy["advisory_downgrade"] and not spoof_protection.structured_payload:
+    if policy["advisory_downgrade"] and not escalation_queued:
+        escalation_queued = True
         QUEUE_STORE.enqueue_escalation({"record_id": record_id, "reason": "advisory_downgrade"})
 
     if degraded_mode:
@@ -220,7 +236,7 @@ def verify_qr(record_id: str, request: VerifyRequest) -> dict[str, object]:
 
 @router.get("/qr/{record_id}")
 def verify_qr_get(record_id: str) -> dict[str, object]:
-    return _run_qr_flow(record_id=record_id, qr_input=f"hc://{record_id} hash:advisory")
+    return _run_qr_flow(record_id=record_id, qr_input=f"hc://{record_id}")
 
 
 @router.get("/verify/{record_id}/history")

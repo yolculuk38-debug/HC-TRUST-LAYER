@@ -309,7 +309,7 @@ def test_recovery_after_degraded_state_preserves_append_only_continuity() -> Non
     assert degraded_payload["degraded_runtime"] is True
     assert recovered_payload["degraded_runtime"] is False
     assert recovered_payload["recovery_mode"] is False
-    assert recovered_payload["trust_state"] == TrustState.ADVISORY.value
+    assert recovered_payload["trust_state"] == TrustState.UNRESOLVED.value
     assert recovered_payload["public_exposure"] == "standard"
     assert recovered_history["events"][: len(degraded_events_snapshot)] == degraded_events_snapshot
     assert [event["event_type"] for event in recovered_history["events"][-2:]] == [

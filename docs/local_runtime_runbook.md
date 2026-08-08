@@ -58,7 +58,7 @@ curl -s http://127.0.0.1:8000/verify/demo-record | python -m json.tool
 ```bash
 curl -s -X POST http://127.0.0.1:8000/verify/demo-record \
   -H 'content-type: application/json' \
-  -d '{"qr_input":"hc://demo hash:abc123"}' | python -m json.tool
+  -d '{"qr_input":"hc://demo-record"}' | python -m json.tool
 ```
 
 Confirm advisory contract fields remain present and safe:

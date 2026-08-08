@@ -101,7 +101,10 @@ class ValidatorPipeline:
             warnings.append("Canonical record content_hash is missing; SHA-256 verification remains unresolved.")
             return result
 
-        calculated_hash = self._canonical_record_content_hash(record_snapshot.get("content"))
+        if "content" not in record_snapshot:
+            return result
+
+        calculated_hash = self._canonical_record_content_hash(record_snapshot["content"])
         result["hash_verified"] = calculated_hash == record_snapshot["content_hash"]
         if not result["hash_verified"]:
             result["lookup_status"] = "hash_mismatch"
@@ -112,38 +115,31 @@ class ValidatorPipeline:
         return result
 
     def _schema_validation_hook(self, *, qr_input: str, bridge_result: dict[str, Any]) -> dict[str, Any]:
-        if bridge_result["lookup_performed"]:
-            return {
-                "checked": True,
-                "placeholder": True,
-                "valid": bool(qr_input.strip()) and bridge_result["schema_valid"],
-                "canonical_lookup_status": bridge_result["lookup_status"],
-                "warnings": list(bridge_result["warnings"]),
-            }
+        checked = bridge_result["lookup_status"] not in {"not_configured", "missing", "malformed"}
         return {
-            "checked": True,
+            "checked": checked,
             "placeholder": True,
-            "valid": bool(qr_input.strip()),
+            "valid": checked and bridge_result["schema_valid"],
             "canonical_lookup_status": bridge_result["lookup_status"],
-            "warnings": [],
+            "warnings": list(bridge_result["warnings"]),
         }
 
     def _hash_verification_hook(self, *, qr_input: str, bridge_result: dict[str, Any]) -> dict[str, Any]:
-        if bridge_result["lookup_performed"]:
-            return {
-                "checked": True,
-                "placeholder": True,
-                "hash_verified": bridge_result["hash_verified"],
-                "canonical_lookup_status": bridge_result["lookup_status"],
-                "warnings": list(bridge_result["warnings"]),
-            }
-        hash_verified = "hash:" in qr_input.lower()
+        checked = (
+            bridge_result["found"]
+            and not bridge_result["malformed"]
+            and bridge_result["content_hash_present"]
+            and bridge_result["lookup_status"] != "schema_invalid"
+        )
+        # A schema-invalid record can still have usable content and a digest.
+        if bridge_result["lookup_status"] == "schema_invalid":
+            checked = bridge_result["content_hash_present"] and bridge_result["hash_verified"]
         return {
-            "checked": True,
+            "checked": checked,
             "placeholder": True,
-            "hash_verified": hash_verified,
+            "hash_verified": checked and bridge_result["hash_verified"],
             "canonical_lookup_status": bridge_result["lookup_status"],
-            "warnings": [],
+            "warnings": list(bridge_result["warnings"]),
         }
 
     def _trust_state_assignment_hook(
@@ -154,12 +150,11 @@ class ValidatorPipeline:
         bridge_result: dict[str, Any],
     ) -> dict[str, Any]:
         warnings: list[str] = []
-        if bridge_result["lookup_performed"]:
-            warnings.extend(bridge_result["warnings"])
-        elif not schema_result["valid"]:
-            warnings.append("Schema validation placeholder flagged invalid QR input.")
-        if not hash_result["hash_verified"] and not bridge_result["lookup_performed"]:
-            warnings.append("Hash verification placeholder could not confirm QR input hash marker.")
+        warnings.extend(bridge_result["warnings"])
+        if not schema_result["checked"]:
+            warnings.append("Canonical schema verification was not performed because usable canonical evidence was unavailable.")
+        if not hash_result["checked"]:
+            warnings.append("Canonical digest verification was not performed because usable content and an expected digest were unavailable.")
         return {"warnings": warnings}
 
     def _canonical_record_schema_valid(self, *, record_id: str, record: dict[str, Any]) -> bool:

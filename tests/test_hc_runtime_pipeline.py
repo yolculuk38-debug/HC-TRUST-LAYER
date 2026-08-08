@@ -53,8 +53,8 @@ def test_validator_pipeline_hooks_execute() -> None:
 
     result = pipeline.run(record_id="r1", qr_input="hc://sample hash:ok")
 
-    assert result["schema_result"]["checked"] is True
-    assert result["hash_result"]["checked"] is True
+    assert result["schema_result"]["checked"] is False
+    assert result["hash_result"]["checked"] is False
     assert result["escalation"]["placeholder"] is True
 
 
@@ -115,22 +115,14 @@ def test_validator_pipeline_consistency_for_input_variants() -> None:
     engine = TrustStateDecisionEngine()
 
     cases = [
-        ("empty", "", False, False, "human-supervised-validation", True, 2),
-        ("normal", "hc://normal", True, False, "human-supervised-validation", True, 1),
-        ("hash-marked", "hc://normal hash:abc", True, True, "none", False, 0),
-        ("nonstandard", "not-a-hc-record", True, False, "human-supervised-validation", True, 1),
-        ("repeated-same-input", "hc://normal hash:abc", True, True, "none", False, 0),
+        ("empty", ""),
+        ("normal", "hc://normal"),
+        ("hash-marked", "hc://normal hash:abc"),
+        ("nonstandard", "not-a-hc-record"),
+        ("repeated-same-input", "hc://normal hash:abc"),
     ]
 
-    for (
-        record_id,
-        qr_input,
-        expected_schema_valid,
-        expected_hash,
-        expected_route,
-        expected_escalation_required,
-        expected_warning_count,
-    ) in cases:
+    for record_id, qr_input in cases:
         result = pipeline.run(record_id=record_id, qr_input=qr_input)
         _assert_validator_pipeline_nested_contract(result)
 
@@ -149,23 +141,23 @@ def test_validator_pipeline_consistency_for_input_variants() -> None:
             "warnings": ["Canonical record lookup is not configured for this advisory runtime boundary."],
         }
         assert result["schema_result"] == {
-            "checked": True,
+            "checked": False,
             "placeholder": True,
-            "valid": expected_schema_valid,
+            "valid": False,
             "canonical_lookup_status": "not_configured",
-            "warnings": [],
+            "warnings": ["Canonical record lookup is not configured for this advisory runtime boundary."],
         }
         assert result["hash_result"] == {
-            "checked": True,
+            "checked": False,
             "placeholder": True,
-            "hash_verified": expected_hash,
+            "hash_verified": False,
             "canonical_lookup_status": "not_configured",
-            "warnings": [],
+            "warnings": ["Canonical record lookup is not configured for this advisory runtime boundary."],
         }
-        assert len(result["trust_assignment"]["warnings"]) == expected_warning_count
+        assert len(result["trust_assignment"]["warnings"]) == 3
         assert result["escalation"] == {
-            "route": expected_route,
-            "required": expected_escalation_required,
+            "route": "human-supervised-validation",
+            "required": True,
             "placeholder": True,
         }
 
@@ -178,12 +170,7 @@ def test_validator_pipeline_consistency_for_input_variants() -> None:
             replay_warning="replay" in qr_input.lower(),
         )
 
-        if not qr_input.strip():
-            assert trust_state is TrustState.UNRESOLVED
-        elif "hash:" in qr_input.lower():
-            assert trust_state is TrustState.ADVISORY
-        else:
-            assert trust_state is TrustState.REVIEW_REQUIRED
+        assert trust_state is TrustState.UNRESOLVED
 
         assert isinstance(warnings, list)
         assert all(isinstance(warning, str) for warning in warnings)
@@ -212,20 +199,26 @@ def test_validator_pipeline_nested_contract_for_malformed_canonical_record() -> 
         "warnings": [expected_warning],
     }
     assert result["schema_result"] == {
-        "checked": True,
+        "checked": False,
         "placeholder": True,
         "valid": False,
         "canonical_lookup_status": "malformed",
         "warnings": [expected_warning],
     }
     assert result["hash_result"] == {
-        "checked": True,
+        "checked": False,
         "placeholder": True,
         "hash_verified": False,
         "canonical_lookup_status": "malformed",
         "warnings": [expected_warning],
     }
-    assert result["trust_assignment"] == {"warnings": [expected_warning]}
+    assert result["trust_assignment"] == {
+        "warnings": [
+            expected_warning,
+            "Canonical schema verification was not performed because usable canonical evidence was unavailable.",
+            "Canonical digest verification was not performed because usable content and an expected digest were unavailable.",
+        ]
+    }
     assert result["escalation"] == {
         "route": "human-supervised-validation",
         "required": True,

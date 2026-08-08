@@ -71,10 +71,10 @@ async def test_verify_qr_flow_runs_pipeline_decision_and_response_contract(clien
     assert response.status_code == 200
     payload = response.json()
     assert payload["status"] == "ADVISORY"
-    assert payload["trust_state"] == "ADVISORY"
+    assert payload["trust_state"] == "UNRESOLVED"
     assert payload["canonical_lookup_status"] == "missing"
-    assert payload["schema_valid"] is True
-    assert payload["hash_verified"] is True
+    assert payload["schema_valid"] is False
+    assert payload["hash_verified"] is False
     assert payload["replay_warning"] is False
     assert payload["continuity_warning"] is False
     assert payload["advisory_only"] is True
