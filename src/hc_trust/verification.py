@@ -1,5 +1,4 @@
 import re
-import sysconfig
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -22,19 +21,43 @@ RECORD_SCHEMA_ID = (
     "main/schema/record-v1.schema.json"
 )
 RECORD_SCHEMA_VERSION = "hc-record-v1"
-_SOURCE_RECORD_SCHEMA_PATH = Path(__file__).resolve().parents[2] / "schema" / "record-v1.schema.json"
-_INSTALLED_RECORD_SCHEMA_PATH = (
-    Path(sysconfig.get_path("data"))
-    / "share"
-    / "hc-trust-layer"
-    / "schema"
-    / "record-v1.schema.json"
+_RECORD_SCHEMA_DATA_PATH = (
+    Path("share") / "hc-trust-layer" / "schema" / "record-v1.schema.json"
 )
-DEFAULT_RECORD_SCHEMA_PATH = (
-    _SOURCE_RECORD_SCHEMA_PATH
-    if _SOURCE_RECORD_SCHEMA_PATH.is_file()
-    else _INSTALLED_RECORD_SCHEMA_PATH
-)
+
+
+def _resolve_default_record_schema_path(module_path: str | Path = __file__) -> Path:
+    """Resolve the single schema from this checkout or installation root."""
+
+    module_file = Path(module_path).resolve()
+    package_directory = module_file.parent
+    package_root = package_directory.parent
+
+    if package_root.name == "src":
+        source_schema = package_root.parent / "schema" / "record-v1.schema.json"
+        if source_schema.is_file():
+            return source_schema
+
+    # ``data-files`` is rooted directly under a ``--target`` installation.
+    direct_data_schema = package_root / _RECORD_SCHEMA_DATA_PATH
+    if direct_data_schema.is_file():
+        return direct_data_schema
+
+    # Standard, ``--user``, and ``--prefix`` schemes place the package below
+    # site-packages/dist-packages and the data file below that scheme's prefix.
+    # Search only the bounded installation-prefix ancestry, nearest first.
+    if package_root.name in {"site-packages", "dist-packages"}:
+        for install_root in package_root.parents[:3]:
+            installed_schema = install_root / _RECORD_SCHEMA_DATA_PATH
+            if installed_schema.is_file():
+                return installed_schema
+
+    # Preserve fail-closed behavior without consulting another interpreter's
+    # default sysconfig scheme, which may belong to a different installation.
+    return direct_data_schema
+
+
+DEFAULT_RECORD_SCHEMA_PATH = _resolve_default_record_schema_path()
 RECORD_FORMAT_CHECKER = FormatChecker()
 _RFC3339_DATETIME = re.compile(
     r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}"

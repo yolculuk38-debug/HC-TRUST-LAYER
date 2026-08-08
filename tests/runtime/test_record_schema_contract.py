@@ -10,7 +10,11 @@ import pytest
 
 from hc_runtime.runtime import ValidatorPipeline
 from hc_trust.hashing import HC_CONTENT_HASH_PROFILE, calculate_content_hash
-from hc_trust.verification import validate_record, validate_record_payload
+from hc_trust.verification import (
+    _resolve_default_record_schema_path,
+    validate_record,
+    validate_record_payload,
+)
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -56,6 +60,34 @@ def test_wheel_packages_the_single_canonical_schema_source() -> None:
     assert configuration["tool"]["setuptools"]["data-files"] == {
         "share/hc-trust-layer/schema": ["schema/record-v1.schema.json"]
     }
+
+
+@pytest.mark.parametrize(
+    "module_relative_path",
+    [
+        Path("custom-target/hc_trust/verification.py"),
+        Path("custom-prefix/lib/python3.14/site-packages/hc_trust/verification.py"),
+    ],
+)
+def test_installed_schema_resolution_uses_the_actual_distribution_root(
+    tmp_path: Path,
+    module_relative_path: Path,
+) -> None:
+    module_path = tmp_path / module_relative_path
+    module_path.parent.mkdir(parents=True)
+    module_path.touch()
+    install_root = tmp_path / module_relative_path.parts[0]
+    installed_schema = (
+        install_root
+        / "share"
+        / "hc-trust-layer"
+        / "schema"
+        / "record-v1.schema.json"
+    )
+    installed_schema.parent.mkdir(parents=True)
+    installed_schema.write_text(CANONICAL_SCHEMA.read_text(encoding="utf-8"), encoding="utf-8")
+
+    assert _resolve_default_record_schema_path(module_path) == installed_schema
 
 
 def test_canonical_schema_declares_draft_2020_id_and_versioned_hash_contract() -> None:
