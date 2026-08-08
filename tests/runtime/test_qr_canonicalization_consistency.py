@@ -19,8 +19,16 @@ from hc_runtime.qr_spoof_protection import QRRiskLevel, inspect_qr_spoof_protect
 from hc_trust.canonicalization import canonicalize_json
 from hc_trust.hashing import (
     HC_CONTENT_HASH_PROFILE,
+    HC_QR_PAYLOAD_HASH_PROFILE,
     calculate_content_hash,
     calculate_qr_payload_hash,
+)
+
+
+ROOT = Path(__file__).resolve().parents[2]
+QR_BOUNDARY_DOC = ROOT / "docs" / "security" / "qr-payload-verification-boundary.md"
+QR_FIXTURE_README = (
+    ROOT / "docs" / "demo" / "fixtures" / "qr-payload-parser" / "README.md"
 )
 
 
@@ -56,6 +64,25 @@ def test_parser_and_spoof_inspection_share_jcs_payload_hashing() -> None:
     assert spoof.structured_payload is True
     assert "payload_hash_mismatch" not in spoof.risk_reasons
     assert "content_hash_mismatch" not in spoof.risk_reasons
+
+
+@pytest.mark.parametrize("path", [QR_BOUNDARY_DOC, QR_FIXTURE_README])
+def test_qr_payload_hash_docs_name_the_shared_jcs_profile(path: Path) -> None:
+    text = path.read_text(encoding="utf-8")
+
+    assert HC_QR_PAYLOAD_HASH_PROFILE in text
+    assert "RFC 8785" in text
+
+
+def test_fixture_hash_rule_does_not_restate_legacy_sorted_json_algorithm() -> None:
+    text = QR_FIXTURE_README.read_text(encoding="utf-8")
+    section = text.split("## Advisory Payload Hash Rule", 1)[1].split(
+        "## Fixture Guide",
+        1,
+    )[0]
+
+    assert "sorted keys" not in section
+    assert "compact separators" not in section
 
 
 def test_parser_and_spoof_normalize_declared_hash_case_and_whitespace_identically() -> None:

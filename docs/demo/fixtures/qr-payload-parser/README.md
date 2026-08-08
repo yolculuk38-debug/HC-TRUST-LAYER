@@ -187,17 +187,15 @@ That fixture has a parser-consistent `payload_hash` but a `content_hash` that do
 
 ## Advisory Payload Hash Rule
 
-For this MVP parser only, `payload_hash` is checked with this parser-local advisory canonicalization rule:
+For this MVP parser only, `payload_hash` is checked with the versioned parser-local advisory profile `hc-qr-payload-jcs-sha256-v1`:
 
 1. parse the payload as a JSON object;
-2. remove the `payload_hash` field before hashing;
-3. dump JSON with sorted keys;
-4. use compact separators;
-5. encode the canonical JSON as UTF-8;
-6. compute the SHA-256 hexadecimal digest;
-7. compare the digest to `payload_hash` after normalizing hexadecimal case and surrounding whitespace.
+2. copy the object and remove the `payload_hash` field from that copy;
+3. apply the RFC 8785 JSON Canonicalization Scheme (JCS) to produce canonical UTF-8 bytes;
+4. compute the SHA-256 hexadecimal digest over those bytes;
+5. compare the digest to `payload_hash` after normalizing hexadecimal case and surrounding whitespace.
 
-This is an advisory consistency check, not signature verification, QR authenticity proof, final signing canonicalization standard, canonical URL fetch, or record truth verification. A mismatch returns `invalid_payload` as the safer local integrity-failure signal while preserving the stable public-safe result contract. Human review remains required.
+This is an advisory consistency check, not signature verification, QR authenticity proof, a signing standard, canonical URL fetch, or record truth verification. A mismatch returns `invalid_payload` as the safer local integrity-failure signal while preserving the stable public-safe result contract. Human review remains required.
 
 ## Fixture Guide
 

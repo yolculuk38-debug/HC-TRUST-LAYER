@@ -4,6 +4,12 @@ from hashlib import sha256
 from pathlib import Path
 from typing import Any, Dict, List
 
+from hc_trust.hashing import (
+    CONTENT_HASH_PROFILE_FIELD,
+    ContentHashError,
+    calculate_content_hash,
+)
+
 
 REQUIRED_FIELDS = {
     "package_id",
@@ -35,9 +41,19 @@ def _verify_record_hashes(records: List[Dict[str, Any]]) -> List[str]:
             continue
 
         if "content" in data and "content_hash" in data:
-            calculated = _sha256_text(
-                data["content"] if isinstance(data["content"], str) else _canonical_json(data["content"])
-            )
+            try:
+                if CONTENT_HASH_PROFILE_FIELD in data:
+                    calculated = calculate_content_hash(
+                        data["content"],
+                        data[CONTENT_HASH_PROFILE_FIELD],
+                    )
+                else:
+                    calculated = calculate_content_hash(data["content"])
+            except ContentHashError as exc:
+                failures.append(
+                    f"record[{idx}] content_hash unverifiable ({exc.reason})"
+                )
+                continue
             if data["content_hash"] != calculated:
                 failures.append(f"record[{idx}] content_hash mismatch")
     return failures

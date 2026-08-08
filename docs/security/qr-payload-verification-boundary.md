@@ -85,7 +85,7 @@ Every parser result must remain public-safe and use the same stable top-level fi
 
 Allowed `status` values are `valid_payload`, `invalid_payload`, and `malformed_payload`. `warnings` and `errors` must always be lists. Unknown payload fields should produce public-safe warnings instead of crashing or triggering network lookup. Missing required fields should produce `invalid_payload`, a mismatched `payload_hash` should produce `invalid_payload` as a safer local integrity-failure signal, and malformed JSON should produce `malformed_payload`.
 
-The current parser includes an advisory MVP `payload_hash` canonicalization rule for local parser consistency only. It parses the payload as a JSON object, removes the `payload_hash` field before hashing, serializes the remaining object with sorted keys and compact separators, UTF-8 encodes that JSON, computes the SHA-256 hex digest, and compares it with `payload_hash` after normalizing hexadecimal case and surrounding whitespace. This rule is not a final signing canonicalization standard, does not verify signatures, does not fetch `canonical_url`, and does not prove QR authenticity or record truth.
+The current parser uses the versioned advisory profile `hc-qr-payload-jcs-sha256-v1` for local parser consistency only. It parses the payload as a JSON object, copies it, removes the `payload_hash` field from that copy, applies the RFC 8785 JSON Canonicalization Scheme (JCS) to produce canonical UTF-8 bytes, computes the SHA-256 hexadecimal digest, and compares it with `payload_hash` after normalizing hexadecimal case and surrounding whitespace. This profile is not a signing standard, does not verify signatures, does not fetch `canonical_url`, and does not prove QR authenticity or record truth.
 
 The safety markers are fixed for this parser contract: `advisory_only` is `true`, `public_safe` is `true`, `truth_guarantee` is `false`, and `human_review_required` is `true`. A `valid_payload` result means only that local parser shape checks and any present advisory `payload_hash` consistency check passed. It must not imply QR authenticity, signature verification, truth verification, URL fetching, issuer approval, legal authority, safety certification, or production readiness.
 
@@ -135,7 +135,7 @@ The local parser checks a minimal MVP field shape for reviewer testing. A future
 | `qr_version` | Version marker for the QR payload contract. |
 | `record_id` | HC:// record identifier referenced by the payload. |
 | `canonical_url` | Canonical public validation URL intended for the record. |
-| `payload_hash` | Advisory parser-local SHA-256 hash of the QR payload content after removing `payload_hash` and applying the MVP JSON canonicalization rule. This is not a signing canonicalization standard. |
+| `payload_hash` | Advisory parser-local SHA-256 hash after removing `payload_hash` from a copy and applying the versioned RFC 8785 JCS profile `hc-qr-payload-jcs-sha256-v1`. This is not a signing standard. |
 | `content_hash` | Hash expected to match the referenced canonical record content. |
 | `issued_at` | Payload issuance timestamp. |
 | `expires_at` or `validity_window` | Expiry or bounded validity period for staleness checks. |
@@ -153,7 +153,7 @@ The current parser does not present payloads as verified. A future QR payload ve
 
 - **Canonical domain check:** confirm `canonical_url` uses an approved HC:// canonical validation domain or route.
 - **`record_id` format check:** reject paths, URLs, queries, blank values, and malformed identifiers.
-- **`payload_hash` check:** recompute the payload hash using a reviewed final canonicalization rule and compare it with `payload_hash`. The current parser has only an advisory MVP JSON canonicalization rule.
+- **`payload_hash` check:** recompute the payload hash under the applicable reviewed profile and compare it with `payload_hash`. The current parser supports only the advisory RFC 8785 JCS profile `hc-qr-payload-jcs-sha256-v1`; it is not a signing standard.
 - **`content_hash` match against canonical record:** compare the payload `content_hash` with the inspected canonical record content hash.
 - **Expiry/staleness check:** evaluate `issued_at` and `expires_at` or `validity_window` before presenting freshness.
 - **Replay warning:** warn when a payload appears stale, reused outside its intended context, or otherwise replay-risky.
