@@ -49,6 +49,14 @@ def _validate_tmp_record(tmp_path: Path, record: dict[str, object]) -> tuple[boo
     return validate_record(path, CANONICAL_SCHEMA)
 
 
+def _canonical_record_paths(root: Path) -> list[Path]:
+    return sorted(
+        path
+        for directory in ("pending", "verified", "archived")
+        for path in (root / "records" / directory).rglob("*.json")
+    )
+
+
 def test_only_one_executable_record_schema_remains() -> None:
     assert CANONICAL_SCHEMA.is_file()
     assert not LEGACY_SCHEMA.exists()
@@ -257,11 +265,7 @@ def test_shared_validator_rejects_cyclic_in_memory_records() -> None:
 
 
 def test_checked_in_canonical_json_records_declare_and_pass_one_schema() -> None:
-    paths = sorted(
-        path
-        for directory in ("pending", "verified", "archived")
-        for path in (ROOT / "records" / directory).glob("*.json")
-    )
+    paths = _canonical_record_paths(ROOT)
     assert paths
 
     for path in paths:
@@ -270,3 +274,11 @@ def test_checked_in_canonical_json_records_declare_and_pass_one_schema() -> None
         assert payload["content_hash_profile"] == HC_CONTENT_HASH_PROFILE
         passed, message = validate_record(path, CANONICAL_SCHEMA)
         assert passed, message
+
+
+def test_canonical_record_contract_discovery_includes_nested_json(tmp_path: Path) -> None:
+    nested_record = tmp_path / "records" / "pending" / "nested" / "record.json"
+    nested_record.parent.mkdir(parents=True)
+    nested_record.write_text("{}", encoding="utf-8")
+
+    assert _canonical_record_paths(tmp_path) == [nested_record]
