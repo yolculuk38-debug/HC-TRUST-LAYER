@@ -1,0 +1,12 @@
+{
+  "schema_version": "hc-egress-policy-v1",
+  "policy_id": "hc-optical-lab-policy-001",
+  "channel_type": "OPTICAL",
+  "enforcement_mode": "EVIDENCE_ONLY",
+  "thresholds": {
+    "min_intensity_ratio": 0.85,
+    "max_intensity_ratio": 1.15,
+    "max_polarization_deviation_deg": 2.0,
+    "max_out_of_band_fraction": 0.01
+  }
+}

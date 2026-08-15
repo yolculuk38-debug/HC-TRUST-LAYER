@@ -1,0 +1,19 @@
+{
+  "schema_version": "hc-egress-sensor-event-v1",
+  "event_id": "event-trip-001",
+  "session_id": "session-lab-001",
+  "captured_at": "2026-08-15T04:00:01Z",
+  "channel_id": "optical-egress-01",
+  "channel_type": "OPTICAL",
+  "telemetry": {
+    "sensor_health": "DEGRADED",
+    "calibration_status": "EXPIRED",
+    "controller_is_independent": false,
+    "intensity_ratio": 0.42,
+    "polarization_deviation_deg": 12.4,
+    "out_of_band_fraction": 0.08,
+    "detector_saturated": true,
+    "power_state": "LOSS",
+    "shutter_state": "OPEN"
+  }
+}
