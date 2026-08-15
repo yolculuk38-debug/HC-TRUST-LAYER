@@ -23,6 +23,7 @@ Start with the [Mini Public Validator Demo](docs/demo/mini-public-validator-demo
 - Mini Public Validator Demo: `advisory_only: true`, `public_safe: true`, `truth_guarantee: false`, and human final authority preserved.
 - START_HERE onboarding for first-click orientation.
 - Advisory runtime baseline.
+- Evidence-only HC Optical Egress Guard evaluator; hardware enforcement is not connected.
 - Telemetry contract review completed.
 - Replay / continuity coverage completed.
 - Runtime stabilization review completed.
@@ -45,6 +46,7 @@ Start with the [Mini Public Validator Demo](docs/demo/mini-public-validator-demo
 - [Try the Public Validator Demo](#try-the-public-validator-demo)
 - [Local Public Validator lookup quickstart](docs/demo/public-validator-local-lookup-quickstart.md)
 - [Combined local QR/Public Validator CLI](docs/security/qr-combined-local-public-validator.md#cli-entry-point)
+- [HC Optical Egress Guard evidence-only MVP](docs/architecture/hc-egress-guard-mvp.md)
 - [MVP Snapshot](#mvp-snapshot)
 - [Start Here navigation guide](docs/START_HERE.md)
 - [Current project state](docs/project-control/project-state.md)

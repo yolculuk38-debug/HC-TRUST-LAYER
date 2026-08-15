@@ -5,6 +5,14 @@ from pathlib import Path
 
 from hc_runtime.qr_public_validator import run_qr_public_validator
 
+from .egress_guard import (
+    DECISION_ALLOW,
+    DECISION_BLOCK,
+    EgressGuardError,
+    build_fail_closed_error,
+    evaluate_egress_event,
+    load_egress_json,
+)
 from .hashing import calculate_sha256
 from .qr_tools import find_verified_records, generate_qr
 from .verification import find_record_files, verify_record_hash
@@ -80,6 +88,30 @@ def cmd_qr_public_validator(args):
     result = run_qr_public_validator(args.payload_json, repo_root=Path.cwd())
     print(json.dumps(result, ensure_ascii=False, sort_keys=True, indent=2))
     return 0 if result["status"] == "qr_record_validated" else 1
+
+
+def cmd_egress_evaluate(args):
+    try:
+        policy = load_egress_json(args.policy_path, document="POLICY")
+        event = load_egress_json(args.event_path, document="EVENT")
+        result = evaluate_egress_event(event, policy)
+    except EgressGuardError as exc:
+        print(
+            json.dumps(
+                build_fail_closed_error(exc),
+                ensure_ascii=False,
+                sort_keys=True,
+                indent=2,
+            )
+        )
+        return 2
+
+    print(json.dumps(result, ensure_ascii=False, sort_keys=True, indent=2))
+    if result["decision"] == DECISION_ALLOW:
+        return 0
+    if result["decision"] == DECISION_BLOCK:
+        return 1
+    return 2  # pragma: no cover - internal fail-closed guard
 
 
 def _summary_value(value):
@@ -175,6 +207,27 @@ def build_parser():
         help="One local QR payload JSON string",
     )
     p_qr_public_validator.set_defaults(func=cmd_qr_public_validator)
+
+    p_egress_evaluate = sub.add_parser(
+        "egress-evaluate",
+        help="Evaluate one local optical egress telemetry event",
+        description=(
+            "Run the deterministic HC Egress Guard evidence-only evaluator. "
+            "It does not authenticate hardware, actuate a shutter, or make a "
+            "quantum-security claim."
+        ),
+    )
+    p_egress_evaluate.add_argument(
+        "event_path",
+        help="Path to one local hc-egress-sensor-event-v1 JSON file",
+    )
+    p_egress_evaluate.add_argument(
+        "--policy",
+        dest="policy_path",
+        required=True,
+        help="Path to one local hc-egress-policy-v1 JSON file",
+    )
+    p_egress_evaluate.set_defaults(func=cmd_egress_evaluate)
     return parser
 
 
