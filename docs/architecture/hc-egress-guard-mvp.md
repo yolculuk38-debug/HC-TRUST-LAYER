@@ -56,6 +56,104 @@ reviewed, independent safety controller. Until that exists, every result says:
 }
 ```
 
+## Event-Triggered Egress Evidence Architecture (Proposed)
+
+This is a proposed hardware evolution of the evidence-only HC Optical Egress
+Guard evaluator, not a separate product. Physical sensing, actuation, and
+authenticated device evidence remain unimplemented.
+
+The proposed architecture applies seven bounded design invariants to one
+declared optical egress boundary:
+
+| Design invariant | Proposed mechanism | Evidence produced |
+| --- | --- | --- |
+| Continuous boundary observation | Independent low-power photodiode and ADC sentinel outside the evaluated host | Bounded sensor-health and baseline measurements |
+| Pre-event context preservation | Fixed-size rolling ring buffer with old samples continuously overwritten | Declared pre-trigger sample window |
+| Explicit event decision | Deterministic policy thresholds plus sensor-health, saturation, power, and tamper failures | Stable trip reason codes |
+| Bounded event capture | Freeze the pre-trigger window and collect a fixed post-trigger window | Raw-sample digest and retained bounded measurements |
+| Independent response | Safety controller separated from the evaluated AI and host | Closure request and controller state |
+| Fail-closed verification | Physical shutter or equivalent output disable with position sensing, watchdog, and brownout handling | Verified closure state and measured response timing |
+| Auditable release | Local hold state requiring an identified human review path | Review provenance and release decision |
+
+These invariants separate detection, evidence capture, enforcement, and release
+authority. Failure or ambiguity in one layer must not be silently converted into
+an authenticated or physically enforced result by another layer.
+
+### Proposed Event Flow
+
+\`\`\`text
+declared optical output boundary
+              |
+independent sentinel: photodiode + ADC
+    + optional spectral, polarization, and tamper channels
+              |
+bounded rolling ring buffer
+              |
+deterministic trip or sensor-health failure
+              |
+freeze pre-trigger samples + capture bounded post-trigger samples
+              |
+independent safety controller
+   |-- request physical close
+   |-- verify shutter/disable position
+   |-- enter local hold state pending human release
+   \`-- emit a bounded event envelope
+              |
+HC evidence package / event passport
+\`\`\`
+
+The pre-trigger ring buffer preserves evidence that existed immediately before
+the trip. A short covert transmission may finish before an alert is processed;
+a bounded pre-trigger and post-trigger window records both the suspected cause
+and the response instead of only the aftermath. Exact buffer duration, sample
+rate, and retention must be derived from the declared channel bandwidth and
+published as part of the test configuration.
+
+A bounded optical test corpus may encode data through intensity modulation,
+pulse timing, wavelength, or polarization. The architecture does **not** assume
+that an attacker must change the beam angle, "bend a wave function," or use a
+quantum mechanism. A high-speed photodiode and ADC are therefore the primary
+proposed measurement path; polarization is one optional channel. Consumer
+imaging sensors and passive infrared triggers are not presumed fast or complete
+enough for the declared high-rate optical tests.
+
+### Proposed HC Event Passport
+
+A future controller-supplied event passport should bind at least:
+
+- exact hardware and firmware revision;
+- sensor and controller identity, once authenticated identity exists;
+- calibration record digest and active policy digest;
+- monotonic event sequence and replay-resistant nonce;
+- pre-trigger and post-trigger capture windows;
+- raw-sample digest and bounded retained measurements;
+- trip reason codes and sensor-health state;
+- closure command, verified shutter/disable position, and timing;
+- human release decision and reviewer provenance.
+
+Current SHA-256 digests can bind supplied bytes for comparison. They do not
+authenticate a sensor, prove physical closure, or establish trusted time. The
+passport must continue to report those properties as unverified until device
+signing, replay protection, position sensing, and an appropriate time/witness
+mechanism are implemented and tested.
+
+### Falsifiable Research Claim
+
+The project should test a bounded claim rather than universal AI containment:
+
+> For one named optical output interface and a declared attack corpus, a
+> specified HC Optical Egress Guard prototype detects the defined modulation
+> classes, confirms fail-closed output closure within a published time budget,
+> and measures residual information capacity against a declared threshold with
+> stated uncertainty.
+
+Required measurements include detection and miss rates, false alarms, trip and
+verified-closure latency, residual bits per second before closure, saturation
+and blinding behavior, calibration drift, power-loss behavior, and integrity of
+the pre-trigger/post-trigger evidence. Results must identify the exact device
+revision and corpus. Optical results do not cover RF, acoustic, thermal, power,
+network, storage, or human channels.
+
 ## Quick Start
 
 Evaluate the normal fixture:
