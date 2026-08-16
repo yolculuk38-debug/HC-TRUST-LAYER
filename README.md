@@ -23,7 +23,7 @@ Start with the [Mini Public Validator Demo](docs/demo/mini-public-validator-demo
 - Mini Public Validator Demo: `advisory_only: true`, `public_safe: true`, `truth_guarantee: false`, and human final authority preserved.
 - START_HERE onboarding for first-click orientation.
 - Advisory runtime baseline.
-- Evidence-only HC Optical Egress Guard evaluator with a documented camera-trap-inspired event-capture roadmap; physical sensors and hardware enforcement are not connected.
+- Evidence-only HC Optical Egress Guard evaluator with a documented event-triggered pre/post-capture and independent-enforcement roadmap; physical sensors and hardware enforcement are not connected.
 - Telemetry contract review completed.
 - Replay / continuity coverage completed.
 - Runtime stabilization review completed.
