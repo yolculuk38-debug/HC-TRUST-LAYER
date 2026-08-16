@@ -230,3 +230,29 @@ def test_numeric_booleans_are_not_accepted_as_measurements() -> None:
 
     assert exc_info.value.reason_code == "NUMBER_REQUIRED"
     assert exc_info.value.field == "event.telemetry.intensity_ratio"
+
+
+@pytest.mark.parametrize(
+    ("document", "field"),
+    [
+        ("EVENT", "event.telemetry.intensity_ratio"),
+        ("POLICY", "policy.thresholds.max_intensity_ratio"),
+    ],
+)
+def test_huge_integer_numeric_inputs_fail_closed(document, field) -> None:
+    event = _event()
+    policy = _policy()
+    if document == "EVENT":
+        event["telemetry"]["intensity_ratio"] = 10**10000
+    else:
+        policy["thresholds"]["max_intensity_ratio"] = 10**10000
+
+    with pytest.raises(EgressGuardError) as exc_info:
+        evaluate_egress_event(event, policy)
+
+    assert exc_info.value.reason_code == "NUMBER_OUT_OF_RANGE"
+    assert exc_info.value.document == document
+    assert exc_info.value.field == field
+    error_result = build_fail_closed_error(exc_info.value)
+    assert error_result["decision"] == DECISION_BLOCK
+    assert error_result["recommended_action"] == "CLOSE_AND_HOLD"

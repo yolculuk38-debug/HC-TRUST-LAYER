@@ -192,6 +192,10 @@ def _require_number(
 ) -> int | float:
     if type(value) not in (int, float):
         _raise("NUMBER_REQUIRED", document=document, field=field)
+    if type(value) is int:
+        if not minimum <= value <= maximum:
+            _raise("NUMBER_OUT_OF_RANGE", document=document, field=field)
+        return value
     if not math.isfinite(value):
         _raise("FINITE_NUMBER_REQUIRED", document=document, field=field)
     if not minimum <= value <= maximum:
