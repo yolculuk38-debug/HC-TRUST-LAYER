@@ -56,33 +56,28 @@ reviewed, independent safety controller. Until that exists, every result says:
 }
 ```
 
-## Camera-Trap-Inspired Event Capture Model (Proposed)
+## Event-Triggered Egress Evidence Architecture (Proposed)
 
-**Working research name:** **HC Egress Trap**. This is a proposed hardware
-evolution of the evidence-only evaluator, not a separately released product.
-Physical sensing, actuation, and authenticated device evidence remain
-unimplemented.
+This is a proposed hardware evolution of the evidence-only HC Optical Egress
+Guard evaluator, not a separate product. Physical sensing, actuation, and
+authenticated device evidence remain unimplemented.
 
-The design borrows the operational pattern of a wildlife camera trap—not its
-camera hardware and not a claim of equivalent security. A camera trap stays
-armed, detects an event, preserves evidence around that event, and alerts an
-operator. The proposed HC design maps that pattern onto one declared optical
-egress boundary:
+The proposed architecture applies seven bounded design invariants to one
+declared optical egress boundary:
 
-| Camera-trap function | Proposed HC Egress Trap function |
-| --- | --- |
-| Continuously armed field station | Independent low-power sentinel outside the evaluated host |
-| Motion or heat trigger | Bounded trip rules over intensity, timing, spectrum, polarization, health, and tamper signals |
-| Photo or video clip | High-rate raw sensor waveform captured before and after the trip |
-| Local storage and remote alert | Bounded event record plus controller and human notification |
-| Evidence image | HC event passport binding measurements, policy, decision, and closure state |
-| Periodic capture or health check | Calibration, heartbeat, saturation, and blind-spot sampling |
+| Design invariant | Proposed mechanism | Evidence produced |
+| --- | --- | --- |
+| Continuous boundary observation | Independent low-power photodiode and ADC sentinel outside the evaluated host | Bounded sensor-health and baseline measurements |
+| Pre-event context preservation | Fixed-size rolling ring buffer with old samples continuously overwritten | Declared pre-trigger sample window |
+| Explicit event decision | Deterministic policy thresholds plus sensor-health, saturation, power, and tamper failures | Stable trip reason codes |
+| Bounded event capture | Freeze the pre-trigger window and collect a fixed post-trigger window | Raw-sample digest and retained bounded measurements |
+| Independent response | Safety controller separated from the evaluated AI and host | Closure request and controller state |
+| Fail-closed verification | Physical shutter or equivalent output disable with position sensing, watchdog, and brownout handling | Verified closure state and measured response timing |
+| Auditable release | Local hold state requiring an identified human review path | Review provenance and release decision |
 
-An ordinary camera trap observes and records; it does not physically contain
-the observed subject. HC Egress Trap therefore adds a separate control: an
-independent fail-closed shutter or equivalent output-disable mechanism. That
-enforcement layer is proposed for Stage 2 and is not connected in the current
-MVP.
+These invariants separate detection, evidence capture, enforcement, and release
+authority. Failure or ambiguity in one layer must not be silently converted into
+an authenticated or physically enforced result by another layer.
 
 ### Proposed Event Flow
 
@@ -92,7 +87,7 @@ declared optical output boundary
 independent sentinel: photodiode + ADC
     + optional spectral, polarization, and tamper channels
               |
-bounded rolling ring buffer (old samples continuously overwritten)
+bounded rolling ring buffer
               |
 deterministic trip or sensor-health failure
               |
@@ -107,20 +102,20 @@ independent safety controller
 HC evidence package / event passport
 \`\`\`
 
-The pre-trigger ring buffer is the central camera-trap lesson. A short covert
-transmission may finish before an alert is processed. Freezing a bounded window
-from immediately before and after the trip preserves the suspected cause and
-the response instead of recording only the aftermath. Exact buffer duration,
-sample rate, and retention must be derived from the declared channel bandwidth
-and published as part of the test configuration.
+The pre-trigger ring buffer preserves evidence that existed immediately before
+the trip. A short covert transmission may finish before an alert is processed;
+a bounded pre-trigger and post-trigger window records both the suspected cause
+and the response instead of only the aftermath. Exact buffer duration, sample
+rate, and retention must be derived from the declared channel bandwidth and
+published as part of the test configuration.
 
-A plausible optical test corpus may encode data through intensity modulation,
-pulse timing, wavelength, or polarization. The design does **not** assume that
-an attacker must change the beam angle, "bend a wave function," or use a quantum
-mechanism. A high-speed photodiode and ADC are therefore the primary proposed
-measurement path; polarization is one optional channel. An ordinary phone
-camera or passive infrared trigger is not presumed fast or complete enough for
-the declared high-rate optical tests.
+A bounded optical test corpus may encode data through intensity modulation,
+pulse timing, wavelength, or polarization. The architecture does **not** assume
+that an attacker must change the beam angle, "bend a wave function," or use a
+quantum mechanism. A high-speed photodiode and ADC are therefore the primary
+proposed measurement path; polarization is one optional channel. Consumer
+imaging sensors and passive infrared triggers are not presumed fast or complete
+enough for the declared high-rate optical tests.
 
 ### Proposed HC Event Passport
 
@@ -147,9 +142,9 @@ mechanism are implemented and tested.
 The project should test a bounded claim rather than universal AI containment:
 
 > For one named optical output interface and a declared attack corpus, a
-> specified HC Egress Trap prototype detects the defined modulation classes,
-> confirms fail-closed output closure within a published time budget, and
-> measures residual information capacity against a declared threshold with
+> specified HC Optical Egress Guard prototype detects the defined modulation
+> classes, confirms fail-closed output closure within a published time budget,
+> and measures residual information capacity against a declared threshold with
 > stated uncertainty.
 
 Required measurements include detection and miss rates, false alarms, trip and
