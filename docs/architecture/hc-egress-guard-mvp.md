@@ -159,22 +159,6 @@ the pre-trigger/post-trigger evidence. Results must identify the exact device
 revision and corpus. Optical results do not cover RF, acoustic, thermal, power,
 network, storage, or human channels.
 
-### Operational Analogy Sources
-
-Turkey's General Directorate of Forestry describes ORİKEM camera traps that use
-motion and heat sensing, transmit imagery for classification and alerting, and
-retain images as evidence. USGS work also documents why passive infrared
-triggers can miss small or low-contrast subjects, motivating active triggers or
-time-lapse sampling in bounded settings:
-
-- [OGM — ORİKEM](https://www.ogm.gov.tr/tr/haberler/ori%CC%87kem-%28ormanlari-i%CC%87zleme-koruma-entegre-mudahale%29-projesi)
-- [USGS — An improved camera trap for amphibians, reptiles, small mammals, and large invertebrates](https://pubs.usgs.gov/publication/70191898)
-- [USGS — Object detection-assisted workflow facilitates cryptic snake monitoring](https://www.usgs.gov/index.php/publications/object-detection-assisted-workflow-facilitates-cryptic-snake-monitoring)
-
-These sources support the event-sensing and evidence-capture analogy only. They
-do not validate HC Egress Trap, prove optical covert-channel containment, or
-establish novelty.
-
 ## Quick Start
 
 Evaluate the normal fixture:
