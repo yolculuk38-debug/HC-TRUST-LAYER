@@ -56,6 +56,125 @@ reviewed, independent safety controller. Until that exists, every result says:
 }
 ```
 
+## Camera-Trap-Inspired Event Capture Model (Proposed)
+
+**Working research name:** **HC Egress Trap**. This is a proposed hardware
+evolution of the evidence-only evaluator, not a separately released product.
+Physical sensing, actuation, and authenticated device evidence remain
+unimplemented.
+
+The design borrows the operational pattern of a wildlife camera trap—not its
+camera hardware and not a claim of equivalent security. A camera trap stays
+armed, detects an event, preserves evidence around that event, and alerts an
+operator. The proposed HC design maps that pattern onto one declared optical
+egress boundary:
+
+| Camera-trap function | Proposed HC Egress Trap function |
+| --- | --- |
+| Continuously armed field station | Independent low-power sentinel outside the evaluated host |
+| Motion or heat trigger | Bounded trip rules over intensity, timing, spectrum, polarization, health, and tamper signals |
+| Photo or video clip | High-rate raw sensor waveform captured before and after the trip |
+| Local storage and remote alert | Bounded event record plus controller and human notification |
+| Evidence image | HC event passport binding measurements, policy, decision, and closure state |
+| Periodic capture or health check | Calibration, heartbeat, saturation, and blind-spot sampling |
+
+An ordinary camera trap observes and records; it does not physically contain
+the observed subject. HC Egress Trap therefore adds a separate control: an
+independent fail-closed shutter or equivalent output-disable mechanism. That
+enforcement layer is proposed for Stage 2 and is not connected in the current
+MVP.
+
+### Proposed Event Flow
+
+\`\`\`text
+declared optical output boundary
+              |
+independent sentinel: photodiode + ADC
+    + optional spectral, polarization, and tamper channels
+              |
+bounded rolling ring buffer (old samples continuously overwritten)
+              |
+deterministic trip or sensor-health failure
+              |
+freeze pre-trigger samples + capture bounded post-trigger samples
+              |
+independent safety controller
+   |-- request physical close
+   |-- verify shutter/disable position
+   |-- enter local hold state pending human release
+   \`-- emit a bounded event envelope
+              |
+HC evidence package / event passport
+\`\`\`
+
+The pre-trigger ring buffer is the central camera-trap lesson. A short covert
+transmission may finish before an alert is processed. Freezing a bounded window
+from immediately before and after the trip preserves the suspected cause and
+the response instead of recording only the aftermath. Exact buffer duration,
+sample rate, and retention must be derived from the declared channel bandwidth
+and published as part of the test configuration.
+
+A plausible optical test corpus may encode data through intensity modulation,
+pulse timing, wavelength, or polarization. The design does **not** assume that
+an attacker must change the beam angle, "bend a wave function," or use a quantum
+mechanism. A high-speed photodiode and ADC are therefore the primary proposed
+measurement path; polarization is one optional channel. An ordinary phone
+camera or passive infrared trigger is not presumed fast or complete enough for
+the declared high-rate optical tests.
+
+### Proposed HC Event Passport
+
+A future controller-supplied event passport should bind at least:
+
+- exact hardware and firmware revision;
+- sensor and controller identity, once authenticated identity exists;
+- calibration record digest and active policy digest;
+- monotonic event sequence and replay-resistant nonce;
+- pre-trigger and post-trigger capture windows;
+- raw-sample digest and bounded retained measurements;
+- trip reason codes and sensor-health state;
+- closure command, verified shutter/disable position, and timing;
+- human release decision and reviewer provenance.
+
+Current SHA-256 digests can bind supplied bytes for comparison. They do not
+authenticate a sensor, prove physical closure, or establish trusted time. The
+passport must continue to report those properties as unverified until device
+signing, replay protection, position sensing, and an appropriate time/witness
+mechanism are implemented and tested.
+
+### Falsifiable Research Claim
+
+The project should test a bounded claim rather than universal AI containment:
+
+> For one named optical output interface and a declared attack corpus, a
+> specified HC Egress Trap prototype detects the defined modulation classes,
+> confirms fail-closed output closure within a published time budget, and
+> measures residual information capacity against a declared threshold with
+> stated uncertainty.
+
+Required measurements include detection and miss rates, false alarms, trip and
+verified-closure latency, residual bits per second before closure, saturation
+and blinding behavior, calibration drift, power-loss behavior, and integrity of
+the pre-trigger/post-trigger evidence. Results must identify the exact device
+revision and corpus. Optical results do not cover RF, acoustic, thermal, power,
+network, storage, or human channels.
+
+### Operational Analogy Sources
+
+Turkey's General Directorate of Forestry describes ORİKEM camera traps that use
+motion and heat sensing, transmit imagery for classification and alerting, and
+retain images as evidence. USGS work also documents why passive infrared
+triggers can miss small or low-contrast subjects, motivating active triggers or
+time-lapse sampling in bounded settings:
+
+- [OGM — ORİKEM](https://www.ogm.gov.tr/tr/haberler/ori%CC%87kem-%28ormanlari-i%CC%87zleme-koruma-entegre-mudahale%29-projesi)
+- [USGS — An improved camera trap for amphibians, reptiles, small mammals, and large invertebrates](https://pubs.usgs.gov/publication/70191898)
+- [USGS — Object detection-assisted workflow facilitates cryptic snake monitoring](https://www.usgs.gov/index.php/publications/object-detection-assisted-workflow-facilitates-cryptic-snake-monitoring)
+
+These sources support the event-sensing and evidence-capture analogy only. They
+do not validate HC Egress Trap, prove optical covert-channel containment, or
+establish novelty.
+
 ## Quick Start
 
 Evaluate the normal fixture:
