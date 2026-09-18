@@ -81,7 +81,7 @@ an authenticated or physically enforced result by another layer.
 
 ### Proposed Event Flow
 
-\`\`\`text
+```text
 declared optical output boundary
               |
 independent sentinel: photodiode + ADC
@@ -97,10 +97,10 @@ independent safety controller
    |-- request physical close
    |-- verify shutter/disable position
    |-- enter local hold state pending human release
-   \`-- emit a bounded event envelope
+   `-- emit a bounded event envelope
               |
 HC evidence package / event passport
-\`\`\`
+```
 
 The pre-trigger ring buffer preserves evidence that existed immediately before
 the trip. A short covert transmission may finish before an alert is processed;
