@@ -1,7 +1,7 @@
 # P0-4 Cryptographic Claim Inventory
 
-Status: first bounded containment slice implemented; broader inventory remains
-open for separate evidence-backed changes.
+Status: QR containment merged in #1233. Certificate containment is the September
+follow-up; broader inventory remains open for separate evidence-backed changes.
 
 This note inventories executable names that can be read as cryptographic,
 authenticity, immutability, or trust guarantees. A name is not implementation
@@ -28,7 +28,7 @@ unkeyed consistency value and must not be used as an authenticity signal.
 | `src/cryptographic_identity.py` | Computes a SHA-256 fingerprint over supplied witness/key text; it does not prove key possession or identity. | Relabel as fingerprint consistency and return explicit ownership/identity-unverified markers. |
 | `src/signed_export_package.py` | Computes an unkeyed SHA-256 digest from public signer text and payload. | Relabel as checksum packaging or implement a separately reviewed keyed/signature profile. |
 | `src/immutable_snapshot.py`, `src/immutable_snapshot_core.py` | Provide local hashes/hash links or a declared `IMMUTABLE` state; they do not enforce immutable storage. | Relabel as hash-linked snapshot consistency and state the storage boundary. |
-| `src/certificate_chain.py`, `src/certificate_verifier.py`, `src/verification_certificate.py` | Propagate certificate-shaped data and self-declared flags without cryptographic issuer validation. | Constrain to certificate-shape/advisory checks and make issuer/signature authority false unless separately verified. |
+| `src/certificate_chain.py`, `src/certificate_verifier.py`, `src/verification_certificate.py` | September follow-up contains self-declared certificate/chain trust; authentication is still not implemented. | Current change separates shape from trust and preserves SDK declarations under unverified source claims. See `audit-followup-2026-09-18.md` for scope and validation; use GitHub history for merge status. |
 | `src/network_trust_proof.py`, `src/signed_bundle.py`, `src/witness_signature.py`, `src/exported_proof.py` | Build or validate shapes and caller-provided values without proving the named trust/signature/proof properties. | Relabel the outputs or add explicit unverified markers; do not infer authority from shape presence. |
 
 ## Evidence-backed cryptographic helpers
