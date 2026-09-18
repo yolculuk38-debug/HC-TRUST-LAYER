@@ -12,7 +12,8 @@ def verify_certificate(certificate: object) -> dict[str, Any]:
     """Inspect shape only; declared verification and signature fields grant no trust.
 
     The legacy function name is retained. No signature, issuer authority or key
-    ownership check is implemented by this inspector.
+    ownership check is implemented by this inspector. Retained risk-flag text
+    is caller-controlled and not redacted, so this result is not public-safe.
     """
     reasons: list[str] = []
     risk_flags: list[str] = []
@@ -55,7 +56,7 @@ def _result(
         "reasons": sorted(set(shape_errors + ["certificate_authentication_not_performed"])),
         "risk_flags": sorted(set(risk_flags or [])),
         "advisory_only": True,
-        "public_safe": True,
+        "public_safe": False,
         "truth_guarantee": False,
         "human_review_required": True,
     }

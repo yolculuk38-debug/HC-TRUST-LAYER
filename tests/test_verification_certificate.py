@@ -38,3 +38,44 @@ def test_invalid_sdk_input_is_rejected(source):
 def test_invalid_issuer_is_rejected(issuer):
     with pytest.raises(ValueError):
         build_verification_certificate({}, issuer=issuer)
+
+
+def test_caller_data_is_never_marked_safe_for_publication():
+    from certificate_chain import build_certificate_chain_entry
+
+    sensitive = "synthetic-private-data-do-not-publish"
+    certificate = build_verification_certificate(
+        {"decision": sensitive, "verified": {"private_key": sensitive},
+         "verification_level": sensitive, "reasons": [sensitive],
+         "risk_flags": [sensitive], "public_safe": True},
+        issuer=sensitive,
+    )
+    chain = build_certificate_chain_entry(
+        {**certificate, "private_key": sensitive, "public_safe": True},
+        previous_certificate_hash=sensitive,
+    )
+    inspection = verify_certificate(certificate)
+    assert certificate["issuer"] == sensitive
+    assert certificate["source_claims"]["verified"] == {"private_key": sensitive}
+    assert chain["certificate"]["private_key"] == sensitive
+    assert inspection["risk_flags"] == [sensitive]
+    for result in (certificate, chain, inspection):
+        assert result["public_safe"] is False
+        assert result["trusted"] is False
+        assert result["truth_guarantee"] is False
+
+
+def test_public_chain_inspection_does_not_echo_caller_data():
+    import json
+    from certificate_chain import build_certificate_chain_entry, verify_certificate_chain
+
+    sensitive = "synthetic-private-data-do-not-publish"
+    certificate = build_verification_certificate(
+        {"reasons": [sensitive], "risk_flags": [sensitive]}, issuer=sensitive,
+    )
+    result = verify_certificate_chain(build_certificate_chain_entry(
+        certificate, previous_certificate_hash=sensitive,
+    ))
+    assert result["public_safe"] is True
+    assert sensitive not in json.dumps(result)
+    assert result["trusted"] is False

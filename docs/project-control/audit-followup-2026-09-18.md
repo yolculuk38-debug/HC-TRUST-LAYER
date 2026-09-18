@@ -38,7 +38,8 @@ Change `certificate_verifier.py`, `certificate_chain.py`, and
 checks from trust: self-declared flags, signatures, or issuers cannot produce
 verified/trusted results. Preserve SDK declarations only as explicitly
 unverified source claims. An unchecked chain link is unknown, not proven intact
-or broken. Keep advisory/public-safe/false-truth-guarantee boundaries explicit.
+or broken. Keep advisory and false-truth-guarantee boundaries explicit. Public-safe output
+must not retain arbitrary caller data.
 
 No cryptographic implementation, key authority, schema, canonical record,
 workflow permission or production-readiness claim is added. This protected
@@ -53,7 +54,7 @@ full repository suite and canonical, terminology and documentation guards.
 Require current-head CI and matching Codex review before merge. Record actual
 results below; implementation alone is not merge completion.
 
-## Local validation results
+## Initial local validation results (before Codex P2 follow-up)
 
 - CPython 3.14.7, pinned `requirements.txt` dependencies.
 - Direct certificate regression tests: **50 passed**.
@@ -64,3 +65,22 @@ results below; implementation alone is not merge completion.
 - `git diff --check`: passed.
 - GitHub checks, exact-head review and merge status are recorded on the PR;
   these local results do not assert that those later gates have completed.
+
+## Codex P2 follow-up: disclosure markers
+
+Review of `68adcacf62c3b2b0e423b3a7eb4518990e6148a3` identified that the
+certificate and chain builders retained arbitrary caller data while marking it
+public-safe. A synthetic-sensitive-data regression reproduced the problem.
+Both builders now return `public_safe=false`. The certificate inspector also
+returns false because it preserves caller-supplied risk-flag text. This does not
+redact the data: callers must perform a separate disclosure review before
+publication. The chain inspector alone keeps `public_safe=true` because its
+output contains only fixed diagnostics and computed shape booleans; a regression
+checks that caller text is not echoed. No disclosure permission is inferred from
+advisory-only status or an input's own `public_safe` declaration.
+
+Follow-up validation: 52 focused certificate tests and 1197 full-suite tests
+passed on CPython 3.14.7 (full suite: 57.99 seconds). Canonical artifact,
+terminology, documentation drift guards and whitespace checks passed; the same
+two pre-existing README warnings remain. The synthetic disclosure regression
+failed before the correction and passed afterward.

@@ -15,7 +15,11 @@ def build_certificate_chain_entry(
     *,
     previous_certificate_hash: str | None = None,
 ) -> dict[str, Any]:
-    """Wrap a claimed predecessor reference without asserting link integrity."""
+    """Wrap a claimed predecessor reference without asserting link integrity.
+
+    Retained caller data is not redacted and must not be published without a
+    separate disclosure review; ``public_safe`` is therefore false.
+    """
     return {
         "certificate_chain_version": CERTIFICATE_CHAIN_VERSION,
         "certificate": certificate,
@@ -24,7 +28,7 @@ def build_certificate_chain_entry(
         "chain_verified": False,
         "trusted": False,
         "advisory_only": True,
-        "public_safe": True,
+        "public_safe": False,
         "truth_guarantee": False,
         "human_review_required": True,
     }

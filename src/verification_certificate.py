@@ -15,7 +15,9 @@ def build_verification_certificate(
 
     ``issuer`` is a caller declaration. SDK decision/level/verified values are
     retained only under ``source_claims`` and are not independently verified.
-    Invalid SDK objects or risk/reason arrays are rejected explicitly.
+    Invalid SDK objects or risk/reason arrays are rejected explicitly. Retained
+    declarations are not redacted; ``public_safe=false`` requires a separate
+    disclosure review before publication.
     """
     if not isinstance(sdk_response, dict):
         raise ValueError("sdk_response must be an object")
@@ -46,7 +48,7 @@ def build_verification_certificate(
         "explainable": True,
         "human_readable": True,
         "advisory_only": True,
-        "public_safe": True,
+        "public_safe": False,
         "truth_guarantee": False,
         "human_review_required": True,
     }
