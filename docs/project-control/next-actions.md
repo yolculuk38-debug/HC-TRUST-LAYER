@@ -6,7 +6,7 @@ Operating boundaries remain: `advisory_only=true`, `public_safe=true`, `truth_gu
 
 ## Current phase
 
-Independent external audit hardening remains active. Core P0-1/#1229, P0-2/#1230 plus #1232, P0-3/#1231, and the QR slice of P0-4/#1233 are merged. The current bounded follow-up contains unsupported certificate trust claims; see `audit-followup-2026-09-18.md` for evidence and remaining acceptance gaps.
+Independent external audit hardening remains active. Core P0-1/#1229, P0-2/#1230 plus #1232, P0-3/#1231, and the QR slice of P0-4/#1233 are merged. Certificate containment is merged in #1242. Follow `audit-execution-queue.md` for the maintainer-authorized remaining audit sequence.
 
 ## Next safe actions
 
@@ -27,7 +27,7 @@ E. `workflow-map-index-2026-06-16.md` synchronized through #1008 by #1009.
 Current immediate operator path:
 
 1. Preserve the merged P0-1, P0-2, P0-3 core and P0-4 QR slices; do not recreate them.
-2. Close the current certificate containment slice with the full suite, guards, current-head CI and matching review evidence. No cryptographic capability is added.
+2. Continue the sequence in `audit-execution-queue.md`, beginning with CI/shared-validator alignment. Require tests, current-head CI and matching review for each slice.
 3. Next separately scope CI/shared-validator alignment, remaining non-QR claim inventory, and duplicate canonical-ID rejection. Broader signatures, persistence and interoperability remain acceptance work, not completed capabilities.
 4. Keep the three intentional issue surfaces distinct and open unless explicitly superseded: #812 HC Assistant Console v2, #1082 HC Signal Watch Console, and #1109 HC Mission Control / Active Task Queue.
 5. Treat #1210/#1211 branch cleanup, #1216-#1225 Public Validator/review-timing work, #1005-#1009 workflow noise reduction, #1161-#1166 public surface work, #1197-#1203 HC Council work, #1205 CodeQL boundary, and #1209 QR compatibility repair as completed lines.
@@ -46,9 +46,9 @@ The following remain parked unless explicitly authorized, scoped, reviewed, and 
 - issue-comment based autonomous PR creation, fully autonomous issue-to-PR bridges, VPS runners, GitHub App runners, auto-merge, label/assignment/reviewer-request automation, approval/rejection/close authority, or other authority-changing automation.
 - deletion of any held or later branch without a fresh exact-target gate and explicit human approval.
 
-The current user-authorized audit follow-up is scoped to certificate claim
-containment, its direct tests and status reconciliation. It does not authorize
-authority expansion or unrelated protected-path changes.
+The maintainer subsequently authorized the remaining audit items in sequence.
+Use `audit-execution-queue.md` for scoped implementation and acceptance evidence.
+This does not authorize bot authority expansion or unrelated protected changes.
 
 ## Immediate do-not-repeat summary
 
