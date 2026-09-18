@@ -6,7 +6,7 @@ Operating boundaries remain: `advisory_only=true`, `public_safe=true`, `truth_gu
 
 ## Current phase
 
-Independent external audit hardening is the active bounded phase. P0-1 was completed by #1229 and P0-2 by #1230. P0-3 is implemented in the current change and remains subject to current-head checks, review evidence, and human merge authority. P0-4 has not started.
+Independent external audit hardening remains active. Core P0-1/#1229, P0-2/#1230 plus #1232, P0-3/#1231, and the QR slice of P0-4/#1233 are merged. The current bounded follow-up contains unsupported certificate trust claims; see `audit-followup-2026-09-18.md` for evidence and remaining acceptance gaps.
 
 ## Next safe actions
 
@@ -26,9 +26,9 @@ E. `workflow-map-index-2026-06-16.md` synchronized through #1008 by #1009.
 
 Current immediate operator path:
 
-1. Treat P0-1/#1229 and P0-2/#1230 as completed, evidence-backed findings. Do not recreate their slices.
-2. Keep P0-3 limited to one Draft 2020-12 record schema, the shared validator, version/profile declarations, and their direct runtime, record, packaging, test, and documentation consumers. Require protected-path and exact-record review.
-3. Do not open P0-4 implementation while P0-3 remains open. After P0-3 closes, inventory cryptographic-strength names and contain, rename, or relabel only the unsupported claims in one bounded slice.
+1. Preserve the merged P0-1, P0-2, P0-3 core and P0-4 QR slices; do not recreate them.
+2. Close the current certificate containment slice with the full suite, guards, current-head CI and matching review evidence. No cryptographic capability is added.
+3. Next separately scope CI/shared-validator alignment, remaining non-QR claim inventory, and duplicate canonical-ID rejection. Broader signatures, persistence and interoperability remain acceptance work, not completed capabilities.
 4. Keep the three intentional issue surfaces distinct and open unless explicitly superseded: #812 HC Assistant Console v2, #1082 HC Signal Watch Console, and #1109 HC Mission Control / Active Task Queue.
 5. Treat #1210/#1211 branch cleanup, #1216-#1225 Public Validator/review-timing work, #1005-#1009 workflow noise reduction, #1161-#1166 public surface work, #1197-#1203 HC Council work, #1205 CodeQL boundary, and #1209 QR compatibility repair as completed lines.
 6. Use `repository-index-chain-2026-06-16.md` and `repository-cleanup-phase1-checkpoint-2026-06-16.md` before proposing repository-structure work. Preserve the 36 hold branches.
@@ -46,13 +46,13 @@ The following remain parked unless explicitly authorized, scoped, reviewed, and 
 - issue-comment based autonomous PR creation, fully autonomous issue-to-PR bridges, VPS runners, GitHub App runners, auto-merge, label/assignment/reviewer-request automation, approval/rejection/close authority, or other authority-changing automation.
 - deletion of any held or later branch without a fresh exact-target gate and explicit human approval.
 
-The current P0-3 work is an explicitly scoped exception for schema, validator,
-record metadata, and direct consumers; it does not authorize broader protected-
-path work.
+The current user-authorized audit follow-up is scoped to certificate claim
+containment, its direct tests and status reconciliation. It does not authorize
+authority expansion or unrelated protected-path changes.
 
 ## Immediate do-not-repeat summary
 
-Completed public-validator and public-explorer planning, HC Control Bot, assistant-console, HC Council local report-only runner/command bridge, validator pipeline, verification package, HC Trust Engineer, HC Engineer planner, signature/witness planning, PR-flow diagnostic, repository inventory, governance automation, governance evidence review, evidence artifact inspection, workflow noise reduction, repository purpose-index, repository index-chain, inventory passes, first safe repository plan, cleanup phase 1 checkpoint, CodeQL default-setup boundary, #1209 QR compatibility repair, #1210/#1211 branch inventory/cleanup, #1216-#1225 Public Validator/review-timing work, P0-1/#1229, and P0-2/#1230 should not be repeated unless new repository evidence or human reviewer direction identifies a concrete gap.
+Completed public-validator and public-explorer planning, HC Control Bot, assistant-console, HC Council local report-only runner/command bridge, validator pipeline, verification package, HC Trust Engineer, HC Engineer planner, signature/witness planning, PR-flow diagnostic, repository inventory, governance automation, governance evidence review, evidence artifact inspection, workflow noise reduction, repository purpose-index, repository index-chain, inventory passes, first safe repository plan, cleanup phase 1 checkpoint, CodeQL default-setup boundary, #1209 QR compatibility repair, #1210/#1211 branch inventory/cleanup, #1216-#1225 Public Validator/review-timing work, P0-1/#1229, P0-2/#1230/#1232, P0-3/#1231 core, and P0-4 QR/#1233 should not be repeated unless new repository evidence or human reviewer direction identifies a concrete gap.
 
 Use GitHub PR history for detailed completed-work history and `task-ledger.md` for milestone references. Do not list completed work as active next work in this file.
 
