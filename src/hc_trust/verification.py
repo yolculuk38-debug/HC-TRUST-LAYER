@@ -14,7 +14,8 @@ from .hashing import (
     calculate_content_hash,
 )
 
-ALLOWED_RECORD_DIRS = ("pending", "verified", "archived")
+# Include the documented legacy archive spelling without migrating evidence.
+ALLOWED_RECORD_DIRS = ("pending", "verified", "archived", "archive")
 RECORD_SCHEMA_DIALECT = "https://json-schema.org/draft/2020-12/schema"
 RECORD_SCHEMA_ID = (
     "https://raw.githubusercontent.com/yolculuk38-debug/HC-TRUST-LAYER/"

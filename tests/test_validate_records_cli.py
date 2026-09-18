@@ -54,3 +54,23 @@ def test_missing_content_fails_the_ci_command(tmp_path):
 def test_empty_or_missing_record_set_fails(tmp_path):
     assert main(["validate-records", str(tmp_path)]) == 1
     assert main(["validate-records", str(tmp_path / "missing")]) == 1
+
+
+@pytest.mark.parametrize("legacy_text", [
+    '{"created_at":"invalid"}',
+    '{"record_id":"one","record_id":"two"}',
+])
+def test_bad_legacy_archive_record_fails_even_with_valid_pending_record(tmp_path, legacy_text):
+    write_record(tmp_path, json.dumps(fixture_record()))
+    legacy = tmp_path / "records/archive/legacy.json"
+    legacy.parent.mkdir(parents=True)
+    legacy.write_text(legacy_text, encoding="utf-8")
+    assert main(["validate-records", str(tmp_path / "records")]) == 1
+
+
+def test_valid_legacy_archive_record_is_selected(tmp_path, capsys):
+    legacy = tmp_path / "records/archive/legacy.json"
+    legacy.parent.mkdir(parents=True)
+    legacy.write_text(json.dumps(fixture_record()), encoding="utf-8")
+    assert main(["validate-records", str(tmp_path / "records")]) == 0
+    assert "1 passed, 0 failed" in capsys.readouterr().out

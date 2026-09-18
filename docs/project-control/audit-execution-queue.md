@@ -56,3 +56,9 @@ Slice 1 local validation: 40 focused schema/CLI tests and 1204 full-suite tests
 passed on CPython 3.14.7; three checked-in canonical JSON records passed the new
 command. Canonical, terminology and documentation guards passed (two existing
 README warnings). No workflow permission or signing behavior changed.
+
+Codex P2 follow-up: the shared record-file selector now includes documented
+legacy `records/archive/` alongside `records/archived/`; existing evidence is not
+moved. Regressions cover a bad legacy record mixed with a valid pending record,
+duplicate keys and a valid legacy-only selection. This also aligns the existing
+hash CLI selection with the documented legacy canonical path.
