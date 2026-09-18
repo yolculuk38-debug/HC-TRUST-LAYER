@@ -62,3 +62,8 @@ legacy `records/archive/` alongside `records/archived/`; existing evidence is no
 moved. Regressions cover a bad legacy record mixed with a valid pending record,
 duplicate keys and a valid legacy-only selection. This also aligns the existing
 hash CLI selection with the documented legacy canonical path.
+
+A second Codex P2 identified an inherited substring selector that could skip a
+canonical ID containing INDEX/MANIFEST/CACHE/EXPORT/GENERATED. Replaced it with
+precise reserved artifact basenames/directories shared with `src/validator.py`.
+Regression cases ensure those words cannot hide invalid canonical records.

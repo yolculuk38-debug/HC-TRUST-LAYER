@@ -68,13 +68,23 @@ _RFC3339_DATETIME = re.compile(
     r"(?:(?P<zulu>[Zz])|(?P<offset_sign>[+-])"
     r"(?P<offset_hour>[01][0-9]|2[0-3]):(?P<offset_minute>[0-5][0-9]))$"
 )
-SKIP_HINTS = (
-    "index",
-    "manifest",
-    "cache",
-    "export",
-    "generated",
-)
+GENERATED_ARTIFACT_NAMES = frozenset({
+    "explorer_index.json", "generated_index.json", "index.json", "manifest.json",
+})
+GENERATED_ARTIFACT_DIRS = frozenset({"generated", "cache", "export", "exports"})
+
+
+def is_generated_artifact_file(file_path: str | Path) -> bool:
+    """Recognize reserved artifacts, never arbitrary words inside record IDs."""
+    file_path = Path(file_path)
+    parts = file_path.parts
+    if "records" in parts:
+        parts = parts[parts.index("records") + 1:]
+    return (
+        file_path.name.lower() in GENERATED_ARTIFACT_NAMES
+        or any(part.lower() in GENERATED_ARTIFACT_DIRS for part in parts[:-1])
+    )
+
 
 
 @RECORD_FORMAT_CHECKER.checks("date-time", raises=ValueError)
@@ -300,9 +310,4 @@ def should_validate_record_file(file_path):
     if record_group not in ALLOWED_RECORD_DIRS:
         return False
 
-    filename = file_path.name.lower()
-    if filename == "explorer_index.json":
-        return False
-    if any(hint in filename for hint in SKIP_HINTS):
-        return False
-    return True
+    return not is_generated_artifact_file(file_path)

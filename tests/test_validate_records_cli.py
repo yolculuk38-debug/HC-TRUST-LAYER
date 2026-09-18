@@ -74,3 +74,23 @@ def test_valid_legacy_archive_record_is_selected(tmp_path, capsys):
     legacy.write_text(json.dumps(fixture_record()), encoding="utf-8")
     assert main(["validate-records", str(tmp_path / "records")]) == 0
     assert "1 passed, 0 failed" in capsys.readouterr().out
+
+
+@pytest.mark.parametrize("word", ["INDEX", "MANIFEST", "CACHE", "EXPORT", "GENERATED"])
+def test_artifact_words_inside_record_names_cannot_bypass_validation(tmp_path, word):
+    from validator import validate_record as legacy_validate_record
+
+    write_record(tmp_path, json.dumps(fixture_record()))
+    bad = tmp_path / "records/pending" / f"HC-{word}-2026-0001.json"
+    record = {**fixture_record(), "created_at": "invalid"}
+    bad.write_text(json.dumps(record), encoding="utf-8")
+    assert main(["validate-records", str(tmp_path / "records")]) == 1
+    assert legacy_validate_record(bad) is False
+
+
+def test_generated_directory_is_excluded_precisely(tmp_path):
+    write_record(tmp_path, json.dumps(fixture_record()))
+    artifact = tmp_path / "records/pending/generated/data.json"
+    artifact.parent.mkdir()
+    artifact.write_text("not a record", encoding="utf-8")
+    assert main(["validate-records", str(tmp_path / "records")]) == 0

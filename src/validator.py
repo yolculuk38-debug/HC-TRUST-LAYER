@@ -1,17 +1,14 @@
 #!/usr/bin/env python3
 import sys
-from pathlib import Path
 
-from hc_trust.verification import validate_record as validate_record_file
+from hc_trust.verification import is_generated_artifact_file, validate_record as validate_record_file
 
-SKIP_HINTS = ("index", "manifest", "cache", "export", "generated")
 
 
 def validate_record(record_path):
     """Validate one canonical record through the shared record-v1 contract."""
 
-    file_name = Path(record_path).name.lower()
-    if any(hint in file_name for hint in SKIP_HINTS):
+    if is_generated_artifact_file(record_path):
         print(f"SKIPPED ARTIFACT: {record_path}")
         return True
 
