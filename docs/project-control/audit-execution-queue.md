@@ -67,3 +67,36 @@ A second Codex P2 identified an inherited substring selector that could skip a
 canonical ID containing INDEX/MANIFEST/CACHE/EXPORT/GENERATED. Replaced it with
 precise reserved artifact basenames/directories shared with `src/validator.py`.
 Regression cases ensure those words cannot hide invalid canonical records.
+
+## Slice 2: ambiguous canonical record IDs
+
+The runtime loader uses `setdefault`, so two records declaring the same ID select
+one silently. The separate Public Validator lookup already reports duplicates.
+Contain the runtime loader gap with an explicit duplicate marker and public
+`duplicate_record_id` status; schema/hash checks must remain not-performed.
+Clear collision state on explicit refresh. Cover identical and different content,
+three collisions, different directories, ignored artifacts, refresh and the API.
+The loader's path containment must use resolved paths so a symlink cannot import
+records outside the approved root. This is a local lookup boundary correction;
+no identity, schema, record contents or federation authority changes.
+
+The runtime loader also checks the documented legacy `records/archive/` spelling,
+so a duplicate across legacy/current directories cannot escape collision checks.
+Both the lexical path and resolved target must pass artifact exclusions.
+
+Slice 2 pre-rebase validation: 48 focused loader/fail-closed tests and 1214 full
+suite tests passed on the first CI-slice head. Two dependency deprecation warnings
+come from the API test client. Re-run after incorporating the CI legacy-path fix.
+
+Slice 2 final validation on CI head `bf87138791686691193bf511c9aad5630cfc3cfa`:
+65 focused tests and 1224 full-suite tests passed (61.89 seconds), with two
+upstream TestClient deprecation warnings. Canonical, terminology and docs guards
+passed with the two existing README warnings. Runtime selection now shares the
+precise artifact predicate introduced by the CI fix.
+
+Current sequencing gate: #1243 has all 26 checks green and both Codex P2 threads
+resolved, but its new-head review request received a quota notice. Do not infer
+an exception or merge the older review. Slice 2 is saved on a dependent branch,
+not a second open PR. After #1243 merges, rebase this branch from
+`bf87138791686691193bf511c9aad5630cfc3cfa` onto its actual main merge commit before
+opening the next PR. The remaining audit rows above are still open.

@@ -5,20 +5,17 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from hc_trust.verification import is_generated_artifact_file
+
 APPROVED_CANONICAL_RECORD_DIRS: tuple[Path, ...] = (
     Path("records/pending"),
     Path("records/verified"),
     Path("records/archived"),
-)
-
-IGNORED_ARTIFACT_MARKERS: tuple[str, ...] = (
-    "generated",
-    "index",
-    "cache",
-    "export",
+    Path("records/archive"),
 )
 
 MALFORMED_RECORD = object()
+DUPLICATE_RECORD = object()
 
 
 class _StrictRecordLoadError(Exception):
@@ -46,14 +43,17 @@ class CanonicalRecordLoader:
     approved_dirs: tuple[Path, ...] = APPROVED_CANONICAL_RECORD_DIRS
     _records: dict[str, object] = field(default_factory=dict, init=False)
     _malformed: dict[str, Path] = field(default_factory=dict, init=False)
+    _duplicates: set[str] = field(default_factory=set, init=False)
     _loaded: bool = field(default=False, init=False)
 
     def get(self, record_id: str, default: object | None = None) -> object | None:
-        """Return a canonical record by id, a malformed marker, or the provided default."""
+        """Return one record, a malformed/duplicate marker, or the provided default."""
 
         self._ensure_loaded()
         if record_id in self._malformed:
             return MALFORMED_RECORD
+        if record_id in self._duplicates:
+            return DUPLICATE_RECORD
         if record_id in self._records:
             return self._records[record_id]
         return default
@@ -63,6 +63,7 @@ class CanonicalRecordLoader:
 
         self._records.clear()
         self._malformed.clear()
+        self._duplicates.clear()
         self._loaded = False
 
     def _ensure_loaded(self) -> None:
@@ -73,7 +74,11 @@ class CanonicalRecordLoader:
 
     def _load(self) -> None:
         for relative_dir in self.approved_dirs:
-            directory = (self.root / relative_dir).resolve()
+            try:
+                directory = (self.root / relative_dir).resolve()
+                directory.relative_to(self.root.resolve())
+            except (ValueError, OSError, RuntimeError):
+                continue
             if not directory.is_dir():
                 continue
             for path in sorted(directory.rglob("*.json"), key=lambda candidate: candidate.as_posix()):
@@ -86,26 +91,34 @@ class CanonicalRecordLoader:
                     self._malformed[record_id_hint] = path
                     continue
                 if not isinstance(record, dict):
-                    self._records.setdefault(record_id_hint, MALFORMED_RECORD)
+                    self._register(record_id_hint, MALFORMED_RECORD)
                     continue
                 record_id = record.get("record_id")
                 if isinstance(record_id, str) and record_id.strip():
-                    self._records.setdefault(record_id, record)
+                    self._register(record_id, record)
                 else:
-                    self._records.setdefault(record_id_hint, record)
+                    self._register(record_id_hint, record)
+
+    def _register(self, record_id: str, record: object) -> None:
+        if record_id in self._duplicates:
+            return
+        if record_id in self._records:
+            self._records.pop(record_id)
+            self._duplicates.add(record_id)
+        else:
+            self._records[record_id] = record
 
     def _is_approved_record_path(self, *, path: Path, directory: Path) -> bool:
         try:
-            path.relative_to(directory)
-        except ValueError:
+            resolved = path.resolve()
+            resolved.relative_to(directory)
+            resolved.relative_to(self.root.resolve())
+        except (ValueError, OSError, RuntimeError):
             return False
-        lowered_parts = {part.lower() for part in path.parts}
-        lowered_name = path.name.lower()
-        if lowered_name == "explorer_index.json":
-            return False
-        if any(marker in lowered_parts for marker in IGNORED_ARTIFACT_MARKERS):
-            return False
-        return not any(marker in lowered_name for marker in IGNORED_ARTIFACT_MARKERS)
+        return not (
+            is_generated_artifact_file(path) or is_generated_artifact_file(resolved)
+        )
+
 
 
 def default_canonical_record_loader() -> CanonicalRecordLoader:
