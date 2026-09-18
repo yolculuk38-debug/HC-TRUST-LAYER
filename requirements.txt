@@ -6,6 +6,6 @@ rfc8785==0.1.4
 # Runtime API test dependencies for the advisory-only HC:// reference runtime skeleton.
 anyio==4.14.2
 fastapi==0.141.1
-pydantic==2.13.4
+pydantic==2.13.5
 httpx==0.28.1
 pytest==9.1.1
