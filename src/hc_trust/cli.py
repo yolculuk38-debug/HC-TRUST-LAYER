@@ -15,7 +15,7 @@ from .egress_guard import (
 )
 from .hashing import calculate_sha256
 from .qr_tools import find_verified_records, generate_qr
-from .verification import find_record_files, verify_record_hash
+from .verification import find_record_files, validate_record, verify_record_hash
 from .verification_package import VerificationPackageStatus, verify_verification_package
 
 
@@ -38,6 +38,23 @@ def cmd_verify(args):
             failed += 1
             print(f"❌ {message}")
     print(f"\nResults: {passed} passed, {failed} failed")
+    return 1 if failed else 0
+
+
+def cmd_validate_records(args):
+    """Use the same strict JSON/schema/format checks as the runtime."""
+    record_files, skipped_files = find_record_files(args.path)
+    for skipped in skipped_files:
+        print(f"SKIP non-canonical artifact: {skipped}")
+    if not record_files:
+        print(f"ERROR: no canonical JSON records found in: {args.path}")
+        return 1
+    failed = 0
+    for record_path in record_files:
+        ok, message = validate_record(record_path)
+        print(message)
+        failed += not ok
+    print(f"Schema validation: {len(record_files) - failed} passed, {failed} failed")
     return 1 if failed else 0
 
 
@@ -181,6 +198,13 @@ def build_parser():
     p_qr.add_argument("archive_ref", nargs="?")
     p_qr.add_argument("--batch", action="store_true")
     p_qr.set_defaults(func=cmd_qr)
+
+    p_validate_records = sub.add_parser(
+        "validate-records",
+        help="Validate canonical records using shared strict JSON, schema and format checks",
+    )
+    p_validate_records.add_argument("path", nargs="?", default="records")
+    p_validate_records.set_defaults(func=cmd_validate_records)
 
     p_verify_package = sub.add_parser(
         "verify-package",
