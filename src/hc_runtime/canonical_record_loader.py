@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
+from threading import Lock
+from typing import Any
 
 from hc_trust.verification import is_generated_artifact_file
 
@@ -45,26 +47,29 @@ class CanonicalRecordLoader:
     _malformed: dict[str, Path] = field(default_factory=dict, init=False)
     _duplicates: set[str] = field(default_factory=set, init=False)
     _loaded: bool = field(default=False, init=False)
+    _load_lock: Any = field(default_factory=Lock, init=False, repr=False)
 
     def get(self, record_id: str, default: object | None = None) -> object | None:
         """Return one record, a malformed/duplicate marker, or the provided default."""
 
-        self._ensure_loaded()
-        if record_id in self._malformed:
-            return MALFORMED_RECORD
-        if record_id in self._duplicates:
-            return DUPLICATE_RECORD
-        if record_id in self._records:
-            return self._records[record_id]
-        return default
+        with self._load_lock:
+            self._ensure_loaded()
+            if record_id in self._malformed:
+                return MALFORMED_RECORD
+            if record_id in self._duplicates:
+                return DUPLICATE_RECORD
+            if record_id in self._records:
+                return self._records[record_id]
+            return default
 
     def refresh(self) -> None:
         """Clear cached advisory lookup state so the next lookup reloads records."""
 
-        self._records.clear()
-        self._malformed.clear()
-        self._duplicates.clear()
-        self._loaded = False
+        with self._load_lock:
+            self._records.clear()
+            self._malformed.clear()
+            self._duplicates.clear()
+            self._loaded = False
 
     def _ensure_loaded(self) -> None:
         if self._loaded:
