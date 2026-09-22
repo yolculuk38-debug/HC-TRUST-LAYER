@@ -94,3 +94,33 @@ def test_generated_directory_is_excluded_precisely(tmp_path):
     artifact.parent.mkdir()
     artifact.write_text("not a record", encoding="utf-8")
     assert main(["validate-records", str(tmp_path / "records")]) == 0
+
+
+@pytest.mark.parametrize("kind", ["index", "manifest", "cache", "export", "generated"])
+@pytest.mark.parametrize("prefix", ["", "HC-EXAMPLE-2026-0001-", "HC-EXAMPLE-2026-0001_"])
+def test_reserved_artifact_names_are_excluded_across_clis(tmp_path, capsys, kind, prefix):
+    from hc_trust.verification import find_record_files
+    from validator import validate_record as legacy_validate_record
+
+    canonical = write_record(tmp_path, json.dumps(fixture_record()))
+    artifact = canonical.parent / f"{prefix}{kind}.json"
+    # Neither invalid JSON nor record-shaped content may turn an artifact into
+    # canonical evidence. The hash CLI shares the same file-selection boundary.
+    for content in ("not json", json.dumps(fixture_record())):
+        artifact.write_text(content, encoding="utf-8")
+        selected, skipped = find_record_files(tmp_path / "records")
+        assert selected == [canonical]
+        assert artifact in skipped
+        assert main(["validate-records", str(tmp_path / "records")]) == 0
+        assert "1 passed, 0 failed" in capsys.readouterr().out
+        assert main(["verify", str(tmp_path / "records")]) == 0
+        assert "1 passed, 0 failed" in capsys.readouterr().out
+        assert legacy_validate_record(artifact) is True
+        assert "SKIPPED ARTIFACT" in capsys.readouterr().out
+
+
+def test_artifact_only_selection_is_not_schema_validation_success(tmp_path):
+    artifact = tmp_path / "records/pending/HC-EXAMPLE-2026-0001-INDEX.json"
+    artifact.parent.mkdir(parents=True)
+    artifact.write_text(json.dumps(fixture_record()), encoding="utf-8")
+    assert main(["validate-records", str(tmp_path / "records")]) == 1

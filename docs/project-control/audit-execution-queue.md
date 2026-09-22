@@ -67,3 +67,16 @@ A second Codex P2 identified an inherited substring selector that could skip a
 canonical ID containing INDEX/MANIFEST/CACHE/EXPORT/GENERATED. Replaced it with
 precise reserved artifact basenames/directories shared with `src/validator.py`.
 Regression cases ensure those words cannot hide invalid canonical records.
+
+September 22 review follow-up scope: restore established delimiter-suffix
+artifacts such as `HC-EXAMPLE-2026-0001-index.json` and `..._export.json` in the
+shared selector. Reserve complete `-`/`_` suffixes for index, manifest, cache,
+export and generated artifacts, plus their standalone basenames. Do not restore
+substring skipping: `HC-INDEX-2026-0001.json` remains a validation target.
+Validate schema CLI, hash CLI and legacy single-file behavior against invalid
+and record-shaped artifacts, and retain the earlier bypass regressions.
+
+September 22 validation: 38 focused CLI/loader tests and 1229 full-suite tests
+passed on CPython 3.14.7. Canonical, terminology and documentation guards passed
+with the same two existing README warnings. This addresses review comment
+4070043375; current-head CI and a matching fresh review remain the merge gate.
