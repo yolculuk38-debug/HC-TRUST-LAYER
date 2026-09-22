@@ -181,6 +181,13 @@ def test_collision_refresh_recovers_only_after_duplicate_removed(tmp_path):
     _write_json(first, _record(record_id))
     loader = CanonicalRecordLoader(root=tmp_path)
     assert isinstance(loader.get(record_id), dict)
+    _write_json(second, _record(record_id))
+    loader.refresh()
+    assert loader.get(record_id) is DUPLICATE_RECORD
+    second.unlink()
+    assert loader.get(record_id) is DUPLICATE_RECORD
+    loader.refresh()
+    assert isinstance(loader.get(record_id), dict)
 
 
 def test_concurrent_cold_start_scans_canonical_records_once(tmp_path, monkeypatch):
@@ -202,13 +209,6 @@ def test_concurrent_cold_start_scans_canonical_records_once(tmp_path, monkeypatc
 
     assert scans == 1
     assert all(isinstance(result, dict) for result in results)
-    _write_json(second, _record(record_id))
-    loader.refresh()
-    assert loader.get(record_id) is DUPLICATE_RECORD
-    second.unlink()
-    assert loader.get(record_id) is DUPLICATE_RECORD
-    loader.refresh()
-    assert isinstance(loader.get(record_id), dict)
 
 
 def test_ignored_artifact_does_not_create_collision(tmp_path):
