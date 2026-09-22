@@ -5,17 +5,13 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from hc_trust.verification import is_generated_artifact_file
+
 APPROVED_CANONICAL_RECORD_DIRS: tuple[Path, ...] = (
     Path("records/pending"),
     Path("records/verified"),
     Path("records/archived"),
-)
-
-IGNORED_ARTIFACT_MARKERS: tuple[str, ...] = (
-    "generated",
-    "index",
-    "cache",
-    "export",
+    Path("records/archive"),
 )
 
 MALFORMED_RECORD = object()
@@ -99,13 +95,7 @@ class CanonicalRecordLoader:
             path.relative_to(directory)
         except ValueError:
             return False
-        lowered_parts = {part.lower() for part in path.parts}
-        lowered_name = path.name.lower()
-        if lowered_name == "explorer_index.json":
-            return False
-        if any(marker in lowered_parts for marker in IGNORED_ARTIFACT_MARKERS):
-            return False
-        return not any(marker in lowered_name for marker in IGNORED_ARTIFACT_MARKERS)
+        return not is_generated_artifact_file(path)
 
 
 def default_canonical_record_loader() -> CanonicalRecordLoader:

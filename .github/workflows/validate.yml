@@ -52,38 +52,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Validate records against schema
-        run: |
-          python - <<'PY'
-          import json
-          import os
-          from jsonschema import validate
+      - name: Validate records against shared schema contract
+        run: PYTHONPATH=src python -m hc_trust.cli validate-records records
 
-          schema_path = "schema/record-v1.schema.json"
-          records_dir = "records"
-          skip_files = {
-              os.path.normpath("records/explorer_index.json"),
-              os.path.normpath("generated/explorer_index.json"),
-          }
-
-          with open(schema_path, "r", encoding="utf-8") as f:
-              schema = json.load(f)
-
-          for root, _, files in os.walk(records_dir):
-              for file in files:
-                  if file.endswith(".json"):
-                      path = os.path.normpath(os.path.join(root, file))
-                      if path in skip_files:
-                          print(f"SKIP generated index: {path}")
-                          continue
-                      with open(path, "r", encoding="utf-8") as f:
-                          record = json.load(f)
-                      validate(instance=record, schema=schema)
-                      print(f"PASS: {path}")
-
-          print("Generated audit snapshots are excluded from canonical record validation.")
-          print("All records validated successfully.")
-          PY
+      - name: Test shared CI validation negative paths
+        run: PYTHONPATH=src python -m pytest -q tests/test_validate_records_cli.py
 
       - name: Verify content hashes
         run: python src/verify_hashes.py records

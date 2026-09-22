@@ -65,13 +65,17 @@ Validator boundary expectations:
 
 Current validator behavior alignment:
 
-- `src/validator.py` skips files whose **filename** contains artifact hints:
-  - `index`
-  - `manifest`
-  - `cache`
-  - `export`
-  - `generated`
-- Skipped files return `SKIPPED ARTIFACT` and are not treated as canonical record failures.
+- `src/validator.py` and the shared CLI selector skip only reserved artifact
+  basenames (`explorer_index.json`, `generated_index.json`, `index.json`,
+  `manifest.json`, `cache.json`, `export.json`, `generated.json`), complete
+  delimiter suffixes (`-index.json`, `_index.json`, and the equivalent manifest,
+  cache, export and generated suffixes), or reserved generated/cache/export
+  directories. Matching is case-insensitive. These reserved filenames remain
+  non-canonical even when their contents resemble a record.
+- Words inside record IDs, such as `HC-INDEX-2026-0001.json`, never exempt a
+  canonical record from validation.
+- Skipped reserved artifacts return `SKIPPED ARTIFACT` and are not treated as
+  canonical record failures.
 
 Operational implication:
 
