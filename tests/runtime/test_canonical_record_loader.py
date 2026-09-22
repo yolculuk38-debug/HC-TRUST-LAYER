@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any
 
@@ -179,6 +181,27 @@ def test_collision_refresh_recovers_only_after_duplicate_removed(tmp_path):
     _write_json(first, _record(record_id))
     loader = CanonicalRecordLoader(root=tmp_path)
     assert isinstance(loader.get(record_id), dict)
+
+
+def test_concurrent_cold_start_scans_canonical_records_once(tmp_path, monkeypatch):
+    record_id = "HC-CONCURRENT-2026-0001"
+    _write_json(tmp_path / "records/pending/one.json", _record(record_id))
+    loader = CanonicalRecordLoader(root=tmp_path)
+    original_load = CanonicalRecordLoader._load
+    scans = 0
+
+    def counted_load(instance):
+        nonlocal scans
+        scans += 1
+        time.sleep(0.05)
+        original_load(instance)
+
+    monkeypatch.setattr(CanonicalRecordLoader, "_load", counted_load)
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        results = list(executor.map(loader.get, (record_id, record_id)))
+
+    assert scans == 1
+    assert all(isinstance(result, dict) for result in results)
     _write_json(second, _record(record_id))
     loader.refresh()
     assert loader.get(record_id) is DUPLICATE_RECORD
