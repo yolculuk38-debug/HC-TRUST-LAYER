@@ -80,3 +80,14 @@ September 22 validation: 38 focused CLI/loader tests and 1229 full-suite tests
 passed on CPython 3.14.7. Canonical, terminology and documentation guards passed
 with the same two existing README warnings. This addresses review comment
 4070043375; current-head CI and a matching fresh review remain the merge gate.
+
+The next review (4070109210) identifies the still-broad runtime file selector.
+Move the prepared shared-predicate alignment into this PR so the CI and runtime
+agree on artifact words, reserved suffixes and legacy archive records. Keep the
+duplicate-ID and resolved-path containment changes in the separate second slice.
+Add runtime lookup regressions for ordinary IDs containing artifact words and
+legacy archive records; preserve original suffix-exclusion tests.
+
+Runtime alignment validation: 44 focused tests and 1235 full-suite tests passed
+on CPython 3.14.7. The suffix exclusions and interior-word bypass regressions
+remain passing. Duplicate rejection is still a separate pending change.

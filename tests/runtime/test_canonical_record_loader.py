@@ -6,6 +6,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+import pytest
+
 from hc_runtime.canonical_record_loader import CanonicalRecordLoader
 from hc_runtime.runtime import ValidatorPipeline
 from hc_trust.hashing import HC_CONTENT_HASH_PROFILE, calculate_content_hash
@@ -120,6 +122,22 @@ def test_generated_index_cache_and_export_files_are_ignored(tmp_path: Path) -> N
 
     assert result["canonical_bridge"]["lookup_status"] == "missing"
     assert result["canonical_bridge"]["found"] is False
+
+
+@pytest.mark.parametrize("word", ["INDEX", "MANIFEST", "CACHE", "EXPORT", "GENERATED"])
+def test_runtime_loads_canonical_ids_containing_artifact_words(tmp_path, word):
+    record_id = f"HC-{word}-2026-0001"
+    _write_json(tmp_path / "records/pending" / f"{record_id}.json", _record(record_id))
+    result = _run(tmp_path, record_id)
+    assert result["canonical_bridge"]["lookup_status"] == "verified"
+    assert result["schema_result"]["valid"] is True
+    assert result["hash_result"]["hash_verified"] is True
+
+
+def test_runtime_loads_documented_legacy_archive_record(tmp_path):
+    record_id = "HC-LEGACY-2026-0001"
+    _write_json(tmp_path / "records/archive" / f"{record_id}.json", _record(record_id))
+    assert _run(tmp_path, record_id)["canonical_bridge"]["lookup_status"] == "verified"
 
 
 def test_content_hash_mismatch_returns_explicit_hash_mismatch_status(tmp_path: Path) -> None:
