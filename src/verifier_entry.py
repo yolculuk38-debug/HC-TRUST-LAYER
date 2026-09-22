@@ -30,6 +30,10 @@ def verify_from_entry_point(
         "verifier_entry_version": VERIFIER_ENTRY_VERSION,
         "platform": platform,
         "portable": True,
+        "advisory_only": True,
+        "public_safe": False,
+        "truth_guarantee": False,
+        "human_review_required": True,
         "verification": offline_result,
     }
 

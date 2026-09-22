@@ -1,7 +1,4 @@
-"""HC:// public validator core.
-
-Portable proof validation layer for exported HC:// verification records.
-"""
+"""Legacy HC:// declaration inspector; no cryptographic verification is performed."""
 
 from __future__ import annotations
 
@@ -20,10 +17,14 @@ class PublicValidatorDecision:
 
 
 def validate_public_proof(proof: dict[str, Any]) -> dict[str, Any]:
-    """Validate exported HC:// proof structures."""
+    """Inspect basic shapes/conflicts without trusting supplied success flags."""
 
     reasons: list[str] = []
-    risk_flags: list[str] = []
+    risk_flags: list[str] = [
+        "content_hash_not_verified", "witness_signatures_not_verified",
+        "provenance_not_verified", "trust_passport_not_verified",
+        "revision_integrity_not_verified",
+    ]
 
     if not isinstance(proof, dict):
         return _response(PublicValidatorDecision.INVALID, ["invalid proof structure"])
@@ -31,7 +32,6 @@ def validate_public_proof(proof: dict[str, Any]) -> dict[str, Any]:
     required_fields = [
         "record_id",
         "content_hash",
-        "verification_level",
         "trust_passport",
     ]
 
@@ -39,50 +39,57 @@ def validate_public_proof(proof: dict[str, Any]) -> dict[str, Any]:
         if field not in proof or proof[field] is None:
             reasons.append(f"missing_{field}")
 
+    for field in ("record_id", "content_hash"):
+        value = proof.get(field)
+        if not isinstance(value, str) or not value.strip():
+            reasons.append(f"invalid_{field}")
+    if not isinstance(proof.get("trust_passport"), dict):
+        reasons.append("invalid_trust_passport_structure")
+    verification_level = proof.get("verification_level")
+    if verification_level is not None and not isinstance(verification_level, str):
+        reasons.append("invalid_verification_level")
+
     revision_chain = proof.get("revision_chain", {})
-    if revision_chain.get("broken"):
+    if not isinstance(revision_chain, dict):
+        reasons.append("invalid_revision_chain_structure")
+    elif revision_chain.get("broken"):
         reasons.append("broken_revision_chain")
 
     if proof.get("content_hash_valid") is False:
         reasons.append("invalid_content_hash")
 
-    witnesses = proof.get("witnesses", []) or []
+    witnesses = proof.get("witnesses", [])
+    if not isinstance(witnesses, list):
+        reasons.append("invalid_witnesses_structure")
+        witnesses = []
 
-    valid_witnesses = 0
     conflicting_witnesses = 0
 
     for witness in witnesses:
         if not isinstance(witness, dict):
+            reasons.append("invalid_witness_structure")
             continue
 
         if witness.get("conflict"):
             conflicting_witnesses += 1
 
-        if not witness.get("witness_signature"):
+        signature = witness.get("witness_signature")
+        if not isinstance(signature, str) or not signature.strip():
             risk_flags.append("missing_witness_signature")
             continue
 
-        if not witness.get("provenance_reference"):
+        reference = witness.get("provenance_reference")
+        if not isinstance(reference, str) or not reference.strip():
             risk_flags.append("missing_provenance_reference")
             continue
-
-        valid_witnesses += 1
 
     if conflicting_witnesses:
         reasons.append("conflicting_witnesses")
 
-    verification_level = proof.get("verification_level")
-
     if reasons:
         decision = PublicValidatorDecision.INVALID
-    elif risk_flags:
-        decision = PublicValidatorDecision.REVIEW_REQUIRED
-    elif valid_witnesses >= 2 and verification_level:
-        decision = PublicValidatorDecision.VERIFIED
-    elif valid_witnesses == 1:
-        decision = PublicValidatorDecision.PARTIAL
     else:
-        decision = PublicValidatorDecision.UNTRUSTED
+        decision = PublicValidatorDecision.REVIEW_REQUIRED
 
     return _response(
         decision,
@@ -105,8 +112,20 @@ def _response(
         "validator_version": VALIDATOR_VERSION,
         "record_id": record_id,
         "decision": decision,
-        "verified": decision == PublicValidatorDecision.VERIFIED,
-        "verification_level": verification_level,
+        "verified": False,
+        "verification_level": None,
+        "source_claims": {"verification_level": verification_level},
+        "source_claims_verified": False,
+        "content_hash_checked": False,
+        "content_hash_valid": False,
+        "signature_verified": False,
+        "witnesses_verified": False,
+        "identity_verified": False,
+        "trusted": False,
+        "advisory_only": True,
+        "public_safe": False,
+        "truth_guarantee": False,
+        "human_review_required": True,
         "reasons": sorted(set(reasons)),
         "risk_flags": sorted(set(risk_flags or [])),
     }

@@ -9,4 +9,6 @@ def test_browser_verifier_entry():
 
     assert result["portable"] is True
     assert result["platform"] == "BROWSER"
-    assert result["verification"]["validation"]["decision"] == "VERIFIED"
+    assert result["verification"]["validation"]["decision"] == "REVIEW_REQUIRED"
+    assert result["verification"]["validation"]["verified"] is False
+    assert result["public_safe"] is False
