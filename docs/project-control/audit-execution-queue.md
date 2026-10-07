@@ -11,8 +11,8 @@ or fabricated external acceptance. One PR at a time. Source baseline:
 | Item | Evidence / outstanding work | Status |
 | --- | --- | --- |
 | A1 API/QR fail-closed | #1229 regressions; preserve no-evidence rejection | Core merged |
-| A2 canonicalization | #1230/#1232; add Python/browser-compatible cross-language golden vectors | Partial |
-| A3 single validation path | #1231 core; #1243 merged strict CI validation and runtime artifact selection | Core and CI merged; public lookup alignment in review |
+| A2 canonicalization | #1230/#1232; shared Python/ECMAScript golden vectors prepared with byte and digest checks | Cross-language slice in review |
+| A3 single validation path | #1231 core; #1243 strict CI; #1246 recursive public/QR selection, relocated-root and symlink containment | Public lookup merged; standalone CLI absolute-path relocation remains |
 | A4 unsupported trust claims | #1233 QR, #1242 certificates, #1245 legacy exported-proof containment; remaining inventory and experimental isolation | Partial |
 | A5 installed wheel/release | Add outside-checkout install smoke gate, exact tested-artifact handoff | Pending |
 | B1 narrow product promise | Lead with local evidence-package integrity and limits | Pending |
@@ -218,3 +218,10 @@ recursive canonical directories, legacy archive selection and exact generated
 artifact exclusions. Checked-path fixtures and active documentation change
 together. Remaining persistence, standard evidence proofs and operational
 work remain separate acceptance items.
+
+#1246 merged as `9e2f1b1cfeee7504640f38f2f9972951f748476a` after a clean
+review of `05acdaf55f8873a4fe142b75d13f4a5c5d62575b`, all 26 PR checks and
+two resolved findings. Final local validation: 152 focused and 1326 full-suite
+tests passed. The A2 follow-up is scoped in `cross-language-vectors-2026-10-07.md`.
+It adds one shared corpus checked independently by Python and ECMAScript/Web
+Crypto. It does not introduce a browser parser or change stored hashes.

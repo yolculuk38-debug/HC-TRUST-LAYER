@@ -27,8 +27,8 @@ E. `workflow-map-index-2026-06-16.md` synchronized through #1008 by #1009.
 Current immediate operator path:
 
 1. Preserve the merged P0-1, P0-2, P0-3 core and P0-4 QR slices; do not recreate them.
-2. Continue the sequence in `audit-execution-queue.md`, beginning with CI/shared-validator alignment. Require tests, current-head CI and matching review for each slice.
-3. Next separately scope CI/shared-validator alignment, remaining non-QR claim inventory, and duplicate canonical-ID rejection. Broader signatures, persistence and interoperability remain acceptance work, not completed capabilities.
+2. Continue `audit-execution-queue.md`: #1243 shared CI, #1244 runtime collision handling, #1245 legacy proof containment and #1246 public/QR selection are merged. Do not recreate these slices. Require tests, current-head CI and matching review for each new slice.
+3. Complete the prepared cross-language vectors and installed-wheel smoke gate, then continue the remaining non-QR claim inventory, CLI root-context follow-up and product/evidence contract. Broader signatures, persistence and interoperability remain acceptance work, not completed capabilities.
 4. Keep the three intentional issue surfaces distinct and open unless explicitly superseded: #812 HC Assistant Console v2, #1082 HC Signal Watch Console, and #1109 HC Mission Control / Active Task Queue.
 5. Treat #1210/#1211 branch cleanup, #1216-#1225 Public Validator/review-timing work, #1005-#1009 workflow noise reduction, #1161-#1166 public surface work, #1197-#1203 HC Council work, #1205 CodeQL boundary, and #1209 QR compatibility repair as completed lines.
 6. Use `repository-index-chain-2026-06-16.md` and `repository-cleanup-phase1-checkpoint-2026-06-16.md` before proposing repository-structure work. Preserve the 36 hold branches.
