@@ -15,7 +15,7 @@ Today, releases are prepared manually with the following sequence:
 
 1. Merge the release PR into the default branch.
 2. Ensure all required GitHub Actions checks are green.
-3. Update `VERSION` and `CHANGELOG.md` with the intended release information, merge those changes, and wait for the installed-wheel gate on that exact main commit.
+3. Update `VERSION`, the package version in `pyproject.toml`, and `CHANGELOG.md` with the intended release information, merge those changes, and wait for the installed-wheel gate on that exact main commit.
 4. Create a GitHub Release entry.
 5. Tag the version in Git (for example `v0.1.1`) and publish.
 
@@ -81,6 +81,9 @@ console command, SDK/CLI agreement, actual file bytes, failure exit codes and
 runtime imports. Both PR and main triggers include `VERSION` and `CHANGELOG.md`,
 so release-metadata-only commits also produce their own tested artifact.
 No server or registry publication is started.
+The installed distribution version must exactly match `VERSION`; a mismatch
+fails before writing success evidence or uploading the wheel. Keep the static
+version in `pyproject.toml` synchronized with `VERSION` during release preparation.
 
 A successful run uploads `tested-wheel-<source commit>` containing that exact
 wheel and `verification.json`. The report records the wheel SHA-256, tested

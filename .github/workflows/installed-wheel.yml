@@ -51,6 +51,7 @@ jobs:
           "$RUNNER_TEMP/hc-installed/bin/python" -I "$GITHUB_WORKSPACE/scripts/smoke_installed_distribution.py" \
             --wheel "$RUNNER_TEMP"/hc-wheel/*.whl \
             --source-commit "$GITHUB_SHA" \
+            --version-file "$GITHUB_WORKSPACE/VERSION" \
             --report "$RUNNER_TEMP/hc-wheel/verification.json"
       - name: Preserve exactly the tested wheel and its verification report
         uses: actions/upload-artifact@v7

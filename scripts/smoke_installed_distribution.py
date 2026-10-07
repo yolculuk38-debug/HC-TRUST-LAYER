@@ -24,6 +24,7 @@ def main() -> int:
     parser.add_argument("--wheel", type=Path, required=True)
     parser.add_argument("--report", type=Path, required=True)
     parser.add_argument("--source-commit", required=True)
+    parser.add_argument("--version-file", type=Path, required=True)
     args = parser.parse_args()
     require(bool(re.fullmatch(r"[0-9a-f]{40}", args.source_commit)), "A full source commit SHA is required")
     require(sys.flags.isolated == 1, "Run the installed interpreter with -I")
@@ -34,6 +35,9 @@ def main() -> int:
     require(wheel.suffix == ".whl", "A wheel artifact is required")
     wheel_sha256 = hashlib.sha256(wheel.read_bytes()).hexdigest()
     distribution = importlib.metadata.distribution("hc-trust-layer")
+    expected_version = args.version_file.read_text(encoding="utf-8").strip()
+    require(bool(expected_version) and distribution.version == expected_version,
+            "Installed distribution version does not match VERSION")
     direct_url = json.loads(distribution.read_text("direct_url.json") or "{}")
     require(
         direct_url.get("archive_info", {}).get("hashes", {}).get("sha256") == wheel_sha256,
@@ -55,7 +59,7 @@ def main() -> int:
     console = Path(sys.executable).parent / ("hc-trust.exe" if os.name == "nt" else "hc-trust")
     require(console.is_file(), "Installed console entry point is missing")
     env = {key: value for key, value in os.environ.items() if key not in {"PYTHONPATH", "PYTHONHOME"}}
-    checks: list[str] = ["installed_archive_hash_binding", "installed_runtime_import"]
+    checks: list[str] = ["installed_archive_hash_binding", "release_version_binding", "installed_runtime_import"]
 
     with tempfile.TemporaryDirectory(prefix="hc-installed-smoke-") as temporary:
         cwd = Path(temporary)
@@ -121,6 +125,7 @@ def main() -> int:
         "report_version": 1, "status": "passed", "source_commit": args.source_commit,
         "wheel_filename": wheel.name, "wheel_sha256": wheel_sha256,
         "distribution_version": distribution.version, "python_version": sys.version.split()[0],
+        "expected_release_version": expected_version,
         "checks": checks, "isolated_interpreter": True, "outside_checkout": True,
         "advisory_only": True, "truth_guarantee": False,
     }

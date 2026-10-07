@@ -39,3 +39,9 @@ Codex P1 follow-up (4210630555): include `VERSION` and `CHANGELOG.md` in both
 PR and main path filters. Otherwise the documented release-metadata-only commit
 would have no exact-commit wheel evidence. The manual release sequence now
 explicitly waits for that commit's installed-wheel gate before publication.
+
+Codex P1 follow-up (4210682430): compare the actual installed distribution
+version with the supplied checkout `VERSION` file before success evidence.
+A mismatch fails the gate; the release instructions require synchronizing
+`pyproject.toml` too. The report records the expected release version and adds
+the seventh check group, `release_version_binding`.
