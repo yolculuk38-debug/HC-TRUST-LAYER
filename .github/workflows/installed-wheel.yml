@@ -1,0 +1,57 @@
+name: Installed wheel integrity gate
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'schema/record-v1.schema.json'
+      - 'pyproject.toml'
+      - 'scripts/smoke_installed_distribution.py'
+      - '.github/workflows/installed-wheel.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'schema/record-v1.schema.json'
+      - 'pyproject.toml'
+      - 'scripts/smoke_installed_distribution.py'
+      - '.github/workflows/installed-wheel.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  installed-wheel:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - name: Build one wheel
+        run: python -m pip wheel --no-deps --wheel-dir "$RUNNER_TEMP/hc-wheel" .
+      - name: Install that wheel in a clean environment
+        run: |
+          python -m venv "$RUNNER_TEMP/hc-installed"
+          "$RUNNER_TEMP/hc-installed/bin/python" -m pip install "$RUNNER_TEMP"/hc-wheel/*.whl
+      - name: Verify the installed artifact outside the checkout
+        run: |
+          cd "$RUNNER_TEMP"
+          "$RUNNER_TEMP/hc-installed/bin/python" -I "$GITHUB_WORKSPACE/scripts/smoke_installed_distribution.py" \
+            --wheel "$RUNNER_TEMP"/hc-wheel/*.whl \
+            --source-commit "$GITHUB_SHA" \
+            --report "$RUNNER_TEMP/hc-wheel/verification.json"
+      - name: Preserve exactly the tested wheel and its verification report
+        uses: actions/upload-artifact@v7
+        with:
+          name: tested-wheel-${{ github.sha }}
+          path: ${{ runner.temp }}/hc-wheel/
+          if-no-files-found: error
+          retention-days: 14

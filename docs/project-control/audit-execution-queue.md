@@ -11,10 +11,10 @@ or fabricated external acceptance. One PR at a time. Source baseline:
 | Item | Evidence / outstanding work | Status |
 | --- | --- | --- |
 | A1 API/QR fail-closed | #1229 regressions; preserve no-evidence rejection | Core merged |
-| A2 canonicalization | #1230/#1232; shared Python/ECMAScript golden vectors prepared with byte and digest checks | Cross-language slice in review |
+| A2 canonicalization | #1230/#1232; #1247 shared Python/ECMAScript golden vectors with byte and digest checks | Cross-language slice merged |
 | A3 single validation path | #1231 core; #1243 strict CI; #1246 recursive public/QR selection, relocated-root and symlink containment | Public lookup merged; standalone CLI absolute-path relocation remains |
 | A4 unsupported trust claims | #1233 QR, #1242 certificates, #1245 legacy exported-proof containment; remaining inventory and experimental isolation | Partial |
-| A5 installed wheel/release | Add outside-checkout install smoke gate, exact tested-artifact handoff | Pending |
+| A5 installed wheel/release | Outside-checkout install smoke gate and exact tested-artifact handoff prepared; see installed-wheel-gate-2026-10-07.md | In review; publication remains manual |
 | B1 narrow product promise | Lead with local evidence-package integrity and limits | Pending |
 | B2 evidence-package format | Inspect/version manifest, algorithms, file metadata, extension/proof boundaries | Pending |
 | B3 result contract | Separate integrity, authentication, identity/trust, time, policy | Pending |
@@ -225,3 +225,11 @@ two resolved findings. Final local validation: 152 focused and 1326 full-suite
 tests passed. The A2 follow-up is scoped in `cross-language-vectors-2026-10-07.md`.
 It adds one shared corpus checked independently by Python and ECMAScript/Web
 Crypto. It does not introduce a browser parser or change stored hashes.
+
+#1247 merged as `1a7bc1c9017333ce22ee6f01d077363d2f72d7a8` after all 24
+PR checks succeeded. Codex completed its review of
+`2e6805fa6ccbf6b2d890077a775a35e0cc4b82fe`, recorded a no-findings thumbs-up
+on the PR, and left no finding threads. Local validation passed 42 focused
+Python tests, 14 independent ECMAScript vectors and 1340 full-suite tests.
+The installed-wheel slice follows this actual merge and changes no runtime
+validation rules or release authority.

@@ -4,8 +4,8 @@ This document describes the current manual release process and a proposed automa
 
 ## Scope
 
-- This is a planning document only.
-- It does **not** modify workflows in this phase.
+- Publication automation remains planned; the installed-wheel validation job below is implemented.
+- The installed-wheel job validates and preserves artifacts; it does not publish them.
 - It does **not** create a release.
 - It does **not** change schema definitions.
 
@@ -71,3 +71,24 @@ A manual final approval step reduces risk for experimental and trust-critical in
 4. Keep final publish behind maintainer approval.
 
 This phased approach allows validation hardening without disrupting existing manual release operations.
+
+## Implemented installed-wheel validation
+
+`.github/workflows/installed-wheel.yml` builds one wheel, installs it in a fresh
+Python 3.14 environment and runs `scripts/smoke_installed_distribution.py` with
+`-I` outside the checkout. It checks the installed archive hash, packaged schema,
+console command, SDK/CLI agreement, actual file bytes, failure exit codes and
+runtime imports. No server or registry publication is started.
+
+A successful run uploads `tested-wheel-<source commit>` containing that exact
+wheel and `verification.json`. The report records the wheel SHA-256, tested
+source commit, interpreter/distribution versions and completed checks. A PR run
+uses GitHub's test merge commit; release handoff must use the successful main
+run at the actual release commit. Artifacts expire after 14 days. If the artifact
+is absent, run validation again and inspect its new report before handoff.
+
+For a manual release, obtain the matching successful run's artifact, recompute
+the wheel SHA-256 and compare it with `verification.json`, then attach that same
+wheel. Do not rebuild between testing and publication. A changed/rebuilt wheel
+needs a new installation test and report. This does not grant release approval
+or replace independent review, signing or provenance attestations.
