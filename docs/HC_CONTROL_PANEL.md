@@ -80,9 +80,10 @@ Earlier relevant foundations:
 
 Only these paths are canonical record locations:
 
-- `records/pending/*.json`
-- `records/verified/*.json`
-- `records/archived/*.json`
+- `records/pending/**/*.json`
+- `records/verified/**/*.json`
+- `records/archived/**/*.json`
+- `records/archive/**/*.json` (legacy)
 
 Canonical records are the strict validation surface.
 

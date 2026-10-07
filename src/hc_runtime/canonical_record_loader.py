@@ -80,8 +80,11 @@ class CanonicalRecordLoader:
     def _load(self) -> None:
         for relative_dir in self.approved_dirs:
             try:
-                directory = (self.root / relative_dir).resolve()
+                declared_directory = self.root.resolve() / relative_dir
+                directory = declared_directory.resolve()
                 directory.relative_to(self.root.resolve())
+                if directory != declared_directory:
+                    continue
             except (ValueError, OSError, RuntimeError):
                 continue
             if not directory.is_dir():
@@ -121,7 +124,8 @@ class CanonicalRecordLoader:
         except (ValueError, OSError, RuntimeError):
             return False
         return not (
-            is_generated_artifact_file(path) or is_generated_artifact_file(resolved)
+            is_generated_artifact_file(path.relative_to(self.root.resolve()))
+            or is_generated_artifact_file(resolved.relative_to(self.root.resolve()))
         )
 
 

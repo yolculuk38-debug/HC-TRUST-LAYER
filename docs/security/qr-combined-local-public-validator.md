@@ -30,12 +30,13 @@ lookup_public_validator_record
 combined public-safe advisory result
 ```
 
-The lookup boundary remains unchanged and limited to:
+The lookup boundary uses the shared canonical directory list and artifact exclusions:
 
 ```text
-records/pending/*.json
-records/verified/*.json
-records/archived/*.json
+records/pending/**/*.json
+records/verified/**/*.json
+records/archived/**/*.json
+records/archive/**/*.json
 ```
 
 Demo fixtures, generated artifacts, manifests, cache/export outputs, arbitrary paths, and remote URLs are not treated as canonical records.

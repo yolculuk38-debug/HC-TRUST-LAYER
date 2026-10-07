@@ -12,8 +12,8 @@ or fabricated external acceptance. One PR at a time. Source baseline:
 | --- | --- | --- |
 | A1 API/QR fail-closed | #1229 regressions; preserve no-evidence rejection | Core merged |
 | A2 canonicalization | #1230/#1232; add Python/browser-compatible cross-language golden vectors | Partial |
-| A3 single validation path | #1231 core; #1243 merged strict CI validation and runtime artifact selection | Core and CI merged; public lookup selection follow-up remains |
-| A4 unsupported trust claims | #1233 QR, #1242 certificates; remaining inventory and experimental isolation | Partial |
+| A3 single validation path | #1231 core; #1243 merged strict CI validation and runtime artifact selection | Core and CI merged; public lookup alignment in review |
+| A4 unsupported trust claims | #1233 QR, #1242 certificates, #1245 legacy exported-proof containment; remaining inventory and experimental isolation | Partial |
 | A5 installed wheel/release | Add outside-checkout install smoke gate, exact tested-artifact handoff | Pending |
 | B1 narrow product promise | Lead with local evidence-package integrity and limits | Pending |
 | B2 evidence-package format | Inspect/version manifest, algorithms, file metadata, extension/proof boundaries | Pending |
@@ -203,3 +203,18 @@ verification. The builder, inspector and offline/browser path remain explicitly
 unverified; unchecked digests use null validity. The existing CI runtime job
 runs the focused regressions. This does not close the remaining A4 inventory,
 the separate A3 public-lookup alignment or the signature/lifecycle design work.
+
+## October 7 public lookup continuation
+
+#1245 merged as `fe105a00cb62c62ef94b8ce0653cd3be2c69bdfd` after the clean
+Codex review of `b6b294975e8e70a7be821c81709238a7d19aecbc`, all 28 PR checks
+and both resolved P2 findings. The final patch passed 38 focused and 1275 full
+suite tests on CPython 3.14.7. Nested source declarations now survive inspection
+without gaining trust; malformed claim objects fail closed.
+
+The next bounded A3 slice is documented in
+`public-lookup-selection-2026-10-07.md`: public lookup and the QR bridge share
+recursive canonical directories, legacy archive selection and exact generated
+artifact exclusions. Checked-path fixtures and active documentation change
+together. Remaining persistence, standard evidence proofs and operational
+work remain separate acceptance items.

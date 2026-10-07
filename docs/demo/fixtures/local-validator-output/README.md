@@ -40,9 +40,10 @@ The deterministic local lookup boundary remains:
 
 ```json
 [
-  "records/pending/*.json",
-  "records/verified/*.json",
-  "records/archived/*.json"
+  "records/pending/**/*.json",
+  "records/verified/**/*.json",
+  "records/archived/**/*.json",
+  "records/archive/**/*.json"
 ]
 ```
 

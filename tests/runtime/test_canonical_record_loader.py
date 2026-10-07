@@ -136,6 +136,31 @@ def test_runtime_loads_canonical_ids_containing_artifact_words(tmp_path, word):
     assert result["hash_result"]["hash_verified"] is True
 
 
+@pytest.mark.parametrize("ancestor", ["records/cache/project", "records/export/project", "records/generated/project"])
+def test_runtime_artifact_selection_is_relative_to_its_root(tmp_path, ancestor):
+    root = tmp_path / ancestor
+    record_id = "HC-RELOCATED-2026-0001"
+    _write_json(root / "records/pending/nested/one.json", _record(record_id))
+    _write_json(root / "records/pending/generated/ignored.json", _record(record_id))
+    result = _run(root, record_id)
+    assert result["canonical_bridge"]["lookup_status"] == "verified"
+    assert result["hash_result"]["hash_verified"] is True
+
+
+@pytest.mark.parametrize("link_records_parent", [False, True])
+def test_runtime_canonical_directory_symlink_does_not_import_demo(tmp_path, link_records_parent):
+    record_id = "HC-DEMO-LINK-2026-0001"
+    target = tmp_path / "docs/fixtures"
+    suffix = "pending/nested/one.json" if link_records_parent else "nested/one.json"
+    _write_json(target / suffix, _record(record_id))
+    link = tmp_path / ("records" if link_records_parent else "records/pending")
+    link.parent.mkdir(parents=True, exist_ok=True)
+    link.symlink_to(target, target_is_directory=True)
+    result = _run(tmp_path, record_id)
+    assert result["canonical_bridge"]["lookup_status"] == "missing"
+    assert result["hash_result"]["hash_verified"] is False
+
+
 def test_runtime_loads_documented_legacy_archive_record(tmp_path):
     record_id = "HC-LEGACY-2026-0001"
     _write_json(tmp_path / "records/archive" / f"{record_id}.json", _record(record_id))

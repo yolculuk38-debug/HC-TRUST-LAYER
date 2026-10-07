@@ -18,9 +18,10 @@ This lookup remains separate from QR payload trust. For the future QR trust-boun
 - Accepts a single `record_id` value from the command line.
 - Rejects paths, URLs, queries, blank values, and malformed `record_id` input.
 - Searches only:
-  - `records/pending/*.json`
-  - `records/verified/*.json`
-  - `records/archived/*.json`
+  - `records/pending/**/*.json`
+  - `records/verified/**/*.json`
+  - `records/archived/**/*.json`
+  - `records/archive/**/*.json` (legacy)
 - Ignores demo fixtures, generated indexes, manifests, cache artifacts, and export artifacts.
 - Returns a deterministic JSON result with stable top-level fields for found, unknown, invalid, duplicate, and lookup-error outcomes.
 - Preserves `advisory_only: true`, `public_safe: true`, `truth_guarantee: false`, and `human_review_required: true` for every result.
@@ -84,9 +85,10 @@ A found result has `status: "found"`, `found: true`, and a `source_path` within 
   ],
   "errors": [],
   "checked_paths": [
-    "records/pending/*.json",
-    "records/verified/*.json",
-    "records/archived/*.json"
+    "records/pending/**/*.json",
+    "records/verified/**/*.json",
+    "records/archived/**/*.json",
+    "records/archive/**/*.json"
   ]
 }
 ```
@@ -121,9 +123,10 @@ python scripts/run_public_validator_lookup.py HC-NOT-FOUND-2026-0001
   ],
   "errors": [],
   "checked_paths": [
-    "records/pending/*.json",
-    "records/verified/*.json",
-    "records/archived/*.json"
+    "records/pending/**/*.json",
+    "records/verified/**/*.json",
+    "records/archived/**/*.json",
+    "records/archive/**/*.json"
   ]
 }
 ```
@@ -158,9 +161,10 @@ python scripts/run_public_validator_lookup.py ../records/pending/example.json
     "Invalid record_id. Provide a non-empty record_id, not a path, URL, or query."
   ],
   "checked_paths": [
-    "records/pending/*.json",
-    "records/verified/*.json",
-    "records/archived/*.json"
+    "records/pending/**/*.json",
+    "records/verified/**/*.json",
+    "records/archived/**/*.json",
+    "records/archive/**/*.json"
   ]
 }
 ```
@@ -216,7 +220,7 @@ A schema/hash pass does not prove the underlying claim is true, legally valid, s
 Before relying on output, confirm:
 
 1. The command was run from the intended repository checkout.
-2. The `checked_paths` list is limited to `records/pending/*.json`, `records/verified/*.json`, and `records/archived/*.json`.
+2. The `checked_paths` list is limited to `records/pending/**/*.json`, `records/verified/**/*.json`, `records/archived/**/*.json`, and legacy `records/archive/**/*.json`.
 3. `advisory_only` is `true`, `public_safe` is `true`, `truth_guarantee` is `false`, and `human_review_required` is `true`.
 4. Any `warnings` or `errors` are reviewed by a human.
 5. No result is treated as production API output, truth verification, QR authenticity proof, signed payload verification, or legal/regulatory/safety certification.

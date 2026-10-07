@@ -14,7 +14,7 @@ python scripts/run_qr_payload_parser.py '<payload-json-string>'
 python scripts/run_qr_record_bridge.py '<payload-json-string>'
 ```
 
-The fixtures are not canonical records, schemas, validators, signed QR payloads, production QR manifests, backend/API responses, runtime lookup material, or evidence that a real-world claim is true. Their `payload_hash` values exercise the parser-local advisory hash check only. The local QR record bridge must not treat these demo fixtures as canonical records; bridge lookup remains limited to `records/pending/*.json`, `records/verified/*.json`, and `records/archived/*.json`.
+The fixtures are not canonical records, schemas, validators, signed QR payloads, production QR manifests, backend/API responses, runtime lookup material, or evidence that a real-world claim is true. Their `payload_hash` values exercise the parser-local advisory hash check only. The local QR record bridge must not treat these demo fixtures as canonical records; bridge lookup remains limited to `records/pending/**/*.json`, `records/verified/**/*.json`, `records/archived/**/*.json`, and legacy `records/archive/**/*.json`.
 
 The golden tests intentionally compare only stable parser output boundaries: `status`, the safety markers, and the list shape/content presence of `warnings` and `errors`. They do not test exact wording beyond current stable marker phrases needed to identify missing-field, unknown-field, malformed-payload, and mismatched `payload_hash` handling.
 

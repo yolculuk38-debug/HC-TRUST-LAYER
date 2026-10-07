@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from hc_runtime.public_validator_lookup import (
-    ALLOWED_RECORD_PATTERNS,
+    ALLOWED_RECORD_DIRECTORIES,
     ROOT,
     lookup_public_validator_record,
 )
@@ -30,6 +30,7 @@ from hc_trust.canonicalization import (
     strict_json_load,
     strict_json_loads,
 )
+from hc_trust.record_selection import is_generated_artifact_file
 
 ALLOWED_BRIDGE_STATUSES: tuple[str, ...] = (
     "bridge_match",
@@ -114,9 +115,11 @@ def _normalize_hash(value: object) -> str | None:
 def _is_allowed_lookup_source(source_path: object) -> bool:
     if not isinstance(source_path, str):
         return False
-    for pattern in ALLOWED_RECORD_PATTERNS:
-        directory = Path(pattern).parent.as_posix()
-        if source_path.startswith(f"{directory}/") and source_path.endswith(".json"):
+    path = Path(source_path)
+    if path.is_absolute() or ".." in path.parts or is_generated_artifact_file(path):
+        return False
+    for directory in ALLOWED_RECORD_DIRECTORIES:
+        if path.is_relative_to(directory) and path.suffix == ".json":
             return True
     return False
 
@@ -130,6 +133,8 @@ def _load_record_content_hash(root: Path, source_path: str) -> tuple[str | None,
         record_path.relative_to(root.resolve())
     except ValueError:
         return None, "Public Validator lookup source could not be constrained to the local repository root."
+    if not _is_allowed_lookup_source(record_path.relative_to(root.resolve()).as_posix()):
+        return None, "Public Validator lookup source resolved outside the allowed canonical record paths."
 
     try:
         with record_path.open(encoding="utf-8") as handle:
@@ -156,8 +161,8 @@ def check_qr_payload_record_bridge(
     existing local Public Validator lookup path when the payload is parser-valid
     and contains a usable QR record_id and content_hash. Lookup remains limited
     to the existing allowed canonical record paths:
-    records/pending/*.json, records/verified/*.json, and
-    records/archived/*.json.
+    recursive JSON paths under records/pending, records/verified,
+    records/archived, and the legacy records/archive directory.
 
     The result is public-safe and advisory-only. A content_hash match does not
     prove QR authenticity, issuer authority, signature verification, canonical

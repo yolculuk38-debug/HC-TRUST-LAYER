@@ -119,3 +119,11 @@ jobs:
           tests/test_offline_verifier.py
           tests/test_verifier_entry.py
           tests/test_sdk_response.py
+
+      - name: Run public lookup and QR bridge regressions
+        run: >-
+          PYTHONPATH=src pytest -q
+          tests/test_public_validator_lookup.py
+          tests/test_qr_record_bridge.py
+          tests/test_qr_public_validator.py
+          tests/test_qr_public_validator_cli.py

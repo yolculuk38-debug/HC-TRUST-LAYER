@@ -6,11 +6,14 @@ import re
 from pathlib import Path
 from typing import Any
 
+from hc_trust.record_selection import ALLOWED_RECORD_DIRS, is_generated_artifact_file
+
 ROOT = Path(__file__).resolve().parents[2]
-ALLOWED_RECORD_PATTERNS: tuple[str, ...] = (
-    "records/pending/*.json",
-    "records/verified/*.json",
-    "records/archived/*.json",
+ALLOWED_RECORD_DIRECTORIES: tuple[Path, ...] = tuple(
+    Path("records") / name for name in ALLOWED_RECORD_DIRS
+)
+ALLOWED_RECORD_PATTERNS: tuple[str, ...] = tuple(
+    f"{directory.as_posix()}/**/*.json" for directory in ALLOWED_RECORD_DIRECTORIES
 )
 RESULT_FIELD_CONTRACT: tuple[str, ...] = (
     "record_id",
@@ -38,7 +41,6 @@ SAFETY_MARKERS: dict[str, bool] = {
     "truth_guarantee": False,
     "human_review_required": True,
 }
-EXCLUDED_ARTIFACT_NAME_MARKERS: tuple[str, ...] = ("index", "manifest", "cache", "export")
 _VALID_RECORD_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9:_-]{0,199}$")
 
 
@@ -94,24 +96,28 @@ def _relative_path(root: Path, path: Path) -> str:
 def _iter_allowed_json_paths(root: Path) -> list[Path]:
     resolved_root = root.resolve()
     paths: list[Path] = []
-    for pattern in ALLOWED_RECORD_PATTERNS:
-        relative_directory = Path(pattern).parent
-        directory = (resolved_root / relative_directory).resolve()
+    for relative_directory in ALLOWED_RECORD_DIRECTORIES:
+        declared_directory = resolved_root / relative_directory
+        directory = declared_directory.resolve()
+        if directory != declared_directory:
+            continue
         try:
             directory.relative_to(resolved_root)
         except ValueError:
             continue
         if not directory.is_dir():
             continue
-        for path in sorted(directory.glob("*.json"), key=lambda candidate: candidate.as_posix()):
+        for path in sorted(directory.rglob("*.json"), key=lambda candidate: candidate.as_posix()):
             resolved_path = path.resolve()
             try:
                 resolved_path.relative_to(directory)
                 resolved_path.relative_to(resolved_root)
             except ValueError:
                 continue
-            lowered_name = resolved_path.name.lower()
-            if any(marker in lowered_name for marker in EXCLUDED_ARTIFACT_NAME_MARKERS):
+            if (
+                is_generated_artifact_file(path.relative_to(resolved_root))
+                or is_generated_artifact_file(resolved_path.relative_to(resolved_root))
+            ):
                 continue
             if resolved_path.is_file():
                 paths.append(resolved_path)

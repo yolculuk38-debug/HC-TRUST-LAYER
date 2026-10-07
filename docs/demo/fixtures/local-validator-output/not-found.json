@@ -1,9 +1,10 @@
 {
   "advisory_only": true,
   "checked_paths": [
-    "records/pending/*.json",
-    "records/verified/*.json",
-    "records/archived/*.json"
+    "records/pending/**/*.json",
+    "records/verified/**/*.json",
+    "records/archived/**/*.json",
+    "records/archive/**/*.json"
   ],
   "errors": [],
   "found": false,

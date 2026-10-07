@@ -59,9 +59,10 @@ Schema validation and `content_hash` / SHA-256 validation signals do not establi
 
 Local lookup must be restricted to these canonical record directories:
 
-- `records/pending/*.json`
-- `records/verified/*.json`
-- `records/archived/*.json`
+- `records/pending/**/*.json`
+- `records/verified/**/*.json`
+- `records/archived/**/*.json`
+- `records/archive/**/*.json` (legacy)
 
 The lookup boundary must reject arbitrary paths and must not traverse outside these directories.
 
@@ -95,7 +96,7 @@ A local lookup result must preserve explicit safety markers in its public-safe r
 
 The stable result contract includes the following top-level fields for every lookup result: `record_id`, `status`, `found`, `source_path`, `advisory_only`, `public_safe`, `truth_guarantee`, `human_review_required`, `warnings`, `errors`, `checked_paths`, `schema_validation`, `hash_validation`, and `validation_summary`. Schema/hash validation fields must not weaken the safety markers above.
 
-`warnings` and `errors` are always lists. `checked_paths` is deterministic and limited to `records/pending/*.json`, `records/verified/*.json`, and `records/archived/*.json`. `source_path` remains `null` unless exactly one allowed canonical record is found.
+`warnings` and `errors` are always lists. `checked_paths` is deterministic and limited to `records/pending/**/*.json`, `records/verified/**/*.json`, `records/archived/**/*.json`, and legacy `records/archive/**/*.json`. `source_path` remains `null` unless exactly one allowed canonical record is found.
 
 `schema_validation` and `hash_validation` each expose only `status` and `errors`; validation status values are limited to `pass`, `fail`, and `not_checked`. `validation_summary` exposes `schema_passed`, `hash_passed`, and `canonical_record_checked`. `canonical_record_checked` is true only when exactly one canonical record was found and validation signals were attempted.
 

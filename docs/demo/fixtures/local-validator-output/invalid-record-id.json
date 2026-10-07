@@ -1,9 +1,10 @@
 {
   "advisory_only": true,
   "checked_paths": [
-    "records/pending/*.json",
-    "records/verified/*.json",
-    "records/archived/*.json"
+    "records/pending/**/*.json",
+    "records/verified/**/*.json",
+    "records/archived/**/*.json",
+    "records/archive/**/*.json"
   ],
   "errors": [
     "Invalid record_id. Provide a non-empty record_id, not a path, URL, or query."
