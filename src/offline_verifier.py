@@ -14,7 +14,7 @@ OFFLINE_VERIFIER_VERSION = "HC-OFFLINE-VERIFIER-V1"
 def verify_offline_proof_package(
     proof_package: dict[str, Any],
 ) -> dict[str, Any]:
-    """Verify exported HC:// proof package without network dependency."""
+    """Inspect declarations offline; no cryptographic proof is verified."""
 
     validation = validate_public_proof(proof_package)
 
@@ -22,18 +22,22 @@ def verify_offline_proof_package(
         "offline_verifier_version": OFFLINE_VERIFIER_VERSION,
         "offline_capable": True,
         "network_required": False,
+        "advisory_only": True,
+        "public_safe": False,
+        "truth_guarantee": False,
+        "human_review_required": True,
         "validation": validation,
     }
 
 
 def create_demo_offline_package(record_id: str) -> dict[str, Any]:
-    """Create a portable offline verification package."""
+    """Create explicitly unverified demonstration declarations."""
 
     return build_exported_proof(
         record_id=record_id,
         content_hash="offline-demo-hash",
-        verification_level="LEVEL_3_MULTI_WITNESS_VERIFIED",
-        trust_passport={"status": "VERIFIED"},
+        verification_level="UNVERIFIED_DEMO",
+        trust_passport={"status": "UNVERIFIED_DEMO"},
         witnesses=[
             {
                 "witness_signature": "offline-sig-1",

@@ -1,7 +1,9 @@
 from public_validator import validate_public_proof
 
+import pytest
 
-def test_valid_proof():
+
+def test_forged_signature_strings_cannot_verify_a_proof():
     result = validate_public_proof(
         {
             "record_id": "HC-VALID-1",
@@ -22,7 +24,14 @@ def test_valid_proof():
         }
     )
 
-    assert result["decision"] == "VERIFIED"
+    assert result["decision"] == "REVIEW_REQUIRED"
+    assert result["verified"] is False
+    assert result["content_hash_checked"] is False
+    assert result["content_hash_valid"] is None
+    assert result["signature_verified"] is False
+    assert result["witnesses_verified"] is False
+    assert result["verification_level"] is None
+    assert result["source_claims"]["verification_level"] == "LEVEL_3_MULTI_WITNESS_VERIFIED"
 
 
 def test_invalid_hash():
@@ -112,3 +121,59 @@ def test_missing_provenance_reference():
     )
 
     assert result["decision"] == "REVIEW_REQUIRED"
+
+
+@pytest.mark.parametrize("change", [
+    {"revision_chain": None}, {"revision_chain": []},
+    {"witnesses": "signature"}, {"witnesses": {}}, {"witnesses": [None]},
+    {"trust_passport": "VERIFIED"}, {"verification_level": {}},
+    {"record_id": []}, {"content_hash": ""},
+    {"source_claims": None}, {"source_claims": []}, {"source_claims": "VERIFIED"},
+    {"source_claims": True}, {"source_claims": 1},
+    {"source_claims": {"verification_level": {}}},
+    {"source_claims": {"trust_passport": "VERIFIED"}},
+])
+def test_malformed_nested_input_fails_closed(change):
+    proof = {"record_id": "HC-DEMO", "content_hash": "declared", "trust_passport": {}}
+    result = validate_public_proof({**proof, **change})
+    assert result["decision"] == "INVALID"
+    assert result["verified"] is False
+    assert result["signature_verified"] is False
+
+
+@pytest.mark.parametrize("witness_count", [0, 1, 2, 20])
+def test_caller_success_flags_and_witness_counts_never_grant_trust(witness_count):
+    result = validate_public_proof({
+        "record_id": "HC-DEMO", "content_hash": "declared",
+        "trust_passport": {"status": "VERIFIED"},
+        "verification_level": "LEVEL_3_MULTI_WITNESS_VERIFIED",
+        "verified": True, "trusted": True, "signature_verified": True,
+        "content_hash_valid": True, "content_hash_checked": True,
+        "witnesses": [{"witness_signature": "fake", "provenance_reference": "fake"}] * witness_count,
+    })
+    assert result["decision"] == "REVIEW_REQUIRED"
+    for name in ("verified", "trusted", "signature_verified", "witnesses_verified",
+                 "identity_verified", "content_hash_checked",
+                 "source_claims_verified", "public_safe", "truth_guarantee"):
+        assert result[name] is False
+    assert result["content_hash_valid"] is None
+
+
+@pytest.mark.parametrize("proof", [None, [], "VERIFIED", True, 42])
+def test_non_object_input_never_grants_trust(proof):
+    result = validate_public_proof(proof)
+    assert result["decision"] == "INVALID"
+    assert result["verified"] is False
+    assert result["content_hash_checked"] is False
+    assert result["content_hash_valid"] is None
+
+
+def test_legacy_top_level_claims_are_retained_without_trust():
+    result = validate_public_proof({
+        "record_id": "HC-LEGACY", "content_hash": "declared",
+        "verification_level": "DECLARED_LEVEL", "trust_passport": {"issuer": "declared"},
+    })
+    assert result["source_claims"] == {
+        "verification_level": "DECLARED_LEVEL", "trust_passport": {"issuer": "declared"},
+    }
+    assert result["source_claims_verified"] is False

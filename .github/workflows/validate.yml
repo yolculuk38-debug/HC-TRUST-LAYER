@@ -110,3 +110,12 @@ jobs:
 
       - name: Run explicit runtime/API contract subset
         run: PYTHONPATH=src pytest -q tests/runtime tests/test_hc_runtime_response_contracts.py
+
+      - name: Run legacy proof declaration regressions
+        run: >-
+          PYTHONPATH=src pytest -q
+          tests/test_exported_proof.py
+          tests/test_public_validator.py
+          tests/test_offline_verifier.py
+          tests/test_verifier_entry.py
+          tests/test_sdk_response.py

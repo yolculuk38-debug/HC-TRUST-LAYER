@@ -23,7 +23,7 @@ or fabricated external acceptance. One PR at a time. Source baseline:
 | C2 key lifecycle | Expiry/revocation/rotation/unknown signer; no invented real identity authority | Pending |
 | C3 external time evidence | Separate local time and authenticated time; replay policy | Pending |
 | C4 external provenance | Standards-backed adapters and offline proof verification, not field-presence success | Pending |
-| D1 persistent runtime | Duplicate IDs/resolved-path containment active; bounded state, restart/multi-worker, durable audit, backup/restore remain | Active collision slice; persistence pending |
+| D1 persistent runtime | #1244 merged duplicate-ID rejection, resolved-path containment and serialized loader access; bounded state, restart/multi-worker, durable audit, backup/restore remain | Collision slice merged; persistence pending |
 | D2 operational security | Access/tenant boundaries, size/rate limits, safe telemetry/logs, operational runbook | Pending |
 | D3 three real pilots | Prepare repeatable scenarios; real external participants and observed results required | External evidence required |
 | D4 independent review | Threat model, abuse/parser/release review; two independent maintainers required | External reviewers required |
@@ -187,3 +187,19 @@ The PR changes five files. This closes only duplicate-ID rejection, resolved
 path containment, concurrent cache access and their documented contract.
 Public lookup selection, persistent/multi-worker state and the remaining A-D
 audit acceptance items remain separately tracked.
+
+## October 7 continuation
+
+#1244 merged as `db1f0533577707253f6de20170caf322efaefe8e` after the clean
+current-head Codex review of `609aae7167d2a1ed64d14f2a5a7d4b91875bce4a`,
+27 successful PR checks and resolved review threads. All 15 post-merge checks
+passed, including both CodeQL languages. The branch was deleted by repository
+policy. The PR's post-merge audit records the exact heads and evidence.
+
+The next A4 slice resumes the prepared legacy-proof containment on that actual
+main merge. Its report is `legacy-proof-containment-2026-09-22.md`. Forged
+signature/provenance strings and caller-provided success flags cannot establish
+verification. The builder, inspector and offline/browser path remain explicitly
+unverified; unchecked digests use null validity. The existing CI runtime job
+runs the focused regressions. This does not close the remaining A4 inventory,
+the separate A3 public-lookup alignment or the signature/lifecycle design work.
