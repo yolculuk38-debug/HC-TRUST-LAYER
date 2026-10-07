@@ -4,6 +4,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
 if str(SRC) not in sys.path:
@@ -34,9 +36,10 @@ REQUIRED_SUMMARY_FIELDS = {"schema_passed", "hash_passed", "canonical_record_che
 ALLOWED_LOOKUP_STATUSES = {"found", "not_found", "duplicate_record_id", "invalid_record_id", "lookup_error"}
 ALLOWED_VALIDATION_STATUSES = {"pass", "fail", "not_checked"}
 DETERMINISTIC_CHECKED_PATHS = [
-    "records/pending/*.json",
-    "records/verified/*.json",
-    "records/archived/*.json",
+    "records/pending/**/*.json",
+    "records/verified/**/*.json",
+    "records/archived/**/*.json",
+    "records/archive/**/*.json",
 ]
 
 
@@ -397,3 +400,92 @@ def test_cli_output_matches_result_contract_for_found_unknown_and_invalid() -> N
 
         _assert_public_safe_shape(payload)
         assert payload["status"] == expected_status
+
+
+@pytest.mark.parametrize("directory", ["pending/nested", "verified/nested", "archived/nested", "archive", "archive/nested"])
+def test_nested_and_legacy_records_are_found(tmp_path, directory):
+    record_id = "HC-RECURSIVE-2026-0001"
+    _copy_record_schema(tmp_path)
+    path = tmp_path / "records" / directory / f"{record_id}.json"
+    _write_record(path, record_id)
+    result = lookup_public_validator_record(record_id, root=tmp_path)
+    assert result["status"] == "found"
+    assert result["source_path"] == path.relative_to(tmp_path).as_posix()
+    assert result["schema_validation"]["status"] == "pass"
+    assert result["hash_validation"]["status"] == "pass"
+
+
+@pytest.mark.parametrize("directory", ["pending/nested", "archive", "archive/nested"])
+def test_nested_and_legacy_duplicates_block_validation(tmp_path, directory):
+    record_id = "HC-DUPLICATE-2026-0001"
+    _write_record(tmp_path / "records/pending/one.json", record_id)
+    _write_record(tmp_path / "records" / directory / "two.json", record_id)
+    result = lookup_public_validator_record(record_id, root=tmp_path)
+    _assert_public_safe_shape(result)
+    assert result["status"] == "duplicate_record_id"
+    assert result["source_path"] is None
+    assert result["schema_validation"]["status"] == "not_checked"
+    assert result["hash_validation"]["status"] == "not_checked"
+
+
+@pytest.mark.parametrize("word", ["INDEX", "MANIFEST", "CACHE", "EXPORT", "GENERATED"])
+def test_artifact_words_inside_ids_are_selected(tmp_path, word):
+    record_id = f"HC-{word}-2026-0001"
+    _write_record(tmp_path / "records/pending" / f"{record_id}.json", record_id)
+    assert lookup_public_validator_record(record_id, root=tmp_path)["status"] == "found"
+
+
+@pytest.mark.parametrize("name", ["index.json", "manifest.json", "cache.json", "export.json", "generated.json", "HC-EXAMPLE-index.json", "HC-EXAMPLE_export.json", "nested/generated/one.json", "cache/nested/one.json"])
+def test_reserved_artifacts_cannot_create_duplicate_matches(tmp_path, name):
+    record_id = "HC-CANONICAL-2026-0001"
+    _write_record(tmp_path / "records/pending/one.json", record_id)
+    _write_record(tmp_path / "records/pending" / name, record_id)
+    assert lookup_public_validator_record(record_id, root=tmp_path)["status"] == "found"
+
+
+@pytest.mark.parametrize("target", ["outside/one.json", "records/verified/one.json", "records/pending/generated/one.json"])
+def test_symlink_target_must_stay_inside_same_approved_directory(tmp_path, target):
+    record_id = "HC-LINK-2026-0001"
+    destination = tmp_path / target
+    _write_record(destination, record_id)
+    link = tmp_path / "records/pending/nested/alias.json"
+    link.parent.mkdir(parents=True, exist_ok=True)
+    link.symlink_to(destination)
+    result = lookup_public_validator_record(record_id, root=tmp_path)
+    # A canonical target in verified is found once via its own directory;
+    # an alias in pending cannot produce a false duplicate or import an artifact.
+    expected = "found" if target.startswith("records/verified/") else "not_found"
+    assert result["status"] == expected
+
+
+def test_artifact_alias_cannot_duplicate_real_record(tmp_path):
+    record_id = "HC-ALIAS-2026-0001"
+    destination = tmp_path / "records/pending/one.json"
+    _write_record(destination, record_id)
+    (destination.parent / "one-index.json").symlink_to(destination)
+    assert lookup_public_validator_record(record_id, root=tmp_path)["status"] == "found"
+
+
+def test_lookup_contract_survives_missing_optional_validator_dependency():
+    completed = subprocess.run(
+        [sys.executable, "-c", "\n".join([
+            "import json, sys",
+            "sys.modules['jsonschema'] = None",
+            "from hc_runtime.public_validator_lookup import lookup_public_validator_record",
+            "print(json.dumps(lookup_public_validator_record('HC-EXAMPLE-2026-0001')))",
+        ])], capture_output=True, text=True, check=True,
+    )
+    result = json.loads(completed.stdout)
+    assert result["status"] == "found"
+    assert result["schema_validation"]["status"] == "not_checked"
+    assert result["hash_validation"]["status"] == "not_checked"
+
+
+def test_external_root_symlink_is_not_lookup_evidence(tmp_path):
+    repo = tmp_path / "repo"
+    destination = tmp_path / "external.json"
+    _write_record(destination, "HC-OUTSIDE-2026-0001")
+    link = repo / "records/pending/alias.json"
+    link.parent.mkdir(parents=True)
+    link.symlink_to(destination)
+    assert lookup_public_validator_record("HC-OUTSIDE-2026-0001", root=repo)["status"] == "not_found"

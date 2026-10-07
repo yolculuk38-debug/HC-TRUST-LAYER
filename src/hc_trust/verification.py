@@ -7,6 +7,13 @@ from jsonschema import Draft202012Validator, FormatChecker
 from jsonschema.exceptions import SchemaError, ValidationError
 
 from .canonicalization import CanonicalizationError, canonicalize_json, strict_json_load
+from .record_selection import (
+    ALLOWED_RECORD_DIRS,
+    GENERATED_ARTIFACT_DIRS,
+    GENERATED_ARTIFACT_NAMES,
+    GENERATED_ARTIFACT_SUFFIXES,
+    is_generated_artifact_file,
+)
 from .hashing import (
     CONTENT_HASH_PROFILE_FIELD,
     HC_CONTENT_HASH_PROFILE,
@@ -14,8 +21,6 @@ from .hashing import (
     calculate_content_hash,
 )
 
-# Include the documented legacy archive spelling without migrating evidence.
-ALLOWED_RECORD_DIRS = ("pending", "verified", "archived", "archive")
 RECORD_SCHEMA_DIALECT = "https://json-schema.org/draft/2020-12/schema"
 RECORD_SCHEMA_ID = (
     "https://raw.githubusercontent.com/yolculuk38-debug/HC-TRUST-LAYER/"
@@ -68,32 +73,6 @@ _RFC3339_DATETIME = re.compile(
     r"(?:(?P<zulu>[Zz])|(?P<offset_sign>[+-])"
     r"(?P<offset_hour>[01][0-9]|2[0-3]):(?P<offset_minute>[0-5][0-9]))$"
 )
-GENERATED_ARTIFACT_NAMES = frozenset({
-    "explorer_index.json", "generated_index.json", "index.json", "manifest.json",
-    "cache.json", "export.json", "generated.json",
-})
-GENERATED_ARTIFACT_SUFFIXES = tuple(
-    f"{delimiter}{kind}.json"
-    for delimiter in ("-", "_")
-    for kind in ("index", "manifest", "cache", "export", "generated")
-)
-GENERATED_ARTIFACT_DIRS = frozenset({"generated", "cache", "export", "exports"})
-
-
-def is_generated_artifact_file(file_path: str | Path) -> bool:
-    """Recognize reserved artifacts, never arbitrary words inside record IDs."""
-    file_path = Path(file_path)
-    parts = file_path.parts
-    if "records" in parts:
-        parts = parts[parts.index("records") + 1:]
-    return (
-        file_path.name.lower() in GENERATED_ARTIFACT_NAMES
-        or file_path.name.lower().endswith(GENERATED_ARTIFACT_SUFFIXES)
-        or any(part.lower() in GENERATED_ARTIFACT_DIRS for part in parts[:-1])
-    )
-
-
-
 @RECORD_FORMAT_CHECKER.checks("date-time", raises=ValueError)
 def _is_rfc3339_datetime(value: object) -> bool:
     """Validate RFC 3339 syntax, including its case and leap-second forms."""

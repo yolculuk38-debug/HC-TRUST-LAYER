@@ -9,6 +9,8 @@ import sys
 import urllib.request
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
 if str(SRC) not in sys.path:
@@ -403,3 +405,28 @@ def test_cli_output_does_not_claim_qr_authenticity_signature_or_truth():
     assert "signature_verified" not in serialized
     assert "truth_verified" not in serialized
     assert '"verified": true' not in serialized
+
+
+@pytest.mark.parametrize("directory", ["pending", "pending/nested", "archive", "archive/nested"])
+def test_bridge_matches_shared_nested_and_legacy_lookup(tmp_path, directory):
+    record_id = "HC-INDEX-2026-0001"
+    record = write_record(tmp_path / "records" / directory / f"{record_id}.json", record_id)
+    result = check_qr_payload_record_bridge(bridge_payload(record_id, record["content_hash"]), repo_root=tmp_path)
+    assert_bridge_shape(result)
+    assert result["bridge_status"] == "bridge_match"
+
+
+@pytest.mark.parametrize("directory", ["pending/nested", "archive"])
+def test_bridge_rejects_duplicate_hidden_in_nested_or_legacy_path(tmp_path, directory):
+    record_id = "HC-DUP-2026-0001"
+    record = write_record(tmp_path / "records/pending/one.json", record_id)
+    write_record(tmp_path / "records" / directory / "two.json", record_id)
+    result = check_qr_payload_record_bridge(bridge_payload(record_id, record["content_hash"]), repo_root=tmp_path)
+    assert result["bridge_status"] == "duplicate_record_id"
+    assert result["content_hash_match"] is None
+
+
+@pytest.mark.parametrize("source", ["records/pending/../../docs/one.json", "docs/demo/one.json", "/records/pending/one.json", "records/pending/generated/one.json", "records/pending/one-index.json"])
+def test_bridge_source_guard_rejects_noncanonical_sources(source):
+    from hc_runtime.qr_record_bridge import _is_allowed_lookup_source
+    assert _is_allowed_lookup_source(source) is False
