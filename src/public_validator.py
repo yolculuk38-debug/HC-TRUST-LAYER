@@ -117,7 +117,7 @@ def _response(
         "source_claims": {"verification_level": verification_level},
         "source_claims_verified": False,
         "content_hash_checked": False,
-        "content_hash_valid": False,
+        "content_hash_valid": None,
         "signature_verified": False,
         "witnesses_verified": False,
         "identity_verified": False,

@@ -22,17 +22,34 @@ not itself an evidence verifier; its arbitrary-input behavior is outside this
 slice, but the actual inspector-to-SDK path must not promote declarations.
 
 Scope: the builder, legacy inspector, offline/browser metadata and demonstration,
-their tests, and `docs/public-validator.md`. No schema, canonical record, crypto,
-workflow permission, signing authority or production deployment changes.
+their tests, and `docs/public-validator.md`. The existing runtime/API CI job
+also runs the legacy proof regressions so this boundary stays covered. No
+schema, canonical record, crypto, workflow permission, signing authority or
+production deployment changes.
 
 Validation: regress forged signatures, caller-controlled success flags, malformed
 revision/witness/passport shapes, unverified builder declarations and propagation
 through offline/browser/SDK paths; run the full suite and repository guards.
 Require current-head review and CI after the prior PR closes.
 
-## Local validation
+## Historical local validation
 
 23 focused tests and 1243 full-suite tests passed on CPython 3.14.7 before the
 unrelated CI runtime-selector update. After rebasing that update, all 23 focused
 tests passed again. Terminology and documentation guards passed with two existing
-README warnings. No matching external review or merge is claimed at this stage.
+README warnings. These counts describe the September candidate, not the new head.
+
+## October 7 continuation
+
+The patch is based on the actual #1244 merge. The inspector now uses
+`content_hash_valid=null` because it never computes a digest, including when
+the input declares failure. Five non-object input regressions complement the
+malformed nested-input and forged-success cases. Runtime/API CI runs all five
+legacy proof/SDK test modules. No new permissions or production guarantees are
+introduced.
+
+Current validation on CPython 3.14.7: 29 focused tests and 1266 full-suite tests
+passed. The full suite reports one upstream Starlette TestClient deprecation
+warning. Canonical, terminology and documentation guards passed; the docs guard
+retains two pre-existing README warnings. Current-head GitHub CI and review are
+still required before merge.

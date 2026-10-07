@@ -27,6 +27,7 @@ def test_forged_signature_strings_cannot_verify_a_proof():
     assert result["decision"] == "REVIEW_REQUIRED"
     assert result["verified"] is False
     assert result["content_hash_checked"] is False
+    assert result["content_hash_valid"] is None
     assert result["signature_verified"] is False
     assert result["witnesses_verified"] is False
     assert result["verification_level"] is None
@@ -148,6 +149,16 @@ def test_caller_success_flags_and_witness_counts_never_grant_trust(witness_count
     })
     assert result["decision"] == "REVIEW_REQUIRED"
     for name in ("verified", "trusted", "signature_verified", "witnesses_verified",
-                 "identity_verified", "content_hash_checked", "content_hash_valid",
+                 "identity_verified", "content_hash_checked",
                  "source_claims_verified", "public_safe", "truth_guarantee"):
         assert result[name] is False
+    assert result["content_hash_valid"] is None
+
+
+@pytest.mark.parametrize("proof", [None, [], "VERIFIED", True, 42])
+def test_non_object_input_never_grants_trust(proof):
+    result = validate_public_proof(proof)
+    assert result["decision"] == "INVALID"
+    assert result["verified"] is False
+    assert result["content_hash_checked"] is False
+    assert result["content_hash_valid"] is None

@@ -16,6 +16,8 @@ only under unverified `source_claims`.
 and leaves `content_hash_valid` null because it has not hashed any content.
 The offline and browser wrappers preserve the inspector's unverified result;
 offline capability describes local execution, not proof authenticity.
+The inspector also reports `content_hash_valid=null`: even when the input
+declares a hash failure, it has not independently checked the digest.
 
 All these results are advisory, require human review, and carry
 `truth_guarantee=false`. Retained caller declarations are not redacted:
