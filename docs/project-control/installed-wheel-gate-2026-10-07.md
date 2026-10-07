@@ -34,3 +34,8 @@ The PR is based on the actual #1247 merge
 PR and main changes with read-only repository permissions. The successful main
 run's artifact is the handoff candidate for that exact source commit; a PR test
 merge artifact is not evidence for a later main commit.
+
+Codex P1 follow-up (4210630555): include `VERSION` and `CHANGELOG.md` in both
+PR and main path filters. Otherwise the documented release-metadata-only commit
+would have no exact-commit wheel evidence. The manual release sequence now
+explicitly waits for that commit's installed-wheel gate before publication.

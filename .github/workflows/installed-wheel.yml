@@ -6,6 +6,8 @@ on:
       - 'src/**'
       - 'schema/record-v1.schema.json'
       - 'pyproject.toml'
+      - 'VERSION'
+      - 'CHANGELOG.md'
       - 'scripts/smoke_installed_distribution.py'
       - '.github/workflows/installed-wheel.yml'
   push:
@@ -14,6 +16,8 @@ on:
       - 'src/**'
       - 'schema/record-v1.schema.json'
       - 'pyproject.toml'
+      - 'VERSION'
+      - 'CHANGELOG.md'
       - 'scripts/smoke_installed_distribution.py'
       - '.github/workflows/installed-wheel.yml'
 
