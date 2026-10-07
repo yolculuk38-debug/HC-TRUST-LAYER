@@ -489,3 +489,17 @@ def test_external_root_symlink_is_not_lookup_evidence(tmp_path):
     link.parent.mkdir(parents=True)
     link.symlink_to(destination)
     assert lookup_public_validator_record("HC-OUTSIDE-2026-0001", root=repo)["status"] == "not_found"
+
+
+@pytest.mark.parametrize("ancestor", ["records/cache/project", "records/export/project", "records/generated/project"])
+def test_checkout_ancestor_names_do_not_change_selection(tmp_path, ancestor):
+    repo = tmp_path / ancestor
+    record_id = "HC-RELOCATED-2026-0001"
+    _copy_record_schema(repo)
+    _write_record(repo / "records/pending/nested/one.json", record_id)
+    _write_record(repo / "records/pending/generated/ignored.json", record_id)
+    result = lookup_public_validator_record(record_id, root=repo)
+    assert result["status"] == "found"
+    assert result["source_path"] == "records/pending/nested/one.json"
+    assert result["schema_validation"]["status"] == "pass"
+    assert result["hash_validation"]["status"] == "pass"

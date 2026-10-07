@@ -430,3 +430,11 @@ def test_bridge_rejects_duplicate_hidden_in_nested_or_legacy_path(tmp_path, dire
 def test_bridge_source_guard_rejects_noncanonical_sources(source):
     from hc_runtime.qr_record_bridge import _is_allowed_lookup_source
     assert _is_allowed_lookup_source(source) is False
+
+
+def test_bridge_lookup_is_independent_of_checkout_ancestor_names(tmp_path):
+    repo = tmp_path / "records/cache/project"
+    record_id = "HC-RELOCATED-2026-0001"
+    record = write_record(repo / "records/pending/nested/one.json", record_id)
+    result = check_qr_payload_record_bridge(bridge_payload(record_id, record["content_hash"]), repo_root=repo)
+    assert result["bridge_status"] == "bridge_match"

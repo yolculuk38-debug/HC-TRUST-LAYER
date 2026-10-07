@@ -39,3 +39,18 @@ warning remains. Canonical, terminology and documentation guards passed with
 the same two existing README warnings. The shared selector extraction preserves
 all existing artifact names/suffixes; no canonical evidence was rewritten.
 Current-head GitHub checks and Codex review remain the merge gate.
+
+Codex review of `1f1a3f596a6f` identified an absolute-path predicate issue:
+a checkout below an ancestor such as `records/cache/project` could exclude all
+public records. Both artifact checks now receive paths relative to the lookup
+root, while resolved-path containment remains enforced. Public lookup and QR
+regressions cover relocated roots and still-excluded generated records.
+The runtime loader had the same absolute-path call, so apply the same root-relative
+predicate correction and regress it there as well. This preserves runtime/public
+selection parity without changing the shared filename rules or loader locking.
+
+After the review fix, 147 focused and 1321 full-suite tests passed on CPython
+3.14.7 with the same upstream TestClient warning. The standalone CLI selectors
+still accept caller-supplied paths without an explicit repository-root argument;
+their relocated absolute-path behavior is separate follow-up scope, not evidence
+that every record-selection entry point is now fully identical.

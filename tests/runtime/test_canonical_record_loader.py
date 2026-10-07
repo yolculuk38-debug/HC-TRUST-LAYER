@@ -136,6 +136,17 @@ def test_runtime_loads_canonical_ids_containing_artifact_words(tmp_path, word):
     assert result["hash_result"]["hash_verified"] is True
 
 
+@pytest.mark.parametrize("ancestor", ["records/cache/project", "records/export/project", "records/generated/project"])
+def test_runtime_artifact_selection_is_relative_to_its_root(tmp_path, ancestor):
+    root = tmp_path / ancestor
+    record_id = "HC-RELOCATED-2026-0001"
+    _write_json(root / "records/pending/nested/one.json", _record(record_id))
+    _write_json(root / "records/pending/generated/ignored.json", _record(record_id))
+    result = _run(root, record_id)
+    assert result["canonical_bridge"]["lookup_status"] == "verified"
+    assert result["hash_result"]["hash_verified"] is True
+
+
 def test_runtime_loads_documented_legacy_archive_record(tmp_path):
     record_id = "HC-LEGACY-2026-0001"
     _write_json(tmp_path / "records/archive" / f"{record_id}.json", _record(record_id))

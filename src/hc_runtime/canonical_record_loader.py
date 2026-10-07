@@ -121,7 +121,8 @@ class CanonicalRecordLoader:
         except (ValueError, OSError, RuntimeError):
             return False
         return not (
-            is_generated_artifact_file(path) or is_generated_artifact_file(resolved)
+            is_generated_artifact_file(path.relative_to(self.root.resolve()))
+            or is_generated_artifact_file(resolved.relative_to(self.root.resolve()))
         )
 
 

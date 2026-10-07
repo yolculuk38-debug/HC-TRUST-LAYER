@@ -111,7 +111,10 @@ def _iter_allowed_json_paths(root: Path) -> list[Path]:
                 resolved_path.relative_to(resolved_root)
             except ValueError:
                 continue
-            if is_generated_artifact_file(path) or is_generated_artifact_file(resolved_path):
+            if (
+                is_generated_artifact_file(path.relative_to(resolved_root))
+                or is_generated_artifact_file(resolved_path.relative_to(resolved_root))
+            ):
                 continue
             if resolved_path.is_file():
                 paths.append(resolved_path)
