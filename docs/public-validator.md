@@ -11,6 +11,10 @@ The current result is `INVALID` for malformed inputs or declared failures and
 constants remain importable, but this inspector does not emit `VERIFIED` or
 `PARTIAL`. The supported verification level is null; any input level is retained
 only under unverified `source_claims`.
+If `source_claims` is present, its object is retained, including extension
+declarations; known level/passport fields must have the expected shapes.
+Otherwise legacy top-level level/passport declarations are captured there.
+A malformed claims container is invalid and cannot enable verification.
 
 `build_exported_proof` preserves declared levels/passports under `source_claims`
 and leaves `content_hash_valid` null because it has not hashed any content.

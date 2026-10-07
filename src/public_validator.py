@@ -49,6 +49,20 @@ def validate_public_proof(proof: dict[str, Any]) -> dict[str, Any]:
     if verification_level is not None and not isinstance(verification_level, str):
         reasons.append("invalid_verification_level")
 
+    source_claims = proof.get("source_claims", {
+        "verification_level": verification_level,
+        "trust_passport": proof.get("trust_passport"),
+    })
+    if not isinstance(source_claims, dict):
+        reasons.append("invalid_source_claims_structure")
+        source_claims = {}
+    else:
+        claimed_level = source_claims.get("verification_level")
+        if claimed_level is not None and not isinstance(claimed_level, str):
+            reasons.append("invalid_source_claims_verification_level")
+        if "trust_passport" in source_claims and not isinstance(source_claims["trust_passport"], dict):
+            reasons.append("invalid_source_claims_trust_passport")
+
     revision_chain = proof.get("revision_chain", {})
     if not isinstance(revision_chain, dict):
         reasons.append("invalid_revision_chain_structure")
@@ -95,7 +109,7 @@ def validate_public_proof(proof: dict[str, Any]) -> dict[str, Any]:
         decision,
         reasons,
         risk_flags=risk_flags,
-        verification_level=verification_level,
+        source_claims=source_claims,
         record_id=proof.get("record_id"),
     )
 
@@ -105,7 +119,7 @@ def _response(
     reasons: list[str],
     *,
     risk_flags: list[str] | None = None,
-    verification_level: str | None = None,
+    source_claims: dict[str, Any] | None = None,
     record_id: str | None = None,
 ) -> dict[str, Any]:
     return {
@@ -114,7 +128,7 @@ def _response(
         "decision": decision,
         "verified": False,
         "verification_level": None,
-        "source_claims": {"verification_level": verification_level},
+        "source_claims": dict(source_claims or {}),
         "source_claims_verified": False,
         "content_hash_checked": False,
         "content_hash_valid": None,

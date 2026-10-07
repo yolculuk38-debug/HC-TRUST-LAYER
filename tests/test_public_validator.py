@@ -128,6 +128,10 @@ def test_missing_provenance_reference():
     {"witnesses": "signature"}, {"witnesses": {}}, {"witnesses": [None]},
     {"trust_passport": "VERIFIED"}, {"verification_level": {}},
     {"record_id": []}, {"content_hash": ""},
+    {"source_claims": None}, {"source_claims": []}, {"source_claims": "VERIFIED"},
+    {"source_claims": True}, {"source_claims": 1},
+    {"source_claims": {"verification_level": {}}},
+    {"source_claims": {"trust_passport": "VERIFIED"}},
 ])
 def test_malformed_nested_input_fails_closed(change):
     proof = {"record_id": "HC-DEMO", "content_hash": "declared", "trust_passport": {}}
@@ -162,3 +166,14 @@ def test_non_object_input_never_grants_trust(proof):
     assert result["verified"] is False
     assert result["content_hash_checked"] is False
     assert result["content_hash_valid"] is None
+
+
+def test_legacy_top_level_claims_are_retained_without_trust():
+    result = validate_public_proof({
+        "record_id": "HC-LEGACY", "content_hash": "declared",
+        "verification_level": "DECLARED_LEVEL", "trust_passport": {"issuer": "declared"},
+    })
+    assert result["source_claims"] == {
+        "verification_level": "DECLARED_LEVEL", "trust_passport": {"issuer": "declared"},
+    }
+    assert result["source_claims_verified"] is False

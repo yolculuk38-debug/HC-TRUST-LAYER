@@ -53,3 +53,13 @@ passed. The full suite reports one upstream Starlette TestClient deprecation
 warning. Canonical, terminology and documentation guards passed; the docs guard
 retains two pre-existing README warnings. Current-head GitHub CI and review are
 still required before merge.
+
+Codex review of `09f63674bf76` found two P2 issues: nested source claims were
+dropped in the builder-to-inspector path, and malformed source-claims containers
+were ignored. Preserve the nested unverified object, validate its known fields,
+and reject non-object containers. Regressions cover offline/browser propagation,
+extension declaration preservation, legacy claims and malformed containers.
+
+After both review fixes: 38 focused tests and 1275 full-suite tests passed on
+CPython 3.14.7, with the same one upstream warning. Repository guards and
+`git diff --check` passed. Matching review and CI must run on the new commit.
