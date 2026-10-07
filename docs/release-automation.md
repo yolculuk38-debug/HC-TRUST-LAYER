@@ -4,8 +4,8 @@ This document describes the current manual release process and a proposed automa
 
 ## Scope
 
-- This is a planning document only.
-- It does **not** modify workflows in this phase.
+- Publication automation remains planned; the installed-wheel validation job below is implemented.
+- The installed-wheel job validates and preserves artifacts; it does not publish them.
 - It does **not** create a release.
 - It does **not** change schema definitions.
 
@@ -15,7 +15,7 @@ Today, releases are prepared manually with the following sequence:
 
 1. Merge the release PR into the default branch.
 2. Ensure all required GitHub Actions checks are green.
-3. Update `VERSION` and `CHANGELOG` with the intended release information.
+3. Update `VERSION`, the package version in `pyproject.toml`, and `CHANGELOG.md` with the intended release information, merge those changes, and wait for the installed-wheel gate on that exact main commit.
 4. Create a GitHub Release entry.
 5. Tag the version in Git (for example `v0.1.1`) and publish.
 
@@ -71,3 +71,29 @@ A manual final approval step reduces risk for experimental and trust-critical in
 4. Keep final publish behind maintainer approval.
 
 This phased approach allows validation hardening without disrupting existing manual release operations.
+
+## Implemented installed-wheel validation
+
+`.github/workflows/installed-wheel.yml` builds one wheel, installs it in a fresh
+Python 3.14 environment and runs `scripts/smoke_installed_distribution.py` with
+`-I` outside the checkout. It checks the installed archive hash, packaged schema,
+console command, SDK/CLI agreement, actual file bytes, failure exit codes and
+runtime imports. Both PR and main triggers include `VERSION` and `CHANGELOG.md`,
+so release-metadata-only commits also produce their own tested artifact.
+No server or registry publication is started.
+The installed distribution version must exactly match `VERSION`; a mismatch
+fails before writing success evidence or uploading the wheel. Keep the static
+version in `pyproject.toml` synchronized with `VERSION` during release preparation.
+
+A successful run uploads `tested-wheel-<source commit>` containing that exact
+wheel and `verification.json`. The report records the wheel SHA-256, tested
+source commit, interpreter/distribution versions and completed checks. A PR run
+uses GitHub's test merge commit; release handoff must use the successful main
+run at the actual release commit. Artifacts expire after 14 days. If the artifact
+is absent, run validation again and inspect its new report before handoff.
+
+For a manual release, obtain the matching successful run's artifact, recompute
+the wheel SHA-256 and compare it with `verification.json`, then attach that same
+wheel. Do not rebuild between testing and publication. A changed/rebuilt wheel
+needs a new installation test and report. This does not grant release approval
+or replace independent review, signing or provenance attestations.
