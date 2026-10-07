@@ -153,3 +153,37 @@ Post-rebase validation on `d4406efdb66a9271795df796b75d2e8e79402292`:
 1246 full-suite tests passed on CPython 3.14.7, with two upstream TestClient
 deprecation warnings. Canonical/terminology/docs guards passed with the two
 existing README warnings. Four files differ from the merged base.
+
+## October 7 PR #1244 review closeout
+
+The collision slice now also includes both Codex review corrections:
+
+- P2 ([4070231977](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/pull/1244#discussion_r4070231977)):
+  the public runtime contract lists `duplicate_record_id` as an allowed lookup
+  outcome (`f89c29022439`).
+- P1 ([4070295484](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/pull/1244#discussion_r4070295484)):
+  a per-loader lock serializes `get()` and `refresh()`, preventing concurrent
+  cold-start scans from registering the same physical record twice. The
+  two-worker regression checks that both lookups return records and only one
+  scan runs. The refresh regression remains intact (`f1da582659f0`).
+
+On head `f1da582659f0219522321974503843799f43c8ad`, the GitHub runtime/API
+suite passed 312 tests and its overlapping explicit contract subset passed
+258 tests. These counts must not be added together. The prior 1246-test full
+suite belongs to the earlier collision head, before the lock correction.
+[Codex's September 22 result](https://github.com/yolculuk38-debug/HC-TRUST-LAYER/pull/1244#issuecomment-5774469651)
+explicitly reviewed `f1da582659` and reported no major issues; both finding
+threads are resolved.
+
+October 7 verification found three old failed check jobs caused by GitHub
+installation API rate limiting: Docs Review Policy and both CodeQL languages.
+Docs Review Policy passed when retried. GitHub rejected a retry of the old
+dynamic CodeQL run with "This workflow run cannot be retried". This audit update
+records the missing review evidence and starts fresh checks on its new head;
+the old failures are not waived. Merge still requires successful current-head
+checks, matching review and the maintainer's decision.
+
+The PR changes five files. This closes only duplicate-ID rejection, resolved
+path containment, concurrent cache access and their documented contract.
+Public lookup selection, persistent/multi-worker state and the remaining A-D
+audit acceptance items remain separately tracked.
