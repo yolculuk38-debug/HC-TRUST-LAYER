@@ -438,3 +438,15 @@ def test_bridge_lookup_is_independent_of_checkout_ancestor_names(tmp_path):
     record = write_record(repo / "records/pending/nested/one.json", record_id)
     result = check_qr_payload_record_bridge(bridge_payload(record_id, record["content_hash"]), repo_root=repo)
     assert result["bridge_status"] == "bridge_match"
+
+
+def test_bridge_does_not_use_a_canonical_directory_symlink_to_docs(tmp_path):
+    record_id = "HC-DEMO-LINK-2026-0001"
+    target = tmp_path / "docs/fixtures"
+    record = write_record(target / "nested/one.json", record_id)
+    link = tmp_path / "records/pending"
+    link.parent.mkdir()
+    link.symlink_to(target, target_is_directory=True)
+    result = check_qr_payload_record_bridge(bridge_payload(record_id, record["content_hash"]), repo_root=tmp_path)
+    assert result["bridge_status"] == "record_not_found"
+    assert result["content_hash_match"] is None

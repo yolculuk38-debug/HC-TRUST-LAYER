@@ -97,7 +97,10 @@ def _iter_allowed_json_paths(root: Path) -> list[Path]:
     resolved_root = root.resolve()
     paths: list[Path] = []
     for relative_directory in ALLOWED_RECORD_DIRECTORIES:
-        directory = (resolved_root / relative_directory).resolve()
+        declared_directory = resolved_root / relative_directory
+        directory = declared_directory.resolve()
+        if directory != declared_directory:
+            continue
         try:
             directory.relative_to(resolved_root)
         except ValueError:

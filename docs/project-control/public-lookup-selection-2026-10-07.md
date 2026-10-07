@@ -54,3 +54,13 @@ After the review fix, 147 focused and 1321 full-suite tests passed on CPython
 still accept caller-supplied paths without an explicit repository-root argument;
 their relocated absolute-path behavior is separate follow-up scope, not evidence
 that every record-selection entry point is now fully identical.
+
+The next Codex review found that an approved directory itself could be a symlink
+to in-repository demo material. Both public and runtime lookup now require the
+resolved canonical directory to equal its declared location before recursion.
+This also rejects a symlinked `records` parent. Regressions cover both directory
+levels and the QR bridge, retaining the no-canonical-evidence outcome.
+
+Final local validation after directory-symlink rejection: 152 focused and 1326
+full-suite tests passed on CPython 3.14.7. The same upstream warning remains;
+canonical, terminology, docs and whitespace guards passed.

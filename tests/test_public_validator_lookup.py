@@ -503,3 +503,19 @@ def test_checkout_ancestor_names_do_not_change_selection(tmp_path, ancestor):
     assert result["source_path"] == "records/pending/nested/one.json"
     assert result["schema_validation"]["status"] == "pass"
     assert result["hash_validation"]["status"] == "pass"
+
+
+@pytest.mark.parametrize("link_records_parent", [False, True])
+def test_canonical_directory_symlink_cannot_import_demo_evidence(tmp_path, link_records_parent):
+    record_id = "HC-DEMO-LINK-2026-0001"
+    target = tmp_path / "docs/fixtures"
+    suffix = "pending/nested/one.json" if link_records_parent else "nested/one.json"
+    _write_record(target / suffix, record_id)
+    link = tmp_path / ("records" if link_records_parent else "records/pending")
+    link.parent.mkdir(parents=True, exist_ok=True)
+    link.symlink_to(target, target_is_directory=True)
+    result = lookup_public_validator_record(record_id, root=tmp_path)
+    assert result["status"] == "not_found"
+    assert result["source_path"] is None
+    assert result["schema_validation"]["status"] == "not_checked"
+    assert result["hash_validation"]["status"] == "not_checked"
