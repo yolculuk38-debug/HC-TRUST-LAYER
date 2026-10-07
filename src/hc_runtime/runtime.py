@@ -6,7 +6,7 @@ import copy
 from dataclasses import dataclass, field
 from typing import Any, Mapping
 
-from hc_runtime.canonical_record_loader import MALFORMED_RECORD, CanonicalRecordLoader
+from hc_runtime.canonical_record_loader import DUPLICATE_RECORD, MALFORMED_RECORD, CanonicalRecordLoader
 from hc_runtime.contracts.decision_engine import TrustState, TrustStateDecisionEngine
 from hc_runtime.events import RuntimeEventStore
 from hc_runtime.contracts.redaction import redact_public_payload, redact_secret_like_text
@@ -79,6 +79,11 @@ class ValidatorPipeline:
             warnings.append("Canonical record lookup returned no record for this HC:// runtime request.")
             return result
 
+        if canonical_record is DUPLICATE_RECORD:
+            result["lookup_status"] = "duplicate_record_id"
+            warnings.append("Multiple canonical records claim this ID; verification was not performed.")
+            return result
+
         result["found"] = True
         result["lookup_status"] = "found"
         if canonical_record is MALFORMED_RECORD or not isinstance(canonical_record, dict):
@@ -135,7 +140,7 @@ class ValidatorPipeline:
         return result
 
     def _schema_validation_hook(self, *, qr_input: str, bridge_result: dict[str, Any]) -> dict[str, Any]:
-        checked = bridge_result["lookup_status"] not in {"not_configured", "missing", "malformed"}
+        checked = bridge_result["lookup_status"] not in {"not_configured", "missing", "malformed", "duplicate_record_id"}
         return {
             "checked": checked,
             "placeholder": True,
