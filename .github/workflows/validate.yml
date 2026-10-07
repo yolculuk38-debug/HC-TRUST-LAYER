@@ -12,6 +12,7 @@ on:
       - 'tests/**'
       - 'pyproject.toml'
       - 'requirements.txt'
+      - 'scripts/check_canonicalization_vectors.mjs'
       - '.github/workflows/validate.yml'
   pull_request:
     paths:
@@ -21,6 +22,7 @@ on:
       - 'tests/**'
       - 'pyproject.toml'
       - 'requirements.txt'
+      - 'scripts/check_canonicalization_vectors.mjs'
       - '.github/workflows/validate.yml'
 
 permissions:
@@ -127,3 +129,12 @@ jobs:
           tests/test_qr_record_bridge.py
           tests/test_qr_public_validator.py
           tests/test_qr_public_validator_cli.py
+
+      - name: Run shared Python canonicalization vectors and negative inputs
+        run: >-
+          PYTHONPATH=src pytest -q
+          tests/test_json_canonicalization.py
+          tests/test_cross_language_canonicalization_vectors.py
+
+      - name: Run independent ECMAScript and Web Crypto canonicalization vectors
+        run: node scripts/check_canonicalization_vectors.mjs

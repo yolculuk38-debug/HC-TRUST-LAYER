@@ -1,0 +1,104 @@
+{
+  "fixture_version": 1,
+  "profile": "rfc8785-jcs-v1",
+  "vectors": [
+    {
+      "id": "rfc-number-spelling",
+      "input_json": "[333333333.33333329,1E30,4.50,2e-3,0.000000000000000000000000001]",
+      "canonical": "[333333333.3333333,1e+30,4.5,0.002,1e-27]",
+      "utf8_hex": "5b3333333333333333332e333333333333332c31652b33302c342e352c302e3030322c31652d32375d",
+      "sha256": "7c6bc86d861387d823ae596b79ca0b26567dddc22a77acb1f4e06d441f555adf"
+    },
+    {
+      "id": "negative-zero",
+      "input_json": "[-0,-0.0,0,1.0]",
+      "canonical": "[0,0,0,1]",
+      "utf8_hex": "5b302c302c302c315d",
+      "sha256": "4a09c971672901816cf9043fd2d02e6bf4657585be4be39027eabad7e7e11752"
+    },
+    {
+      "id": "exponent-thresholds",
+      "input_json": "[1e-7,1e-6,1e20,1e21,5e-324]",
+      "canonical": "[1e-7,0.000001,100000000000000000000,1e+21,5e-324]",
+      "utf8_hex": "5b31652d372c302e3030303030312c3130303030303030303030303030303030303030302c31652b32312c35652d3332345d",
+      "sha256": "d35dcf295da6e6fe13fc82a013cd3048f8acb81ba37d3dfdfe5ee89aa52b4673"
+    },
+    {
+      "id": "safe-integer-bounds",
+      "input_json": "[9007199254740991,-9007199254740991]",
+      "canonical": "[9007199254740991,-9007199254740991]",
+      "utf8_hex": "5b393030373139393235343734303939312c2d393030373139393235343734303939315d",
+      "sha256": "84bad60c1793654a7cdca854230af90af531ecc8f7656e2c7b2bd91890017b37"
+    },
+    {
+      "id": "utf16-key-order",
+      "input_json": "{\"\\ufb33\":7,\"\\ud83d\\ude00\":6,\"\\u20ac\":5,\"\\u00f6\":4,\"\\u0080\":3,\"1\":2,\"\\r\":1}",
+      "canonical": "{\"\\r\":1,\"1\":2,\"\":3,\"ö\":4,\"€\":5,\"😀\":6,\"דּ\":7}",
+      "utf8_hex": "7b225c72223a312c2231223a322c22c280223a332c22c3b6223a342c22e282ac223a352c22f09f9880223a362c22efacb3223a377d",
+      "sha256": "4bd52d82f332c2e5c7206abd57c74b45dd4f0fef63ab7af87b8bde4481e450e7"
+    },
+    {
+      "id": "numeric-looking-keys",
+      "input_json": "{\"2\":\"two\",\"10\":\"ten\",\"1\":\"one\",\"01\":\"leading\"}",
+      "canonical": "{\"01\":\"leading\",\"1\":\"one\",\"10\":\"ten\",\"2\":\"two\"}",
+      "utf8_hex": "7b223031223a226c656164696e67222c2231223a226f6e65222c223130223a2274656e222c2232223a2274776f227d",
+      "sha256": "069431db23e880441452307962f1cbfe234325029f8adc1ce54afeda86c52973"
+    },
+    {
+      "id": "nested-order",
+      "input_json": "{\"z\":[{\"b\":2,\"a\":1}],\"a\":{\"d\":null,\"c\":true}}",
+      "canonical": "{\"a\":{\"c\":true,\"d\":null},\"z\":[{\"a\":1,\"b\":2}]}",
+      "utf8_hex": "7b2261223a7b2263223a747275652c2264223a6e756c6c7d2c227a223a5b7b2261223a312c2262223a327d5d7d",
+      "sha256": "f4bfa6f579d1226f25e21f81f68fcbcc495dd8cd8e94242e1b2ac3ec226314f0"
+    },
+    {
+      "id": "array-order",
+      "input_json": "[3,1,2,{\"b\":false,\"a\":null}]",
+      "canonical": "[3,1,2,{\"a\":null,\"b\":false}]",
+      "utf8_hex": "5b332c312c322c7b2261223a6e756c6c2c2262223a66616c73657d5d",
+      "sha256": "59d76cb0dcc3eaffe0985b2114c62f2d43c2bd3e98c161b8ca252eedb4479c5c"
+    },
+    {
+      "id": "turkish-emoji",
+      "input_json": "{\"şehir\":\"İstanbul\",\"text\":\"Türkiye 😀\",\"ı\":\"i\"}",
+      "canonical": "{\"text\":\"Türkiye 😀\",\"ı\":\"i\",\"şehir\":\"İstanbul\"}",
+      "utf8_hex": "7b2274657874223a2254c3bc726b69796520f09f9880222c22c4b1223a2269222c22c59f65686972223a22c4b07374616e62756c227d",
+      "sha256": "f366595a2fa27823c7709b640ffdc9977c4fa8a9cdd9b893e57c1c41ebf1f4c7"
+    },
+    {
+      "id": "composed-unicode",
+      "input_json": "{\"value\":\"\\u00e9\"}",
+      "canonical": "{\"value\":\"é\"}",
+      "utf8_hex": "7b2276616c7565223a22c3a9227d",
+      "sha256": "69e46f3f0688000ab7eeb9e40e6a516a254268cd644a24f4f69cf7ad063cf479"
+    },
+    {
+      "id": "decomposed-unicode",
+      "input_json": "{\"value\":\"e\\u0301\"}",
+      "canonical": "{\"value\":\"é\"}",
+      "utf8_hex": "7b2276616c7565223a2265cc81227d",
+      "sha256": "1b986c631da83257beca64c93ff3e5174908d558af7bb9dfb36b25a6198f7c38"
+    },
+    {
+      "id": "control-escapes",
+      "input_json": "{\"text\":\"\\u0000\\b\\t\\n\\f\\r\\\"\\\\\\/\"}",
+      "canonical": "{\"text\":\"\\u0000\\b\\t\\n\\f\\r\\\"\\\\/\"}",
+      "utf8_hex": "7b2274657874223a225c75303030305c625c745c6e5c665c725c225c5c2f227d",
+      "sha256": "997f29258dcf1c2af2af1cd2e02858e4c93dc4637189d62278a67426a6728fd2"
+    },
+    {
+      "id": "empty-values",
+      "input_json": "{\"object\":{},\"array\":[],\"string\":\"\"}",
+      "canonical": "{\"array\":[],\"object\":{},\"string\":\"\"}",
+      "utf8_hex": "7b226172726179223a5b5d2c226f626a656374223a7b7d2c22737472696e67223a22227d",
+      "sha256": "160df1cb7c08864a4d113733fe02cfbc06a3e39c4ce0e0273ca7f2bb42e0facc"
+    },
+    {
+      "id": "prototype-key",
+      "input_json": "{\"z\":0,\"__proto__\":{\"b\":2,\"a\":1}}",
+      "canonical": "{\"__proto__\":{\"a\":1,\"b\":2},\"z\":0}",
+      "utf8_hex": "7b225f5f70726f746f5f5f223a7b2261223a312c2262223a327d2c227a223a307d",
+      "sha256": "e20ae10698aa0121afdf52a3805edd136075fcb4faf51dad325707f719de3489"
+    }
+  ]
+}
