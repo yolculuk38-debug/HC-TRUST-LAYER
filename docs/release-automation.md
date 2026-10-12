@@ -54,7 +54,8 @@ A manual final approval step reduces risk for experimental and trust-critical in
 ### Experimental Release
 
 - Purpose: publish unstable or trial capabilities for early feedback.
-- Typical convention: pre-release tags (for example `v0.3.0-rc.1`, `v0.3.0-beta.1`) or clearly labeled release notes.
+- Use canonical PEP 440 versions in both `VERSION` and `pyproject.toml`: for example `0.3.0rc1` or `0.3.0b1`. Corresponding Git tags may be `v0.3.0rc1` or `v0.3.0b1`; omit the leading `v` from package metadata.
+- Alternative spellings such as `0.3.0-rc.1` are not accepted by this release gate. Convert them to the installed metadata spelling (`0.3.0rc1`) before preparing the release.
 - Notes: should explicitly declare constraints, risk level, and migration expectations.
 
 ### Security Release
@@ -84,6 +85,9 @@ No server or registry publication is started.
 The installed distribution version must exactly match `VERSION`; a mismatch
 fails before writing success evidence or uploading the wheel. Keep the static
 version in `pyproject.toml` synchronized with `VERSION` during release preparation.
+Both files must use the canonical PEP 440 spelling shown above. The gate compares
+the installed metadata spelling exactly; it does not normalize aliases. This
+keeps the handoff contract explicit without adding a smoke-only dependency.
 
 A successful run uploads `tested-wheel-<source commit>` containing that exact
 wheel and `verification.json`. The report records the wheel SHA-256, tested

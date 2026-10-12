@@ -37,7 +37,8 @@ def main() -> int:
     distribution = importlib.metadata.distribution("hc-trust-layer")
     expected_version = args.version_file.read_text(encoding="utf-8").strip()
     require(bool(expected_version) and distribution.version == expected_version,
-            "Installed distribution version does not match VERSION")
+            "Installed distribution version does not match VERSION; use the same canonical "
+            "PEP 440 spelling in VERSION and pyproject.toml (for example 0.3.0rc1)")
     direct_url = json.loads(distribution.read_text("direct_url.json") or "{}")
     require(
         direct_url.get("archive_info", {}).get("hashes", {}).get("sha256") == wheel_sha256,

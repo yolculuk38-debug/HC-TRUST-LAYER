@@ -45,3 +45,10 @@ version with the supplied checkout `VERSION` file before success evidence.
 A mismatch fails the gate; the release instructions require synchronizing
 `pyproject.toml` too. The report records the expected release version and adds
 the seventh check group, `release_version_binding`.
+
+October 12 Codex P2 follow-up (4210780977): require canonical PEP 440 spellings
+in the release contract, as offered in the review. Replace the incompatible
+experimental examples with `0.3.0rc1` and `0.3.0b1`, explain that alias spellings
+must be converted before release, and make the mismatch error actionable.
+The strict comparison remains deliberate; no dependency or runtime behavior is
+added merely to normalize release metadata.
