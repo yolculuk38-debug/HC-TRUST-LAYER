@@ -27,6 +27,15 @@ def create_app() -> FastAPI:
             "Not production-ready and not a truth guarantee."
         ),
         version="0.1.0",
+        # Native telemetry is opt-in for this local advisory reference runtime.
+        # A dependency upgrade must not enable global providers or OTLP exports.
+        telemetry={
+            "tracing": False,
+            "metrics": False,
+            "logs": False,
+            "operation_spans": False,
+            "auto_configure": False,
+        },
     )
 
     @app.exception_handler(RequestValidationError)
