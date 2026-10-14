@@ -20,9 +20,9 @@ Operating boundaries remain: `advisory_only=true`, `public_safe=true`, `truth_gu
 
 | Field | Status |
 | --- | --- |
-| Current phase | Independent external audit hardening. P0-1/#1229, P0-2/#1230/#1232, P0-3/#1231 core and P0-4 QR/#1233 are merged. |
-| Active focus | Bounded P0-4 certificate claim containment and direct tests; see `audit-followup-2026-09-18.md`. Completion requires current-head checks and matching review. |
-| Next up | Separate follow-ups for CI/shared-validator alignment, remaining unsupported non-QR claims, duplicate canonical IDs and broader audit acceptance gaps. |
+| Current phase | Independent external audit hardening. The B2 format report (#1254) and strict local manifest implementation (#1255) are merged. |
+| Active focus | B3 local verification result contract; see `result-contract-scope-2026-10-14.md`. Implementation must preserve human authority and separate local integrity from authentication, identity/trust, time, and policy. |
+| Next up | Implement and validate B3, then continue the remaining A3/A4 claim inventory and B4/C/D acceptance items in `audit-execution-queue.md`. |
 | Blocked / parked work | Signing, federation, authority expansion, source deletion/archival and production-readiness claims remain parked. The current certificate containment scope is not general protected-path authority. |
 | Do-not-repeat summary | P0-1/#1229 and P0-2/#1230 are completed. Earlier public-validator/explorer, advisory-agent, verification-package, repository-cleanup, governance, CodeQL, QR, and review-timing lines remain completed unless new evidence or reviewer direction identifies a concrete gap. |
 | Review / merge rule | Before merge: verify changed files, checks, review comments, risk scope, and review evidence tied to the current head SHA. Automation Gate PASS or an elapsed timer does not prove that Codex review completed. Require matching current-head review evidence or an explicit exact-head human exception before merge guidance; human final authority remains the governance boundary. |
@@ -39,7 +39,7 @@ Repository cleanup phase 1 mapping is completed and recorded by [`repository-cle
 
 ## Current phase
 
-Independent external audit P0 hardening is active. P0-1/#1229 and P0-2/#1230 are merged; P0-3 is the only active implementation slice. Repository cleanup phase 1 and the explicitly approved 76-branch cleanup remain complete, and all 36 held branches remain outside cleanup authority.
+Independent external audit hardening remains active. The bounded P0 slices and B1 product-promise update are merged. B2's format report (#1254) and strict manifest implementation (#1255) are merged; B3 result semantics are the next scoped item. Remaining A3/A4 inventory, B4 and C/D acceptance items remain open. Repository cleanup phase 1 and the explicitly approved 76-branch cleanup remain complete, and all 36 held branches remain outside cleanup authority.
 
 ## Repository status
 
