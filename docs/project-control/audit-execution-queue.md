@@ -15,8 +15,8 @@ or fabricated external acceptance. One PR at a time. Source baseline:
 | A3 single validation path | #1231 core; #1243 strict CI; #1246 recursive public/QR selection; #1252 CLI root context, ambiguity, symlink and empty-selection behavior | Public, QR and standalone CLI selectors merged; review remaining shared-path inventory before closing A3 |
 | A4 unsupported trust claims | #1233 QR, #1242 certificates, #1245 legacy exported-proof containment; #1250 connected evidence/consensus/status/passport containment | Declaration slice merged; inventory remains partial |
 | A5 installed wheel/release | #1248 outside-checkout installed wheel gate, release version binding and exact tested-artifact handoff | Gate merged; release publication remains manual |
-| B1 narrow product promise | Lead with local evidence-package integrity and limits | Pending |
-| B2 evidence-package format | Inspect/version manifest, algorithms, file metadata, extension/proof boundaries | Pending |
+| B1 narrow product promise | Lead with local evidence-package integrity and limits | #1253 merged; 25 PR and 13 post-merge checks passed; current-head review passed |
+| B2 evidence-package format | Inspect/version manifest, algorithms, file metadata, extension/proof boundaries | Pre-implementation scope report prepared; review/merge before format changes |
 | B3 result contract | Separate integrity, authentication, identity/trust, time, policy | Pending |
 | B4 developer experience | Actual-file example, install, JSON/human output, exit codes and SDK | Partial |
 | C1 standard signature | Standard library integration, key IDs, versioned envelope, explicit trust roots | Pending design/implementation |
@@ -293,5 +293,25 @@ places the static Public Validator demo on a separate path, and spells out that
 identity, issuer, external-time, witness-authority or real-world-truth guarantees.
 The code confirms these boundaries: sample `issuer_identity_verified`,
 `external_timestamp_verified`, `signatures_verified` and `witnesses_verified`
-are false. The README/quickstart documentation change is prepared as the next
-small docs-only slice; B1 remains pending until current-head review and CI merge.
+are false. The README/quickstart documentation change merged as #1253
+(`403ee6adace1e2b063ec6749b4f682cd7265c48c`). Its final head
+`9e205611a7408ef0d6bac9da6734d15f61f1bbe9` passed all 25 PR checks and received
+a clean Codex review. The P2 payload-content wording was corrected and the
+thread resolved. All 13 observed main checks, including the three CodeQL
+analyses, passed. The post-merge evidence is recorded on the PR.
+
+## B2 evidence-package format scope checkpoint
+
+`package-format-scope-2026-10-14.md` records source and synthetic-probe evidence
+before any B2 format implementation. The local hash-core manifest, flat v1
+derived-package schema, viewer fixtures and v2 architecture note are distinct
+shapes. The local parser currently accepts an absent or unknown `schema_version`,
+ignores unrecognized metadata, accepts duplicate file entries, and can report
+`VERIFIED` when `algorithm: md5` accompanies a `sha256` member; missing package
+and record IDs are also accepted. The JSON loader keeps the last repeated object
+key, and unlisted directory files are ignored. These are local format-contract
+facts; an external `manifest.json` symlink is also followed and can produce
+`VERIFIED`, while an external linked payload is rejected. They do not imply
+verification of listed payload meaning or proof authority. B2 implementation
+remains separate from B3 result semantics and from signature, time or trust
+integrations.
