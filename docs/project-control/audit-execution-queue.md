@@ -13,7 +13,7 @@ or fabricated external acceptance. One PR at a time. Source baseline:
 | A1 API/QR fail-closed | #1229 regressions; preserve no-evidence rejection | Core merged |
 | A2 canonicalization | #1230/#1232; #1247 shared Python/ECMAScript byte and digest vectors | Cross-language slice merged |
 | A3 single validation path | #1231 core; #1243 strict CI; #1246 recursive public/QR selection, relocated-root and symlink containment | Public lookup merged; standalone CLI absolute-path relocation remains |
-| A4 unsupported trust claims | #1233 QR, #1242 certificates, #1245 legacy exported-proof containment; connected evidence/consensus/status/passport slice in declaration-status-containment-2026-10-07.md | Declaration slice in review; inventory remains partial |
+| A4 unsupported trust claims | #1233 QR, #1242 certificates, #1245 legacy exported-proof containment; #1250 connected evidence/consensus/status/passport containment | Declaration slice merged; inventory remains partial |
 | A5 installed wheel/release | #1248 outside-checkout installed wheel gate, release version binding and exact tested-artifact handoff | Gate merged; release publication remains manual |
 | B1 narrow product promise | Lead with local evidence-package integrity and limits | Pending |
 | B2 evidence-package format | Inspect/version manifest, algorithms, file metadata, extension/proof boundaries | Pending |
@@ -254,3 +254,17 @@ passport promotion paths. See `declaration-status-containment-2026-10-07.md`.
 Final local validation on the actual #1249 merge: 79 focused and 1388 full-suite
 tests passed. Remaining media/proof/identity naming surfaces, CLI root context,
 product contract, signatures, lifecycle and operational work remain open.
+
+## October 14 security follow-up
+
+The maintainer supplied main-branch CodeQL alerts #13 and #14 for the static
+verification viewer. Prioritize the bounded text-rendering correction documented
+in `viewer-text-boundary-2026-10-14.md`, then resume the CLI root-context follow-up.
+The alerts are not manually dismissed; verify the main-branch scan after merge.
+
+#1250 merged as `dd27203180bf6c3ff95732e20efa3d0b4eb236f5` after 26 successful
+head checks and matching clean Codex summary 6164196392 / reaction 567054344.
+All 17 observed main checks succeeded. Installed-wheel run 38536011035 produced
+artifact 11880210596 after seven successful smoke groups, bound to that merge
+and wheel SHA-256 `d08d79f8fcf939c5f1c4df9b1b7a7a3dc439bfde2194524aff26033e71c74632`.
+Remaining claim surfaces and the broader audit remain open.

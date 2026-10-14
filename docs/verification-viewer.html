@@ -144,6 +144,33 @@
       return value === undefined || value === null || value === '' ? fallback : value;
     }
 
+    // This encoder is only for text placed in HTML templates. Plain-text
+    // exports and original JSON must keep their unencoded values.
+    function htmlText(value, fallback = 'unknown') {
+      return String(safe(value, fallback))
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function renderLoadError(title, explanation, errorMessage, footer = '') {
+      const card = document.createElement('article');
+      card.className = 'card';
+      const heading = document.createElement('h2');
+      heading.textContent = title;
+      card.appendChild(heading);
+      for (const [text, className] of [[explanation, ''], [safe(errorMessage), 'muted'], [footer, 'muted']]) {
+        if (!text) continue;
+        const paragraph = document.createElement('p');
+        paragraph.className = className;
+        paragraph.textContent = text;
+        card.appendChild(paragraph);
+      }
+      content.replaceChildren(card);
+    }
+
     function getCurrentHashValue() {
       return window.location.hash ? window.location.hash.slice(1).trim().toLowerCase() : '';
     }
@@ -384,7 +411,7 @@
           </article>
         `;
       }
-      const prettyJson = safe(JSON.stringify(pkg, null, 2));
+      const prettyJson = htmlText(JSON.stringify(pkg, null, 2));
       return `
         <article class="card">
           <h2>Raw Package Fields</h2>
@@ -401,7 +428,7 @@
       `;
     }
     function renderEmptyState(message) {
-      return `<p class="muted">${safe(message)}</p>`;
+      return `<p class="muted">${htmlText(message)}</p>`;
     }
     function renderTimeline(items, formatFn, emptyMessage) {
       if (!Array.isArray(items) || items.length === 0) return renderEmptyState(emptyMessage);
@@ -418,9 +445,9 @@
       const disputeActive = Array.isArray(pkg.dispute_indicators) && pkg.dispute_indicators.length > 0;
       const humanReviewRequired = !!pkg.human_review_required;
       const packageHealth = buildPackageHealth(pkg);
-      const confidence = safe(pkg.trust_confidence);
+      const confidence = htmlText(pkg.trust_confidence);
       const warningHtml = packageWarnings.length > 0
-        ? `<article class="card"><h2>Package Warnings</h2>${renderList(packageWarnings, (w) => safe(w))}</article>`
+        ? `<article class="card"><h2>Package Warnings</h2>${renderList(packageWarnings, (w) => htmlText(w))}</article>`
         : '';
       const trustSummary = deriveTrustSummaryBand(pkg, packageWarnings);
 
@@ -453,9 +480,9 @@
         </article>
         <article class="card">
           <h2>Trust Result Card</h2>
-          <p><strong>Package source:</strong> ${safe(packageSourceLabel)}</p>
-          <p><strong>Package:</strong> <span class="mono">${safe(pkg.package_id)}</span></p>
-          <p><span class="result ${trustClass}">${trustResult}</span></p>
+          <p><strong>Package source:</strong> ${htmlText(packageSourceLabel)}</p>
+          <p><strong>Package:</strong> <span class="mono">${htmlText(pkg.package_id)}</span></p>
+          <p><span class="result ${trustClass}">${htmlText(trustResult)}</span></p>
           <p><strong>Result label:</strong> ${summaryLabel}</p>
           <p><strong>Trust confidence:</strong> ${confidence}</p>
           <p><strong>Human review status:</strong> ${humanReviewRequired ? 'Human review required' : 'No explicit review flag in this package'}</p>
@@ -471,12 +498,12 @@
           </div>
         </article>
 
-        <article class="card"><h2>Content Hash</h2><p class="mono">${safe(pkg.content_hash)}</p></article>
+        <article class="card"><h2>Content Hash</h2><p class="mono">${htmlText(pkg.content_hash)}</p></article>
 
         <article class="card"><h2>Package Health</h2>
           <p class="muted">Advisory-only summary for quick package completeness and review routing. This is not a truth score and does not replace human-supervised validation.</p>
           <ul>
-            <li><strong>Package metadata:</strong> ${safe(packageHealth.metadataSummary)}</li>
+            <li><strong>Package metadata:</strong> ${htmlText(packageHealth.metadataSummary)}</li>
             <li><strong>Provenance events count:</strong> ${packageHealth.provenanceEventsCount}</li>
             <li><strong>Validator reviews count:</strong> ${packageHealth.validatorReviewsCount}</li>
             <li><strong>Replay indicators:</strong> ${packageHealth.replayStatus}</li>
@@ -485,18 +512,18 @@
           </ul>
         </article>
 
-        <article class="card"><h2>Provenance Summary</h2><p>${safe(pkg.provenance_summary)}</p><p class="muted">Provenance explains where this package came from and how continuity appears in the visible audit trail scope.</p></article>
+        <article class="card"><h2>Provenance Summary</h2><p>${htmlText(pkg.provenance_summary)}</p><p class="muted">Provenance explains where this package came from and how continuity appears in the visible audit trail scope.</p></article>
 
         <article class="card"><h2>[Timeline] Provenance Timeline</h2>
           <p class="muted">Simple timeline view for continuity reading on desktop and mobile. Advisory interpretation only.</p>
           ${renderTimeline(
             pkg.provenance_timeline,
             (e, idx) => `
-              <p><span class="label">Step ${idx + 1}:</span><span class="chip">${safe(e.stage)}</span></p>
-              <p>${safe(e.actor)}</p>
+              <p><span class="label">Step ${idx + 1}:</span><span class="chip">${htmlText(e.stage)}</span></p>
+              <p>${htmlText(e.actor)}</p>
               <div class="timeline-meta">
-                <span><span class="label">Timestamp:</span>${safe(e.timestamp)}</span>
-                <span><span class="label">Status:</span>${safe(e.status)}</span>
+                <span><span class="label">Timestamp:</span>${htmlText(e.timestamp)}</span>
+                <span><span class="label">Status:</span>${htmlText(e.status)}</span>
               </div>
             `,
             'No provenance timeline entries are included in this package. Human-supervised validation is recommended before consequential decisions.'
@@ -508,10 +535,10 @@
           ${renderTimeline(
             pkg.validator_reviews,
             (r, idx) => `
-              <p><span class="label">Review ${idx + 1}:</span><span class="chip">${safe(r.decision)}</span></p>
-              <p>${safe(r.validator_id)}</p>
-              <div class="timeline-meta"><span><span class="label">Reviewed at:</span>${safe(r.reviewed_at)}</span></div>
-              <p class="muted">${safe(r.notes)}</p>
+              <p><span class="label">Review ${idx + 1}:</span><span class="chip">${htmlText(r.decision)}</span></p>
+              <p>${htmlText(r.validator_id)}</p>
+              <div class="timeline-meta"><span><span class="label">Reviewed at:</span>${htmlText(r.reviewed_at)}</span></div>
+              <p class="muted">${htmlText(r.notes)}</p>
             `,
             'No validator review entries are listed in this package. Treat the viewer output as incomplete advisory context.'
           )}
@@ -523,7 +550,7 @@
             ${replayDetected ? '<p class="advisory"><strong>Advisory warning:</strong> Replay indicators are caution signals and require human-supervised validation.</p>' : ''}
             ${renderTimeline(
               pkg.replay_indicators,
-              (d, idx) => `<p><span class="label">Signal ${idx + 1}:</span><span class="mono">${safe(typeof d === 'string' ? d : JSON.stringify(d))}</span></p>`,
+              (d, idx) => `<p><span class="label">Signal ${idx + 1}:</span><span class="mono">${htmlText(typeof d === 'string' ? d : JSON.stringify(d))}</span></p>`,
               'No replay indicators are present in this package scope.'
             )}
           </article>
@@ -533,7 +560,7 @@
             ${disputeActive ? '<p class="advisory"><strong>Advisory warning:</strong> Dispute indicators mean interpretation is unresolved in current package scope.</p>' : ''}
             ${renderTimeline(
               pkg.dispute_indicators,
-              (id, idx) => `<p><span class="label">Indicator ${idx + 1}:</span><span class="mono">${safe(typeof id === 'string' ? id : JSON.stringify(id))}</span></p>`,
+              (id, idx) => `<p><span class="label">Indicator ${idx + 1}:</span><span class="mono">${htmlText(typeof id === 'string' ? id : JSON.stringify(id))}</span></p>`,
               'No dispute indicators are present in this package scope.'
             )}
           </article>
@@ -541,10 +568,10 @@
 
         <article class="card"><h2>[Audit] Audit Snapshot</h2>
           <p class="advisory"><strong>Advisory boundary:</strong> Audit snapshot values summarize visible package scope only and do not guarantee full canonical record continuity.</p>
-          <p><strong>Audit trail ref:</strong> <span class="mono">${safe(pkg.audit_snapshot?.audit_trail_ref)}</span></p>
-          <p><strong>Last event:</strong> ${safe(pkg.audit_snapshot?.last_event)}</p>
-          <p><strong>Review boundary:</strong> ${safe(pkg.audit_snapshot?.review_boundary)}</p>
-          <p><strong>Generated at:</strong> ${safe(pkg.generated_at)}</p>
+          <p><strong>Audit trail ref:</strong> <span class="mono">${htmlText(pkg.audit_snapshot?.audit_trail_ref)}</span></p>
+          <p><strong>Last event:</strong> ${htmlText(pkg.audit_snapshot?.last_event)}</p>
+          <p><strong>Review boundary:</strong> ${htmlText(pkg.audit_snapshot?.review_boundary)}</p>
+          <p><strong>Generated at:</strong> ${htmlText(pkg.generated_at)}</p>
         </article>
 
         ${renderRawPackageFields(pkg)}
@@ -611,7 +638,7 @@
       } catch (error) {
         currentPackage = null;
         updateActionButtons();
-        content.innerHTML = `<article class="card"><h2>Load Error</h2><p>Could not load <span class="mono">${entry.file}</span>.</p><p class="muted">${safe(error.message)}</p></article>`;
+        renderLoadError('Load Error', `Could not load ${entry.file}.`, error.message);
       }
     }
 
@@ -633,7 +660,8 @@
         currentPackage = null;
         updateActionButtons();
         uploadStatus.textContent = 'Local package load failed.';
-        content.innerHTML = `<article class="card"><h2>Invalid Package</h2><p>Could not parse local JSON package.</p><p class="muted">${safe(error.message)}</p><p class="muted">Fail-safe behavior preserved: viewer did not render invalid JSON.</p></article>`;
+        renderLoadError('Invalid Package', 'Could not parse local JSON package.', error.message,
+          'Fail-safe behavior preserved: viewer did not render invalid JSON.');
       }
     }
 

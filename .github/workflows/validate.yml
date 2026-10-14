@@ -13,6 +13,7 @@ on:
       - 'pyproject.toml'
       - 'requirements.txt'
       - 'scripts/check_canonicalization_vectors.mjs'
+      - 'docs/verification-viewer.html'
       - '.github/workflows/validate.yml'
   pull_request:
     paths:
@@ -23,6 +24,7 @@ on:
       - 'pyproject.toml'
       - 'requirements.txt'
       - 'scripts/check_canonicalization_vectors.mjs'
+      - 'docs/verification-viewer.html'
       - '.github/workflows/validate.yml'
 
 permissions:
@@ -138,6 +140,9 @@ jobs:
 
       - name: Run independent ECMAScript and Web Crypto canonicalization vectors
         run: node scripts/check_canonicalization_vectors.mjs
+
+      - name: Run verification viewer text boundary regressions
+        run: PYTHONPATH=src pytest -q tests/test_verification_viewer_text_boundary.py
 
       - name: Run legacy declaration and status containment regressions
         run: >-
