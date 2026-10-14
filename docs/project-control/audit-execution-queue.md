@@ -309,6 +309,7 @@ shapes. The local parser currently accepts an absent or unknown `schema_version`
 ignores unrecognized metadata, accepts duplicate file entries, and can report
 `VERIFIED` when `algorithm: md5` accompanies a `sha256` member; missing package
 and record IDs are also accepted. The JSON loader keeps the last repeated object
-key. These are local format-contract facts; they do not imply verification of
-listed payload meaning or proof authority. B2 implementation remains separate
-from B3 result semantics and from signature, time or trust integrations.
+key, and unlisted directory files are ignored. These are local format-contract
+facts; they do not imply verification of listed payload meaning or proof
+authority. B2 implementation remains separate from B3 result semantics and
+from signature, time or trust integrations.

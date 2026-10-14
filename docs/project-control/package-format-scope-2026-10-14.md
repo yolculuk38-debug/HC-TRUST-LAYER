@@ -32,6 +32,10 @@ implemented schema.
   file-entry properties are ignored by the verifier.
 - Repeated file paths are processed as separate entries; there is no duplicate
   path rejection or declared metadata interpretation.
+- The verifier checks only manifest-listed files and recognized optional proof
+  references; it does not enumerate the package directory for unlisted files.
+  A temporary package with an extra `unlisted-record.json` still returned
+  `VERIFIED` with one file checked.
 - Optional issuer, timestamp and witness references are locally hash-checked;
   their referenced JSON receives limited structural checks. They do not
   authenticate an issuer, external time source or witness authority. The
@@ -50,6 +54,7 @@ Disposable temporary-package probes against the current source confirmed:
 | No `schema_version` | `VERIFIED`; result version is `null` |
 | Same file path listed twice with the same digest | `VERIFIED`; two entries counted |
 | Same `sha256` object key repeated with an invalid value first and a matching value last | `VERIFIED`; standard JSON parsing keeps the last value |
+| Extra unreferenced `unlisted-record.json` beside a valid listed file | `VERIFIED`; extra file is ignored |
 
 These probes show current parser behavior only; they do not establish an intended
 compatibility contract.
@@ -74,6 +79,12 @@ changing code, use this contract for the first implementation slice:
 - Define which file-entry metadata is meaningful to the verifier. Treat all
   other listed payload bytes as opaque; a matching digest does not validate
   their format or meaning.
+- Define the complete on-disk inventory. Exclude `manifest.json` from its own
+  references; require every other regular file to be covered by a recognized
+  file or proof entry, or an explicitly typed metadata/documentation entry with
+  a digest. Reject unreferenced files so a package directory cannot carry
+  silently associated content. Move the fixture README outside the package or
+  list it with a documentation role.
 - Reject duplicate normalized file paths. Define path normalization and
   package-boundary rules in the schema/validator contract.
 - Reject unrecognized top-level and file-entry properties by default. If an
@@ -105,8 +116,8 @@ handling belong to the separate operational-security and portability reviews.
 
 The implementation review should verify required identifiers, strict version
 handling, duplicate-key rejection, digest-label consistency, duplicate-path
-behavior, metadata and extension treatment, and each supported proof parser
-with positive and negative fixtures. Documentation must state that listed
-payload bytes are only integrity-checked and may remain syntactically or
-semantically opaque. Compatibility impact for each existing local manifest
-fixture must be explicit before merge.
+behavior, complete on-disk inventory, metadata and extension treatment, and
+each supported proof parser with positive and negative fixtures. Documentation
+must state that listed payload bytes are only integrity-checked and may remain
+syntactically or semantically opaque. Compatibility impact for each existing
+local manifest fixture must be explicit before merge.
