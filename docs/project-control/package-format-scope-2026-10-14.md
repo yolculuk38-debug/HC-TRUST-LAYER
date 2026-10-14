@@ -20,8 +20,12 @@ implemented schema.
 ## Repository evidence
 
 - `src/hc_trust/verification_package.py` requires a parseable JSON object and a
-  `files` list, but does not require or validate `schema_version`. The supplied
-  version is copied into the result when present.
+  `files` list, but does not require or validate `package_id`, `record_id` or
+  `schema_version`. The supplied version is copied into the result when present;
+  missing IDs are returned as `null`.
+- The manifest loader uses the standard JSON decoder, which silently keeps the
+  last occurrence of a duplicate object key. Duplicate `files`, `path` or digest
+  keys can therefore change the parsed package meaning without an error.
 - `SUPPORTED_DIGEST_ALGORITHMS` contains only SHA-256. File entries may use
   `sha256`, or `digest`/`hash` with an optional `algorithm`. The direct `sha256`
   member returns before the algorithm label is checked. Other top-level and
@@ -42,9 +46,10 @@ Disposable temporary-package probes against the current source confirmed:
 
 | Input variation | Observed result |
 | --- | --- |
-| Unknown version, arbitrary top-level extension, `algorithm: "md5"` alongside a valid `sha256` member | `VERIFIED`; `sha256_only: true` |
+| Missing package/record IDs, unknown version, arbitrary top-level extension, `algorithm: "md5"` alongside a valid `sha256` member | `VERIFIED`; IDs are `null`; `sha256_only: true` |
 | No `schema_version` | `VERIFIED`; result version is `null` |
 | Same file path listed twice with the same digest | `VERIFIED`; two entries counted |
+| Same `sha256` object key repeated with an invalid value first and a matching value last | `VERIFIED`; standard JSON parsing keeps the last value |
 
 These probes show current parser behavior only; they do not establish an intended
 compatibility contract.
@@ -56,8 +61,12 @@ derived-package schema, the viewer fixtures and the future v2 concept. Give it a
 unique, required v1 schema identifier and a repository-owned JSON Schema. Before
 changing code, use this contract for the first implementation slice:
 
-- Require the exact supported manifest version and reject missing or unknown
-  versions with a nonzero result.
+- Require non-empty `package_id` and `record_id`, plus the exact supported
+  manifest version. Reject missing IDs and missing or unknown versions with a
+  nonzero result.
+- Parse the manifest and supported proof JSON with duplicate-object-key
+  detection. Reject repeated keys at any object depth rather than accepting a
+  last-value-wins interpretation.
 - Define one canonical file digest representation. Preserve SHA-256 as the only
   supported algorithm; if an algorithm label is present, require it to agree
   with the digest representation. Reject conflicting aliases rather than
@@ -94,9 +103,10 @@ handling belong to the separate operational-security and portability reviews.
 
 ## Acceptance
 
-The implementation review should verify strict version handling, digest-label
-consistency, duplicate-path behavior, metadata and extension treatment, and
-each supported proof parser with positive and negative fixtures. Documentation
-must state that listed payload bytes are only integrity-checked and may remain
-syntactically or semantically opaque. Compatibility impact for each existing
-local manifest fixture must be explicit before merge.
+The implementation review should verify required identifiers, strict version
+handling, duplicate-key rejection, digest-label consistency, duplicate-path
+behavior, metadata and extension treatment, and each supported proof parser
+with positive and negative fixtures. Documentation must state that listed
+payload bytes are only integrity-checked and may remain syntactically or
+semantically opaque. Compatibility impact for each existing local manifest
+fixture must be explicit before merge.
