@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from typing import Any
 
 from consensus_rules import ConsensusStatus
@@ -16,40 +17,32 @@ def consensus_to_status(
     *,
     base_signals: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Map consensus result into centralized verification status signals."""
-
-    signals = dict(base_signals or {})
-    risk_flags = list(signals.get("risk_flags", []) or [])
-
-    status = consensus_result.get("status") if isinstance(consensus_result, dict) else None
-    witness_count = int(consensus_result.get("witness_count", 0) or 0) if isinstance(consensus_result, dict) else 0
-
-    signals["witness_count"] = max(int(signals.get("witness_count", 0) or 0), witness_count)
-
-    if status == ConsensusStatus.CONSENSUS_REACHED.value:
-        signals.setdefault("hash_verified", True)
-        signals.setdefault("trust_score", 85)
-    elif status == ConsensusStatus.PARTIAL_CONSENSUS.value:
-        signals.setdefault("hash_verified", True)
-        signals.setdefault("trust_score", 60)
-        risk_flags.append("partial_consensus")
-    elif status == ConsensusStatus.CONFLICT.value:
-        signals["invalid"] = True
-        risk_flags.append("consensus_conflict")
-    elif status == ConsensusStatus.INSUFFICIENT_WITNESSES.value:
-        signals.setdefault("hash_verified", True)
-        risk_flags.append("insufficient_witnesses")
+    """Preserve consensus declarations without inventing successful proof checks."""
+    signals = deepcopy(base_signals) if base_signals is not None else {}
+    if not isinstance(signals, dict):
+        status_result = determine_verification_status(signals)
     else:
-        signals["invalid"] = True
-        risk_flags.append("invalid_consensus_result")
-
-    signals["risk_flags"] = risk_flags
-    status_result = determine_verification_status(signals)
+        signals["consensus_claim"] = deepcopy(consensus_result)
+        status = consensus_result.get("status") if isinstance(consensus_result, dict) else None
+        count = consensus_result.get("witness_count", 0) if isinstance(consensus_result, dict) else None
+        if (not isinstance(status, str) or status not in {item.value for item in ConsensusStatus}
+                or status in {ConsensusStatus.CONFLICT.value, ConsensusStatus.INVALID_INPUT.value}
+                or type(count) is not int or count < 0):
+            signals["invalid"] = True
+        status_result = determine_verification_status(signals)
 
     return {
         "integration_version": INTEGRATION_VERSION,
-        "consensus_result": consensus_result,
+        "source_claims": {"consensus_result": deepcopy(consensus_result),
+                          "base_signals": deepcopy(base_signals)},
         "status_result": status_result,
+        "source_claims_verified": False,
+        "trusted": False,
+        "verified": False,
+        "advisory_only": True,
+        "public_safe": False,
+        "truth_guarantee": False,
+        "human_review_required": True,
     }
 
 

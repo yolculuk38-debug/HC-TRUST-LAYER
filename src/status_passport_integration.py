@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from typing import Any
 
 from trust_passport import build_trust_passport
@@ -25,14 +26,9 @@ def build_status_passport(
 
     status_result = determine_verification_status(signals)
 
-    response = dict(verification_response or {})
-    response.setdefault("decision", status_result["state"])
-    response.setdefault("trusted", status_result["trusted"])
-    response.setdefault("signals", {})
-    response["signals"].setdefault("trust_score", status_result.get("trust_score", 0))
-    response["signals"].setdefault("hash", bool(signals.get("hash_verified", False)))
-    response["signals"].setdefault("consensus", int(signals.get("witness_count", 0) or 0) >= 3)
-    response["signals"].setdefault("audit", bool(signals.get("provenance_locked", False)))
+    response = verification_response if verification_response is not None else {
+        "decision": status_result["state"], "trusted": False,
+    }
 
     passport = build_trust_passport(
         record_id,
@@ -42,6 +38,10 @@ def build_status_passport(
         provenance_summary=provenance_summary,
         audit_summary=audit_summary,
     )
+    passport["source_claims"]["status_signals"] = deepcopy(signals)
+    if status_result["state"] == "INVALID":
+        passport["status"] = passport["decision"] = "INVALID"
+    passport["risk_flags"] = sorted(set(passport["risk_flags"] + status_result["risk_flags"]))
     passport["integration_version"] = INTEGRATION_VERSION
     passport["status_engine"] = status_result
     passport["verification_level"] = status_result["level"]

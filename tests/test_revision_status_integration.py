@@ -19,7 +19,7 @@ def test_verified_revision_status():
         },
     )
 
-    assert result["status_result"]["state"] in {"PARTIAL", "VERIFIED"}
+    assert result["status_result"]["state"] == "REVIEW_REQUIRED"
 
 
 def test_broken_revision_chain_forces_invalid():

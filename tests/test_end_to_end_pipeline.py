@@ -2,7 +2,7 @@ from trust_orchestrator import orchestrate_trust_pipeline
 
 
 
-def test_end_to_end_verified_pipeline():
+def test_complete_declarations_require_review():
     result = orchestrate_trust_pipeline(
         evidence_bundle={
             "hash": True,
@@ -24,9 +24,9 @@ def test_end_to_end_verified_pipeline():
         revoked=False,
     )
 
-    assert result["evidence"]["decision"] == "VERIFIED"
-    assert result["policy"]["decision"] == "ALLOW"
-    assert result["risk"]["risk_level"] == "LOW"
+    assert result["evidence"]["decision"] == "REVIEW_REQUIRED"
+    assert result["policy"]["decision"] == "REVIEW_REQUIRED"
+    assert result["risk"]["risk_level"] == "MEDIUM"
 
 
 

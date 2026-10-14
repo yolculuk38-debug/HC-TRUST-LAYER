@@ -19,7 +19,7 @@ def test_low_risk_graph_passport():
         graph,
     )
 
-    assert passport["status_engine"]["state"] in {"VERIFIED", "PARTIAL"}
+    assert passport["status_engine"]["state"] == "REVIEW_REQUIRED"
 
 
 def test_high_risk_graph_passport():

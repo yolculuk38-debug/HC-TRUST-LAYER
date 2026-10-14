@@ -31,8 +31,8 @@ def orchestrate_trust_pipeline(
     policy_result = evaluate_policy(
         evidence_score=evidence_result.get("evidence_score", 0),
         manipulation_risk=manipulation_result.get("risk", "LOW"),
-        registry_trusted=registry_trusted,
-        federation_trusted=federation_trusted,
+        registry_trusted=False,
+        federation_trusted=False,
         revoked=revoked,
     )
 
@@ -47,6 +47,14 @@ def orchestrate_trust_pipeline(
         "manipulation": manipulation_result,
         "policy": policy_result,
         "risk": risk_result,
+        "source_claims": {"registry_trusted": registry_trusted, "federation_trusted": federation_trusted},
+        "source_claims_verified": False,
+        "trusted": False,
+        "verified": False,
+        "advisory_only": True,
+        "public_safe": False,
+        "truth_guarantee": False,
+        "human_review_required": True,
     }
 
 

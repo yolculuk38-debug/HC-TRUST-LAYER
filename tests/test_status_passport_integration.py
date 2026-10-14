@@ -13,8 +13,8 @@ def test_verified_status_passport():
         },
     )
 
-    assert passport["status_engine"]["state"] == "VERIFIED"
-    assert passport["verification_level"] == "LEVEL_5_FEDERATED_VERIFIED"
+    assert passport["status_engine"]["state"] == "REVIEW_REQUIRED"
+    assert passport["verification_level"] == "LEVEL_0_UNVERIFIED"
 
 
 def test_review_required_passport():

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from typing import Any
 
 from revision_chain import RevisionChainStatus, verify_revision_chain
@@ -19,15 +20,10 @@ def verify_revision_status(
     """Verify revision chain and map result into centralized status engine."""
 
     chain_result = verify_revision_chain(revisions)
-    signals = dict(base_signals or {})
-
-    if chain_result.get("status") != RevisionChainStatus.VERIFIED:
+    signals = deepcopy(base_signals) if base_signals is not None else {}
+    if isinstance(signals, dict) and chain_result.get("status") != RevisionChainStatus.VERIFIED:
         signals["invalid"] = True
-        signals.setdefault("risk_flags", [])
-        signals["risk_flags"] = list(signals["risk_flags"]) + ["revision_chain_broken"]
-    else:
-        signals["provenance_locked"] = True
-        signals.setdefault("hash_verified", True)
+    # A valid local revision hash chain does not authenticate provenance or content.
 
     status_result = determine_verification_status(signals)
 
@@ -35,6 +31,12 @@ def verify_revision_status(
         "integration_version": INTEGRATION_VERSION,
         "chain_result": chain_result,
         "status_result": status_result,
+        "trusted": False,
+        "verified": False,
+        "advisory_only": True,
+        "public_safe": False,
+        "truth_guarantee": False,
+        "human_review_required": True,
     }
 
 

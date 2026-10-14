@@ -32,8 +32,15 @@ def evaluate_witness_consensus(
     valid_items = []
     validation_results = []
 
-    for record in witness_records:
-        validation = validate_witness_record(record)
+    for record in witness_records if isinstance(witness_records, list) else []:
+        if isinstance(record, dict) and any(
+            key in record and not isinstance(record[key], str)
+            for key in ("witness_standard_version", "witness_type", "verdict")
+        ):
+            validation = {"status": WitnessStandardStatus.INVALID, "valid": False,
+                          "reason": "witness enum fields must be strings"}
+        else:
+            validation = validate_witness_record(record)
         validation_results.append({
             "witness_id": record.get("witness_id") if isinstance(record, dict) else None,
             "validation": validation,
@@ -43,7 +50,7 @@ def evaluate_witness_consensus(
             valid_items.append(witness_to_consensus_item(record))
 
     consensus = evaluate_consensus(
-        valid_items,
+        valid_items if isinstance(witness_records, list) else witness_records,
         min_witnesses=min_witnesses,
         threshold=threshold,
     )
@@ -51,9 +58,19 @@ def evaluate_witness_consensus(
     return {
         "integration_version": INTEGRATION_VERSION,
         "valid_witness_count": len(valid_items),
-        "total_witness_count": len(witness_records),
+        "witness_validation_scope": "declaration_shape_only",
+        "total_witness_count": len(witness_records) if isinstance(witness_records, list) else 0,
         "validation_results": validation_results,
         "consensus": consensus,
+        "trusted": False,
+        "verified": False,
+        "signatures_verified": False,
+        "identity_verified": False,
+        "witness_independence_verified": False,
+        "advisory_only": True,
+        "public_safe": False,
+        "truth_guarantee": False,
+        "human_review_required": True,
     }
 
 
