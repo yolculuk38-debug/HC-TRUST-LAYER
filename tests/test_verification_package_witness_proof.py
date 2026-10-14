@@ -85,6 +85,23 @@ def test_witness_proof_present_with_subject_binding(tmp_path):
     assert result["truth_guarantee"] is False
 
 
+def test_witness_proof_rejects_uppercase_subject_digest(tmp_path):
+    package = tmp_path / "package"
+    package.mkdir()
+    proof_text = _witness_text(subject_sha256=_sha256_text("source-ok").upper())
+    _write_package(
+        package,
+        proof_entry={"path": "witness-proof.json", "sha256": _sha256_text(proof_text)},
+        proof_text=proof_text,
+    )
+
+    result = verify_verification_package(package)
+
+    assert result["status"] == "INVALID"
+    assert result["witness_proof"]["reason"] == "witness_proof_subject_sha256_invalid"
+    assert "witness_proof_subject_sha256_invalid:witness-proof.json" in result["conflicting_evidence"]
+
+
 def test_witness_proof_rejects_manifest_only_content_hash_subject(tmp_path):
     package = tmp_path / "package"
     package.mkdir()

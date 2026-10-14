@@ -96,6 +96,26 @@ def test_timestamp_proof_rejects_invalid_claimed_at(tmp_path):
     assert "timestamp_proof_claimed_at_invalid:timestamp-proof.json" in result["conflicting_evidence"]
 
 
+def test_timestamp_proof_rejects_uppercase_subject_digest(tmp_path):
+    package = tmp_path / "package"
+    package.mkdir()
+    timestamp_text = json.dumps(
+        {"claimed_at": "2026-06-12T00:00:00Z", "subject_sha256": _sha256_text("source-ok").upper()},
+        sort_keys=True,
+    )
+    _write_package(
+        package,
+        timestamp_entry={"path": "timestamp-proof.json", "sha256": _sha256_text(timestamp_text)},
+        timestamp_text=timestamp_text,
+    )
+
+    result = verify_verification_package(package)
+
+    assert result["status"] == "INVALID"
+    assert result["timestamp_proof"]["reason"] == "timestamp_proof_subject_sha256_invalid"
+    assert "timestamp_proof_subject_sha256_invalid:timestamp-proof.json" in result["conflicting_evidence"]
+
+
 def test_timestamp_proof_rejects_unrelated_subject_hash(tmp_path):
     package = tmp_path / "package"
     package.mkdir()

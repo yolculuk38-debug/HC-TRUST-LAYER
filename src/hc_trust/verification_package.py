@@ -722,12 +722,12 @@ def _verify_timestamp_proof_entry(
         result.update({"status": "INVALID", "reason": "timestamp_proof_claimed_at_invalid"})
         return result
 
-    if not _looks_like_sha256(proof["subject_sha256"]):
+    if not _is_canonical_sha256(proof["subject_sha256"]):
         conflicting_evidence.append(f"timestamp_proof_subject_sha256_invalid:{relative_path}")
         result.update({"status": "INVALID", "reason": "timestamp_proof_subject_sha256_invalid"})
         return result
 
-    subject_sha256 = proof["subject_sha256"].lower()
+    subject_sha256 = proof["subject_sha256"]
     if subject_sha256 not in local_subject_sha256s:
         conflicting_evidence.append(f"timestamp_proof_subject_sha256_mismatch:{relative_path}")
         result.update(
@@ -833,8 +833,8 @@ def _verify_witness_proof_entry(
         result.update({"status": "INVALID", "reason": "witness_proof_required_field_missing"})
         return result
 
-    subject_sha256 = proof["subject_sha256"].lower()
-    if not _looks_like_sha256(subject_sha256):
+    subject_sha256 = proof["subject_sha256"]
+    if not _is_canonical_sha256(subject_sha256):
         conflicting_evidence.append(f"witness_proof_subject_sha256_invalid:{relative_path}")
         result.update({"status": "INVALID", "reason": "witness_proof_subject_sha256_invalid"})
         return result
@@ -911,6 +911,10 @@ def _looks_like_sha256(value: str) -> bool:
     except ValueError:
         return False
     return True
+
+
+def _is_canonical_sha256(value: str) -> bool:
+    return len(value) == 64 and all(character in "0123456789abcdef" for character in value)
 
 
 def _is_valid_claimed_at(value: str) -> bool:
