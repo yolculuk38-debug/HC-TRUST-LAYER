@@ -2,7 +2,7 @@
 
 Status: non-canonical example package.
 
-This package demonstrates the documented `signature_proof` and `witness_proof` fixture shapes for local verification-package planning.
+This package demonstrates an opaque signature-like fixture file and a locally parsed witness note. The local verifier hashes the signature-like bytes but does not parse or validate a signature, signer identity, or witness authority.
 
 It is demo evidence only. It does not verify a real cryptographic signature, witness authority, identity finality, legal truth, C2PA assertion, OpenTimestamps attestation, W3C Verifiable Credential, federation state, or production readiness.
 

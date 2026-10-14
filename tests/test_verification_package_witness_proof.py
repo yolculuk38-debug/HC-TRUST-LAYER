@@ -2,7 +2,10 @@ import hashlib
 import json
 
 from hc_trust.cli import main
-from hc_trust.verification_package import verify_verification_package
+from hc_trust.verification_package import (
+    VERIFICATION_PACKAGE_MANIFEST_SCHEMA_VERSION,
+    verify_verification_package,
+)
 
 
 def _sha256_text(value: str) -> str:
@@ -14,6 +17,7 @@ def _write_package(package, proof_entry=None, proof_text=None, manifest_extra=No
     artifact.parent.mkdir(parents=True)
     artifact.write_text("source-ok", encoding="utf-8")
     manifest = {
+        "schema_version": VERIFICATION_PACKAGE_MANIFEST_SCHEMA_VERSION,
         "package_id": "HC-PKG-WITNESS",
         "record_id": "HC-RECORD-WITNESS",
         "files": [
@@ -81,6 +85,23 @@ def test_witness_proof_present_with_subject_binding(tmp_path):
     assert result["truth_guarantee"] is False
 
 
+def test_witness_proof_rejects_uppercase_subject_digest(tmp_path):
+    package = tmp_path / "package"
+    package.mkdir()
+    proof_text = _witness_text(subject_sha256=_sha256_text("source-ok").upper())
+    _write_package(
+        package,
+        proof_entry={"path": "witness-proof.json", "sha256": _sha256_text(proof_text)},
+        proof_text=proof_text,
+    )
+
+    result = verify_verification_package(package)
+
+    assert result["status"] == "INVALID"
+    assert result["witness_proof"]["reason"] == "witness_proof_subject_sha256_invalid"
+    assert "witness_proof_subject_sha256_invalid:witness-proof.json" in result["conflicting_evidence"]
+
+
 def test_witness_proof_rejects_manifest_only_content_hash_subject(tmp_path):
     package = tmp_path / "package"
     package.mkdir()
@@ -90,7 +111,7 @@ def test_witness_proof_rejects_manifest_only_content_hash_subject(tmp_path):
         package,
         proof_entry={"path": "witness-proof.json", "sha256": _sha256_text(proof_text)},
         proof_text=proof_text,
-        manifest_extra={"content_hash": content_hash},
+        manifest_extra={"extensions": {"urn:hc:tests:content-hash": content_hash}},
     )
 
     result = verify_verification_package(package)
@@ -112,7 +133,7 @@ def test_witness_proof_rejects_manifest_only_record_hash_subject(tmp_path):
         package,
         proof_entry={"path": "witness-proof.json", "sha256": _sha256_text(proof_text)},
         proof_text=proof_text,
-        manifest_extra={"record_hash": record_hash},
+        manifest_extra={"extensions": {"urn:hc:tests:record-hash": record_hash}},
     )
 
     result = verify_verification_package(package)
@@ -201,7 +222,7 @@ def test_witness_proof_ignores_unrelated_manifest_field(tmp_path):
         package,
         proof_entry={"path": "witness-proof.json", "sha256": _sha256_text(proof_text)},
         proof_text=proof_text,
-        manifest_extra={"unrelated_hash": unrelated_hash},
+        manifest_extra={"extensions": {"urn:hc:tests:unrelated-hash": unrelated_hash}},
     )
 
     result = verify_verification_package(package)

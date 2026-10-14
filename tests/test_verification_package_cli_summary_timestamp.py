@@ -2,6 +2,7 @@ import hashlib
 import json
 
 from hc_trust.cli import main
+from hc_trust.verification_package import VERIFICATION_PACKAGE_MANIFEST_SCHEMA_VERSION
 
 
 def _sha256_text(value: str) -> str:
@@ -23,6 +24,7 @@ def test_verify_package_cli_summary_reports_present_timestamp_proof(tmp_path, ca
     )
     proof.write_text(proof_text, encoding="utf-8")
     manifest = {
+        "schema_version": VERIFICATION_PACKAGE_MANIFEST_SCHEMA_VERSION,
         "package_id": "HC-PKG-TIME-CLI",
         "record_id": "HC-RECORD-TIME-CLI",
         "files": [

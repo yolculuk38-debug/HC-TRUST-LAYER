@@ -16,7 +16,7 @@ or fabricated external acceptance. One PR at a time. Source baseline:
 | A4 unsupported trust claims | #1233 QR, #1242 certificates, #1245 legacy exported-proof containment; #1250 connected evidence/consensus/status/passport containment | Declaration slice merged; inventory remains partial |
 | A5 installed wheel/release | #1248 outside-checkout installed wheel gate, release version binding and exact tested-artifact handoff | Gate merged; release publication remains manual |
 | B1 narrow product promise | Lead with local evidence-package integrity and limits | #1253 merged; 25 PR and 13 post-merge checks passed; current-head review passed |
-| B2 evidence-package format | Inspect/version manifest, algorithms, file metadata, extension/proof boundaries | Pre-implementation scope report prepared; review/merge before format changes |
+| B2 evidence-package format | #1254 scope report; strict local manifest schema, inventory, path and proof boundaries | Implementation prepared for current-head review and CI; B3 result semantics remain separate |
 | B3 result contract | Separate integrity, authentication, identity/trust, time, policy | Pending |
 | B4 developer experience | Actual-file example, install, JSON/human output, exit codes and SDK | Partial |
 | C1 standard signature | Standard library integration, key IDs, versioned envelope, explicit trust roots | Pending design/implementation |

@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hc-trust-layer.org/schemas/verification-package-manifest-v1.schema.json",
+  "title": "HC Local Verification Package Manifest v1",
+  "description": "Strict local directory-manifest contract for the advisory SHA-256 package verifier. It does not authenticate proof authorities or payload meaning.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "package_id",
+    "record_id",
+    "files"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "HC-LOCAL-VERIFICATION-MANIFEST-V1"
+    },
+    "package_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "record_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "files": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/fileEntry"
+      }
+    },
+    "issuer_proof": {
+      "$ref": "#/$defs/proofReference"
+    },
+    "timestamp_proof": {
+      "$ref": "#/$defs/proofReference"
+    },
+    "witness_proof": {
+      "$ref": "#/$defs/proofReference"
+    },
+    "extensions": {
+      "$ref": "#/$defs/extensions"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "extensions": {
+      "type": "object",
+      "description": "Namespaced extension data is opaque and is not interpreted or used as proof by the local verifier.",
+      "propertyNames": {
+        "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+      },
+      "additionalProperties": true
+    },
+    "proofReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/path"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "algorithm": {
+          "type": "string",
+          "const": "sha256"
+        }
+      }
+    },
+    "fileEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/path"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "algorithm": {
+          "type": "string",
+          "const": "sha256"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "payload",
+            "proof",
+            "metadata",
+            "documentation",
+            "opaque"
+          ]
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      }
+    },
+    "issuerProofDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issuer",
+        "statement"
+      ],
+      "properties": {
+        "issuer": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    },
+    "timestampProofDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claimed_at",
+        "subject_sha256"
+      ],
+      "properties": {
+        "claimed_at": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "subject_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "witnessProofDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "witness_id",
+        "statement",
+        "subject_sha256"
+      ],
+      "properties": {
+        "witness_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "subject_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  }
+}

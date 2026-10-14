@@ -44,10 +44,8 @@ def test_signature_witness_fixture_package_is_local_only_and_advisory():
 
     result = verify_verification_package(package_path)
 
-    assert manifest["signature_proof"] == {
-        "path": "signature-proof.json",
-        "sha256": "622ddaba8d79249b9f85ed9310b0e86aad654fc6212606755b300a8d1d6b3d2c",
-    }
+    assert "signature_proof" not in manifest
+    assert next(item for item in manifest["files"] if item["path"] == "signature-proof.json")["role"] == "opaque"
     assert result["status"] == "VERIFIED"
     assert result["verified"] is True
     assert result["advisory_only"] is True
@@ -73,5 +71,11 @@ def test_signature_witness_fixture_package_is_local_only_and_advisory():
             "status": "MATCH",
             "expected_sha256": "622ddaba8d79249b9f85ed9310b0e86aad654fc6212606755b300a8d1d6b3d2c",
             "actual_sha256": "622ddaba8d79249b9f85ed9310b0e86aad654fc6212606755b300a8d1d6b3d2c",
+        },
+        {
+            "path": "README.md",
+            "status": "MATCH",
+            "expected_sha256": "cbcacee17bc920c6ead42f1d0827207ebbf73ed80393d619ffbc9e2b5be3c08b",
+            "actual_sha256": "cbcacee17bc920c6ead42f1d0827207ebbf73ed80393d619ffbc9e2b5be3c08b",
         },
     ]

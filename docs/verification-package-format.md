@@ -2,9 +2,9 @@
 
 ## Status
 
-These notes document the current verification package standard alignment status before any schema, validator, workflow, runtime, signing, federation, policy, example, or canonical record changes.
+These notes distinguish the implemented local directory manifest from the separate package formats under review. The local contract is an advisory integrity check and does not establish a canonical HC:// package standard.
 
-The current package formats are experimental and under review. This document is documentation-only and does not create new HC:// guarantees.
+The broader package formats remain experimental and under review. The local CLI manifest adds no HC:// trust guarantees.
 
 ## Current Package Shapes
 
@@ -13,6 +13,14 @@ The current package formats are experimental and under review. This document is 
 The current v1 schema draft describes a flat top-level verification package object. It requires fields such as `package_version`, `package_id`, `record_id`, `record_hash`, `content_hash`, `verification_state`, `canonical_record_path`, `source_repository`, `source_commit`, `generated_at`, `provenance`, `audit`, `witnesses`, `signatures`, `verification_policy`, and `warnings`.
 
 This shape treats provenance, audit trail context, witnesses, signatures, policy, and warnings as top-level package sections rather than as a nested manifest/container.
+
+### Local CLI directory manifest v1
+
+The `verify-package` CLI consumes a directory with a root `manifest.json` using the `HC-LOCAL-VERIFICATION-MANIFEST-V1` schema. It requires non-empty `package_id` and `record_id`, a non-empty `files` list, and canonical lowercase SHA-256 entries. Optional parsed issuer, timestamp, and witness references are limited to their documented fields. Every regular file other than the root manifest must be covered by `files[]` or one of those proof references. Duplicate JSON keys, duplicate file paths, unknown fields, unlisted files, symlinks, and special filesystem objects are rejected. Empty directories are ignored.
+
+File roles (`payload`, `proof`, `metadata`, `documentation`, or `opaque`) are descriptive. Unparsed payload bytes remain opaque even when their digest matches. Namespaced `extensions` values are also opaque and never participate in verification. Signature verification, signer identity, external time authority, witness authority, and legal truth remain outside this local contract.
+
+This CLI manifest is a local filesystem inventory format. It is separate from the flat v1 package schema and the viewer-oriented fixtures below.
 
 ### Manifest/container package concept
 
@@ -38,7 +46,8 @@ External and portable package references use compact bundle-style structures for
 
 ## Current Validation Boundaries
 
-- The v1 schema validates a flat top-level package structure only.
+- The flat v1 schema validates a flat top-level package structure only; it is not the local CLI directory-manifest schema.
+- The local CLI schema validates its versioned directory manifest and the implementation additionally enforces file inventory and filesystem-boundary rules.
 - The MVP-1 validator checks required-field presence for the viewer fixture shape; it does not establish a canonical package schema.
 - Viewer warnings are advisory review signals, not autonomous trust-kernel decisions.
 - The exporter skeleton is not production signing. It creates derived verification package skeletons and marks signatures as not implemented.
@@ -60,4 +69,4 @@ Before schema or validator changes, HC-TRUST-LAYER maintainers should decide:
 - Do not claim cryptographic guarantees from current package examples, viewer warnings, or exporter skeleton output.
 - Do not treat verification packages as canonical records.
 - Treat all current package formats as experimental and under human-supervised validation review.
-- Any schema, validator, signing, federation, policy, or canonical record change remains out of scope for this document.
+- The local directory manifest does not replace canonical records, the flat package schema, or viewer fixtures.

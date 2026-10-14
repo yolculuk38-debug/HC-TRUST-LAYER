@@ -18,6 +18,22 @@ examples/verification-package/valid/
 
 The manifest lists the file path and expected SHA-256 digest for package evidence. It also references optional issuer proof evidence and local time-existence evidence.
 
+The local directory manifest uses `schema_version: "HC-LOCAL-VERIFICATION-MANIFEST-V1"`, non-empty `package_id` and `record_id`, and a non-empty `files` array. Each file entry uses a canonical relative `path` and lowercase `sha256`; an optional `role` can be `payload`, `proof`, `metadata`, `documentation`, or `opaque`. Optional proof references use the same `path` and `sha256` shape. For example:
+
+```json
+{
+  "schema_version": "HC-LOCAL-VERIFICATION-MANIFEST-V1",
+  "package_id": "HC-PKG-EXAMPLE",
+  "record_id": "HC-RECORD-EXAMPLE",
+  "files": [
+    {"path": "payload.bin", "sha256": "<64 lowercase hex characters>", "role": "payload"}
+  ],
+  "extensions": {"urn:example:label": "opaque metadata"}
+}
+```
+
+The verifier inventories the package directory: every regular file other than the root `manifest.json` must appear in `files[]` or in a recognized issuer, timestamp, or witness proof reference. Duplicate JSON keys or paths, unknown fields, non-canonical paths, symlinks, and special filesystem objects make the package invalid. Empty directories do not affect the result. Extension values and unparsed payload bytes remain opaque.
+
 ## Run the verifier
 
 From a Python 3.14+ repository checkout, install the package once and run the included example from the repository root:
