@@ -161,3 +161,30 @@ Boundary automation:
 
 - Workflow: `.github/workflows/canonical-artifacts.yml`
 - Local/CI guard: `scripts/check_canonical_artifacts.py`
+
+### Standalone CLI root context
+
+`hc-trust validate-records` checks the strict JSON/schema/format contract;
+`hc-trust verify` checks declared content hashes. Both require at least one
+selected canonical JSON record and return exit 1 on failure or empty selection.
+
+For relocated or nested checkouts, identify the intended repository explicitly:
+
+```sh
+hc-trust validate-records records --repo-root /path/to/project
+hc-trust verify records --repo-root /path/to/project
+python src/validator.py records/pending/example.json --repo-root /path/to/project
+```
+
+With `--repo-root`, relative input paths are relative to that root; absolute paths
+must remain in its canonical record tree. Without it, a single plausible
+`records` anchor is inferred, or a directory without such an anchor is treated
+as the repository root. Multiple plausible anchors fail with a request for
+`--repo-root`. Checkout ancestor names do not define artifact status.
+
+Lexical and resolved paths must remain in the selected canonical group and pass
+artifact exclusions. Symlink aliases for `records` or canonical group directories
+are excluded. An in-group file alias may be checked; escaping aliases are not
+selected. The legacy single-file validator retains its explicit artifact-skip
+result and generic-file schema validation outside canonical context; that result
+is not evidence of a canonical record or content-hash check.

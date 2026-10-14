@@ -17,15 +17,20 @@ from .hashing import calculate_sha256
 from .qr_tools import find_verified_records, generate_qr
 from .verification import find_record_files, validate_record, verify_record_hash
 from .verification_package import VerificationPackageStatus, verify_verification_package
+from .record_selection import RecordSelectionError
 
 
 def cmd_verify(args):
-    record_files, skipped_files = find_record_files(args.path or "records")
+    try:
+        record_files, skipped_files = find_record_files(args.path, repo_root=args.repo_root)
+    except RecordSelectionError as exc:
+        print(f"ERROR: {exc}")
+        return 1
     for skipped in skipped_files:
         print(f"⏭️ SKIP: {skipped}")
     if not record_files:
         print(f"No JSON record files found in: {args.path or 'records'}")
-        return 0
+        return 1
     failed = 0
     passed = 0
     print(f"Verifying SHA-256 hashes for {len(record_files)} record(s)...\n")
@@ -43,7 +48,11 @@ def cmd_verify(args):
 
 def cmd_validate_records(args):
     """Use the same strict JSON/schema/format checks as the runtime."""
-    record_files, skipped_files = find_record_files(args.path)
+    try:
+        record_files, skipped_files = find_record_files(args.path, repo_root=args.repo_root)
+    except RecordSelectionError as exc:
+        print(f"ERROR: {exc}")
+        return 1
     for skipped in skipped_files:
         print(f"SKIP non-canonical artifact: {skipped}")
     if not record_files:
@@ -183,6 +192,7 @@ def build_parser():
         help="Run a local record content-hash check for reviewer handoff",
     )
     p_verify.add_argument("path", nargs="?", default="records")
+    p_verify.add_argument("--repo-root", help="Canonical repository root; relative paths use this root")
     p_verify.set_defaults(func=cmd_verify)
 
     p_hash = sub.add_parser("hash", help="Calculate file SHA256")
@@ -204,6 +214,7 @@ def build_parser():
         help="Validate canonical records using shared strict JSON, schema and format checks",
     )
     p_validate_records.add_argument("path", nargs="?", default="records")
+    p_validate_records.add_argument("--repo-root", help="Canonical repository root; relative paths use this root")
     p_validate_records.set_defaults(func=cmd_validate_records)
 
     p_verify_package = sub.add_parser(

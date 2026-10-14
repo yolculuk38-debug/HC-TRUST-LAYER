@@ -259,7 +259,7 @@ product contract, signatures, lifecycle and operational work remain open.
 
 The maintainer supplied main-branch CodeQL alerts #13 and #14 for the static
 verification viewer. Prioritize the bounded text-rendering correction documented
-in `viewer-text-boundary-2026-10-14.md`, then resume the CLI root-context follow-up.
+in `viewer-text-boundary-2026-10-14.md` (#1251 merged), then resume the CLI root-context follow-up (this branch).
 The alerts are not manually dismissed; verify the main-branch scan after merge.
 
 #1250 merged as `dd27203180bf6c3ff95732e20efa3d0b4eb236f5` after 26 successful
@@ -268,3 +268,10 @@ All 17 observed main checks succeeded. Installed-wheel run 38536011035 produced
 artifact 11880210596 after seven successful smoke groups, bound to that merge
 and wheel SHA-256 `d08d79f8fcf939c5f1c4df9b1b7a7a3dc439bfde2194524aff26033e71c74632`.
 Remaining claim surfaces and the broader audit remain open.
+
+
+#1251 follow-through: viewer CodeQL main-branch scans and the 19 observed main
+checks completed after merge; all checks required for the merged change were
+successful. The PR's final CodeQL result reported no new alerts in changed code,
+and its CodeQL thread was resolved. Original alert-state closure is not inferred
+from that PR-only result; confirm via the merged scan/report or alert list.
