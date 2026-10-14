@@ -1,7 +1,7 @@
 {
   "package_id": "HC-SAMPLE-PACKAGE-001",
   "record_id": "HC-SAMPLE-RECORD-001",
-  "schema_version": "verification-package-sample-v1",
+  "schema_version": "HC-LOCAL-VERIFICATION-MANIFEST-V1",
   "files": [
     {
       "path": "metadata/source-info.txt",

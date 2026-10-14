@@ -1,11 +1,17 @@
 import hashlib
 import json
 
-from hc_trust.verification_package import _is_within_directory, verify_verification_package
+from hc_trust.verification_package import (
+    VERIFICATION_PACKAGE_MANIFEST_SCHEMA_VERSION,
+    _is_within_directory,
+    verify_verification_package,
+)
 
 
 def _write_json(path, value):
     path.parent.mkdir(parents=True, exist_ok=True)
+    if path.name == "manifest.json" and isinstance(value, dict):
+        value.setdefault("schema_version", VERIFICATION_PACKAGE_MANIFEST_SCHEMA_VERSION)
     path.write_text(json.dumps(value, sort_keys=True), encoding="utf-8")
 
 
@@ -23,7 +29,7 @@ def test_verification_package_hash_core_verifies_manifest_files(tmp_path):
         package / "manifest.json",
         {
             "package_id": "HC-PKG-1",
-            "schema_version": "verification-package-v1",
+            "schema_version": VERIFICATION_PACKAGE_MANIFEST_SCHEMA_VERSION,
             "record_id": "HC-RECORD-1",
             "files": [
                 {

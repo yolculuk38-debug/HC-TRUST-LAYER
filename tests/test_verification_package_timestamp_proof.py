@@ -1,7 +1,10 @@
 import hashlib
 import json
 
-from hc_trust.verification_package import verify_verification_package
+from hc_trust.verification_package import (
+    VERIFICATION_PACKAGE_MANIFEST_SCHEMA_VERSION,
+    verify_verification_package,
+)
 
 
 def _sha256_text(value: str) -> str:
@@ -13,6 +16,7 @@ def _write_package(package, timestamp_entry=None, timestamp_text=None):
     artifact.parent.mkdir(parents=True)
     artifact.write_text("source-ok", encoding="utf-8")
     manifest = {
+        "schema_version": VERIFICATION_PACKAGE_MANIFEST_SCHEMA_VERSION,
         "package_id": "HC-PKG-TIME",
         "record_id": "HC-RECORD-TIME",
         "files": [
@@ -131,9 +135,7 @@ def test_timestamp_proof_rejects_manifest_only_subject_hash(tmp_path):
 
     manifest_path = package / "manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    manifest["subject_sha256"] = manifest_only_hash
-    manifest["content_hash"] = manifest_only_hash
-    manifest["record_hash"] = manifest_only_hash
+    manifest["extensions"] = {"urn:hc:tests:unbound-subject": manifest_only_hash}
     manifest_path.write_text(json.dumps(manifest, sort_keys=True), encoding="utf-8")
 
     result = verify_verification_package(package)

@@ -11,22 +11,130 @@ authority, or production readiness.
 from __future__ import annotations
 
 from datetime import datetime
+from functools import lru_cache
 import hashlib
+from importlib import resources
 import json
-from pathlib import Path
+import os
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 VERIFICATION_PACKAGE_HASH_CORE_VERSION = "HC-VERIFICATION-PACKAGE-HASH-CORE-V1"
-SUPPORTED_DIGEST_ALGORITHMS = {"sha256"}
+VERIFICATION_PACKAGE_MANIFEST_SCHEMA_VERSION = "HC-LOCAL-VERIFICATION-MANIFEST-V1"
 ISSUER_PROOF_REQUIRED_FIELDS = ("issuer", "statement")
 TIMESTAMP_PROOF_REQUIRED_FIELDS = ("claimed_at", "subject_sha256")
 WITNESS_PROOF_REQUIRED_FIELDS = ("witness_id", "statement", "subject_sha256")
+ISSUER_PROOF_FIELDS = frozenset(ISSUER_PROOF_REQUIRED_FIELDS)
+TIMESTAMP_PROOF_FIELDS = frozenset(TIMESTAMP_PROOF_REQUIRED_FIELDS)
+WITNESS_PROOF_FIELDS = frozenset(WITNESS_PROOF_REQUIRED_FIELDS)
 
 
 class VerificationPackageStatus:
     VERIFIED = "VERIFIED"
     INVALID = "INVALID"
     REVIEW_REQUIRED = "REVIEW_REQUIRED"
+
+
+class DuplicateJsonObjectKeyError(ValueError):
+    """Raised when a JSON object repeats a member name."""
+
+
+class NonStandardJsonConstantError(ValueError):
+    """Raised for NaN and infinity tokens, which are outside standard JSON."""
+
+
+def _unique_json_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise DuplicateJsonObjectKeyError(key)
+        result[key] = value
+    return result
+
+
+def _reject_nonstandard_json_constant(value: str) -> None:
+    raise NonStandardJsonConstantError(value)
+
+
+@lru_cache(maxsize=1)
+def _manifest_validator() -> Any:
+    from jsonschema import Draft202012Validator
+
+    schema_resource = resources.files("hc_trust").joinpath(
+        "schemas", "verification-package-manifest-v1.schema.json"
+    )
+    schema = json.loads(
+        schema_resource.read_text(encoding="utf-8"),
+        object_pairs_hook=_unique_json_object,
+        parse_constant=_reject_nonstandard_json_constant,
+    )
+    Draft202012Validator.check_schema(schema)
+    return Draft202012Validator(schema)
+
+
+def _manifest_schema_errors(manifest: dict[str, Any]) -> list[Any]:
+    return sorted(
+        _manifest_validator().iter_errors(manifest),
+        key=lambda error: tuple(str(part) for part in error.absolute_path),
+    )
+
+
+def _schema_error_location(error: Any) -> str:
+    return ".".join(str(part) for part in error.absolute_path) or "root"
+
+
+def _normalized_relative_package_path(value: Any) -> str | None:
+    if not isinstance(value, str) or not value or "\\" in value or "\x00" in value:
+        return None
+    path = PurePosixPath(value)
+    if path.is_absolute() or not path.parts or value != path.as_posix():
+        return None
+    if any(part in {"", ".", ".."} for part in path.parts) or ":" in path.parts[0]:
+        return None
+    return path.as_posix()
+
+
+def _contains_symlink_component(package_root: Path, relative_path: str) -> bool:
+    current = package_root
+    for part in PurePosixPath(relative_path).parts:
+        current = current / part
+        if current.is_symlink():
+            return True
+    return False
+
+
+def _collect_package_inventory(
+    package_root: Path,
+    conflicting_evidence: list[str],
+) -> set[str]:
+    inventory: set[str] = set()
+    pending_directories = [package_root]
+
+    while pending_directories:
+        directory = pending_directories.pop()
+        try:
+            entries = list(os.scandir(directory))
+        except OSError:
+            relative = directory.relative_to(package_root).as_posix()
+            conflicting_evidence.append(f"package_directory_unreadable:{relative or '.'}")
+            continue
+
+        for entry in entries:
+            entry_path = Path(entry.path)
+            relative_path = entry_path.relative_to(package_root).as_posix()
+            if entry.is_symlink():
+                conflicting_evidence.append(f"package_symlink_not_allowed:{relative_path}")
+                continue
+            if entry.is_dir(follow_symlinks=False):
+                pending_directories.append(entry_path)
+                continue
+            if entry.is_file(follow_symlinks=False):
+                if relative_path != "manifest.json":
+                    inventory.add(relative_path)
+                continue
+            conflicting_evidence.append(f"package_special_file_not_allowed:{relative_path}")
+
+    return inventory
 
 
 def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
@@ -61,8 +169,8 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
           "witness_proof": {"path": "witness-proof.json", "sha256": "..."}
         }
 
-    Supported file entries may use ``sha256``, ``digest`` with
-    ``algorithm: sha256``, or ``hash`` with ``algorithm: sha256``.
+    File entries use the canonical ``sha256`` field and may state
+    ``algorithm: sha256`` explicitly.
     """
 
     package_root = Path(package_path)
@@ -74,6 +182,21 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
     issuer_proof = _issuer_proof_not_provided()
     timestamp_proof = _timestamp_proof_not_provided()
     witness_proof = _witness_proof_not_provided()
+
+    if package_root.is_symlink():
+        conflicting_evidence.append("package_path_symlink_not_allowed")
+        return _build_response(
+            status=VerificationPackageStatus.INVALID,
+            package_root=package_root,
+            manifest_path=manifest_path,
+            files=file_results,
+            issuer_proof=issuer_proof,
+            timestamp_proof=timestamp_proof,
+            witness_proof=witness_proof,
+            missing_evidence=missing_evidence,
+            conflicting_evidence=conflicting_evidence,
+            warnings=warnings,
+        )
 
     if not package_root.exists():
         missing_evidence.append("package_path_missing")
@@ -137,6 +260,16 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
             warnings=warnings,
         )
 
+    try:
+        schema_errors = _manifest_schema_errors(manifest)
+    except (OSError, ValueError, ImportError):
+        conflicting_evidence.append("manifest_schema_unavailable")
+        schema_errors = []
+    for error in schema_errors:
+        conflicting_evidence.append(
+            f"manifest_schema_invalid:{_schema_error_location(error)}:{error.validator}"
+        )
+
     files = manifest.get("files")
     if not isinstance(files, list):
         missing_evidence.append("manifest_files_list_missing")
@@ -154,8 +287,16 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
             manifest=manifest,
         )
 
-    if not files:
-        warnings.append("manifest_files_list_empty")
+    seen_file_paths: set[str] = set()
+    for entry in files:
+        if not isinstance(entry, dict):
+            continue
+        relative_path = _normalized_relative_package_path(entry.get("path"))
+        if relative_path is None:
+            continue
+        if relative_path in seen_file_paths:
+            conflicting_evidence.append(f"manifest_file_path_duplicate:{relative_path}")
+        seen_file_paths.add(relative_path)
 
     for entry in files:
         file_results.append(
@@ -177,7 +318,7 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
         conflicting_evidence=conflicting_evidence,
         warnings=warnings,
     )
-    local_subject_sha256s = _collect_local_subject_sha256s(manifest, file_results)
+    local_subject_sha256s = _collect_local_subject_sha256s(file_results)
     timestamp_proof = _verify_timestamp_proof_entry(
         package_root=package_root,
         package_root_resolved=package_root_resolved,
@@ -196,6 +337,19 @@ def verify_verification_package(package_path: str | Path) -> dict[str, Any]:
         conflicting_evidence=conflicting_evidence,
         warnings=warnings,
     )
+
+    declared_paths = set(seen_file_paths)
+    for proof_key in ("issuer_proof", "timestamp_proof", "witness_proof"):
+        proof_ref = manifest.get(proof_key)
+        if isinstance(proof_ref, dict):
+            relative_path = _normalized_relative_package_path(proof_ref.get("path"))
+            if relative_path is not None:
+                if relative_path in declared_paths:
+                    conflicting_evidence.append(f"manifest_file_path_duplicate:{relative_path}")
+                declared_paths.add(relative_path)
+    inventory = _collect_package_inventory(package_root, conflicting_evidence)
+    for unlisted_path in sorted(inventory - declared_paths):
+        conflicting_evidence.append(f"package_file_unlisted:{unlisted_path}")
 
     if conflicting_evidence or missing_evidence:
         status = VerificationPackageStatus.INVALID
@@ -224,6 +378,10 @@ def _load_manifest(
     missing_evidence: list[str],
     conflicting_evidence: list[str],
 ) -> dict[str, Any] | None:
+    if manifest_path.is_symlink():
+        conflicting_evidence.append("manifest_json_symlink_not_allowed")
+        return None
+
     if not manifest_path.exists():
         missing_evidence.append("manifest_json_missing")
         return None
@@ -234,8 +392,21 @@ def _load_manifest(
 
     try:
         with manifest_path.open("r", encoding="utf-8") as handle:
-            manifest = json.load(handle)
+            manifest = json.load(
+                handle,
+                object_pairs_hook=_unique_json_object,
+                parse_constant=_reject_nonstandard_json_constant,
+            )
+    except DuplicateJsonObjectKeyError:
+        conflicting_evidence.append("manifest_json_duplicate_key")
+        return None
     except json.JSONDecodeError:
+        conflicting_evidence.append("manifest_json_invalid")
+        return None
+    except NonStandardJsonConstantError:
+        conflicting_evidence.append("manifest_json_invalid")
+        return None
+    except RecursionError:
         conflicting_evidence.append("manifest_json_invalid")
         return None
     except (OSError, UnicodeDecodeError):
@@ -267,9 +438,16 @@ def _verify_manifest_file_entry(
         missing_evidence.append("manifest_file_path_missing")
         return {"path": relative_path, "status": "INVALID", "reason": "path_missing"}
 
-    if _is_unsafe_relative_path(relative_path):
+    normalized_path = _normalized_relative_package_path(relative_path)
+    if normalized_path is None or normalized_path == "manifest.json":
         conflicting_evidence.append(f"unsafe_manifest_file_path:{relative_path}")
         return {"path": relative_path, "status": "INVALID", "reason": "unsafe_path"}
+
+    relative_path = normalized_path
+
+    if _contains_symlink_component(package_root, relative_path):
+        conflicting_evidence.append(f"manifest_path_symlink_not_allowed:{relative_path}")
+        return {"path": relative_path, "status": "INVALID", "reason": "symlink_not_allowed"}
 
     digest = _extract_sha256(entry)
     if digest is None:
@@ -327,7 +505,17 @@ def _verify_manifest_file_entry(
             "reason": "path_not_file",
         }
 
-    actual = _sha256_file(file_path)
+    try:
+        actual = _sha256_file(file_path)
+    except OSError:
+        conflicting_evidence.append(f"manifest_file_unreadable:{relative_path}")
+        return {
+            "path": relative_path,
+            "status": "INVALID",
+            "expected_sha256": digest.lower(),
+            "actual_sha256": None,
+            "reason": "file_unreadable",
+        }
     if actual != digest.lower():
         conflicting_evidence.append(f"sha256_mismatch:{relative_path}")
         return {
@@ -390,8 +578,20 @@ def _verify_issuer_proof_entry(
     proof_path = package_root / str(relative_path)
     try:
         with proof_path.open("r", encoding="utf-8") as handle:
-            proof = json.load(handle)
+            proof = json.load(
+                handle,
+                object_pairs_hook=_unique_json_object,
+                parse_constant=_reject_nonstandard_json_constant,
+            )
+    except DuplicateJsonObjectKeyError:
+        conflicting_evidence.append(f"issuer_proof_json_duplicate_key:{relative_path}")
+        result.update({"status": "INVALID", "reason": "issuer_proof_json_duplicate_key"})
+        return result
     except json.JSONDecodeError:
+        conflicting_evidence.append(f"issuer_proof_json_invalid:{relative_path}")
+        result.update({"status": "INVALID", "reason": "issuer_proof_json_invalid"})
+        return result
+    except (NonStandardJsonConstantError, RecursionError):
         conflicting_evidence.append(f"issuer_proof_json_invalid:{relative_path}")
         result.update({"status": "INVALID", "reason": "issuer_proof_json_invalid"})
         return result
@@ -403,6 +603,12 @@ def _verify_issuer_proof_entry(
     if not isinstance(proof, dict):
         conflicting_evidence.append(f"issuer_proof_json_not_object:{relative_path}")
         result.update({"status": "INVALID", "reason": "issuer_proof_json_not_object"})
+        return result
+
+    unknown_fields = set(proof) - ISSUER_PROOF_FIELDS
+    if unknown_fields:
+        conflicting_evidence.append(f"issuer_proof_json_unknown_fields:{relative_path}")
+        result.update({"status": "INVALID", "reason": "issuer_proof_json_unknown_fields"})
         return result
 
     missing_fields = [
@@ -467,8 +673,20 @@ def _verify_timestamp_proof_entry(
     proof_path = package_root / str(relative_path)
     try:
         with proof_path.open("r", encoding="utf-8") as handle:
-            proof = json.load(handle)
+            proof = json.load(
+                handle,
+                object_pairs_hook=_unique_json_object,
+                parse_constant=_reject_nonstandard_json_constant,
+            )
+    except DuplicateJsonObjectKeyError:
+        conflicting_evidence.append(f"timestamp_proof_json_duplicate_key:{relative_path}")
+        result.update({"status": "INVALID", "reason": "timestamp_proof_json_duplicate_key"})
+        return result
     except json.JSONDecodeError:
+        conflicting_evidence.append(f"timestamp_proof_json_invalid:{relative_path}")
+        result.update({"status": "INVALID", "reason": "timestamp_proof_json_invalid"})
+        return result
+    except (NonStandardJsonConstantError, RecursionError):
         conflicting_evidence.append(f"timestamp_proof_json_invalid:{relative_path}")
         result.update({"status": "INVALID", "reason": "timestamp_proof_json_invalid"})
         return result
@@ -480,6 +698,12 @@ def _verify_timestamp_proof_entry(
     if not isinstance(proof, dict):
         conflicting_evidence.append(f"timestamp_proof_json_not_object:{relative_path}")
         result.update({"status": "INVALID", "reason": "timestamp_proof_json_not_object"})
+        return result
+
+    unknown_fields = set(proof) - TIMESTAMP_PROOF_FIELDS
+    if unknown_fields:
+        conflicting_evidence.append(f"timestamp_proof_json_unknown_fields:{relative_path}")
+        result.update({"status": "INVALID", "reason": "timestamp_proof_json_unknown_fields"})
         return result
 
     missing_fields = [
@@ -565,8 +789,20 @@ def _verify_witness_proof_entry(
     proof_path = package_root / str(relative_path)
     try:
         with proof_path.open("r", encoding="utf-8") as handle:
-            proof = json.load(handle)
+            proof = json.load(
+                handle,
+                object_pairs_hook=_unique_json_object,
+                parse_constant=_reject_nonstandard_json_constant,
+            )
+    except DuplicateJsonObjectKeyError:
+        conflicting_evidence.append(f"witness_proof_json_duplicate_key:{relative_path}")
+        result.update({"status": "INVALID", "reason": "witness_proof_json_duplicate_key"})
+        return result
     except json.JSONDecodeError:
+        conflicting_evidence.append(f"witness_proof_json_invalid:{relative_path}")
+        result.update({"status": "INVALID", "reason": "witness_proof_json_invalid"})
+        return result
+    except (NonStandardJsonConstantError, RecursionError):
         conflicting_evidence.append(f"witness_proof_json_invalid:{relative_path}")
         result.update({"status": "INVALID", "reason": "witness_proof_json_invalid"})
         return result
@@ -578,6 +814,12 @@ def _verify_witness_proof_entry(
     if not isinstance(proof, dict):
         conflicting_evidence.append(f"witness_proof_json_not_object:{relative_path}")
         result.update({"status": "INVALID", "reason": "witness_proof_json_not_object"})
+        return result
+
+    unknown_fields = set(proof) - WITNESS_PROOF_FIELDS
+    if unknown_fields:
+        conflicting_evidence.append(f"witness_proof_json_unknown_fields:{relative_path}")
+        result.update({"status": "INVALID", "reason": "witness_proof_json_unknown_fields"})
         return result
 
     missing_fields = [
@@ -631,7 +873,7 @@ def _witness_proof_not_provided() -> dict[str, Any]:
     return {"status": "NOT_PROVIDED", "checked": False, "path": None, "signature_verified": False}
 
 
-def _collect_local_subject_sha256s(manifest: dict[str, Any], files: list[dict[str, Any]]) -> set[str]:
+def _collect_local_subject_sha256s(files: list[dict[str, Any]]) -> set[str]:
     subjects: set[str] = set()
     # Only verified local file hashes are local subject evidence. Top-level manifest
     # hashes are claims and must not bind timestamp or witness subjects unless they
@@ -646,24 +888,11 @@ def _collect_local_subject_sha256s(manifest: dict[str, Any], files: list[dict[st
 
 
 def _extract_sha256(entry: dict[str, Any]) -> str | None:
-    if isinstance(entry.get("sha256"), str):
-        return entry["sha256"]
-
     algorithm = entry.get("algorithm")
-    if isinstance(algorithm, str) and algorithm.lower() not in SUPPORTED_DIGEST_ALGORITHMS:
+    if algorithm is not None and algorithm != "sha256":
         return None
-
-    for key in ("digest", "hash"):
-        value = entry.get(key)
-        if isinstance(value, str):
-            return value
-
-    return None
-
-
-def _is_unsafe_relative_path(value: str) -> bool:
-    path = Path(value)
-    return path.is_absolute() or ".." in path.parts
+    value = entry.get("sha256")
+    return value if isinstance(value, str) else None
 
 
 def _is_within_directory(child: Path, parent: Path) -> bool:
@@ -755,6 +984,7 @@ def _build_response(
 
 __all__ = [
     "VERIFICATION_PACKAGE_HASH_CORE_VERSION",
+    "VERIFICATION_PACKAGE_MANIFEST_SCHEMA_VERSION",
     "VerificationPackageStatus",
     "verify_verification_package",
 ]

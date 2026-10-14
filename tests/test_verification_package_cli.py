@@ -2,6 +2,7 @@ import hashlib
 import json
 
 from hc_trust.cli import main
+from hc_trust.verification_package import VERIFICATION_PACKAGE_MANIFEST_SCHEMA_VERSION
 
 
 def _sha256_text(value: str) -> str:
@@ -12,6 +13,7 @@ def _write_manifest(package, files, package_id="HC-PKG-CLI", record_id="HC-RECOR
     (package / "manifest.json").write_text(
         json.dumps(
             {
+                "schema_version": VERIFICATION_PACKAGE_MANIFEST_SCHEMA_VERSION,
                 "package_id": package_id,
                 "record_id": record_id,
                 "files": files,

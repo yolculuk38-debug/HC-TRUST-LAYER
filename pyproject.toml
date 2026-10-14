@@ -25,6 +25,9 @@ package-dir = {"" = "src"}
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+hc_trust = ["schemas/*.json"]
+
 [tool.setuptools.data-files]
 "share/hc-trust-layer/schema" = ["schema/record-v1.schema.json"]
 
