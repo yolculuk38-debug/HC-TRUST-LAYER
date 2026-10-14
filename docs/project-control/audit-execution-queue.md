@@ -12,7 +12,7 @@ or fabricated external acceptance. One PR at a time. Source baseline:
 | --- | --- | --- |
 | A1 API/QR fail-closed | #1229 regressions; preserve no-evidence rejection | Core merged |
 | A2 canonicalization | #1230/#1232; #1247 shared Python/ECMAScript byte and digest vectors | Cross-language slice merged |
-| A3 single validation path | #1231 core; #1243 strict CI; #1246 recursive public/QR selection, relocated-root and symlink containment | Public lookup merged; standalone CLI absolute-path relocation remains |
+| A3 single validation path | #1231 core; #1243 strict CI; #1246 recursive public/QR selection; #1252 CLI root context, ambiguity, symlink and empty-selection behavior | Public, QR and standalone CLI selectors merged; review remaining shared-path inventory before closing A3 |
 | A4 unsupported trust claims | #1233 QR, #1242 certificates, #1245 legacy exported-proof containment; #1250 connected evidence/consensus/status/passport containment | Declaration slice merged; inventory remains partial |
 | A5 installed wheel/release | #1248 outside-checkout installed wheel gate, release version binding and exact tested-artifact handoff | Gate merged; release publication remains manual |
 | B1 narrow product promise | Lead with local evidence-package integrity and limits | Pending |
@@ -258,8 +258,9 @@ product contract, signatures, lifecycle and operational work remain open.
 ## October 14 security follow-up
 
 The maintainer supplied main-branch CodeQL alerts #13 and #14 for the static
-verification viewer. Prioritize the bounded text-rendering correction documented
-in `viewer-text-boundary-2026-10-14.md` (#1251 merged), then resume the CLI root-context follow-up (this branch).
+verification viewer. The bounded text-rendering correction documented in
+`viewer-text-boundary-2026-10-14.md` (#1251) and the CLI root-context follow-up
+(#1252) are merged.
 The alerts are not manually dismissed; verify the main-branch scan after merge.
 
 #1250 merged as `dd27203180bf6c3ff95732e20efa3d0b4eb236f5` after 26 successful
@@ -275,3 +276,22 @@ checks completed after merge; all checks required for the merged change were
 successful. The PR's final CodeQL result reported no new alerts in changed code,
 and its CodeQL thread was resolved. Original alert-state closure is not inferred
 from that PR-only result; confirm via the merged scan/report or alert list.
+#1252 merged as `96d82ae26a7ad2a21dc285f017f810dd92aea875` after a clean
+Codex review of `107778b46bbebdf6b50bbef0ff38221a0d259c96` and all 26 PR checks.
+All 19 observed main checks completed; 17 succeeded and two unrelated checks were
+skipped. The installed-wheel gate and three CodeQL analyses succeeded. The
+combined local full suite passed 1423 tests. A3's public, QR and CLI slices are
+merged; do not declare every validator/runtime path complete without further
+inventory evidence.
+
+## B1 product-promise scope checkpoint
+
+Scope written before implementation in `product-promise-scope-2026-10-14.md`.
+It bounds the first public promise to local package-to-manifest SHA-256 checks,
+places the static Public Validator demo on a separate path, and spells out that
+`VERIFIED`, proof `PRESENT/MATCH` and `human_review_required=false` do not provide
+identity, issuer, external-time, witness-authority or real-world-truth guarantees.
+The code confirms these boundaries: sample `issuer_identity_verified`,
+`external_timestamp_verified`, `signatures_verified` and `witnesses_verified`
+are false. The README/quickstart documentation change is prepared as the next
+small docs-only slice; B1 remains pending until current-head review and CI merge.

@@ -1,8 +1,8 @@
 # Verification Package CLI Quickstart
 
-This quickstart demonstrates the local HC verification package hash core.
+This quickstart demonstrates the implemented local HC verification package hash core.
 
-It is local-only and advisory-only. It checks package integrity; it does not prove legal truth, identity, witness authority, media provenance, external time authority, federation state, or production readiness.
+It compares package files listed by the local manifest with their declared SHA-256 digests and reports missing, conflicting, or malformed inputs. `VERIFIED` means these implemented package checks passed for this invocation. It does not authenticate the manifest author or prove legal truth, signer identity, witness authority, media provenance, an external timestamp, federation state, or production readiness. Consequential use still requires human-supervised validation.
 
 ## Example package
 
@@ -20,9 +20,10 @@ The manifest lists the file path and expected SHA-256 digest for package evidenc
 
 ## Run the verifier
 
-From the repository root:
+From a Python 3.14+ repository checkout, install the package once and run the included example from the repository root:
 
 ```bash
+python -m pip install .
 hc-trust verify-package examples/verification-package/valid
 ```
 
@@ -35,6 +36,14 @@ For a valid package, the command returns exit code `0` and prints JSON with:
   "advisory_only": true,
   "public_safe": true,
   "truth_guarantee": false,
+  "checks": {
+    "manifest_files_checked": 1,
+    "sha256_only": true,
+    "issuer_identity_verified": false,
+    "external_timestamp_verified": false,
+    "signatures_verified": false,
+    "witnesses_verified": false
+  },
   "issuer_proof": {
     "status": "PRESENT",
     "issuer": "HC-SAMPLE-ISSUER"
@@ -45,6 +54,8 @@ For a valid package, the command returns exit code `0` and prints JSON with:
   }
 }
 ```
+
+`issuer_proof.status: PRESENT` and `timestamp_proof.status: PRESENT` describe included files that were locally parsed and matched against the manifest. They do not mean issuer identity or an external clock was verified. The CLI can return exit code `0` while those stronger checks remain false.
 
 ## Run the operator summary
 
@@ -67,6 +78,8 @@ advisory_only: true
 public_safe: true
 truth_guarantee: false
 ```
+
+Exit code `0` is scoped to a `VERIFIED` local package-integrity result; exit code `1` is returned for `INVALID` or `REVIEW_REQUIRED`. The `human_review_required: false` field means this hash-core response did not flag the package as incomplete or conflicting. It does not remove human review for consequential interpretation.
 
 ## Inspect the signature/witness fixture package
 
@@ -98,7 +111,7 @@ If a listed file is missing, changed, malformed, or outside the package boundary
 
 ## What this proves
 
-This proves only that the local files still match the manifest SHA-256 digest, optional issuer proof evidence is present and well-formed, optional local time-existence evidence is present and well-formed, and optional local witness fixture evidence is bound to local package evidence when present.
+This shows only that the manifest-listed local files match their declared SHA-256 digests and that any optional issuer, local-time, or witness fixture file included in the package was present, well-formed for this local parser, and internally bound as described. These files and their declarations are not authenticated by an external issuer, timestamp service, or witness authority.
 
 ## What this does not prove
 
