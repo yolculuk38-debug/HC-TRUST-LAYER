@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import importlib.metadata
+from importlib import resources
 import json
 import os
 from pathlib import Path
@@ -49,18 +50,30 @@ def main() -> int:
     import hc_runtime
     from hc_runtime.app import create_app
     from hc_trust.verification import DEFAULT_RECORD_SCHEMA_PATH, validate_record, verify_record_hash
-    from hc_trust.verification_package import verify_verification_package
+    from hc_trust.verification_package import (
+        VERIFICATION_PACKAGE_MANIFEST_SCHEMA_VERSION,
+        verify_verification_package,
+    )
 
     prefix = Path(sys.prefix).resolve()
     for module in (hc_trust, hc_runtime):
         require(Path(module.__file__).resolve().is_relative_to(prefix), "Import escaped the installed environment")
     schema_path = Path(DEFAULT_RECORD_SCHEMA_PATH).resolve(strict=True)
     require(schema_path.is_relative_to(prefix), "Schema was loaded from outside the installation")
+    manifest_schema_path = resources.files("hc_trust").joinpath(
+        "schemas", "verification-package-manifest-v1.schema.json"
+    )
+    require(manifest_schema_path.is_file(), "Local verification manifest schema is missing from the wheel")
     require(create_app().title == "HC:// Reference Runtime", "Installed runtime app import failed")
     console = Path(sys.executable).parent / ("hc-trust.exe" if os.name == "nt" else "hc-trust")
     require(console.is_file(), "Installed console entry point is missing")
     env = {key: value for key, value in os.environ.items() if key not in {"PYTHONPATH", "PYTHONHOME"}}
-    checks: list[str] = ["installed_archive_hash_binding", "release_version_binding", "installed_runtime_import"]
+    checks: list[str] = [
+        "installed_archive_hash_binding",
+        "release_version_binding",
+        "installed_runtime_import",
+        "installed_local_manifest_schema",
+    ]
 
     with tempfile.TemporaryDirectory(prefix="hc-installed-smoke-") as temporary:
         cwd = Path(temporary)
@@ -102,7 +115,7 @@ def main() -> int:
         evidence.write_bytes(b"Actual local evidence bytes\x00\xff\n")
         manifest = {
             "package_id": "HC-INSTALL-PACKAGE", "record_id": "HC-INSTALL-2026-0001",
-            "schema_version": "verification-package-sample-v1",
+            "schema_version": VERIFICATION_PACKAGE_MANIFEST_SCHEMA_VERSION,
             "files": [{"path": "evidence.bin", "sha256": hashlib.sha256(evidence.read_bytes()).hexdigest()}],
         }
         (package / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
