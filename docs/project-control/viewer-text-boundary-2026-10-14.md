@@ -43,3 +43,8 @@ CPython 3.14.7 / Node 24.19.0: 1396 full-suite tests passed, including the eight
 focused cases (counts overlap), with one upstream TestClient warning. Canonical,
 terminology, docs and whitespace guards passed with two existing README wording
 warnings. Current-head CI and matching review remain required before merge.
+
+CodeQL follow-up: make the test harness's script-tag extraction case insensitive
+to handle HTML tag spelling consistently (review comment 4268609031). This is a
+test-source extractor, not an HTML sanitizer. The production text encoder and
+DOM-only exception rendering remain unchanged. Re-run all eight focused cases.

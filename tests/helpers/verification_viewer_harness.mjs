@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const root = new URL('../../', import.meta.url);
 const source = readFileSync(new URL('docs/verification-viewer.html', root), 'utf8');
-const scripts = [...source.matchAll(/<script>([\s\S]*?)<\/script>/g)];
+const scripts = [...source.matchAll(/<script>([\s\S]*?)<\/script>/gi)];
 if (scripts.length !== 1) throw new Error('Expected the single viewer script');
 const nodes = new Map();
 class Element {
