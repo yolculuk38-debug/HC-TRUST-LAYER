@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from typing import Any
 
 
@@ -25,44 +26,43 @@ REQUIRED_EVIDENCE_SIGNALS = [
 
 
 def evaluate_evidence_bundle(bundle: dict[str, Any]) -> dict[str, Any]:
-    """Evaluate multi-source HC:// evidence bundle."""
+    """Inspect declarations; their completeness does not verify evidence."""
 
-    if not isinstance(bundle, dict):
-        return _result(EvidenceDecision.INVALID, 0, ["invalid_evidence_bundle"])
+    reasons: list[str] = ["source_declarations_not_verified"]
+    declaration_score = 0
+    valid = isinstance(bundle, dict)
+    if valid:
+        for signal in [*REQUIRED_EVIDENCE_SIGNALS, "audit", "qr"]:
+            if signal in bundle and not isinstance(bundle[signal], bool):
+                valid = False
+                reasons.append(f"invalid_{signal}_signal")
+            if signal in REQUIRED_EVIDENCE_SIGNALS:
+                if bundle.get(signal) is True:
+                    declaration_score += 20
+                else:
+                    reasons.append(f"missing_{signal}_signal")
+        declaration_score += 10 if bundle.get("audit") is True else 0
+        declaration_score += 5 if bundle.get("qr") is True else 0
+    else:
+        reasons.append("invalid_evidence_bundle")
 
-    score = 0
-    reasons: list[str] = []
-
-    for signal in REQUIRED_EVIDENCE_SIGNALS:
-        if bundle.get(signal) is True:
-            score += 20
-        else:
-            reasons.append(f"missing_{signal}_signal")
-
-    if bundle.get("audit") is True:
-        score += 10
-
-    if bundle.get("qr") is True:
-        score += 5
-
-    if score >= 90:
-        return _result(EvidenceDecision.VERIFIED, score, reasons)
-
-    if score >= 60:
-        return _result(EvidenceDecision.PARTIAL, score, reasons)
-
-    if score >= 30:
-        return _result(EvidenceDecision.REVIEW_REQUIRED, score, reasons)
-
-    return _result(EvidenceDecision.INVALID, score, reasons)
-
-
-
-def _result(decision: str, score: int, reasons: list[str]) -> dict[str, Any]:
     return {
         "evidence_engine_version": EVIDENCE_ENGINE_VERSION,
-        "decision": decision,
-        "evidence_score": score,
+        "decision": EvidenceDecision.REVIEW_REQUIRED if valid else EvidenceDecision.INVALID,
+        "evidence_score": 0,
+        "declaration_score": declaration_score,
+        "source_claims": deepcopy(bundle),
+        "source_claims_verified": False,
+        "verified": False,
+        "trusted": False,
+        "content_hash_checked": False,
+        "content_hash_valid": None,
+        "signatures_verified": False,
+        "identity_verified": False,
+        "advisory_only": True,
+        "public_safe": False,
+        "truth_guarantee": False,
+        "human_review_required": True,
         "reasons": sorted(set(reasons)),
     }
 

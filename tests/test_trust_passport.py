@@ -25,7 +25,7 @@ def test_verified_passport():
         verified_response(),
     )
 
-    assert passport["status"] == TrustPassportStatus.VERIFIED
+    assert passport["status"] == TrustPassportStatus.REVIEW_REQUIRED
 
 
 def test_review_required_due_to_risk_flags():
@@ -45,7 +45,7 @@ def test_partial_passport():
     response["signals"]["trust_score"] = 70
 
     passport = build_trust_passport("HC-3", response)
-    assert passport["status"] == TrustPassportStatus.PARTIAL
+    assert passport["status"] == TrustPassportStatus.REVIEW_REQUIRED
 
 
 def test_invalid_passport_input():

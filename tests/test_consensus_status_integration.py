@@ -13,7 +13,7 @@ def test_consensus_reached_status():
         },
     )
 
-    assert result["status_result"]["state"] == "VERIFIED"
+    assert result["status_result"]["state"] == "REVIEW_REQUIRED"
 
 
 def test_partial_consensus_requires_review():

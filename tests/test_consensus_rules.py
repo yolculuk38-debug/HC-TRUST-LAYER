@@ -19,7 +19,7 @@ def test_pass_consensus_reached():
         ]
     )
     assert result["status"] == ConsensusStatus.CONSENSUS_REACHED.value
-    assert result["trusted"] is True
+    assert result["trusted"] is False
 
 
 def test_partial_consensus():

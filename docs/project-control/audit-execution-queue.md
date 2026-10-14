@@ -11,10 +11,10 @@ or fabricated external acceptance. One PR at a time. Source baseline:
 | Item | Evidence / outstanding work | Status |
 | --- | --- | --- |
 | A1 API/QR fail-closed | #1229 regressions; preserve no-evidence rejection | Core merged |
-| A2 canonicalization | #1230/#1232; #1247 shared Python/ECMAScript golden vectors with byte and digest checks | Cross-language slice merged |
+| A2 canonicalization | #1230/#1232; #1247 shared Python/ECMAScript byte and digest vectors | Cross-language slice merged |
 | A3 single validation path | #1231 core; #1243 strict CI; #1246 recursive public/QR selection, relocated-root and symlink containment | Public lookup merged; standalone CLI absolute-path relocation remains |
-| A4 unsupported trust claims | #1233 QR, #1242 certificates, #1245 legacy exported-proof containment; remaining inventory and experimental isolation | Partial |
-| A5 installed wheel/release | Outside-checkout install smoke gate and exact tested-artifact handoff prepared; see installed-wheel-gate-2026-10-07.md | In review; publication remains manual |
+| A4 unsupported trust claims | #1233 QR, #1242 certificates, #1245 legacy exported-proof containment; connected evidence/consensus/status/passport slice in declaration-status-containment-2026-10-07.md | Declaration slice in review; inventory remains partial |
+| A5 installed wheel/release | #1248 outside-checkout installed wheel gate, release version binding and exact tested-artifact handoff | Gate merged; release publication remains manual |
 | B1 narrow product promise | Lead with local evidence-package integrity and limits | Pending |
 | B2 evidence-package format | Inspect/version manifest, algorithms, file metadata, extension/proof boundaries | Pending |
 | B3 result contract | Separate integrity, authentication, identity/trust, time, policy | Pending |
@@ -233,3 +233,24 @@ on the PR, and left no finding threads. Local validation passed 42 focused
 Python tests, 14 independent ECMAScript vectors and 1340 full-suite tests.
 The installed-wheel slice follows this actual merge and changes no runtime
 validation rules or release authority.
+
+## October 14 continuation
+
+#1248 merged as `31035c5c9a8996d2ecbf1ea48e6aaaebe3b137eb` after three
+resolved review findings, a clean review of
+`c276ea7e6fe10915bcbf1a85e533758274d88c8c`, and all 26 PR checks. Its main
+wheel gate passed seven check groups and preserved the exact tested artifact
+and source/version/digest report. All 14 observed post-merge checks passed.
+
+#1249 merged as `fa17a118f5647712a5beee3e36a8e08d2706edd7` after the clean
+review of `4f385bdc9bfd3780de2675763a591a47b008c4c7` and 29 successful PR
+checks. FastAPI 0.142.2 is installed; the runtime explicitly disables its new
+native telemetry defaults. Both provider/exporter control tests and all 1342
+local tests passed. All 18 observed post-merge checks passed, including the
+installed-wheel gate. This does not close broader D2 operational requirements.
+
+The next A4 slice contains the connected legacy evidence/consensus/status/
+passport promotion paths. See `declaration-status-containment-2026-10-07.md`.
+Final local validation on the actual #1249 merge: 79 focused and 1388 full-suite
+tests passed. Remaining media/proof/identity naming surfaces, CLI root context,
+product contract, signatures, lifecycle and operational work remain open.

@@ -138,3 +138,20 @@ jobs:
 
       - name: Run independent ECMAScript and Web Crypto canonicalization vectors
         run: node scripts/check_canonicalization_vectors.mjs
+
+      - name: Run legacy declaration and status containment regressions
+        run: >-
+          PYTHONPATH=src pytest -q
+          tests/test_declaration_claim_boundaries.py
+          tests/test_evidence_engine.py
+          tests/test_trust_orchestrator.py
+          tests/test_end_to_end_pipeline.py
+          tests/test_consensus_rules.py
+          tests/test_consensus_status_integration.py
+          tests/test_witness_consensus_integration.py
+          tests/test_verification_status_engine.py
+          tests/test_revision_status_integration.py
+          tests/test_status_passport_integration.py
+          tests/test_trust_passport.py
+          tests/test_trust_graph_passport_integration.py
+          tests/test_qr_passport_integration.py

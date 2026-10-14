@@ -1,7 +1,7 @@
 from evidence_engine import EvidenceDecision, evaluate_evidence_bundle
 
 
-def test_verified_evidence_bundle():
+def test_complete_declarations_require_review():
     result = evaluate_evidence_bundle(
         {
             "hash": True,
@@ -14,10 +14,10 @@ def test_verified_evidence_bundle():
         }
     )
 
-    assert result["decision"] == EvidenceDecision.VERIFIED
+    assert result["decision"] == EvidenceDecision.REVIEW_REQUIRED
 
 
-def test_partial_evidence_bundle():
+def test_partial_declarations_require_review():
     result = evaluate_evidence_bundle(
         {
             "hash": True,
@@ -28,4 +28,4 @@ def test_partial_evidence_bundle():
         }
     )
 
-    assert result["decision"] == EvidenceDecision.PARTIAL
+    assert result["decision"] == EvidenceDecision.REVIEW_REQUIRED

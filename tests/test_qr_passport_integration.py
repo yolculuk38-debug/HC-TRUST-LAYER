@@ -4,7 +4,7 @@ from qr_passport_integration import verify_qr_trust_passport
 SAFE_URL = "https://github.com/yolculuk38-debug/HC-TRUST-LAYER/blob/main/docs/index.md"
 
 
-def test_verified_qr_passport():
+def test_declared_verification_does_not_promote_qr_passport():
     content = "HC:// QR passport integration"
     payload = {
         "record_id": "HC-1",
@@ -26,7 +26,7 @@ def test_verified_qr_passport():
         },
     )
 
-    assert result["status_engine"]["state"] in {"VERIFIED", "PARTIAL"}
+    assert result["status_engine"]["state"] == "REVIEW_REQUIRED"
     qr_result = result["qr_verification"]["layer_results"]["qr_result"]
     assert qr_result["status"] == "SIGNATURE_UNVERIFIED"
     assert qr_result["trusted"] is False

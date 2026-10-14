@@ -12,7 +12,7 @@ def test_invalid_signal_state():
 
 def test_untrusted_without_hash():
     result = determine_verification_status({"hash_verified": False})
-    assert result["state"] == VerificationState.UNTRUSTED.value
+    assert result["state"] == VerificationState.REVIEW_REQUIRED.value
 
 
 def test_partial_multi_witness_status():
@@ -24,8 +24,8 @@ def test_partial_multi_witness_status():
         }
     )
 
-    assert result["state"] == VerificationState.PARTIAL.value
-    assert result["level"] == VerificationLevel.LEVEL_3_MULTI_WITNESS_VERIFIED.value
+    assert result["state"] == VerificationState.REVIEW_REQUIRED.value
+    assert result["level"] == VerificationLevel.LEVEL_0_UNVERIFIED.value
 
 
 def test_verified_federated_status():
@@ -39,9 +39,9 @@ def test_verified_federated_status():
         }
     )
 
-    assert result["state"] == VerificationState.VERIFIED.value
-    assert result["trusted"] is True
-    assert result["level"] == VerificationLevel.LEVEL_5_FEDERATED_VERIFIED.value
+    assert result["state"] == VerificationState.REVIEW_REQUIRED.value
+    assert result["trusted"] is False
+    assert result["level"] == VerificationLevel.LEVEL_0_UNVERIFIED.value
 
 
 def test_review_required_with_risk_flags():

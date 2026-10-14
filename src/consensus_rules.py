@@ -1,12 +1,13 @@
 """HC:// multi-witness consensus rules.
 
 Consensus is not automatic truth. It is a structured verification signal
-computed from independent witness results.
+computed from unauthenticated declarations; distinct IDs do not prove independence.
 """
 
 from __future__ import annotations
 
 from collections import Counter
+from copy import deepcopy
 from enum import Enum
 from typing import Any
 
@@ -30,7 +31,9 @@ def _normalize_witness(witness: dict[str, Any]) -> dict[str, Any] | None:
     verdict = str(witness.get("verdict", "")).upper()
     content_hash = witness.get("content_hash")
 
-    if not witness_id or verdict not in VALID_VERDICTS:
+    if (not isinstance(witness_id, str) or not witness_id.strip()
+            or verdict not in VALID_VERDICTS
+            or (content_hash is not None and not isinstance(content_hash, str))):
         return None
 
     return {
@@ -41,7 +44,7 @@ def _normalize_witness(witness: dict[str, Any]) -> dict[str, Any] | None:
     }
 
 
-def evaluate_consensus(
+def _evaluate_declarations(
     witnesses: list[dict[str, Any]],
     *,
     min_witnesses: int = DEFAULT_MIN_WITNESSES,
@@ -58,7 +61,8 @@ def evaluate_consensus(
 
     if not isinstance(witnesses, list):
         return {"status": ConsensusStatus.INVALID_INPUT.value, "trusted": False, "reason": "witnesses must be a list"}
-    if min_witnesses < 1 or not (0 < threshold <= 1):
+    if (type(min_witnesses) is not int or min_witnesses < 1
+            or type(threshold) not in (int, float) or not (0 < threshold <= 1)):
         return {"status": ConsensusStatus.INVALID_INPUT.value, "trusted": False, "reason": "invalid consensus parameters"}
 
     normalized: list[dict[str, Any]] = []
@@ -78,7 +82,7 @@ def evaluate_consensus(
             "trusted": False,
             "witness_count": len(normalized),
             "required_witnesses": min_witnesses,
-            "reason": "not enough independent valid witnesses",
+            "reason": "not enough distinct declared witness IDs",
         }
 
     active = [w for w in normalized if w["verdict"] != "ABSTAIN"]
@@ -111,9 +115,9 @@ def evaluate_consensus(
     if top_verdict == "PASS" and agreement_ratio >= threshold:
         result.update({
             "status": ConsensusStatus.CONSENSUS_REACHED.value,
-            "trusted": True,
+            "trusted": False,
             "consensus_reached": True,
-            "reason": "PASS consensus reached",
+            "reason": "unauthenticated PASS declarations meet the agreement threshold",
         })
         return result
 
@@ -122,6 +126,32 @@ def evaluate_consensus(
         return result
 
     result.update({"status": ConsensusStatus.PARTIAL_CONSENSUS.value, "reason": "agreement below threshold"})
+    return result
+
+
+def evaluate_consensus(
+    witnesses: list[dict[str, Any]],
+    *,
+    min_witnesses: int = DEFAULT_MIN_WITNESSES,
+    threshold: float = DEFAULT_THRESHOLD,
+) -> dict[str, Any]:
+    """Count declared agreement without authenticating witnesses or their hashes."""
+    result = _evaluate_declarations(witnesses, min_witnesses=min_witnesses, threshold=threshold)
+    result.update({
+        "source_claims": {"witnesses": deepcopy(witnesses)},
+        "source_claims_verified": False,
+        "trusted": False,
+        "verified": False,
+        "content_hash_checked": False,
+        "content_hash_valid": None,
+        "signatures_verified": False,
+        "identity_verified": False,
+        "witness_independence_verified": False,
+        "advisory_only": True,
+        "public_safe": False,
+        "truth_guarantee": False,
+        "human_review_required": True,
+    })
     return result
 
 
