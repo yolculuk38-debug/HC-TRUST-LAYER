@@ -12,7 +12,10 @@ from .record_selection import (
     GENERATED_ARTIFACT_DIRS,
     GENERATED_ARTIFACT_NAMES,
     GENERATED_ARTIFACT_SUFFIXES,
+    classify_record_file,
     is_generated_artifact_file,
+    record_selection_context,
+    RecordSelectionError,
 )
 from .hashing import (
     CONTENT_HASH_PROFILE_FIELD,
@@ -263,8 +266,8 @@ def verify_record_hash(record_path):
     )
 
 
-def find_record_files(search_path="records"):
-    search_path = Path(search_path)
+def find_record_files(search_path="records", *, repo_root=None):
+    search_path, root = record_selection_context(search_path, repo_root=repo_root)
     if search_path.is_file() and search_path.suffix == ".json":
         files = [search_path]
     elif search_path.is_dir():
@@ -275,25 +278,16 @@ def find_record_files(search_path="records"):
     selected = []
     skipped = []
     for file_path in files:
-        if should_validate_record_file(file_path):
+        if classify_record_file(file_path, repo_root=root) == "record":
             selected.append(file_path)
         else:
             skipped.append(file_path)
     return selected, skipped
 
 
-def should_validate_record_file(file_path):
-    file_path = Path(file_path)
-    parts = file_path.parts
-
-    if "records" not in parts:
+def should_validate_record_file(file_path, *, repo_root=None):
+    try:
+        path, root = record_selection_context(file_path, repo_root=repo_root)
+    except RecordSelectionError:
         return False
-    records_idx = parts.index("records")
-    if len(parts) <= records_idx + 2:
-        return False
-
-    record_group = parts[records_idx + 1]
-    if record_group not in ALLOWED_RECORD_DIRS:
-        return False
-
-    return not is_generated_artifact_file(file_path)
+    return classify_record_file(path, repo_root=root) == "record"

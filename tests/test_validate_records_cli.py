@@ -124,3 +124,145 @@ def test_artifact_only_selection_is_not_schema_validation_success(tmp_path):
     artifact.parent.mkdir(parents=True)
     artifact.write_text(json.dumps(fixture_record()), encoding="utf-8")
     assert main(["validate-records", str(tmp_path / "records")]) == 1
+
+
+@pytest.mark.parametrize("ancestor", ["records/cache/project", "cache/project", "export/project", "records/unrelated/project"])
+@pytest.mark.parametrize("command", ["verify", "validate-records"])
+def test_checkout_ancestor_names_do_not_hide_real_records(tmp_path, capsys, ancestor, command):
+    root = tmp_path / ancestor
+    valid = write_record(root, json.dumps(fixture_record()))
+    assert main([command, str(root / "records")]) == 0
+    assert "1 passed, 0 failed" in capsys.readouterr().out
+    bad = valid.with_name("broken.json")
+    bad.write_text('{"created_at":"invalid"}', encoding="utf-8")
+    assert main([command, str(root / "records")]) == 1
+    assert "1 passed, 1 failed" in capsys.readouterr().out
+    from validator import validate_record as legacy_validate_record
+    assert legacy_validate_record(bad) is False
+
+
+@pytest.mark.parametrize("command", ["verify", "validate-records"])
+def test_ambiguous_tree_requires_explicit_root(tmp_path, capsys, command):
+    root = tmp_path / "records/pending/project"
+    valid = write_record(root, json.dumps(fixture_record()))
+    assert main([command, str(root / "records")]) == 1
+    assert "specify --repo-root" in capsys.readouterr().out
+    assert main([command, str(valid), "--repo-root", str(root)]) == 0
+    # Relative paths and the default records path belong to the explicit root.
+    assert main([command, "records", "--repo-root", str(root)]) == 0
+    assert main([command, "--repo-root", str(root)]) == 0
+    from validator import validate_record as legacy_validate_record
+    assert legacy_validate_record(valid) is False
+    assert legacy_validate_record("records/pending/sample.json", repo_root=root) is True
+
+
+@pytest.mark.parametrize("command", ["verify", "validate-records"])
+def test_nested_generated_records_tree_cannot_reset_artifact_context(tmp_path, command):
+    root = tmp_path / "project"
+    write_record(root, json.dumps(fixture_record()))
+    nested = root / "records/pending/generated/records"
+    nested_record = nested / "pending/sample.json"
+    nested_record.parent.mkdir(parents=True)
+    nested_record.write_text(json.dumps(fixture_record()), encoding="utf-8")
+    assert main([command, str(nested)]) == 1
+    assert main([command, str(nested), "--repo-root", str(root)]) == 1
+    from hc_trust.verification import find_record_files
+    selected, skipped = find_record_files(root / "records", repo_root=root)
+    assert selected == [root / "records/pending/sample.json"]
+    assert nested_record in skipped
+
+
+@pytest.mark.parametrize("command", ["verify", "validate-records"])
+@pytest.mark.parametrize("kind", ["empty", "missing", "artifact"])
+def test_hash_and_schema_commands_require_a_checked_record(tmp_path, command, kind):
+    root = tmp_path / "project"
+    target = root / "records/pending"
+    target.mkdir(parents=True)
+    if kind == "missing":
+        target = root / "absent"
+    elif kind == "artifact":
+        (target / "generated_index.json").write_text(json.dumps(fixture_record()), encoding="utf-8")
+    assert main([command, str(target), "--repo-root", str(root)]) == 1
+
+
+@pytest.mark.parametrize("kind", ["outside_file", "other_group", "artifact_target", "group_directory", "records_directory"])
+def test_canonical_selection_rejects_symlink_escapes(tmp_path, kind):
+    from hc_trust.verification import find_record_files
+    from validator import validate_record as legacy_validate_record
+
+    root = tmp_path / "project"
+    record = write_record(root, json.dumps(fixture_record()))
+    if kind in {"outside_file", "other_group", "artifact_target"}:
+        target = {
+            "outside_file": tmp_path / "outside.json",
+            "other_group": root / "records/verified/target.json",
+            "artifact_target": record.parent / "generated/target.json",
+        }[kind]
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(json.dumps(fixture_record()), encoding="utf-8")
+        record.unlink()
+        record.symlink_to(target)
+    else:
+        directory = record.parent if kind == "group_directory" else root / "records"
+        destination = tmp_path / "moved"
+        directory.rename(destination)
+        directory.symlink_to(destination, target_is_directory=True)
+    selected, skipped = find_record_files(record, repo_root=root)
+    assert selected == []
+    assert record in skipped
+    for command in ("verify", "validate-records"):
+        assert main([command, str(record), "--repo-root", str(root)]) == 1
+    # Artifact targets may retain the legacy explicit skip diagnostic, but a
+    # canonical directory/file escape must never return legacy validation success.
+    if kind != "artifact_target":
+        assert legacy_validate_record(record, repo_root=root) is False
+
+
+def test_in_group_symlink_is_checked_but_artifact_alias_is_excluded(tmp_path):
+    from hc_trust.verification import find_record_files
+    root = tmp_path / "project"
+    record = write_record(root, json.dumps(fixture_record()))
+    alias = record.parent / "alias.json"
+    alias.symlink_to(record)
+    artifact_alias = record.parent / "cache.json"
+    artifact_alias.symlink_to(record)
+    selected, skipped = find_record_files(root / "records", repo_root=root)
+    assert set(selected) == {record, alias}
+    assert skipped == [artifact_alias]
+
+
+def test_legacy_generic_file_does_not_skip_arbitrary_ancestors(tmp_path):
+    from validator import validate_record as legacy_validate_record
+    root = tmp_path / "records/cache/export/project"
+    root.mkdir(parents=True)
+    record = root / "standalone.json"
+    record.write_text('{"created_at":"invalid"}', encoding="utf-8")
+    assert legacy_validate_record(record) is False
+    record.write_text(json.dumps(fixture_record()), encoding="utf-8")
+    assert legacy_validate_record(record) is True
+    assert legacy_validate_record(record, repo_root=root) is False
+
+
+def test_explicit_root_does_not_admit_another_repository(tmp_path):
+    from hc_trust.verification import should_validate_record_file
+    intended = tmp_path / "intended"
+    intended.mkdir()
+    other = write_record(tmp_path / "other", json.dumps(fixture_record()))
+    assert not should_validate_record_file(other, repo_root=intended)
+    for command in ("verify", "validate-records"):
+        assert main([command, str(other), "--repo-root", str(intended)]) == 1
+
+
+def test_legacy_script_accepts_explicit_root_from_another_directory(tmp_path):
+    import os
+    import subprocess
+    import sys
+    root = tmp_path / "records/pending/project"
+    write_record(root, json.dumps(fixture_record()))
+    result = subprocess.run(
+        [sys.executable, str(ROOT / "src/validator.py"), "records/pending/sample.json", "--repo-root", str(root)],
+        cwd=tmp_path, env={**os.environ, "PYTHONPATH": str(ROOT / "src")},
+        capture_output=True, text=True, check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "VALID RECORD" in result.stdout
