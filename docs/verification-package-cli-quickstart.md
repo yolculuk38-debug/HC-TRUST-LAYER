@@ -2,7 +2,7 @@
 
 This quickstart demonstrates the implemented local HC verification package hash core.
 
-It compares package files listed by the local manifest with their declared SHA-256 digests and reports missing, conflicting, or malformed inputs. `VERIFIED` means these implemented package checks passed for this invocation. It does not authenticate the manifest author or prove legal truth, signer identity, witness authority, media provenance, an external timestamp, federation state, or production readiness. Consequential use still requires human-supervised validation.
+It compares the bytes of package files listed by the local manifest with their declared SHA-256 digests and reports missing, conflicting, or out-of-bound inputs. It parses the manifest and optional proof JSON structures that the hash core reads, but treats other listed payload contents as opaque bytes; matching their hash does not validate their format or meaning. `VERIFIED` means these implemented package checks passed for this invocation. It does not authenticate the manifest author or prove legal truth, signer identity, witness authority, media provenance, an external timestamp, federation state, or production readiness. Consequential use still requires human-supervised validation.
 
 ## Example package
 
@@ -107,7 +107,7 @@ checks.witnesses_verified: false
 
 Use `--summary` only when you need the shorter operator summary fields; the fixture-specific signature and witness check keys are visible in the full JSON output.
 
-If a listed file is missing, changed, malformed, or outside the package boundary, the command returns non-zero and reports `missing_evidence` or `conflicting_evidence`.
+If a listed file is missing, its bytes do not match the declared digest, or its path is outside the package boundary, the command returns non-zero and reports `missing_evidence` or `conflicting_evidence`. Malformed manifest or parsed proof JSON also fails; other listed payload content is not parsed, so malformed payload bytes can still match their declared digest.
 
 ## What this proves
 
