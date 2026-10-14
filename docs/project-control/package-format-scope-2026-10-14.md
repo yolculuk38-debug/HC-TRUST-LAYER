@@ -36,6 +36,11 @@ implemented schema.
   references; it does not enumerate the package directory for unlisted files.
   A temporary package with an extra `unlisted-record.json` still returned
   `VERIFIED` with one file checked.
+- The manifest loader follows `manifest.json` symlinks. A temporary package with
+  its manifest symlinked to a file outside the package returned `VERIFIED`.
+  Listed payload symlinks whose targets resolve outside the package are
+  rejected by containment, but the format does not define symlink policy for
+  the manifest, inventory, or internal linked payloads.
 - Optional issuer, timestamp and witness references are locally hash-checked;
   their referenced JSON receives limited structural checks. They do not
   authenticate an issuer, external time source or witness authority. The
@@ -80,11 +85,16 @@ changing code, use this contract for the first implementation slice:
   other listed payload bytes as opaque; a matching digest does not validate
   their format or meaning.
 - Define the complete on-disk inventory. Exclude `manifest.json` from its own
-  references; require every other regular file to be covered by a recognized
-  file or proof entry, or an explicitly typed metadata/documentation entry with
-  a digest. Reject unreferenced files so a package directory cannot carry
-  silently associated content. Move the fixture README outside the package or
-  list it with a documentation role.
+  references, but require it to be a regular non-symlink file directly under
+  the selected package root. Reject a symlink package root. Require every other
+  regular file to be covered by a recognized file or proof entry, or an
+  explicitly typed metadata/documentation entry with a digest. Reject
+  unreferenced files so a package directory cannot carry silently associated
+  content. Reject symlink entries and symlink path components, including
+  internal links, and do not follow symlink directories during inventory.
+  Reject other special filesystem objects; empty directories carry no package
+  data. Move the fixture README outside the package or list it with a
+  documentation role.
 - Reject duplicate normalized file paths. Define path normalization and
   package-boundary rules in the schema/validator contract.
 - Reject unrecognized top-level and file-entry properties by default. If an
@@ -117,7 +127,9 @@ handling belong to the separate operational-security and portability reviews.
 The implementation review should verify required identifiers, strict version
 handling, duplicate-key rejection, digest-label consistency, duplicate-path
 behavior, complete on-disk inventory, metadata and extension treatment, and
-each supported proof parser with positive and negative fixtures. Documentation
-must state that listed payload bytes are only integrity-checked and may remain
-syntactically or semantically opaque. Compatibility impact for each existing
-local manifest fixture must be explicit before merge.
+each supported proof parser with positive and negative fixtures. Include
+unlisted-file, unlisted-symlink, external-manifest-symlink, linked-payload,
+special-file and empty-directory cases. Documentation must state that listed
+payload bytes are only integrity-checked and may remain syntactically or
+semantically opaque. Compatibility impact for each existing local manifest
+fixture must be explicit before merge.

@@ -310,6 +310,8 @@ ignores unrecognized metadata, accepts duplicate file entries, and can report
 `VERIFIED` when `algorithm: md5` accompanies a `sha256` member; missing package
 and record IDs are also accepted. The JSON loader keeps the last repeated object
 key, and unlisted directory files are ignored. These are local format-contract
-facts; they do not imply verification of listed payload meaning or proof
-authority. B2 implementation remains separate from B3 result semantics and
-from signature, time or trust integrations.
+facts; an external `manifest.json` symlink is also followed and can produce
+`VERIFIED`, while an external linked payload is rejected. They do not imply
+verification of listed payload meaning or proof authority. B2 implementation
+remains separate from B3 result semantics and from signature, time or trust
+integrations.
