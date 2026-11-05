@@ -33,7 +33,7 @@ hc_trust = ["schemas/*.json"]
 
 [project.optional-dependencies]
 test = [
-  "anyio==4.15.1",
+  "anyio==4.16.0",
   "httpx==0.28.1",
   "pytest<9; python_version < '3.10'",
   "pytest==9.1.1; python_version >= '3.10'",

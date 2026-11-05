@@ -4,7 +4,7 @@ qrcode[pil]==8.2
 rfc8785==0.1.4
 
 # Runtime API test dependencies for the advisory-only HC:// reference runtime skeleton.
-anyio==4.15.1
+anyio==4.16.0
 fastapi==0.142.2
 pydantic==2.13.5
 httpx==0.28.1
