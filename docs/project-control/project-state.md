@@ -20,10 +20,10 @@ Operating boundaries remain: `advisory_only=true`, `public_safe=true`, `truth_gu
 
 | Field | Status |
 | --- | --- |
-| Current phase | Independent external audit hardening. P0-1/#1229, P0-2/#1230/#1232, P0-3/#1231 core and P0-4 QR/#1233 are merged. |
-| Active focus | Bounded P0-4 certificate claim containment and direct tests; see `audit-followup-2026-09-18.md`. Completion requires current-head checks and matching review. |
-| Next up | Separate follow-ups for CI/shared-validator alignment, remaining unsupported non-QR claims, duplicate canonical IDs and broader audit acceptance gaps. |
-| Blocked / parked work | Signing, federation, authority expansion, source deletion/archival and production-readiness claims remain parked. The current certificate containment scope is not general protected-path authority. |
+| Current phase | Independent external audit hardening. The B2 format report (#1254) and strict local manifest implementation (#1255) are merged. |
+| Active focus | B3 local verification result contract; see `result-contract-scope-2026-10-14.md`. Implementation must preserve human authority and separate local integrity from authentication, identity/trust, time, and policy. |
+| Next up | Implement and validate B3, then continue the remaining A3/A4 claim inventory and B4/C/D acceptance items in `audit-execution-queue.md`. |
+| Blocked / parked work | Signing, federation, authority expansion, source deletion/archival and production-readiness claims remain parked. B3 is scoped to local package results. |
 | Do-not-repeat summary | P0-1/#1229 and P0-2/#1230 are completed. Earlier public-validator/explorer, advisory-agent, verification-package, repository-cleanup, governance, CodeQL, QR, and review-timing lines remain completed unless new evidence or reviewer direction identifies a concrete gap. |
 | Review / merge rule | Before merge: verify changed files, checks, review comments, risk scope, and review evidence tied to the current head SHA. Automation Gate PASS or an elapsed timer does not prove that Codex review completed. Require matching current-head review evidence or an explicit exact-head human exception before merge guidance; human final authority remains the governance boundary. |
 | Source-of-truth priority | Markdown project-control docs and repository evidence outrank `hc_context`, chat memory, and advisory summaries. |
@@ -39,7 +39,7 @@ Repository cleanup phase 1 mapping is completed and recorded by [`repository-cle
 
 ## Current phase
 
-Independent external audit P0 hardening is active. P0-1/#1229 and P0-2/#1230 are merged; P0-3 is the only active implementation slice. Repository cleanup phase 1 and the explicitly approved 76-branch cleanup remain complete, and all 36 held branches remain outside cleanup authority.
+Independent external audit hardening remains active. The bounded P0 slices and B1 product-promise update are merged. B2's format report (#1254) and strict manifest implementation (#1255) are merged; B3 result semantics are the next scoped item. Remaining A3/A4 inventory, B4 and C/D acceptance items remain open. Repository cleanup phase 1 and the explicitly approved 76-branch cleanup remain complete, and all 36 held branches remain outside cleanup authority.
 
 ## Repository status
 
@@ -242,7 +242,7 @@ The public landing / public surface line is completed through #1161, #1162, #116
 - The legacy QR compatibility repair is complete through #1209; do not recreate the bridge.
 - The Public Validator runner `record_id` contract, scannable demo QR entry, navigation/fail-closed hardening, combined local CLI, installed-CLI checkout-root repair, and report-only review-timing audit are complete through #1216-#1225.
 - Independent-audit P0-1/#1229 and P0-2/#1230 are complete. P0-3/#1231 core and P0-2 compatibility/#1232 are also merged; [`independent-external-audit-p0-status.md`](independent-external-audit-p0-status.md) records its evidence and remaining gate.
-- P0-4 QR containment/#1233 is merged. The current certificate containment slice continues the exact symbol inventory without adding cryptographic capability.
+- P0-4 QR containment/#1233 is merged. Certificate containment merged in #1242. B3 covers the local verification result; remaining non-QR claims are tracked in the audit queue.
 - The complete branch inventory/status synchronization and approved 76-branch cleanup are recorded through #1210/#1211; all 36 hold branches remain preserved.
 - GitHub issue/comment assisted PR creation was tested as diagnostic evidence; do not rely on reported success until GitHub source-of-truth confirms branch, PR, changed files, and checks.
 - Later layers are example navigation, demo index references, QR/canonical-domain binding, C2PA/OpenTimestamps references, federation, dispute/governance, and public UX.
@@ -250,7 +250,7 @@ The public landing / public surface line is completed through #1161, #1162, #116
 
 ## Next safe task
 
-Complete current-head checks and matching review for the certificate containment slice. Follow `audit-followup-2026-09-18.md` for remaining audit gaps. No signing, issuer authentication, consensus, provenance authentication, federation or production-readiness capability is added. The 36 held branches and later branches remain outside cleanup authority.
+Review the B3 scope in `result-contract-scope-2026-10-14.md`, then implement the result dimensions and test the SDK and both CLI formats. Follow `audit-execution-queue.md` for remaining audit gaps. No signing, issuer authentication, consensus, provenance authentication, federation or production-readiness capability is added. The 36 held branches and later branches remain outside cleanup authority.
 
 ## Shift-change checklist
 
