@@ -16,8 +16,8 @@ or fabricated external acceptance. One PR at a time. Source baseline:
 | A4 unsupported trust claims | #1233 QR, #1242 certificates, #1245 legacy exported-proof containment; #1250 connected evidence/consensus/status/passport containment | Declaration slice merged; inventory remains partial |
 | A5 installed wheel/release | #1248 outside-checkout installed wheel gate, release version binding and exact tested-artifact handoff | Gate merged; release publication remains manual |
 | B1 narrow product promise | Lead with local evidence-package integrity and limits | #1253 merged; 25 PR and 13 post-merge checks passed; current-head review passed |
-| B2 evidence-package format | #1254 scope report; strict local manifest schema, inventory, path and proof boundaries | Implementation prepared for current-head review and CI; B3 result semantics remain separate |
-| B3 result contract | Separate integrity, authentication, identity/trust, time, policy | Pending |
+| B2 evidence-package format | #1254 scope report; strict local manifest schema, inventory, path and proof boundaries | #1255 merged; B3 result semantics remain separate |
+| B3 result contract | Separate integrity, authentication, identity/trust, time, policy | Scope report prepared in `result-contract-scope-2026-10-14.md`; implementation follows its review |
 | B4 developer experience | Actual-file example, install, JSON/human output, exit codes and SDK | Partial |
 | C1 standard signature | Standard library integration, key IDs, versioned envelope, explicit trust roots | Pending design/implementation |
 | C2 key lifecycle | Expiry/revocation/rotation/unknown signer; no invented real identity authority | Pending |
@@ -274,8 +274,11 @@ Remaining claim surfaces and the broader audit remain open.
 #1251 follow-through: viewer CodeQL main-branch scans and the 19 observed main
 checks completed after merge; all checks required for the merged change were
 successful. The PR's final CodeQL result reported no new alerts in changed code,
-and its CodeQL thread was resolved. Original alert-state closure is not inferred
-from that PR-only result; confirm via the merged scan/report or alert list.
+and its CodeQL thread was resolved. The post-merge main CodeQL push run
+38543982331 on `3887fd3491de3e338ed4c17e0f19af665512bce4` completed successfully.
+The connected GitHub interface did not expose the Code Scanning alert `state`
+endpoint, so the individual current states of alerts #13 and #14 remain
+unobserved; do not claim closure from scan success alone.
 #1252 merged as `96d82ae26a7ad2a21dc285f017f810dd92aea875` after a clean
 Codex review of `107778b46bbebdf6b50bbef0ff38221a0d259c96` and all 26 PR checks.
 All 19 observed main checks completed; 17 succeeded and two unrelated checks were
@@ -315,3 +318,20 @@ facts; an external `manifest.json` symlink is also followed and can produce
 verification of listed payload meaning or proof authority. B2 implementation
 remains separate from B3 result semantics and from signature, time or trust
 integrations.
+
+#1255 implements the strict local manifest contract and merged as
+`77696dbd1c375f18d5f56d3c2592e559c8ccbc88` after a clean current-head Codex
+review of `e19251077c28c78c666599fb4db6ce069c55ef5a` and successful required
+checks, including the full suite, manifest schema guard, installed-wheel gate,
+and CodeQL. The full suite passed 1452 tests; the focused package suite passed
+67. B3 remains an independent result-contract slice.
+
+## B3 local verification result contract scope checkpoint
+
+`result-contract-scope-2026-10-14.md` records the current result semantics
+before implementation. The local package CLI's `VERIFIED`/`verified` result is
+derived from local package-integrity checks. Issuer and timestamp proof files
+can be `PRESENT` while identity and external-time verification remain false;
+signature verification is unsupported and policy is not evaluated. The
+versioned B3 proposal gives these dimensions explicit independent statuses
+while preserving the current integrity-scoped status and CLI exit behavior.
