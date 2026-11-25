@@ -48,6 +48,15 @@ For a valid package, the command returns exit code `0` and prints JSON with:
 ```json
 {
   "status": "VERIFIED",
+  "result_contract_version": "HC-LOCAL-VERIFICATION-RESULT-V1",
+  "result_dimensions": {
+    "integrity": "VERIFIED",
+    "authentication": "NOT_PERFORMED",
+    "identity_trust": "NOT_ESTABLISHED",
+    "time": "NOT_AUTHENTICATED",
+    "policy": "NOT_EVALUATED"
+  },
+  "human_final_authority": true,
   "verified": true,
   "advisory_only": true,
   "public_safe": true,
@@ -85,6 +94,13 @@ Expected summary fields include:
 
 ```text
 HC verification package summary
+result_contract_version: HC-LOCAL-VERIFICATION-RESULT-V1
+integrity: VERIFIED
+authentication: NOT_PERFORMED
+identity_trust: NOT_ESTABLISHED
+time: NOT_AUTHENTICATED
+policy: NOT_EVALUATED
+human_final_authority: true
 status: VERIFIED
 verified: true
 files_checked: 1
@@ -96,6 +112,8 @@ truth_guarantee: false
 ```
 
 Exit code `0` is scoped to a `VERIFIED` local package-integrity result; exit code `1` is returned for `INVALID` or `REVIEW_REQUIRED`. The `human_review_required: false` field means this hash-core response did not flag the package as incomplete or conflicting. It does not remove human review for consequential interpretation.
+
+SDK and JSON consumers can select the result contract using `result_contract_version`; `schema_version` identifies the input manifest. The legacy `status` field is the value of `result_dimensions.integrity`. For example, a manifest may match the bytes of a signed invoice, while the signer and the time of signing both remain unverified.
 
 ## Inspect the signature/witness fixture package
 

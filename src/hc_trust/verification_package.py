@@ -20,6 +20,7 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 
 VERIFICATION_PACKAGE_HASH_CORE_VERSION = "HC-VERIFICATION-PACKAGE-HASH-CORE-V1"
+VERIFICATION_PACKAGE_RESULT_VERSION = "HC-LOCAL-VERIFICATION-RESULT-V1"
 VERIFICATION_PACKAGE_MANIFEST_SCHEMA_VERSION = "HC-LOCAL-VERIFICATION-MANIFEST-V1"
 ISSUER_PROOF_REQUIRED_FIELDS = ("issuer", "statement")
 TIMESTAMP_PROOF_REQUIRED_FIELDS = ("claimed_at", "subject_sha256")
@@ -950,6 +951,15 @@ def _build_response(
 ) -> dict[str, Any]:
     return {
         "verifier_version": VERIFICATION_PACKAGE_HASH_CORE_VERSION,
+        "result_contract_version": VERIFICATION_PACKAGE_RESULT_VERSION,
+        "result_dimensions": {
+            "integrity": status,
+            "authentication": "NOT_PERFORMED",
+            "identity_trust": "NOT_ESTABLISHED",
+            "time": "NOT_AUTHENTICATED",
+            "policy": "NOT_EVALUATED",
+        },
+        "human_final_authority": True,
         "status": status,
         "verified": status == VerificationPackageStatus.VERIFIED,
         "advisory_only": True,
@@ -988,6 +998,7 @@ def _build_response(
 
 __all__ = [
     "VERIFICATION_PACKAGE_HASH_CORE_VERSION",
+    "VERIFICATION_PACKAGE_RESULT_VERSION",
     "VERIFICATION_PACKAGE_MANIFEST_SCHEMA_VERSION",
     "VerificationPackageStatus",
     "verify_verification_package",

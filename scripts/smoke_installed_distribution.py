@@ -122,9 +122,30 @@ def main() -> int:
         sdk = verify_verification_package(package)
         result = json.loads(run_cli(["verify-package", str(package)]))
         require(result == sdk and result["status"] == "VERIFIED", "Installed SDK/CLI integrity result differs")
+        require(
+            result["result_contract_version"] == "HC-LOCAL-VERIFICATION-RESULT-V1"
+            and result["result_dimensions"] == {
+                "integrity": "VERIFIED",
+                "authentication": "NOT_PERFORMED",
+                "identity_trust": "NOT_ESTABLISHED",
+                "time": "NOT_AUTHENTICATED",
+                "policy": "NOT_EVALUATED",
+            }
+            and result["human_final_authority"] is True,
+            "Installed result contract must keep stronger verification dimensions separate",
+        )
         require(result["checks"]["signatures_verified"] is False, "File integrity must not grant signature authority")
         require(result["truth_guarantee"] is False, "File integrity must not grant truth authority")
-        require("status: VERIFIED" in run_cli(["verify-package", str(package), "--summary"]), "Summary output failed")
+        summary = run_cli(["verify-package", str(package), "--summary"]).splitlines()
+        require(
+            {
+                "status: VERIFIED",
+                "integrity: VERIFIED",
+                "authentication: NOT_PERFORMED",
+                "human_final_authority: true",
+            }.issubset(summary),
+            "Installed summary did not expose the integrity and authentication boundary",
+        )
         checks.append("real_file_package_sdk_json_summary")
 
         evidence.write_bytes(b"tampered")

@@ -153,6 +153,9 @@ def _summary_list(values):
 def _format_verify_package_summary(result):
     lines = [
         "HC verification package summary",
+        f"result_contract_version: {result['result_contract_version']}",
+        *(f"{key}: {value}" for key, value in result["result_dimensions"].items()),
+        f"human_final_authority: {str(result['human_final_authority']).lower()}",
         f"status: {result['status']}",
         f"verified: {str(result['verified']).lower()}",
         f"package_id: {_summary_value(result.get('package_id'))}",
