@@ -15,6 +15,9 @@ def test_native_telemetry_stays_disabled_with_environment_and_global_providers(
 ):
     calls = {"endpoint": [], "trace": [], "metrics": [], "logs": []}
     monkeypatch.delenv("OTEL_SDK_DISABLED", raising=False)
+    # Exercise upstream's opt-in discovery, including when HC is run in the
+    # same environment. The HC app must still suppress all provider lookups.
+    monkeypatch.setenv("FASTAPI_OTEL_AUTO_CONFIGURE", "true")
     monkeypatch.setenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://127.0.0.1:9")
 
     # Observe discovery without configuring exporters or making network calls.
@@ -49,7 +52,7 @@ def test_native_telemetry_stays_disabled_with_environment_and_global_providers(
         assert client.get("/probe-failure").status_code == 500
 
     if probes_expected:
-        # Discriminating control: unchanged FastAPI defaults reach all probes.
+        # The plain FastAPI app honors the environment opt-in.
         assert calls["endpoint"] == ["TRACES", "METRICS", "LOGS"]
         assert all(calls[key] for key in ("trace", "metrics", "logs"))
     else:
