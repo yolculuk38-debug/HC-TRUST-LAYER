@@ -1,4 +1,4 @@
-# Verification Package CLI Quickstart
+# Verification Package CLI and Python Quickstart
 
 This quickstart demonstrates the implemented local HC verification package hash core.
 
@@ -36,10 +36,17 @@ The verifier inventories the package directory: every regular file other than th
 
 ## Run the verifier
 
-From a Python 3.14+ repository checkout, install the package once and run the included example from the repository root:
+Open the repository root with Python 3.14 or newer. In a Bash shell, create a virtual environment beside the checkout, activate it, and install the package:
 
 ```bash
+python -m venv ../hc-trust-venv
+source ../hc-trust-venv/bin/activate
 python -m pip install .
+```
+
+Run the installed CLI on the sample directory from the same repository root:
+
+```bash
 hc-trust verify-package examples/verification-package/valid
 ```
 
@@ -114,6 +121,41 @@ truth_guarantee: false
 Exit code `0` is scoped to a `VERIFIED` local package-integrity result; exit code `1` is returned for `INVALID` or `REVIEW_REQUIRED`. The `human_review_required: false` field means this hash-core response did not flag the package as incomplete or conflicting. It does not remove human review for consequential interpretation.
 
 SDK and JSON consumers can select the result contract using `result_contract_version`; `schema_version` identifies the input manifest. The legacy `status` field is the value of `result_dimensions.integrity`. For example, a manifest may match the bytes of a signed invoice, while the signer and the time of signing both remain unverified.
+
+## Try a changed file
+
+Copy the sample to a temporary directory and change one file in the copy:
+
+```bash
+scratch_dir=$(mktemp -d)
+cp -R examples/verification-package/valid "$scratch_dir/package"
+printf '\nchanged copy\n' >> "$scratch_dir/package/metadata/source-info.txt"
+exit_code=0
+hc-trust verify-package "$scratch_dir/package" --summary || exit_code=$?
+printf 'Exit code: %s\n' "$exit_code"
+```
+
+The summary reports `integrity: INVALID` and `sha256_mismatch:metadata/source-info.txt`. The command exits with code `1`.
+
+## Use the Python SDK
+
+Run this from the repository root in the same environment. The SDK takes a
+directory path and returns a dictionary with the same fields as the CLI JSON:
+
+```python
+from pathlib import Path
+
+from hc_trust.verification_package import verify_verification_package
+
+package = Path("examples/verification-package/valid")
+result = verify_verification_package(package)
+print(result["result_contract_version"])
+print(result["result_dimensions"]["integrity"])
+print(result["result_dimensions"]["authentication"])
+```
+
+The included example prints `HC-LOCAL-VERIFICATION-RESULT-V1`, `VERIFIED`, and
+`NOT_PERFORMED` on separate lines.
 
 ## Inspect the signature/witness fixture package
 

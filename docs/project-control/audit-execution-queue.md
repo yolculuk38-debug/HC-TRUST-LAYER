@@ -17,8 +17,8 @@ or fabricated external acceptance. One PR at a time. Source baseline:
 | A5 installed wheel/release | #1248 outside-checkout installed wheel gate, release version binding and exact tested-artifact handoff | Gate merged; release publication remains manual |
 | B1 narrow product promise | Lead with local evidence-package integrity and limits | #1253 merged; 25 PR and 13 post-merge checks passed; current-head review passed |
 | B2 evidence-package format | #1254 scope report; strict local manifest schema, inventory, path and proof boundaries | #1255 merged; B3 result semantics remain separate |
-| B3 result contract | #1256 scope report; versioned integrity, authentication, identity/trust, time and policy results in the SDK and both CLI formats | Local contract defined below |
-| B4 developer experience | Actual-file example, install, JSON/human output, exit codes and SDK | Partial |
+| B3 result contract | #1256 scope report; versioned integrity, authentication, identity/trust, time and policy results in the SDK and both CLI formats | Merged in #1268 |
+| B4 developer experience | [Quickstart](../verification-package-cli-quickstart.md); tested installation, real-file example, both CLI formats, exit codes and Python SDK | Local acceptance verified |
 | C1 standard signature | Standard library integration, key IDs, versioned envelope, explicit trust roots | Pending design/implementation |
 | C2 key lifecycle | Expiry/revocation/rotation/unknown signer; no invented real identity authority | Pending |
 | C3 external time evidence | Separate local time and authenticated time; replay policy | Pending |
@@ -343,3 +343,20 @@ when every local hash matches. The result explicitly records human final
 authority. Existing status values and exit codes retain their integrity scope.
 The package tests exercise the result across successful, malformed and missing
 inputs; the installed-wheel smoke checks the same boundary outside the checkout.
+
+PR #1268 merged as `f717c8c36a1868dadc1833704c0c18aedc0a114c`.
+Its reviewed head passed 26 GitHub checks, 1,458 local tests and the isolated
+wheel smoke. All nine observed workflows on the merge commit passed, including
+validation, the installed wheel gate and CodeQL.
+
+## B4 local developer experience acceptance
+
+On Python 3.14.10, a clean, non-editable checkout installation was exercised
+from a temporary directory outside the repository. The checked-in sample files
+returned `VERIFIED` and exit code 0 in CLI JSON and summary modes. The
+quickstart's documented Python example printed the result version and the
+integrity and authentication outcomes. After modifying a copied payload file,
+the CLI returned `INVALID` and exit code 1 in both modes. The SDK loaded from
+the installed environment, and its result dimensions agreed with CLI JSON.
+This closes B4 for the local verifier. A5 release publication and C1–C4
+external verification capabilities remain separate.
