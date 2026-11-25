@@ -17,7 +17,7 @@ or fabricated external acceptance. One PR at a time. Source baseline:
 | A5 installed wheel/release | #1248 outside-checkout installed wheel gate, release version binding and exact tested-artifact handoff | Gate merged; release publication remains manual |
 | B1 narrow product promise | Lead with local evidence-package integrity and limits | #1253 merged; 25 PR and 13 post-merge checks passed; current-head review passed |
 | B2 evidence-package format | #1254 scope report; strict local manifest schema, inventory, path and proof boundaries | #1255 merged; B3 result semantics remain separate |
-| B3 result contract | Separate integrity, authentication, identity/trust, time, policy | Scope report prepared in `result-contract-scope-2026-10-14.md`; implementation follows its review |
+| B3 result contract | #1256 scope report; versioned integrity, authentication, identity/trust, time and policy results in the SDK and both CLI formats | Local contract defined below |
 | B4 developer experience | Actual-file example, install, JSON/human output, exit codes and SDK | Partial |
 | C1 standard signature | Standard library integration, key IDs, versioned envelope, explicit trust roots | Pending design/implementation |
 | C2 key lifecycle | Expiry/revocation/rotation/unknown signer; no invented real identity authority | Pending |
@@ -335,3 +335,11 @@ can be `PRESENT` while identity and external-time verification remain false;
 signature verification is unsupported and policy is not evaluated. The
 versioned B3 proposal gives these dimensions explicit independent statuses
 while preserving the current integrity-scoped status and CLI exit behavior.
+
+The implementation exposes `HC-LOCAL-VERIFICATION-RESULT-V1` in SDK and CLI
+results. Authentication remains not performed, identity and trust remain
+unestablished, time remains unauthenticated, and policy remains unevaluated even
+when every local hash matches. The result explicitly records human final
+authority. Existing status values and exit codes retain their integrity scope.
+The package tests exercise the result across successful, malformed and missing
+inputs; the installed-wheel smoke checks the same boundary outside the checkout.
